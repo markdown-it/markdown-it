@@ -1,0 +1,6 @@
+/benchmark/
+/demo/
+/test/
+/.*
+/Makefile
+
