@@ -8,9 +8,10 @@ remarkable
 
 Markdown parser done right. Fast and easy to extend.
 
-/DEMO LINK/
+[Live demo](http://jonschlinkert.github.io/remarkable/demo/)
 
 /INTRO/
+
 
 Install
 -------
@@ -27,6 +28,7 @@ bower:
 bower install remarkable --save
 ```
 
+
 Usage
 -----
 
@@ -41,7 +43,7 @@ console.log(md.parse('# Remarkable rulezz!'));
 You can define options via `set` method:
 
 ```javascript
-var Remarkable = require('remarkable')();
+var Remarkable = require('remarkable');
 var md = new Remarkable();
 
 md.set({
@@ -55,3 +57,16 @@ md.set({
 });
 ```
 
+
+Authors
+-------
+
+- Jon Schlinkert [github/jonschlinkert](https://github.com/jonschlinkert)
+- Alex Kocharin [github/rlidwka](https://github.com/rlidwka)
+- Vitaly Puzrin [github/puzrin](https://github.com/puzrin)
+
+
+License
+-------
+
+[MIT](https://github.com/jonschlinkert/remarkable/blob/master/LICENSE)

@@ -12,15 +12,10 @@ CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut -b -6) master)
 GITHUB_PROJ := https://github.com//jonschlinkert/${NPM_PACKAGE}
 
 
-help:
-	echo "make help       - Print this help"
-	echo "make lint       - Lint sources with JSHint"
-	echo "make test       - Lint sources and run all tests"
-	echo "make browserify - Build browserified version"
-	echo "make dev-deps   - Install developer dependencies"
-	echo "make gh-pages   - Build and push API docs into gh-pages branch"
-	echo "make publish    - Set new version tag and publish npm package"
-	echo "make todo       - Find and list all TODOs"
+demo: lint browserify
+	js-yaml demo/data.yml > demo/data.json
+	jade demo/index.jade -P --obj demo/data.json
+	rm -rf demo/data.json
 
 
 lint:
@@ -83,5 +78,5 @@ todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
 
-.PHONY: publish lint test dev-deps gh-pages todo
+.PHONY: publish lint test dev-deps gh-pages todo demo
 .SILENT: help lint test todo

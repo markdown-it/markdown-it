@@ -1,0 +1,14 @@
+.source, .result {
+  width: 100%;
+  height: 350px;
+}
+
+.result {
+  border: 1px solid #ccc;
+  overflow: auto;
+}
+
+.hljs {
+  background: none;
+  padding: 0
+}

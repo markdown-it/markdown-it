@@ -20,6 +20,7 @@
     "ansi": "^0.3.0",
     "benchmark": "^1.0.0",
     "browserify": "*",
+    "jade": "1.6.0",
     "jshint": "*",
     "mocha": "*",
     "uglifyjs": "*"

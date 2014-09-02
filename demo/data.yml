@@ -1,0 +1,107 @@
+
+self:
+  demo1:
+    title: Simple markdown
+    description: |
+      That's a sample of typical `remarkable` use. You can play with content
+    code: |
+      var Remarkable = require('remarkable');
+
+      var md = new Remarkable({
+        gfm: true,
+        tables: true,
+        breaks: false,
+        pedantic: false,
+        sanitize: true,
+        smartLists: true,
+        smartypants: false
+      });
+
+      console.log(md.parse('# Remarkable rulezz!'));
+      // => <h1>Remarkable rulezz!</h1>
+    source: |
+      # h1 Heading
+      ## h2 Heading
+      ### h3 Heading
+      #### h4 Heading
+      ##### h5 Heading
+      ###### h6 Heading
+
+      Alt h1 Heading
+      ==============
+
+      Alt h2 Heading
+      --------------
+
+      ## Horizontal Rules
+
+      ---
+
+      ___
+
+
+      ***
+
+      ## Text
+
+      Lorem ipsum dolor sit amet, graecis denique ei vel, at duo primis mandamus. Et legere ocurreret pri, animal tacimates complectitur ad cum. Cu eum inermis inimicus efficiendi. Labore officiis his ex, soluta officiis concludaturque ei qui, vide sensibus vim ad.
+
+      ## Emphasis
+
+      __bold text__
+
+      _italicized text_
+
+      ~~strike through text~~
+
+      ## Blockquotes
+
+      > Quoted text
+      >> Quotes can be nested
+
+      ## Lists
+
+      Unordered:
+
+      * valid bullet
+      - valid bullet
+      + valid bullet
+        - Phasellus iaculis neque
+        - Purus sodales ultricies
+
+      Ordered:
+
+      1. Lorem ipsum dolor sit amet
+      2. Consectetur adipiscing elit
+      3. Integer molestie lorem at massa
+
+      ## Code
+
+      This is `example of inline code`.
+
+      Code block (with language name for highlighter)
+
+      ``` javascript
+      var text = 'Remarkable is awesome!';
+
+      console.log(text);
+      ```
+
+      ## links
+
+      [Basic link](https://github.com/jonschlinkert/remarkable)
+
+      [Link with title](https://github.com/jonschlinkert/remarkable "Awesome markdown parser")
+
+  demo2:
+    title: Code highlight
+
+  # Advanced demos
+
+  demo3:
+    title: Typograph
+  demo4:
+    title: Block macros
+  demo5:
+    title: Custom tag (lexer plugin)
+
