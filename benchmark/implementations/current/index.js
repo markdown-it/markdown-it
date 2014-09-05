@@ -1,6 +1,6 @@
 'use strict'
 
-var Remarkable = new require('../../../');
+var Remarkable = require('../../../');
 var md = new Remarkable();
 
 exports.run = function(data) {

@@ -16,6 +16,9 @@
     }
   ],
   "main": "index.js",
+  "dependencies": {
+    "argparse": "~ 0.1.15"
+  },
   "devDependencies": {
     "ansi": "^0.3.0",
     "benchmark": "^1.0.0",

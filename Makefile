@@ -23,7 +23,7 @@ lint:
 
 
 test: lint
-	# NODE_ENV=test mocha -R spec
+	NODE_ENV=test mocha -R spec
 
 
 gh-pages:
