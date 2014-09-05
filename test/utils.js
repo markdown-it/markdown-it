@@ -7,8 +7,9 @@ var path = require('path');
 var assert = require('assert');
 
 
-function addTests(dir, md) {
+function addTests(dir, md, skip) {
   var files = fs.readdirSync(dir);
+  var fixtures = {};
 
   files.forEach(function (name) {
     var filePath = path.join(dir, name);
@@ -16,20 +17,34 @@ function addTests(dir, md) {
 
     if (stat.isDirectory()) {
       describe(name, function () {
-        addTests(filePath, md);
+        addTests(filePath, md, skip);
       });
       return;
     }
 
-    if (stat.isFile) {
-      if (path.extname(filePath) !== '.md') { return; }
+    if (stat.isFile()) {
+      fixtures[name] = fs.readFileSync(path.join(dir, name), 'utf8');
+    }
+  });
 
-      var mustBe = fs.readFileSync(path.join(dir, path.basename(name, '.md') + '.html'), 'utf8');
-      var src = fs.readFileSync(filePath, 'utf8');
+  Object.keys(fixtures).forEach(function (name) {
+    var src, right,
+        ext = path.extname(name),
+        base = path.basename(name, ext);
 
-      it(name, function () {
-        assert.strictEqual(mustBe, md.render(src));
-      });
+    if (['.md', '.markdown'].indexOf(ext) !== -1) {
+      right = fixtures[base + '.html'];
+      src = fixtures[name];
+
+      if (!skip) {
+        it(base, function () {
+          assert.strictEqual(right, md.render(src));
+        });
+      } else {
+        it.skip(base, function () {
+          assert.strictEqual(right, md.render(src));
+        });
+      }
     }
   });
 }
