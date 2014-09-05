@@ -9,7 +9,7 @@ var LexerInline = require('./lib/lexer_inline');
 // Parser state class
 //
 function State(src, lexerBlock, lexerInline, renderer, options) {
-  var ch, s, start, pos, len;
+  var ch, s, start, pos, len, indent, indent_found;
 
   // TODO: Temporary solution. Check if more effective possible,
   // withous str change
@@ -37,17 +37,33 @@ function State(src, lexerBlock, lexerInline, renderer, options) {
 
   this.tokens = [];
 
-  this.bMarks = []; // lines begin/end markers for fast jumps
-  this.eMarks = []; //
+  this.bMarks = []; // line begin offsets for fast jumps
+  this.eMarks = []; // line end offsets for fast jumps
+  this.tShift = []; // indent for each line
 
   // Generate markers.
   s = this.src;
-  for(start = pos = 0, len = s.length; pos < len; pos++) {
+  indent = 0;
+  indent_found = false;
+
+  for(start = pos = indent = 0, len = s.length; pos < len; pos++) {
     ch = s.charCodeAt(pos);
+
+    // TODO: check other spaces and tabs too or keep existing regexp replace ??
+    if (!indent_found && ch === 0x20/* space */) {
+      indent++;
+    }
+    if (!indent_found && ch !== 0x20/* space */) {
+      this.tShift.push(indent);
+      indent_found = true;
+    }
+
 
     if (ch === 0x0D || ch === 0x0A) {
       this.bMarks.push(start);
       this.eMarks.push(pos);
+      indent_found = false;
+      indent = 0;
       start = pos + 1;
     }
     if (ch === 0x0D && pos < len && s.charCodeAt(pos) === 0x0A) {
@@ -58,6 +74,7 @@ function State(src, lexerBlock, lexerInline, renderer, options) {
   if (ch !== 0x0D || ch !== 0x0A) {
     this.bMarks.push(start);
     this.eMarks.push(len);
+    this.tShift.push(indent);
   }
 
   // inline lexer variables
@@ -71,7 +88,6 @@ function State(src, lexerBlock, lexerInline, renderer, options) {
 
   // renderer
   this.result = '';
-
 }
 
 
