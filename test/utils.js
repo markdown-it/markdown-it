@@ -41,11 +41,11 @@ function addTests(dir, md, skip) {
 
       if (!skip) {
         it(base, function () {
-          assert.strictEqual(right, md.render(src));
+          assert.strictEqual(md.render(src), right);
         });
       } else {
         it.skip(base, function () {
-          assert.strictEqual(right, md.render(src));
+          assert.strictEqual(md.render(src), right);
         });
       }
     }
