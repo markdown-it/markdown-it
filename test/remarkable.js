@@ -12,5 +12,5 @@ var Remarked = require('../');
 describe('Default', function () {
   var md = new Remarked();
 
-  utils.addTests(path.join(__dirname, 'fixtures/defaults'), md);
+  utils.addTests(path.join(__dirname, 'fixtures/remarkable'), md);
 });

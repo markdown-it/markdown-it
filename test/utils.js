@@ -33,8 +33,11 @@ function addTests(dir, md, skip) {
         base = path.basename(name, ext);
 
     if (['.md', '.markdown'].indexOf(ext) !== -1) {
-      right = fixtures[base + '.html'];
       src = fixtures[name];
+      right = fixtures[base + '.html'];
+
+      // if no .html pair found - that's doc file, skip it
+      if (!right) { return; }
 
       if (!skip) {
         it(base, function () {
