@@ -19,7 +19,7 @@ demo: lint browserify
 
 
 lint:
-	jshint . --show-non-errors
+	eslint ./
 
 
 test: lint

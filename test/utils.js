@@ -32,7 +32,7 @@ function addTests(dir, md, skip) {
         ext = path.extname(name),
         base = path.basename(name, ext);
 
-    if (['.md', '.markdown'].indexOf(ext) !== -1) {
+    if ([ '.md', '.markdown' ].indexOf(ext) !== -1) {
       src = fixtures[name];
       right = fixtures[base + '.html'];
 

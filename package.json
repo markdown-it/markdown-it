@@ -23,10 +23,10 @@
     "ansi": "^0.3.0",
     "benchmark": "^1.0.0",
     "browserify": "*",
+    "eslint": "^0.8.0",
+    "eslint-plugin-nodeca": "^1.0.0",
     "jade": "1.6.0",
-    "jshint": "*",
     "mocha": "*",
     "uglifyjs": "*"
   }
 }
-

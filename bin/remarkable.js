@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+/*eslint no-console:0*/
 
 'use strict';
 
@@ -17,13 +17,13 @@ var cli = new argparse.ArgumentParser({
   addHelp: true
 });
 
-cli.addArgument(['file'], {
+cli.addArgument([ 'file' ], {
   help: 'File to read',
   nargs: '?',
   defaultValue: '-'
 });
 
-cli.addArgument(['-t', '--trace'], {
+cli.addArgument([ '-t', '--trace' ], {
   help:   'Show stack trace on error',
   action: 'storeTrue'
 });
@@ -56,7 +56,7 @@ readFile(options.file, 'utf8', function (error, input) {
   var output, md;
 
   if (error) {
-    if ('ENOENT' === error.code) {
+    if (error.code === 'ENOENT') {
       console.error('File not found: ' + options.file);
       process.exit(2);
     }

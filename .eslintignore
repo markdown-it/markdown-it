@@ -1,5 +1,4 @@
-.git/
 benchmark/implementations/
-node_modules/
 demo/
 dist/
+node_modules/

@@ -1,0 +1,47 @@
+env:
+  node:     true
+  browser:  false
+
+plugins:
+  - nodeca
+
+rules:
+  block-scoped-var:     2
+  brace-style:          [ 2, '1tbs', { allowSingleLine: true } ]
+  camelcase:            0
+  consistent-return:    2
+  consistent-this:      [ 2, self ]
+  curly:                [ 2, all ]
+  default-case:         2
+  eol-last:             2
+  eqeqeq:               2
+  guard-for-in:         2
+  handle-callback-err:  2
+  max-depth:            [ 1, 3 ]
+  max-nested-callbacks: [ 1, 4 ]
+  # string can exceed 80 chars, but should not overflow github website :)
+  max-len:              [ 2, 120, 1000 ]
+  no-alert:             2
+  no-bitwise:           2
+  no-comma-dangle:      2
+  no-console:           2
+  no-div-regex:         2
+  no-else-return:       2
+  no-eq-null:           2
+  no-floating-decimal:  2
+  no-lonely-if:         2
+  no-process-exit:      0
+  no-trailing-spaces:   2
+  no-underscore-dangle: 0
+  quotes:               [ 2, single, avoid-escape ]
+  radix:                2
+  space-after-keywords: [ 2, always ] # Fixed in master
+  space-in-brackets:    [ 1, always ]
+
+  # temporary
+  no-func-assign:       0
+
+  #
+  # Our custom rules
+  #
+  nodeca/indent:                [ 2, spaces, 2 ]

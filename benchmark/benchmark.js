@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/*eslint no-console:0*/
 
 'use strict';
 
@@ -15,8 +16,8 @@ var IMPLS = [];
 
 
 fs.readdirSync(IMPLS_DIRECTORY).sort().forEach(function (name) {
-  var file = path.join(IMPLS_DIRECTORY, name),
-      code = require(file);
+  var file = path.join(IMPLS_DIRECTORY, name);
+  var code = require(file);
 
   IMPLS_PATHS[name] = file;
   IMPLS.push({
@@ -67,9 +68,7 @@ fs.readdirSync(SAMPLES_DIRECTORY).sort().forEach(function (sample) {
 
       onComplete: onComplete,
 
-      defer: !!impl.code.async,
-
-      fn: function (deferred) {
+      fn: function () {
         impl.code.run(content.string);
         return;
       }
