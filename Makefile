@@ -24,6 +24,7 @@ lint:
 
 test: lint
 	NODE_ENV=test mocha -R spec
+	./bin/specsplit.js test/fixtures/stmd/spec.txt
 
 
 gh-pages:

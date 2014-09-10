@@ -10,21 +10,10 @@ var Remarked = require('../');
 
 
 describe('stmd', function () {
-  var md = new Remarked();
+  var md = new Remarked({
+    xhtml: true,
+    codeLangPrefix: 'language-'
+  });
 
-  utils.addTests(path.join(__dirname, 'fixtures/stmd_ok'), md);
-});
-
-
-describe('stmd pending', function () {
-  var md = new Remarked();
-
-  utils.addTests(path.join(__dirname, 'fixtures/stmd_pending'), md, true);
-});
-
-
-describe('stmd original with error', function () {
-  var md = new Remarked();
-
-  utils.addTests(path.join(__dirname, 'fixtures/stmd_conflicting'), md, true);
+  utils.addSpecTests(path.join(__dirname, 'fixtures/stmd/good.txt'), md);
 });
