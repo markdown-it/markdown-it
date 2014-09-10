@@ -12,7 +12,7 @@ var Remarkable = require('..');
 ////////////////////////////////////////////////////////////////////////////////
 
 var cli = new argparse.ArgumentParser({
-  prog: 'js-yaml',
+  prog: 'remarkable',
   version: require('../package.json').version,
   addHelp: true
 });
