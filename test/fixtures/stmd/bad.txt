@@ -27,24 +27,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 566
-
-.
-foo
-    # bar
-.
-<p>foo
-# bar</p>
-.
-
-error:
-
-<p>foo</p>
-<pre><code># bar
-</code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 680
 
 .
@@ -65,21 +47,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 776
-
-.
-Foo  
------
-.
-<h2>Foo</h2>
-.
-
-error:
-
-<h2>Foo  </h2>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 1237
 
 .
@@ -92,8 +59,8 @@ aaa</p>
 
 error:
 
-<pre><code class="language-```">aaa
-</code></pre>
+<p>``` ```
+aaa</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,8 +76,8 @@ foo</p>
 
 error:
 
-<pre><code class="language-aa">foo
-</code></pre>
+<p>``` aa ```
+foo</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -823,66 +790,13 @@ with two lines.</p>
 </ol>
 .
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2455
+error:
 
-.
-- one
-
-  two
-.
-<ul>
-<li><p>one</p>
-<p>two</p></li>
-</ul>
-.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2466
-
-.
- -    one
-
-     two
-.
-<ul>
-<li>one</li>
-</ul>
-<pre><code> two
-</code></pre>
-.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2478
-
-.
- -    one
-
-      two
-.
-<ul>
-<li><p>one</p>
-<p>two</p></li>
-</ul>
-.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2497
-
-.
-   > > 1.  one
->>
->>     two
-.
-<blockquote>
-<blockquote>
 <ol>
-<li><p>one</p>
-<p>two</p></li>
+<li><p>A paragraph
+with two lines.</p></li>
 </ol>
-</blockquote>
-</blockquote>
-.
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2540
@@ -919,6 +833,24 @@ bar
 </ul>
 .
 
+error:
+
+<ul>
+<li><p>foo</p>
+<p>bar</p></li>
+</ul>
+<ul>
+<li>foo</li>
+</ul>
+<p>bar</p>
+<ul>
+<li><pre><code>foo</code></pre>
+</li>
+</ul>
+<p>bar</p>
+<pre><code></code></pre>
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2574
 
@@ -944,6 +876,16 @@ src line: 2574
 </ol>
 .
 
+error:
+
+<ol>
+<li><p>foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ol>
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2612
 
@@ -959,6 +901,15 @@ src line: 2612
 </ul>
 .
 
+error:
+
+<ul>
+<li><p>foo</p>
+<pre><code>bar</code></pre>
+</li>
+</ul>
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2626
 
@@ -973,6 +924,15 @@ src line: 2626
 </code></pre></li>
 </ol>
 .
+
+error:
+
+<ol start="10">
+<li><p>foo</p>
+<pre><code>bar</code></pre>
+</li>
+</ol>
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2656
@@ -993,6 +953,13 @@ src line: 2656
 </ol>
 .
 
+error:
+
+<ol>
+<li><p>indented code</p></li>
+</ol>
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2675
 
@@ -1012,19 +979,12 @@ src line: 2675
 </ol>
 .
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2723
+error:
 
-.
--  foo
+<ol>
+<li><p>indented code</p></li>
+</ol>
 
-   bar
-.
-<ul>
-<li><p>foo</p>
-<p>bar</p></li>
-</ul>
-.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2743
@@ -1048,6 +1008,14 @@ with two lines.</p>
 </ol>
 .
 
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p></li>
+</ol>
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2764
 
@@ -1069,6 +1037,14 @@ with two lines.</p>
 </blockquote></li>
 </ol>
 .
+
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p></li>
+</ol>
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2785
@@ -1092,6 +1068,14 @@ with two lines.</p>
 </ol>
 .
 
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p></li>
+</ol>
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2833
 
@@ -1113,6 +1097,14 @@ with two lines.</p>
 </blockquote></li>
 </ol>
 .
+
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p></li>
+</ol>
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2866
@@ -1193,10 +1185,10 @@ error:
 
 <ul>
 <li>foo<ul>
-<li>bar</li>
+<li>bar<ul>
 <li>baz</li>
-</ul>
-</li>
+</ul></li>
+</ul></li>
 </ul>
 
 
@@ -1220,59 +1212,7 @@ error:
 <ol start="10">
 <li>foo<ul>
 <li>bar</li>
-</ul>
-</li>
-</ol>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2964
-
-.
-- - foo
-.
-<ul>
-<li><ul>
-<li>foo</li>
 </ul></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li><ul>
-<li>foo</li>
-</ul>
-</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2974
-
-.
-1. - 2. foo
-.
-<ol>
-<li><ul>
-<li><ol start="2">
-<li>foo</li>
-</ol></li>
-</ul></li>
-</ol>
-.
-
-error:
-
-<ol>
-<li><ul>
-<li><ol start="2">
-<li>foo</li>
-</ol>
-</li>
-</ul>
-</li>
 </ol>
 
 
@@ -1389,10 +1329,10 @@ error:
 
 <ul>
 <li>foo<ul>
-<li>bar</li>
+<li>bar<ul>
 <li>baz</li>
-</ul>
-</li>
+</ul></li>
+</ul></li>
 </ul>
 <pre><code>  bim
 </code></pre>
@@ -1419,6 +1359,19 @@ src line: 3336
 <pre><code>code
 </code></pre>
 .
+
+error:
+
+<ul>
+<li><p>foo</p>
+<p>notcode</p></li>
+</ul>
+<ul>
+<li>foo</li>
+</ul>
+<pre><code>code
+</code></pre>
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3383
@@ -1475,36 +1428,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3415
-
-.
-- a
-- b
-
-  c
-- d
-.
-<ul>
-<li><p>a</p></li>
-<li><p>b</p>
-<p>c</p></li>
-<li><p>d</p></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a</li>
-<li>b</li>
-</ul>
-<p>c</p>
-<ul>
-<li>d</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3430
 
 .
@@ -1524,12 +1447,10 @@ src line: 3430
 error:
 
 <ul>
-<li>a</li>
-<li>b</li>
-</ul>
-<p>[ref]: /url</p>
-<ul>
-<li>d</li>
+<li><p>a</p></li>
+<li><p>b</p>
+<p>[ref]: /url</p></li>
+<li><p>d</p></li>
 </ul>
 
 
@@ -1590,9 +1511,9 @@ error:
 
 <ul>
 <li>a<ul>
-<li>b</li>
-</ul>
-c</li>
+<li><p>b</p>
+<p>c</p></li>
+</ul></li>
 <li>d</li>
 </ul>
 
@@ -1678,8 +1599,7 @@ error:
 <ul>
 <li>a<ul>
 <li>b</li>
-</ul>
-</li>
+</ul></li>
 </ul>
 
 
@@ -1743,13 +1663,13 @@ error:
 <li>a<ul>
 <li>b</li>
 <li>c</li>
-</ul>
-</li>
+</ul></li>
 </ul>
 <ul>
-<li>d</li>
+<li>d<ul>
 <li>e</li>
 <li>f</li>
+</ul></li>
 </ul>
 
 
@@ -2180,20 +2100,6 @@ src line: 3954
 error:
 
 <p>&lt;a href=&quot;`&quot;&gt;`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3963
-
-.
-```foo``
-.
-<p>```foo``</p>
-.
-
-error:
-
-<pre><code class="language-foo``"></code></pre>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

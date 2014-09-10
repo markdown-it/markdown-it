@@ -23,11 +23,6 @@ cli.addArgument([ 'file' ], {
   defaultValue: '-'
 });
 
-cli.addArgument([ '-t', '--trace' ], {
-  help:   'Show stack trace on error',
-  action: 'storeTrue'
-});
-
 var options = cli.parseArgs();
 
 
@@ -61,10 +56,7 @@ readFile(options.file, 'utf8', function (error, input) {
       process.exit(2);
     }
 
-    console.error(
-      options.trace && error.stack ||
-      error.message ||
-      String(error));
+    console.error(error.stack || error.message || String(error));
 
     process.exit(1);
   }
@@ -75,10 +67,7 @@ readFile(options.file, 'utf8', function (error, input) {
     output = md.render(input);
 
   } catch (error) {
-    console.error(
-      options.trace && error.stack ||
-      error.message ||
-      String(error));
+    console.error(error.stack || error.message || String(error));
 
     process.exit(1);
   }
