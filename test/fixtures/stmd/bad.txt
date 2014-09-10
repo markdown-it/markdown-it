@@ -4462,4 +4462,39 @@ error:
 <p>foo 
 baz</p>
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 444
+
+.
+* Foo
+* * *
+* Bar
+.
+<ul>
+<li>Foo</li>
+</ul>
+<hr />
+<ul>
+<li>Bar</li>
+</ul>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3274
+
+.
+- foo
+
+
+  bar
+- baz
+.
+<ul>
+<li>foo</li>
+</ul>
+<p>bar</p>
+<ul>
+<li>baz</li>
+</ul>
+.
 
