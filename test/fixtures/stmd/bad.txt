@@ -700,75 +700,6 @@ bbb     </p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2147
-
-.
->     foo
-    bar
-.
-<blockquote>
-<pre><code>foo
-</code></pre>
-</blockquote>
-<pre><code>bar
-</code></pre>
-.
-
-error:
-
-<blockquote>
-<pre><code>foo
-bar
-</code></pre>
-</blockquote>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2159
-
-.
-> ```
-foo
-```
-.
-<blockquote>
-<pre><code></code></pre>
-</blockquote>
-<p>foo</p>
-<pre><code></code></pre>
-.
-
-error:
-
-<blockquote>
-<pre><code>foo
-</code></pre>
-</blockquote>
-<pre><code></code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2236
-
-.
-> foo
->
-> bar
-.
-<blockquote>
-<p>foo</p>
-<p>bar</p>
-</blockquote>
-.
-
-error:
-
-<blockquote>
-<p>foo</p>
-</blockquote>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2414
 
 .
@@ -794,61 +725,11 @@ error:
 
 <ol>
 <li><p>A paragraph
-with two lines.</p></li>
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<p>&gt; A block quote.</p></li>
 </ol>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2540
-
-.
-- foo
-
-  bar
-
-- foo
-
-
-  bar
-
-- ```
-  foo
-
-
-  bar
-  ```
-.
-<ul>
-<li><p>foo</p>
-<p>bar</p></li>
-<li><p>foo</p></li>
-</ul>
-<p>bar</p>
-<ul>
-<li><pre><code>foo
-
-
-bar
-</code></pre></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li><p>foo</p>
-<p>bar</p></li>
-</ul>
-<ul>
-<li>foo</li>
-</ul>
-<p>bar</p>
-<ul>
-<li><pre><code>foo</code></pre>
-</li>
-</ul>
-<p>bar</p>
-<pre><code></code></pre>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -882,55 +763,8 @@ error:
 <li><p>foo</p>
 <pre><code>bar
 </code></pre>
-</li>
-</ol>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2612
-
-.
-- foo
-
-      bar
-.
-<ul>
-<li><p>foo</p>
-<pre><code>bar
-</code></pre></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li><p>foo</p>
-<pre><code>bar</code></pre>
-</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2626
-
-.
-  10.  foo
-
-           bar
-.
-<ol start="10">
-<li><p>foo</p>
-<pre><code>bar
-</code></pre></li>
-</ol>
-.
-
-error:
-
-<ol start="10">
-<li><p>foo</p>
-<pre><code>bar</code></pre>
-</li>
+<p>baz</p>
+<p>&gt; bam</p></li>
 </ol>
 
 
@@ -956,7 +790,10 @@ src line: 2656
 error:
 
 <ol>
-<li><p>indented code</p></li>
+<li><p>indented code</p>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre></li>
 </ol>
 
 
@@ -982,7 +819,10 @@ src line: 2675
 error:
 
 <ol>
-<li><p>indented code</p></li>
+<li><p>indented code</p>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre></li>
 </ol>
 
 
@@ -1012,7 +852,10 @@ error:
 
 <ol>
 <li><p>A paragraph
-with two lines.</p></li>
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<p>&gt; A block quote.</p></li>
 </ol>
 
 
@@ -1042,7 +885,10 @@ error:
 
 <ol>
 <li><p>A paragraph
-with two lines.</p></li>
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<p>&gt; A block quote.</p></li>
 </ol>
 
 
@@ -1072,7 +918,10 @@ error:
 
 <ol>
 <li><p>A paragraph
-with two lines.</p></li>
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<p>&gt; A block quote.</p></li>
 </ol>
 
 
@@ -1102,7 +951,10 @@ error:
 
 <ol>
 <li><p>A paragraph
-with two lines.</p></li>
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<p>&gt; A block quote.</p></li>
 </ol>
 
 
@@ -1123,17 +975,6 @@ continued here.</p>
 </blockquote>
 .
 
-error:
-
-<blockquote>
-<ol>
-<li><blockquote>
-Blockquote
-continued here.</blockquote></li>
-</ol>
-</blockquote>
-
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2880
 
@@ -1150,156 +991,6 @@ continued here.</p>
 </ol>
 </blockquote>
 .
-
-error:
-
-<blockquote>
-<ol>
-<li><blockquote>
-Blockquote
-continued here.</blockquote></li>
-</ol>
-</blockquote>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2904
-
-.
-- foo
-  - bar
-    - baz
-.
-<ul>
-<li>foo
-<ul>
-<li>bar
-<ul>
-<li>baz</li>
-</ul></li>
-</ul></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>foo<ul>
-<li>bar<ul>
-<li>baz</li>
-</ul></li>
-</ul></li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2936
-
-.
-10) foo
-    - bar
-.
-<ol start="10">
-<li>foo
-<ul>
-<li>bar</li>
-</ul></li>
-</ol>
-.
-
-error:
-
-<ol start="10">
-<li>foo<ul>
-<li>bar</li>
-</ul></li>
-</ol>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3222
-
-.
-- foo
-- bar
-+ baz
-.
-<ul>
-<li>foo</li>
-<li>bar</li>
-</ul>
-<ul>
-<li>baz</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>foo</li>
-<li>bar</li>
-<li>baz</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3236
-
-.
-1. foo
-2. bar
-3) baz
-.
-<ol>
-<li>foo</li>
-<li>bar</li>
-</ol>
-<ol start="3">
-<li>baz</li>
-</ol>
-.
-
-error:
-
-<ol>
-<li>foo</li>
-<li>bar</li>
-<li>baz</li>
-</ol>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3253
-
-.
-- foo
-
-- bar
-
-
-- baz
-.
-<ul>
-<li><p>foo</p></li>
-<li><p>bar</p></li>
-</ul>
-<ul>
-<li>baz</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>foo</li>
-</ul>
-<ul>
-<li>bar</li>
-</ul>
-<ul>
-<li>baz</li>
-</ul>
-
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3292
@@ -1328,102 +1019,14 @@ src line: 3292
 error:
 
 <ul>
-<li>foo<ul>
-<li>bar<ul>
+<li>foo
+<ul>
+<li><p>bar</p>
+<ul>
 <li>baz</li>
+</ul>
+<p>bim</p></li>
 </ul></li>
-</ul></li>
-</ul>
-<pre><code>  bim
-</code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3336
-
-.
--   foo
-
-    notcode
-
--   foo
-
-
-    code
-.
-<ul>
-<li><p>foo</p>
-<p>notcode</p></li>
-<li><p>foo</p></li>
-</ul>
-<pre><code>code
-</code></pre>
-.
-
-error:
-
-<ul>
-<li><p>foo</p>
-<p>notcode</p></li>
-</ul>
-<ul>
-<li>foo</li>
-</ul>
-<pre><code>code
-</code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3383
-
-.
-- a
-- b
-
-- c
-.
-<ul>
-<li><p>a</p></li>
-<li><p>b</p></li>
-<li><p>c</p></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a</li>
-<li>b</li>
-</ul>
-<ul>
-<li>c</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3398
-
-.
-* a
-*
-
-* c
-.
-<ul>
-<li><p>a</p></li>
-<li></li>
-<li><p>c</p></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a</li>
-<li></li>
-</ul>
-<ul>
-<li>c</li>
 </ul>
 
 
@@ -1455,39 +1058,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3446
-
-.
-- a
-- ```
-  b
-
-
-  ```
-- c
-.
-<ul>
-<li>a</li>
-<li><pre><code>b
-
-
-</code></pre></li>
-<li>c</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a</li>
-<li><pre><code>b</code></pre>
-</li>
-</ul>
-<pre><code>- c
-</code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3469
 
 .
@@ -1510,11 +1080,12 @@ src line: 3469
 error:
 
 <ul>
-<li>a<ul>
+<li>a
+<ul>
 <li><p>b</p>
 <p>c</p></li>
+<li><p>d</p></li>
 </ul></li>
-<li>d</li>
 </ul>
 
 
@@ -1573,33 +1144,8 @@ error:
 <li>a<blockquote>
 b</blockquote>
 <pre><code>c
-</code></pre>
-</li>
+</code></pre></li>
 <li>d</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3536
-
-.
-- a
-  - b
-.
-<ul>
-<li>a
-<ul>
-<li>b</li>
-</ul></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a<ul>
-<li>b</li>
-</ul></li>
 </ul>
 
 
@@ -1624,7 +1170,8 @@ src line: 3550
 error:
 
 <ul>
-<li>foo<ul>
+<li>foo
+<ul>
 <li>bar</li>
 </ul>
 baz</li>
@@ -1660,15 +1207,15 @@ src line: 3565
 error:
 
 <ul>
-<li>a<ul>
-<li>b</li>
-<li>c</li>
-</ul></li>
-</ul>
+<li>a
 <ul>
-<li>d<ul>
+<li><p>b</p></li>
+<li><p>c</p></li>
+<li><p>d</p>
+<ul>
 <li>e</li>
 <li>f</li>
+</ul></li>
 </ul></li>
 </ul>
 
@@ -4462,39 +4009,4 @@ error:
 <p>foo 
 baz</p>
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 444
-
-.
-* Foo
-* * *
-* Bar
-.
-<ul>
-<li>Foo</li>
-</ul>
-<hr />
-<ul>
-<li>Bar</li>
-</ul>
-.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3274
-
-.
-- foo
-
-
-  bar
-- baz
-.
-<ul>
-<li>foo</li>
-</ul>
-<p>bar</p>
-<ul>
-<li>baz</li>
-</ul>
-.
 
