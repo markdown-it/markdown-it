@@ -1043,6 +1043,198 @@ src line: 1338
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1373
+
+.
+<table>
+  <tr>
+    <td>
+           hi
+    </td>
+  </tr>
+</table>
+
+okay.
+.
+<table>
+  <tr>
+    <td>
+           hi
+    </td>
+  </tr>
+</table>
+<p>okay.</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1394
+
+.
+ <div>
+  *hello*
+         <foo><a>
+.
+ <div>
+  *hello*
+         <foo><a>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1422
+
+.
+<div></div>
+``` c
+int x = 33;
+```
+.
+<div></div>
+``` c
+int x = 33;
+```
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1436
+
+.
+<!-- Foo
+bar
+   baz -->
+.
+<!-- Foo
+bar
+   baz -->
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1448
+
+.
+<?php
+  echo 'foo'
+?>
+.
+<?php
+  echo 'foo'
+?>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1460
+
+.
+<![CDATA[
+function matchwo(a,b)
+{
+if (a < b && a < 0) then
+  {
+  return 1;
+  }
+else
+  {
+  return 0;
+  }
+}
+]]>
+.
+<![CDATA[
+function matchwo(a,b)
+{
+if (a < b && a < 0) then
+  {
+  return 1;
+  }
+else
+  {
+  return 0;
+  }
+}
+]]>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1492
+
+.
+  <!-- foo -->
+
+    <!-- foo -->
+.
+  <!-- foo -->
+<pre><code>&lt;!-- foo --&gt;
+</code></pre>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1505
+
+.
+Foo
+<div>
+bar
+</div>
+.
+<p>Foo</p>
+<div>
+bar
+</div>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1520
+
+.
+<div>
+bar
+</div>
+*foo*
+.
+<div>
+bar
+</div>
+*foo*
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1584
+
+.
+<div>
+*Emphasized* text.
+</div>
+.
+<div>
+*Emphasized* text.
+</div>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1605
+
+.
+<table>
+
+<tr>
+
+<td>
+Hi
+</td>
+
+</tr>
+
+</table>
+.
+<table>
+<tr>
+<td>
+Hi
+</td>
+</tr>
+</table>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 1701
 
 .
@@ -1757,6 +1949,44 @@ paragraph
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2656
+
+.
+1.     indented code
+
+   paragraph
+
+       more code
+.
+<ol>
+<li><pre><code>indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre></li>
+</ol>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2675
+
+.
+1.      indented code
+
+   paragraph
+
+       more code
+.
+<ol>
+<li><pre><code> indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre></li>
+</ol>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2698
 
 .
@@ -2155,6 +2385,46 @@ src line: 3446
 
 </code></pre></li>
 <li>c</li>
+</ul>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3489
+
+.
+* a
+  > b
+  >
+* c
+.
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote></li>
+<li>c</li>
+</ul>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3507
+
+.
+- a
+  > b
+  ```
+  c
+  ```
+- d
+.
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote>
+<pre><code>c
+</code></pre></li>
+<li>d</li>
 </ul>
 .
 

@@ -81,62 +81,6 @@ foo</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1373
-
-.
-<table>
-  <tr>
-    <td>
-           hi
-    </td>
-  </tr>
-</table>
-
-okay.
-.
-<table>
-  <tr>
-    <td>
-           hi
-    </td>
-  </tr>
-</table>
-<p>okay.</p>
-.
-
-error:
-
-<p>&lt;table&gt;
-&lt;tr&gt;
-&lt;td&gt;
-hi
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;</p>
-<p>okay.</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1394
-
-.
- <div>
-  *hello*
-         <foo><a>
-.
- <div>
-  *hello*
-         <foo><a>
-.
-
-error:
-
-<p>&lt;div&gt;
-*hello*
-&lt;foo&gt;&lt;a&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 1406
 
 .
@@ -153,187 +97,9 @@ src line: 1406
 
 error:
 
-<p>&lt;DIV CLASS=&quot;foo&quot;&gt;</p>
+<DIV CLASS="foo">
 <p>*Markdown*</p>
-<p>&lt;/DIV&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1422
-
-.
-<div></div>
-``` c
-int x = 33;
-```
-.
-<div></div>
-``` c
-int x = 33;
-```
-.
-
-error:
-
-<p>&lt;div&gt;&lt;/div&gt;</p>
-<pre><code class="language-c">int x = 33;
-</code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1436
-
-.
-<!-- Foo
-bar
-   baz -->
-.
-<!-- Foo
-bar
-   baz -->
-.
-
-error:
-
-<p>&lt;!-- Foo
-bar
-baz --&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1448
-
-.
-<?php
-  echo 'foo'
-?>
-.
-<?php
-  echo 'foo'
-?>
-.
-
-error:
-
-<p>&lt;?php
-echo 'foo'
-?&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1460
-
-.
-<![CDATA[
-function matchwo(a,b)
-{
-if (a < b && a < 0) then
-  {
-  return 1;
-  }
-else
-  {
-  return 0;
-  }
-}
-]]>
-.
-<![CDATA[
-function matchwo(a,b)
-{
-if (a < b && a < 0) then
-  {
-  return 1;
-  }
-else
-  {
-  return 0;
-  }
-}
-]]>
-.
-
-error:
-
-<p>&lt;![CDATA[
-function matchwo(a,b)
-{
-if (a &lt; b &amp;&amp; a &lt; 0) then
-{
-return 1;
-}
-else
-{
-return 0;
-}
-}
-]]&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1492
-
-.
-  <!-- foo -->
-
-    <!-- foo -->
-.
-  <!-- foo -->
-<pre><code>&lt;!-- foo --&gt;
-</code></pre>
-.
-
-error:
-
-<p>&lt;!-- foo --&gt;</p>
-<pre><code>&lt;!-- foo --&gt;
-</code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1505
-
-.
-Foo
-<div>
-bar
-</div>
-.
-<p>Foo</p>
-<div>
-bar
-</div>
-.
-
-error:
-
-<p>Foo
-&lt;div&gt;
-bar
-&lt;/div&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1520
-
-.
-<div>
-bar
-</div>
-*foo*
-.
-<div>
-bar
-</div>
-*foo*
-.
-
-error:
-
-<p>&lt;div&gt;
-bar
-&lt;/div&gt;
-*foo*</p>
+</DIV>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -370,65 +136,9 @@ src line: 1570
 
 error:
 
-<p>&lt;div&gt;</p>
+<div>
 <p>*Emphasized* text.</p>
-<p>&lt;/div&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1584
-
-.
-<div>
-*Emphasized* text.
 </div>
-.
-<div>
-*Emphasized* text.
-</div>
-.
-
-error:
-
-<p>&lt;div&gt;
-*Emphasized* text.
-&lt;/div&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1605
-
-.
-<table>
-
-<tr>
-
-<td>
-Hi
-</td>
-
-</tr>
-
-</table>
-.
-<table>
-<tr>
-<td>
-Hi
-</td>
-</tr>
-</table>
-.
-
-error:
-
-<p>&lt;table&gt;</p>
-<p>&lt;tr&gt;</p>
-<p>&lt;td&gt;
-Hi
-&lt;/td&gt;</p>
-<p>&lt;/tr&gt;</p>
-<p>&lt;/table&gt;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -501,9 +211,9 @@ src line: 1678
 
 error:
 
-<p>[Foo bar]:
-&lt;my url&gt;
-'title'</p>
+<p>[Foo bar]:</p>
+<my url>
+'title'
 <p>[Foo bar]</p>
 
 
@@ -728,7 +438,10 @@ error:
 with two lines.</p>
 <pre><code>indented code
 </code></pre>
-<p>&gt; A block quote.</p></li>
+<blockquote>
+<pre><code>&gt; A block quote.
+</code></pre>
+</blockquote></li>
 </ol>
 
 
@@ -764,65 +477,10 @@ error:
 <pre><code>bar
 </code></pre>
 <p>baz</p>
-<p>&gt; bam</p></li>
-</ol>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2656
-
-.
-1.     indented code
-
-   paragraph
-
-       more code
-.
-<ol>
-<li><pre><code>indented code
+<blockquote>
+<pre><code>&gt; bam
 </code></pre>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre></li>
-</ol>
-.
-
-error:
-
-<ol>
-<li><p>indented code</p>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre></li>
-</ol>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2675
-
-.
-1.      indented code
-
-   paragraph
-
-       more code
-.
-<ol>
-<li><pre><code> indented code
-</code></pre>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre></li>
-</ol>
-.
-
-error:
-
-<ol>
-<li><p>indented code</p>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre></li>
+</blockquote></li>
 </ol>
 
 
@@ -855,7 +513,10 @@ error:
 with two lines.</p>
 <pre><code>indented code
 </code></pre>
-<p>&gt; A block quote.</p></li>
+<blockquote>
+<pre><code> &gt; A block quote.
+</code></pre>
+</blockquote></li>
 </ol>
 
 
@@ -888,7 +549,10 @@ error:
 with two lines.</p>
 <pre><code>indented code
 </code></pre>
-<p>&gt; A block quote.</p></li>
+<blockquote>
+<pre><code>  &gt; A block quote.
+</code></pre>
+</blockquote></li>
 </ol>
 
 
@@ -921,7 +585,10 @@ error:
 with two lines.</p>
 <pre><code>indented code
 </code></pre>
-<p>&gt; A block quote.</p></li>
+<blockquote>
+<pre><code>   &gt; A block quote.
+</code></pre>
+</blockquote></li>
 </ol>
 
 
@@ -954,7 +621,10 @@ error:
 with two lines.</p>
 <pre><code>indented code
 </code></pre>
-<p>&gt; A block quote.</p></li>
+<blockquote>
+<pre><code>  &gt; A block quote.
+</code></pre>
+</blockquote></li>
 </ol>
 
 
@@ -1086,66 +756,6 @@ error:
 <p>c</p></li>
 <li><p>d</p></li>
 </ul></li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3489
-
-.
-* a
-  > b
-  >
-* c
-.
-<ul>
-<li>a
-<blockquote>
-<p>b</p>
-</blockquote></li>
-<li>c</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a<blockquote>
-b</blockquote></li>
-<li>c</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3507
-
-.
-- a
-  > b
-  ```
-  c
-  ```
-- d
-.
-<ul>
-<li>a
-<blockquote>
-<p>b</p>
-</blockquote>
-<pre><code>c
-</code></pre></li>
-<li>d</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a<blockquote>
-b</blockquote>
-<pre><code>c
-</code></pre></li>
-<li>d</li>
 </ul>
 
 
@@ -1304,7 +914,7 @@ src line: 3694
 
 error:
 
-<p>&lt;a href=&quot;/bar/)&quot;&gt;</p>
+<a href="/bar\/)">
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1423,7 +1033,7 @@ src line: 3791
 
 error:
 
-<p>&lt;a href=&quot;&amp;ouml;&amp;ouml;.html&quot;&gt;</p>
+<a href="&ouml;&ouml;.html">
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1646,7 +1256,7 @@ src line: 3954
 
 error:
 
-<p>&lt;a href=&quot;`&quot;&gt;`</p>
+<a href="`">`
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3653,7 +3263,7 @@ src line: 5627
 
 error:
 
-<p>&lt;a&gt;&lt;bab&gt;&lt;c2c&gt;</p>
+<a><bab><c2c>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3667,7 +3277,7 @@ src line: 5635
 
 error:
 
-<p>&lt;a/&gt;&lt;b2/&gt;</p>
+<a/><b2/>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3683,8 +3293,8 @@ data="foo" ></p>
 
 error:
 
-<p>&lt;a  /&gt;&lt;b2
-data=&quot;foo&quot; &gt;</p>
+<a  /><b2
+data="foo" >
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3700,8 +3310,8 @@ _boolean zoop:33=zoop:33 /></p>
 
 error:
 
-<p>&lt;a foo=&quot;bar&quot; bam = 'baz &lt;em&gt;&quot;&lt;/em&gt;'
-_boolean zoop:33=zoop:33 /&gt;</p>
+<a foo="bar" bam = 'baz <em>"</em>'
+_boolean zoop:33=zoop:33 />
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3717,8 +3327,8 @@ src line: 5705
 
 error:
 
-<p>&lt;/a&gt;
-&lt;/foo &gt;</p>
+</a>
+</foo >
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3791,7 +3401,7 @@ src line: 5763
 
 error:
 
-<p>&lt;a href=&quot;&amp;ouml;&quot;&gt;</p>
+<a href="&ouml;">
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3805,7 +3415,7 @@ src line: 5771
 
 error:
 
-<p>&lt;a href=&quot;*&quot;&gt;</p>
+<a href="\*">
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3972,8 +3582,8 @@ bar"></p>
 
 error:
 
-<p>&lt;a href=&quot;foo  
-bar&quot;&gt;</p>
+<a href="foo  
+bar">
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3989,8 +3599,8 @@ bar"></p>
 
 error:
 
-<p>&lt;a href=&quot;foo\
-bar&quot;&gt;</p>
+<a href="foo\
+bar">
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
