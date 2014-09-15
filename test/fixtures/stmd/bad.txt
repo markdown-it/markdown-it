@@ -59,8 +59,7 @@ aaa</p>
 
 error:
 
-<p>``` ```
-aaa</p>
+<p><code></code>aaa</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,8 +75,7 @@ foo</p>
 
 error:
 
-<p>``` aa ```
-foo</p>
+<p><code>aa</code>foo</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -694,20 +692,6 @@ baz</li>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3594
-
-.
-`hi`lo`
-.
-<p><code>hi</code>lo`</p>
-.
-
-error:
-
-<p>`hi`lo`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3647
 
 .
@@ -719,34 +703,6 @@ src line: 3647
 error:
 
 <p>\*emphasis*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3666
-
-.
-`` \[\` ``
-.
-<p><code>\[\`</code></p>
-.
-
-error:
-
-<p>`` [` ``</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3688
-
-.
-<http://google.com?find=\*>
-.
-<p><a href="http://google.com?find=\*">http://google.com?find=\*</a></p>
-.
-
-error:
-
-<p>&lt;http://google.com?find=*&gt;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -876,138 +832,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3822
-
-.
-`f&ouml;&ouml;`
-.
-<p><code>f&amp;ouml;&amp;ouml;</code></p>
-.
-
-error:
-
-<p>`f&ouml;&ouml;`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3849
-
-.
-`foo`
-.
-<p><code>foo</code></p>
-.
-
-error:
-
-<p>`foo`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3858
-
-.
-`` foo ` bar  ``
-.
-<p><code>foo ` bar</code></p>
-.
-
-error:
-
-<p>`` foo ` bar  ``</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3867
-
-.
-` `` `
-.
-<p><code>``</code></p>
-.
-
-error:
-
-<p>` `` `</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3875
-
-.
-``
-foo
-``
-.
-<p><code>foo</code></p>
-.
-
-error:
-
-<p>``
-foo
-``</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3886
-
-.
-`foo   bar
-  baz`
-.
-<p><code>foo bar baz</code></p>
-.
-
-error:
-
-<p>`foo   bar
-baz`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3906
-
-.
-`foo `` bar`
-.
-<p><code>foo `` bar</code></p>
-.
-
-error:
-
-<p>`foo `` bar`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3915
-
-.
-`foo\`bar`
-.
-<p><code>foo\</code>bar`</p>
-.
-
-error:
-
-<p>`foo`bar`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3930
-
-.
-*foo`*`
-.
-<p>*foo<code>*</code></p>
-.
-
-error:
-
-<p>*foo`*`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3938
 
 .
@@ -1018,21 +842,7 @@ src line: 3938
 
 error:
 
-<p>[not a `link](/foo`)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3946
-
-.
-<http://foo.bar.`baz>`
-.
-<p><a href="http://foo.bar.`baz">http://foo.bar.`baz</a>`</p>
-.
-
-error:
-
-<p>&lt;http://foo.bar.`baz&gt;`</p>
+<p>[not a<code>link](/foo</code>)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1296,7 +1106,7 @@ src line: 4208
 
 error:
 
-<p>*a `*`*</p>
+<p>*a<code>*</code>*</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1310,35 +1120,7 @@ _a `_`_
 
 error:
 
-<p>_a `_`_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4220
-
-.
-**a<http://foo.bar?q=**>
-.
-<p>**a<a href="http://foo.bar?q=**">http://foo.bar?q=**</a></p>
-.
-
-error:
-
-<p>**a&lt;http://foo.bar?q=**&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4226
-
-.
-__a<http://foo.bar?q=__>
-.
-<p>__a<a href="http://foo.bar?q=__">http://foo.bar?q=__</a></p>
-.
-
-error:
-
-<p>__a&lt;http://foo.bar?q=__&gt;</p>
+<p>_a<code>_</code>_</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1366,7 +1148,7 @@ __this is a double underscore (`__`)__
 
 error:
 
-<p>__this is a double underscore (`__`)__</p>
+<p>__this is a double underscore (<code>__</code>)__</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2501,7 +2283,7 @@ src line: 5138
 error:
 
 <p>[foo`]: /url</p>
-<p>[foo`]`</p>
+<p>[foo<code>]</code></p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2959,48 +2741,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5444
-
-.
-<http://foo.bar.baz>
-.
-<p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
-.
-
-error:
-
-<p>&lt;http://foo.bar.baz&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5450
-
-.
-<http://foo.bar.baz?q=hello&id=22&boolean>
-.
-<p><a href="http://foo.bar.baz?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>
-.
-
-error:
-
-<p>&lt;http://foo.bar.baz?q=hello&amp;id=22&amp;boolean&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5456
-
-.
-<irc://foo.bar:2233/baz>
-.
-<p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
-.
-
-error:
-
-<p>&lt;irc://foo.bar:2233/baz&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5464
 
 .
@@ -3012,34 +2752,6 @@ src line: 5464
 error:
 
 <p>&lt;MAILTO:FOO@BAR.BAZ&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5493
-
-.
-<foo@bar.baz.com>
-.
-<p><a href="mailto:foo@bar.baz.com">foo@bar.baz.com</a></p>
-.
-
-error:
-
-<p>&lt;foo@bar.baz.com&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5499
-
-.
-<foo+special@Bar.baz-bar0.com>
-.
-<p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
-.
-
-error:
-
-<p>&lt;foo+special@Bar.baz-bar0.com&gt;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3240,38 +2952,6 @@ error:
 
 <p>*foo<br />
 bar*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5857
-
-.
-`code  
-span`
-.
-<p><code>code span</code></p>
-.
-
-error:
-
-<p>`code<br />
-span`</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5864
-
-.
-`code\
-span`
-.
-<p><code>code\ span</code></p>
-.
-
-error:
-
-<p>`code<br />
-span`</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
