@@ -2669,6 +2669,18 @@ src line: 3688
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3718
+
+.
+``` foo\+bar
+foo
+```
+.
+<pre><code class="language-foo+bar">foo
+</code></pre>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3736
 
 .
@@ -2720,6 +2732,18 @@ src line: 3781
 &MadeUpEntity;
 .
 <p>&MadeUpEntity;</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3811
+
+.
+``` f&ouml;&ouml;
+foo
+```
+.
+<pre><code class="language-f&ouml;&ouml;">foo
+</code></pre>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

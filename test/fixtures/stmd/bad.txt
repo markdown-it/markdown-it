@@ -719,24 +719,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3718
-
-.
-``` foo\+bar
-foo
-```
-.
-<pre><code class="language-foo+bar">foo
-</code></pre>
-.
-
-error:
-
-<pre><code class="language-foo\+bar">foo
-</code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3791
 
 .
@@ -779,24 +761,6 @@ error:
 
 <p>[foo]</p>
 <p>[foo]: /f&ouml;&ouml; &quot;f&ouml;&ouml;&quot;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3811
-
-.
-``` f&ouml;&ouml;
-foo
-```
-.
-<pre><code class="language-f&ouml;&ouml;">foo
-</code></pre>
-.
-
-error:
-
-<pre><code class="language-f&amp;ouml;&amp;ouml;">foo
-</code></pre>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
