@@ -173,9 +173,9 @@ src line: 1660
 
 error:
 
-<p>[foo]: 
-/url  
-'the title'  </p>
+<p>[foo]:
+/url<br />
+'the title'</p>
 <p>[foo]</p>
 
 
@@ -393,23 +393,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1952
-
-.
-aaa     
-bbb     
-.
-<p>aaa<br />
-bbb</p>
-.
-
-error:
-
-<p>aaa     
-bbb     </p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 2414
 
 .
@@ -434,13 +417,11 @@ with two lines.</p>
 error:
 
 <ol>
-<li><p>A paragraph
-with two lines.</p>
-<pre><code>indented code
+<li>A paragraph
+with two lines.<pre><code>indented code
 </code></pre>
 <blockquote>
-<pre><code>&gt; A block quote.
-</code></pre>
+<p>A block quote.</p>
 </blockquote></li>
 </ol>
 
@@ -473,13 +454,11 @@ src line: 2574
 error:
 
 <ol>
-<li><p>foo</p>
-<pre><code>bar
+<li>foo<pre><code>bar
 </code></pre>
-<p>baz</p>
+baz
 <blockquote>
-<pre><code>&gt; bam
-</code></pre>
+<p>bam</p>
 </blockquote></li>
 </ol>
 
@@ -509,13 +488,11 @@ with two lines.</p>
 error:
 
 <ol>
-<li><p>A paragraph
-with two lines.</p>
-<pre><code>indented code
+<li>A paragraph
+with two lines.<pre><code>indented code
 </code></pre>
 <blockquote>
-<pre><code> &gt; A block quote.
-</code></pre>
+<p>A block quote.</p>
 </blockquote></li>
 </ol>
 
@@ -545,13 +522,11 @@ with two lines.</p>
 error:
 
 <ol>
-<li><p>A paragraph
-with two lines.</p>
-<pre><code>indented code
+<li>A paragraph
+with two lines.<pre><code>indented code
 </code></pre>
 <blockquote>
-<pre><code>  &gt; A block quote.
-</code></pre>
+<p>A block quote.</p>
 </blockquote></li>
 </ol>
 
@@ -581,13 +556,11 @@ with two lines.</p>
 error:
 
 <ol>
-<li><p>A paragraph
-with two lines.</p>
-<pre><code>indented code
+<li>A paragraph
+with two lines.<pre><code>indented code
 </code></pre>
 <blockquote>
-<pre><code>   &gt; A block quote.
-</code></pre>
+<p>A block quote.</p>
 </blockquote></li>
 </ol>
 
@@ -617,50 +590,14 @@ with two lines.</p>
 error:
 
 <ol>
-<li><p>A paragraph
-with two lines.</p>
-<pre><code>indented code
+<li>A paragraph
+with two lines.<pre><code>indented code
 </code></pre>
 <blockquote>
-<pre><code>  &gt; A block quote.
-</code></pre>
+<p>A block quote.</p>
 </blockquote></li>
 </ol>
 
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2866
-
-.
-> 1. > Blockquote
-continued here.
-.
-<blockquote>
-<ol>
-<li><blockquote>
-<p>Blockquote
-continued here.</p>
-</blockquote></li>
-</ol>
-</blockquote>
-.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2880
-
-.
-> 1. > Blockquote
-> continued here.
-.
-<blockquote>
-<ol>
-<li><blockquote>
-<p>Blockquote
-continued here.</p>
-</blockquote></li>
-</ol>
-</blockquote>
-.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3292
@@ -728,38 +665,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3469
-
-.
-- a
-  - b
-
-    c
-- d
-.
-<ul>
-<li>a
-<ul>
-<li><p>b</p>
-<p>c</p></li>
-</ul></li>
-<li>d</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a
-<ul>
-<li><p>b</p>
-<p>c</p></li>
-<li><p>d</p></li>
-</ul></li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3550
 
 .
@@ -789,48 +694,6 @@ baz</li>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3565
-
-.
-- a
-  - b
-  - c
-
-- d
-  - e
-  - f
-.
-<ul>
-<li><p>a</p>
-<ul>
-<li>b</li>
-<li>c</li>
-</ul></li>
-<li><p>d</p>
-<ul>
-<li>e</li>
-<li>f</li>
-</ul></li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>a
-<ul>
-<li><p>b</p></li>
-<li><p>c</p></li>
-<li><p>d</p>
-<ul>
-<li>e</li>
-<li>f</li>
-</ul></li>
-</ul></li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3594
 
 .
@@ -856,23 +719,6 @@ src line: 3647
 error:
 
 <p>\*emphasis*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3655
-
-.
-foo\
-bar
-.
-<p>foo<br />
-bar</p>
-.
-
-error:
-
-<p>foo\
-bar</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -967,62 +813,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3736
-
-.
-&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;
-.
-<p>&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;</p>
-.
-
-error:
-
-<p>&amp;nbsp; &amp;amp; &amp;copy; &amp;AElig; &amp;Dcaron; &amp;frac34; &amp;HilbertSpace; &amp;DifferentialD; &amp;ClockwiseContourIntegral;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3745
-
-.
-&#1; &#35; &#1234; &#992; &#98765432;
-.
-<p>&#1; &#35; &#1234; &#992; &#98765432;</p>
-.
-
-error:
-
-<p>&amp;#1; &amp;#35; &amp;#1234; &amp;#992; &amp;#98765432;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3755
-
-.
-&#x1; &#X22; &#XD06; &#xcab;
-.
-<p>&#x1; &#X22; &#XD06; &#xcab;</p>
-.
-
-error:
-
-<p>&amp;#x1; &amp;#X22; &amp;#XD06; &amp;#xcab;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3781
-
-.
-&MadeUpEntity;
-.
-<p>&MadeUpEntity;</p>
-.
-
-error:
-
-<p>&amp;MadeUpEntity;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3791
 
 .
@@ -1047,7 +837,7 @@ src line: 3797
 
 error:
 
-<p>[foo](/f&amp;ouml;&amp;ouml; &quot;f&amp;ouml;&amp;ouml;&quot;)</p>
+<p>[foo](/f&ouml;&ouml; &quot;f&ouml;&ouml;&quot;)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1064,7 +854,7 @@ src line: 3803
 error:
 
 <p>[foo]</p>
-<p>[foo]: /f&amp;ouml;&amp;ouml; &quot;f&amp;ouml;&amp;ouml;&quot;</p>
+<p>[foo]: /f&ouml;&ouml; &quot;f&ouml;&ouml;&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1096,7 +886,7 @@ src line: 3822
 
 error:
 
-<p>`f&amp;ouml;&amp;ouml;`</p>
+<p>`f&ouml;&ouml;`</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2270,7 +2060,7 @@ src line: 4811
 
 error:
 
-<p>[link](foo%20b&amp;auml;)</p>
+<p>[link](foo%20b&auml;)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2318,7 +2108,7 @@ src line: 4841
 
 error:
 
-<p>[link](/url &quot;title &quot;&amp;quot;&quot;)</p>
+<p>[link](/url &quot;title &quot;&quot;&quot;)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2590,7 +2380,7 @@ src line: 5060
 
 error:
 
-<p>[foo] 
+<p>[foo]
 []</p>
 <p>[foo]: /url &quot;title&quot;</p>
 
@@ -3061,7 +2851,7 @@ src line: 5332
 
 error:
 
-<p>![foo] 
+<p>![foo]
 []</p>
 <p>[foo]: /url &quot;title&quot;</p>
 
@@ -3419,91 +3209,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5789
-
-.
-foo  
-baz
-.
-<p>foo<br />
-baz</p>
-.
-
-error:
-
-<p>foo  
-baz</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5800
-
-.
-foo\
-baz
-.
-<p>foo<br />
-baz</p>
-.
-
-error:
-
-<p>foo\
-baz</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5810
-
-.
-foo       
-baz
-.
-<p>foo<br />
-baz</p>
-.
-
-error:
-
-<p>foo       
-baz</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5820
-
-.
-foo  
-     bar
-.
-<p>foo<br />
-bar</p>
-.
-
-error:
-
-<p>foo  
-bar</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5828
-
-.
-foo\
-     bar
-.
-<p>foo<br />
-bar</p>
-.
-
-error:
-
-<p>foo\
-bar</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5839
 
 .
@@ -3516,7 +3221,7 @@ bar</em></p>
 
 error:
 
-<p>*foo  
+<p>*foo<br />
 bar*</p>
 
 
@@ -3533,7 +3238,7 @@ bar</em></p>
 
 error:
 
-<p>*foo\
+<p>*foo<br />
 bar*</p>
 
 
@@ -3549,7 +3254,7 @@ span`
 
 error:
 
-<p>`code  
+<p>`code<br />
 span`</p>
 
 
@@ -3565,7 +3270,7 @@ span`
 
 error:
 
-<p>`code\
+<p>`code<br />
 span`</p>
 
 
@@ -3601,22 +3306,5 @@ error:
 
 <a href="foo\
 bar">
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5908
-
-.
-foo 
- baz
-.
-<p>foo
-baz</p>
-.
-
-error:
-
-<p>foo 
-baz</p>
 
 
