@@ -60,7 +60,7 @@ readFile(options.spec, 'utf8', function (error, input) {
       markdown = new Remarkable({
         html: true,
         xhtml: true,
-        codeLangPrefix: 'language-'
+        langprefix: 'language-'
       });
 
   if (error) {

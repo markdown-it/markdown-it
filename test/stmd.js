@@ -13,7 +13,7 @@ describe('stmd', function () {
   var md = new Remarked({
     html: true,
     xhtml: true,
-    codeLangPrefix: 'language-'
+    langprefix: 'language-'
   });
 
   utils.addSpecTests(path.join(__dirname, 'fixtures/stmd/good.txt'), md);

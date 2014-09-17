@@ -10,7 +10,9 @@ var Remarked = require('../');
 
 
 describe('Default', function () {
-  var md = new Remarked();
+  var md = new Remarked({
+    langprefix: ''
+  });
 
   utils.addTests(path.join(__dirname, 'fixtures/remarkable'), md);
 });

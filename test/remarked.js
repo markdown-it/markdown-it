@@ -14,7 +14,7 @@ describe('remarked', function () {
 
   // Set options, to give output more close to remarked
   md.set({
-    codeLangPrefix: 'lang-'
+    langprefix: 'lang-'
   });
 
   utils.addTests(path.join(__dirname, 'fixtures/remarked_ok'), md);
