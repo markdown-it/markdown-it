@@ -11,6 +11,7 @@ var Remarked = require('../');
 
 describe('stmd', function () {
   var md = new Remarked({
+    html: true,
     xhtml: true,
     codeLangPrefix: 'language-'
   });

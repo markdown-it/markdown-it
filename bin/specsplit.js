@@ -58,7 +58,8 @@ function readFile(filename, encoding, callback) {
 readFile(options.spec, 'utf8', function (error, input) {
   var good = [], bad = [],
       markdown = new Remarkable({
-        xhtml: true,                  // write <hr /> instead of <hr> and so on
+        html: true,
+        xhtml: true,
         codeLangPrefix: 'language-'
       });
 
