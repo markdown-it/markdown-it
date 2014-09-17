@@ -61,7 +61,10 @@ readFile(options.file, 'utf8', function (error, input) {
     process.exit(1);
   }
 
-  md = new Remarkable();
+  md = new Remarkable({
+    html: true,
+    xhtml: true
+  });
 
   try {
     output = md.render(input);

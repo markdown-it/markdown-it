@@ -63,26 +63,9 @@ src line: 1406
 
 error:
 
-<DIV CLASS="foo">
+<p><DIV CLASS="foo"></p>
 <p>*Markdown*</p>
-</DIV>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1534
-
-.
-<div class
-foo
-.
-<div class
-foo
-.
-
-error:
-
-<p>&lt;div class
-foo</p>
+<p></DIV></p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,9 +160,9 @@ src line: 1678
 
 error:
 
-<p>[Foo bar]:</p>
+<p>[Foo bar]:
 <my url>
-'title'
+'title'</p>
 <p>[Foo bar]</p>
 
 
@@ -674,20 +657,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3694
-
-.
-<a href="/bar\/)">
-.
-<p><a href="/bar\/)"></p>
-.
-
-error:
-
-<a href="/bar\/)">
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3704
 
 .
@@ -719,20 +688,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3791
-
-.
-<a href="&ouml;&ouml;.html">
-.
-<p><a href="&ouml;&ouml;.html"></p>
-.
-
-error:
-
-<a href="&ouml;&ouml;.html">
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3797
 
 .
@@ -761,20 +716,6 @@ error:
 
 <p>[foo]</p>
 <p>[foo]: /f&ouml;&ouml; &quot;f&ouml;&ouml;&quot;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3954
-
-.
-<a href="`">`
-.
-<p><a href="`">`</p>
-.
-
-error:
-
-<a href="`">`
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -983,34 +924,6 @@ _foo [bar_](/url)
 error:
 
 <p>_foo [bar_](/url)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4196
-
-.
-**<a href="**">
-.
-<p>**<a href="**"></p>
-.
-
-error:
-
-<p>**&lt;a href=&quot;**&quot;&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4202
-
-.
-__<a href="__">
-.
-<p>__<a href="__"></p>
-.
-
-error:
-
-<p>__&lt;a href=&quot;__&quot;&gt;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1842,20 +1755,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4898
-
-.
-[foo <bar attr="](baz)">
-.
-<p>[foo <bar attr="](baz)"></p>
-.
-
-error:
-
-<p>[foo &lt;bar attr=&quot;](baz)&quot;&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 4927
 
 .
@@ -2435,7 +2334,7 @@ src line: 5271
 
 error:
 
-<p>![foo](&lt;url&gt;)</p>
+<p>![foo](<url>)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2659,186 +2558,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5464
-
-.
-<MAILTO:FOO@BAR.BAZ>
-.
-<p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
-.
-
-error:
-
-<p>&lt;MAILTO:FOO@BAR.BAZ&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5627
-
-.
-<a><bab><c2c>
-.
-<p><a><bab><c2c></p>
-.
-
-error:
-
-<a><bab><c2c>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5635
-
-.
-<a/><b2/>
-.
-<p><a/><b2/></p>
-.
-
-error:
-
-<a/><b2/>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5643
-
-.
-<a  /><b2
-data="foo" >
-.
-<p><a  /><b2
-data="foo" ></p>
-.
-
-error:
-
-<a  /><b2
-data="foo" >
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5653
-
-.
-<a foo="bar" bam = 'baz <em>"</em>'
-_boolean zoop:33=zoop:33 />
-.
-<p><a foo="bar" bam = 'baz <em>"</em>'
-_boolean zoop:33=zoop:33 /></p>
-.
-
-error:
-
-<a foo="bar" bam = 'baz <em>"</em>'
-_boolean zoop:33=zoop:33 />
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5705
-
-.
-</a>
-</foo >
-.
-<p></a>
-</foo ></p>
-.
-
-error:
-
-</a>
-</foo >
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5723
-
-.
-foo <!-- this is a
-comment - with hyphen -->
-.
-<p>foo <!-- this is a
-comment - with hyphen --></p>
-.
-
-error:
-
-<p>foo &lt;!-- this is a
-comment - with hyphen --&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5739
-
-.
-foo <?php echo $a; ?>
-.
-<p>foo <?php echo $a; ?></p>
-.
-
-error:
-
-<p>foo &lt;?php echo $a; ?&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5747
-
-.
-foo <!ELEMENT br EMPTY>
-.
-<p>foo <!ELEMENT br EMPTY></p>
-.
-
-error:
-
-<p>foo &lt;!ELEMENT br EMPTY&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5755
-
-.
-foo <![CDATA[>&<]]>
-.
-<p>foo <![CDATA[>&<]]></p>
-.
-
-error:
-
-<p>foo &lt;![CDATA[&gt;&amp;&lt;]]&gt;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5763
-
-.
-<a href="&ouml;">
-.
-<p><a href="&ouml;"></p>
-.
-
-error:
-
-<a href="&ouml;">
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5771
-
-.
-<a href="\*">
-.
-<p><a href="\*"></p>
-.
-
-error:
-
-<a href="\*">
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5839
 
 .
@@ -2870,39 +2589,5 @@ error:
 
 <p>*foo<br />
 bar*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5873
-
-.
-<a href="foo  
-bar">
-.
-<p><a href="foo  
-bar"></p>
-.
-
-error:
-
-<a href="foo  
-bar">
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5881
-
-.
-<a href="foo\
-bar">
-.
-<p><a href="foo\
-bar"></p>
-.
-
-error:
-
-<a href="foo\
-bar">
 
 
