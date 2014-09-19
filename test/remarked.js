@@ -14,6 +14,7 @@ describe('remarked', function () {
 
   // Set options, to give output more close to remarked
   md.set({
+    breaks: false,
     langprefix: 'lang-'
   });
 

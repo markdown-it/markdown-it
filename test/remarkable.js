@@ -11,6 +11,7 @@ var Remarked = require('../');
 
 describe('Default', function () {
   var md = new Remarked({
+    breaks: false,
     langprefix: ''
   });
 

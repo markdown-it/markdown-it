@@ -34,7 +34,12 @@ Usage
 
 ```javascript
 var Remarkable = require('remarkable')();
-var md = new Remarkable(/* options */);
+var md = new Remarkable({
+  html: false,
+  xhtml: false,
+  breaks: true,
+  langprefix: 'language-'
+});
 
 console.log(md.parse('# Remarkable rulezz!'));
 //=> <h1># Remarkable rulezz!</h1>
@@ -47,13 +52,10 @@ var Remarkable = require('remarkable');
 var md = new Remarkable();
 
 md.set({
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: true,
-  smartLists: true,
-  smartypants: false
+  html: false,
+  xhtml: false,
+  breaks: true,
+  langprefix: 'language-'
 });
 ```
 

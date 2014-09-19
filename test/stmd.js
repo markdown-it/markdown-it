@@ -13,6 +13,7 @@ describe('stmd', function () {
   var md = new Remarked({
     html: true,
     xhtml: true,
+    breaks: false,
     langprefix: 'language-'
   });
 
