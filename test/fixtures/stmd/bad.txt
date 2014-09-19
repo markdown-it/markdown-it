@@ -1,52 +1,4 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 395
-
-.
- *-*
-.
-<p><em>-</em></p>
-.
-
-error:
-
-<p>*-*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 531
-
-.
-# foo *bar* \*baz\*
-.
-<h1>foo <em>bar</em> *baz*</h1>
-.
-
-error:
-
-<h1>foo *bar* *baz*</h1>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 680
-
-.
-Foo *bar*
-=========
-
-Foo *bar*
----------
-.
-<h1>Foo <em>bar</em></h1>
-<h2>Foo <em>bar</em></h2>
-.
-
-error:
-
-<h1>Foo *bar*</h1>
-<h2>Foo *bar*</h2>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 1406
 
 .
@@ -64,30 +16,8 @@ src line: 1406
 error:
 
 <p><DIV CLASS="foo"></p>
-<p>*Markdown*</p>
+<p><em>Markdown</em></p>
 <p></DIV></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1570
-
-.
-<div>
-
-*Emphasized* text.
-
-</div>
-.
-<div>
-<p><em>Emphasized</em> text.</p>
-</div>
-.
-
-error:
-
-<div>
-<p>*Emphasized* text.</p>
-</div>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -398,20 +328,6 @@ baz</li>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3647
-
-.
-\\*emphasis*
-.
-<p>\<em>emphasis</em></p>
-.
-
-error:
-
-<p>\*emphasis*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3704
 
 .
@@ -474,130 +390,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4095
-
-.
-*foo bar*
-.
-<p><em>foo bar</em></p>
-.
-
-error:
-
-<p>*foo bar*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4101
-
-.
-_foo bar_
-.
-<p><em>foo bar</em></p>
-.
-
-error:
-
-<p>_foo bar_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4109
-
-.
-**foo bar**
-.
-<p><strong>foo bar</strong></p>
-.
-
-error:
-
-<p>**foo bar**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4115
-
-.
-__foo bar__
-.
-<p><strong>foo bar</strong></p>
-.
-
-error:
-
-<p>__foo bar__</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4123
-
-.
-*foo
-bar*
-.
-<p><em>foo
-bar</em></p>
-.
-
-error:
-
-<p>*foo
-bar*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4131
-
-.
-_foo
-bar_
-.
-<p><em>foo
-bar</em></p>
-.
-
-error:
-
-<p>_foo
-bar_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4139
-
-.
-**foo
-bar**
-.
-<p><strong>foo
-bar</strong></p>
-.
-
-error:
-
-<p>**foo
-bar**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4147
-
-.
-__foo
-bar__
-.
-<p><strong>foo
-bar</strong></p>
-.
-
-error:
-
-<p>__foo
-bar__</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 4157
 
 .
@@ -608,7 +400,7 @@ src line: 4157
 
 error:
 
-<p>*foo [bar](/url)*</p>
+<p><em>foo [bar](/url)</em></p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -622,7 +414,7 @@ _foo [bar](/url)_
 
 error:
 
-<p>_foo [bar](/url)_</p>
+<p><em>foo [bar](/url)</em></p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -636,7 +428,7 @@ src line: 4169
 
 error:
 
-<p>**foo [bar](/url)**</p>
+<p><strong>foo [bar](/url)</strong></p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -650,7 +442,7 @@ __foo [bar](/url)__
 
 error:
 
-<p>__foo [bar](/url)__</p>
+<p><strong>foo [bar](/url)</strong></p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -664,7 +456,7 @@ src line: 4184
 
 error:
 
-<p>*foo [bar*](/url)</p>
+<p><em>foo [bar</em>](/url)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -678,35 +470,7 @@ _foo [bar_](/url)
 
 error:
 
-<p>_foo [bar_](/url)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4208
-
-.
-*a `*`*
-.
-<p><em>a <code>*</code></em></p>
-.
-
-error:
-
-<p>*a <code>*</code>*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4214
-
-.
-_a `_`_
-.
-<p><em>a <code>_</code></em></p>
-.
-
-error:
-
-<p>_a <code>_</code>_</p>
+<p><em>foo [bar</em>](/url)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -721,574 +485,6 @@ src line: 4325
 error:
 
 <p>*here is a **</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4331
-
-.
-__this is a double underscore (`__`)__
-.
-<p><strong>this is a double underscore (<code>__</code>)</strong></p>
-.
-
-error:
-
-<p>__this is a double underscore (<code>__</code>)__</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4339
-
-.
-foo*bar*baz
-.
-<p>foo<em>bar</em>baz</p>
-.
-
-error:
-
-<p>foo*bar*baz</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4357
-
-.
-_foo_bar_baz_
-.
-<p><em>foo_bar_baz</em></p>
-.
-
-error:
-
-<p>_foo_bar_baz_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4363
-
-.
-11*15*32
-.
-<p>11<em>15</em>32</p>
-.
-
-error:
-
-<p>11*15*32</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4378
-
-.
-_foo_bar_baz_
-.
-<p><em>foo_bar_baz</em></p>
-.
-
-error:
-
-<p>_foo_bar_baz_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4384
-
-.
-__foo__bar__baz__
-.
-<p><strong>foo__bar__baz</strong></p>
-.
-
-error:
-
-<p>__foo__bar__baz__</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4392
-
-.
-***foo bar***
-.
-<p><strong><em>foo bar</em></strong></p>
-.
-
-error:
-
-<p>***foo bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4398
-
-.
-___foo bar___
-.
-<p><strong><em>foo bar</em></strong></p>
-.
-
-error:
-
-<p>___foo bar___</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4404
-
-.
-***foo** bar*
-.
-<p><em><strong>foo</strong> bar</em></p>
-.
-
-error:
-
-<p>***foo** bar*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4410
-
-.
-___foo__ bar_
-.
-<p><em><strong>foo</strong> bar</em></p>
-.
-
-error:
-
-<p>___foo__ bar_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4416
-
-.
-***foo* bar**
-.
-<p><strong><em>foo</em> bar</strong></p>
-.
-
-error:
-
-<p>***foo* bar**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4422
-
-.
-___foo_ bar__
-.
-<p><strong><em>foo</em> bar</strong></p>
-.
-
-error:
-
-<p>___foo_ bar__</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4428
-
-.
-*foo **bar***
-.
-<p><em>foo <strong>bar</strong></em></p>
-.
-
-error:
-
-<p>*foo **bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4434
-
-.
-_foo __bar___
-.
-<p><em>foo <strong>bar</strong></em></p>
-.
-
-error:
-
-<p>_foo __bar___</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4440
-
-.
-**foo *bar***
-.
-<p><strong>foo <em>bar</em></strong></p>
-.
-
-error:
-
-<p>**foo *bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4446
-
-.
-__foo _bar___
-.
-<p><strong>foo <em>bar</em></strong></p>
-.
-
-error:
-
-<p>__foo _bar___</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4452
-
-.
-*foo **bar***
-.
-<p><em>foo <strong>bar</strong></em></p>
-.
-
-error:
-
-<p>*foo **bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4458
-
-.
-_foo __bar___
-.
-<p><em>foo <strong>bar</strong></em></p>
-.
-
-error:
-
-<p>_foo __bar___</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4464
-
-.
-*foo *bar* baz*
-.
-<p><em>foo <em>bar</em> baz</em></p>
-.
-
-error:
-
-<p>*foo *bar* baz*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4470
-
-.
-_foo _bar_ baz_
-.
-<p><em>foo <em>bar</em> baz</em></p>
-.
-
-error:
-
-<p>_foo _bar_ baz_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4476
-
-.
-**foo **bar** baz**
-.
-<p><strong>foo <strong>bar</strong> baz</strong></p>
-.
-
-error:
-
-<p>**foo **bar** baz**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4482
-
-.
-__foo __bar__ baz__
-.
-<p><strong>foo <strong>bar</strong> baz</strong></p>
-.
-
-error:
-
-<p>__foo __bar__ baz__</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4488
-
-.
-*foo **bar** baz*
-.
-<p><em>foo <strong>bar</strong> baz</em></p>
-.
-
-error:
-
-<p>*foo **bar** baz*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4494
-
-.
-_foo __bar__ baz_
-.
-<p><em>foo <strong>bar</strong> baz</em></p>
-.
-
-error:
-
-<p>_foo __bar__ baz_</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4500
-
-.
-**foo *bar* baz**
-.
-<p><strong>foo <em>bar</em> baz</strong></p>
-.
-
-error:
-
-<p>**foo *bar* baz**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4506
-
-.
-__foo _bar_ baz__
-.
-<p><strong>foo <em>bar</em> baz</strong></p>
-.
-
-error:
-
-<p>__foo _bar_ baz__</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4516
-
-.
-**foo**
-.
-<p><strong>foo</strong></p>
-.
-
-error:
-
-<p>**foo**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4530
-
-.
-*_foo_*
-.
-<p><em><em>foo</em></em></p>
-.
-
-error:
-
-<p>*_foo_*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4536
-
-.
-**__foo__**
-.
-<p><strong><strong>foo</strong></strong></p>
-.
-
-error:
-
-<p>**__foo__**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4546
-
-.
-*foo**
-.
-<p><em>foo</em>*</p>
-.
-
-error:
-
-<p>*foo**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4552
-
-.
-*foo *bar**
-.
-<p><em>foo <em>bar</em></em></p>
-.
-
-error:
-
-<p>*foo *bar**</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4558
-
-.
-**foo***
-.
-<p><strong>foo</strong>*</p>
-.
-
-error:
-
-<p>**foo***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4564
-
-.
-***foo* bar***
-.
-<p><strong><em>foo</em> bar</strong>*</p>
-.
-
-error:
-
-<p>***foo* bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4570
-
-.
-***foo** bar***
-.
-<p><em><strong>foo</strong> bar</em>**</p>
-.
-
-error:
-
-<p>***foo** bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4579
-
-.
-*foo**bar***
-.
-<p><em>foo</em><em>bar</em>**</p>
-.
-
-error:
-
-<p>*foo**bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4595
-
-.
-*foo**
-
-**foo*
-.
-<p><em>foo</em>*</p>
-<p>**foo*</p>
-.
-
-error:
-
-<p>*foo**</p>
-<p>**foo*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4604
-
-.
-*foo *bar**
-
-**foo* bar*
-.
-<p><em>foo <em>bar</em></em></p>
-<p>**foo* bar*</p>
-.
-
-error:
-
-<p>*foo *bar**</p>
-<p>**foo* bar*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4621
-
-.
-*bar***
-.
-<p><em>bar</em>**</p>
-.
-
-error:
-
-<p>*bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4633
-
-.
-**bar***
-.
-<p><strong>bar</strong>*</p>
-.
-
-error:
-
-<p>**bar***</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4645
-
-.
-***foo *bar*
-.
-<p>***foo <em>bar</em></p>
-.
-
-error:
-
-<p>***foo *bar*</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1539,7 +735,7 @@ src line: 4937
 
 error:
 
-<p>[*foo!*][bar]</p>
+<p>[<em>foo!</em>][bar]</p>
 <p>[bar]: /url &quot;title&quot;</p>
 
 
@@ -1699,8 +895,8 @@ src line: 5038
 
 error:
 
-<p>[*foo* bar][]</p>
-<p>[*foo* bar]: /url &quot;title&quot;</p>
+<p>[<em>foo</em> bar][]</p>
+<p>[<em>foo</em> bar]: /url &quot;title&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1769,8 +965,8 @@ src line: 5087
 
 error:
 
-<p>[*foo* bar]</p>
-<p>[*foo* bar]: /url &quot;title&quot;</p>
+<p>[<em>foo</em> bar]</p>
+<p>[<em>foo</em> bar]: /url &quot;title&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1786,8 +982,8 @@ src line: 5095
 
 error:
 
-<p>[[*foo* bar]]</p>
-<p>[*foo* bar]: /url &quot;title&quot;</p>
+<p>[[<em>foo</em> bar]]</p>
+<p>[<em>foo</em> bar]: /url &quot;title&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1838,7 +1034,7 @@ src line: 5127
 error:
 
 <p>[foo*]: /url</p>
-<p>*[foo*]</p>
+<p><em>[foo</em>]</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2012,8 +1208,8 @@ src line: 5235
 
 error:
 
-<p>![foo *bar*]</p>
-<p>[foo *bar*]: train.jpg &quot;train &amp; tracks&quot;</p>
+<p>![foo <em>bar</em>]</p>
+<p>[foo <em>bar</em>]: train.jpg &quot;train &amp; tracks&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2029,8 +1225,8 @@ src line: 5243
 
 error:
 
-<p>![foo *bar*][]</p>
-<p>[foo *bar*]: train.jpg &quot;train &amp; tracks&quot;</p>
+<p>![foo <em>bar</em>][]</p>
+<p>[foo <em>bar</em>]: train.jpg &quot;train &amp; tracks&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2046,7 +1242,7 @@ src line: 5251
 
 error:
 
-<p>![foo *bar*][foobar]</p>
+<p>![foo <em>bar</em>][foobar]</p>
 <p>[FOOBAR]: train.jpg &quot;train &amp; tracks&quot;</p>
 
 
@@ -2170,8 +1366,8 @@ src line: 5311
 
 error:
 
-<p>![*foo* bar][]</p>
-<p>[*foo* bar]: /url &quot;title&quot;</p>
+<p>![<em>foo</em> bar][]</p>
+<p>[<em>foo</em> bar]: /url &quot;title&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2240,8 +1436,8 @@ src line: 5351
 
 error:
 
-<p>![*foo* bar]</p>
-<p>[*foo* bar]: /url &quot;title&quot;</p>
+<p>![<em>foo</em> bar]</p>
+<p>[<em>foo</em> bar]: /url &quot;title&quot;</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2310,39 +1506,5 @@ error:
 
 <p>![foo]</p>
 <p>[foo]: /url &quot;title&quot;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5839
-
-.
-*foo  
-bar*
-.
-<p><em>foo<br />
-bar</em></p>
-.
-
-error:
-
-<p>*foo<br />
-bar*</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5847
-
-.
-*foo\
-bar*
-.
-<p><em>foo<br />
-bar</em></p>
-.
-
-error:
-
-<p>*foo<br />
-bar*</p>
 
 
