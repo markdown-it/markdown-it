@@ -2904,6 +2904,15 @@ src line: 3694
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3704
+
+.
+[foo](/bar\* "ti\*tle")
+.
+<p><a href="/bar*" title="ti*tle">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3718
 
 .
@@ -2976,6 +2985,15 @@ src line: 3791
 <a href="&ouml;&ouml;.html">
 .
 <p><a href="&ouml;&ouml;.html"></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3797
+
+.
+[foo](/f&ouml;&ouml; "f&ouml;&ouml;")
+.
+<p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3207,6 +3225,60 @@ bar__
 .
 <p><strong>foo
 bar</strong></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4157
+
+.
+*foo [bar](/url)*
+.
+<p><em>foo <a href="/url">bar</a></em></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4163
+
+.
+_foo [bar](/url)_
+.
+<p><em>foo <a href="/url">bar</a></em></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4169
+
+.
+**foo [bar](/url)**
+.
+<p><strong>foo <a href="/url">bar</a></strong></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4175
+
+.
+__foo [bar](/url)__
+.
+<p><strong>foo <a href="/url">bar</a></strong></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4184
+
+.
+*foo [bar*](/url)
+.
+<p>*foo <a href="/url">bar*</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4190
+
+.
+_foo [bar_](/url)
+.
+<p>_foo <a href="/url">bar_</a></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3819,12 +3891,57 @@ src line: 4645
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4717
+
+.
+[link](/uri "title")
+.
+<p><a href="/uri" title="title">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4725
+
+.
+[link](/uri)
+.
+<p><a href="/uri">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4733
+
+.
+[link]()
+.
+<p><a href="">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4739
+
+.
+[link](<>)
+.
+<p><a href="">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 4749
 
 .
 [link](/my uri)
 .
 <p>[link](/my uri)</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4755
+
+.
+[link](</my uri>)
+.
+<p><a href="/my uri">link</a></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3839,6 +3956,15 @@ bar)</p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4773
+
+.
+[link]((foo)and(bar))
+.
+<p><a href="(foo)and(bar)">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 4782
 
 .
@@ -3848,12 +3974,88 @@ src line: 4782
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4788
+
+.
+[link](foo(and\(bar\)))
+.
+<p><a href="foo(and(bar))">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4794
+
+.
+[link](<foo(and(bar))>)
+.
+<p><a href="foo(and(bar))">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4803
+
+.
+[link](foo\)\:)
+.
+<p><a href="foo):">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4811
+
+.
+[link](foo%20b&auml;)
+.
+<p><a href="foo%20b&auml;">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4821
+
+.
+[link]("title")
+.
+<p><a href="&quot;title&quot;">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4829
+
+.
+[link](/url "title")
+[link](/url 'title')
+[link](/url (title))
+.
+<p><a href="/url" title="title">link</a>
+<a href="/url" title="title">link</a>
+<a href="/url" title="title">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4841
+
+.
+[link](/url "title \"&quot;")
+.
+<p><a href="/url" title="title &quot;&quot;">link</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 4849
 
 .
 [link](/url "title "and" title")
 .
 <p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4857
+
+.
+[link](/url 'title "and" title')
+.
+<p><a href="/url" title="title &quot;and&quot; title">link</a></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3872,6 +4074,42 @@ src line: 4898
 [foo <bar attr="](baz)">
 .
 <p>[foo <bar attr="](baz)"></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5229
+
+.
+![foo](/url "title")
+.
+<p><img src="/url" alt="foo" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5259
+
+.
+![foo](train.jpg)
+.
+<p><img src="train.jpg" alt="foo" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5265
+
+.
+My ![foo bar](/path/to/train.jpg  "title"   )
+.
+<p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5271
+
+.
+![foo](<url>)
+.
+<p><img src="url" alt="foo" /></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

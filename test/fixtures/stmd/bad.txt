@@ -328,20 +328,6 @@ baz</li>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3704
-
-.
-[foo](/bar\* "ti\*tle")
-.
-<p><a href="/bar*" title="ti*tle">foo</a></p>
-.
-
-error:
-
-<p>[foo](/bar* &quot;ti*tle&quot;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3710
 
 .
@@ -356,20 +342,6 @@ error:
 
 <p>[foo]</p>
 <p>[foo]: /bar* &quot;ti*tle&quot;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 3797
-
-.
-[foo](/f&ouml;&ouml; "f&ouml;&ouml;")
-.
-<p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
-.
-
-error:
-
-<p>[foo](/f&ouml;&ouml; &quot;f&ouml;&ouml;&quot;)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -390,90 +362,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4157
-
-.
-*foo [bar](/url)*
-.
-<p><em>foo <a href="/url">bar</a></em></p>
-.
-
-error:
-
-<p><em>foo [bar](/url)</em></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4163
-
-.
-_foo [bar](/url)_
-.
-<p><em>foo <a href="/url">bar</a></em></p>
-.
-
-error:
-
-<p><em>foo [bar](/url)</em></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4169
-
-.
-**foo [bar](/url)**
-.
-<p><strong>foo <a href="/url">bar</a></strong></p>
-.
-
-error:
-
-<p><strong>foo [bar](/url)</strong></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4175
-
-.
-__foo [bar](/url)__
-.
-<p><strong>foo <a href="/url">bar</a></strong></p>
-.
-
-error:
-
-<p><strong>foo [bar](/url)</strong></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4184
-
-.
-*foo [bar*](/url)
-.
-<p>*foo <a href="/url">bar*</a></p>
-.
-
-error:
-
-<p><em>foo [bar</em>](/url)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4190
-
-.
-_foo [bar_](/url)
-.
-<p>_foo <a href="/url">bar_</a></p>
-.
-
-error:
-
-<p><em>foo [bar</em>](/url)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 4325
 
 .
@@ -485,208 +373,6 @@ src line: 4325
 error:
 
 <p>*here is a **</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4717
-
-.
-[link](/uri "title")
-.
-<p><a href="/uri" title="title">link</a></p>
-.
-
-error:
-
-<p>[link](/uri &quot;title&quot;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4725
-
-.
-[link](/uri)
-.
-<p><a href="/uri">link</a></p>
-.
-
-error:
-
-<p>[link](/uri)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4733
-
-.
-[link]()
-.
-<p><a href="">link</a></p>
-.
-
-error:
-
-<p>[link]()</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4739
-
-.
-[link](<>)
-.
-<p><a href="">link</a></p>
-.
-
-error:
-
-<p>[link](&lt;&gt;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4755
-
-.
-[link](</my uri>)
-.
-<p><a href="/my uri">link</a></p>
-.
-
-error:
-
-<p>[link](&lt;/my uri&gt;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4773
-
-.
-[link]((foo)and(bar))
-.
-<p><a href="(foo)and(bar)">link</a></p>
-.
-
-error:
-
-<p>[link]((foo)and(bar))</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4788
-
-.
-[link](foo(and\(bar\)))
-.
-<p><a href="foo(and(bar))">link</a></p>
-.
-
-error:
-
-<p>[link](foo(and(bar)))</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4794
-
-.
-[link](<foo(and(bar))>)
-.
-<p><a href="foo(and(bar))">link</a></p>
-.
-
-error:
-
-<p>[link](&lt;foo(and(bar))&gt;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4803
-
-.
-[link](foo\)\:)
-.
-<p><a href="foo):">link</a></p>
-.
-
-error:
-
-<p>[link](foo):)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4811
-
-.
-[link](foo%20b&auml;)
-.
-<p><a href="foo%20b&auml;">link</a></p>
-.
-
-error:
-
-<p>[link](foo%20b&auml;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4821
-
-.
-[link]("title")
-.
-<p><a href="&quot;title&quot;">link</a></p>
-.
-
-error:
-
-<p>[link](&quot;title&quot;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4829
-
-.
-[link](/url "title")
-[link](/url 'title')
-[link](/url (title))
-.
-<p><a href="/url" title="title">link</a>
-<a href="/url" title="title">link</a>
-<a href="/url" title="title">link</a></p>
-.
-
-error:
-
-<p>[link](/url &quot;title&quot;)
-[link](/url 'title')
-[link](/url (title))</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4841
-
-.
-[link](/url "title \"&quot;")
-.
-<p><a href="/url" title="title &quot;&quot;">link</a></p>
-.
-
-error:
-
-<p>[link](/url &quot;title &quot;&quot;&quot;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4857
-
-.
-[link](/url 'title "and" title')
-.
-<p><a href="/url" title="title &quot;and&quot; title">link</a></p>
-.
-
-error:
-
-<p>[link](/url 'title &quot;and&quot; title')</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1182,20 +868,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5229
-
-.
-![foo](/url "title")
-.
-<p><img src="/url" alt="foo" title="title" /></p>
-.
-
-error:
-
-<p>![foo](/url &quot;title&quot;)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5235
 
 .
@@ -1208,7 +880,7 @@ src line: 5235
 
 error:
 
-<p>![foo <em>bar</em>]</p>
+<p>[foo <em>bar</em>]</p>
 <p>[foo <em>bar</em>]: train.jpg &quot;train &amp; tracks&quot;</p>
 
 
@@ -1225,7 +897,7 @@ src line: 5243
 
 error:
 
-<p>![foo <em>bar</em>][]</p>
+<p>[foo <em>bar</em>][]</p>
 <p>[foo <em>bar</em>]: train.jpg &quot;train &amp; tracks&quot;</p>
 
 
@@ -1242,50 +914,8 @@ src line: 5251
 
 error:
 
-<p>![foo <em>bar</em>][foobar]</p>
+<p>[foo <em>bar</em>][foobar]</p>
 <p>[FOOBAR]: train.jpg &quot;train &amp; tracks&quot;</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5259
-
-.
-![foo](train.jpg)
-.
-<p><img src="train.jpg" alt="foo" /></p>
-.
-
-error:
-
-<p>![foo](train.jpg)</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5265
-
-.
-My ![foo bar](/path/to/train.jpg  "title"   )
-.
-<p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
-.
-
-error:
-
-<p>My ![foo bar](/path/to/train.jpg  &quot;title&quot;   )</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5271
-
-.
-![foo](<url>)
-.
-<p><img src="url" alt="foo" /></p>
-.
-
-error:
-
-<p>![foo](<url>)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1299,7 +929,7 @@ src line: 5277
 
 error:
 
-<p>![](/url)</p>
+<p><img src="/url" /></p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1315,7 +945,7 @@ src line: 5285
 
 error:
 
-<p>![foo] [bar]</p>
+<p>[foo] [bar]</p>
 <p>[bar]: /url</p>
 
 
@@ -1332,7 +962,7 @@ src line: 5293
 
 error:
 
-<p>![foo] [bar]</p>
+<p>[foo] [bar]</p>
 <p>[BAR]: /url</p>
 
 
@@ -1349,7 +979,7 @@ src line: 5303
 
 error:
 
-<p>![foo][]</p>
+<p>[foo][]</p>
 <p>[foo]: /url &quot;title&quot;</p>
 
 
@@ -1366,7 +996,7 @@ src line: 5311
 
 error:
 
-<p>![<em>foo</em> bar][]</p>
+<p>[<em>foo</em> bar][]</p>
 <p>[<em>foo</em> bar]: /url &quot;title&quot;</p>
 
 
@@ -1383,7 +1013,7 @@ src line: 5321
 
 error:
 
-<p>![Foo][]</p>
+<p>[Foo][]</p>
 <p>[foo]: /url &quot;title&quot;</p>
 
 
@@ -1401,7 +1031,7 @@ src line: 5332
 
 error:
 
-<p>![foo]
+<p>[foo]
 []</p>
 <p>[foo]: /url &quot;title&quot;</p>
 
@@ -1419,7 +1049,7 @@ src line: 5343
 
 error:
 
-<p>![foo]</p>
+<p>[foo]</p>
 <p>[foo]: /url &quot;title&quot;</p>
 
 
@@ -1436,7 +1066,7 @@ src line: 5351
 
 error:
 
-<p>![<em>foo</em> bar]</p>
+<p>[<em>foo</em> bar]</p>
 <p>[<em>foo</em> bar]: /url &quot;title&quot;</p>
 
 
@@ -1453,7 +1083,7 @@ src line: 5359
 
 error:
 
-<p>![[foo]]</p>
+<p>[[foo]]</p>
 <p>[[foo]]: /url &quot;title&quot;</p>
 
 
@@ -1470,7 +1100,7 @@ src line: 5369
 
 error:
 
-<p>![Foo]</p>
+<p>[Foo]</p>
 <p>[foo]: /url &quot;title&quot;</p>
 
 
