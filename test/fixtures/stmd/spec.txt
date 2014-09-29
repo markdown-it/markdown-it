@@ -2,8 +2,8 @@
 title: CommonMark Spec
 author:
 - John MacFarlane
-version: 1
-date: 2014-09-06
+version: 2
+date: 2014-09-19
 ...
 
 # Introduction
@@ -1058,7 +1058,7 @@ a blank line either before or after.
 The content of a code fence is treated as literal text, not parsed
 as inlines.  The first word of the info string is typically used to
 specify the language of the code sample, and rendered in the `class`
-attribute of the `pre` tag.  However, this spec does not mandate any
+attribute of the `code` tag.  However, this spec does not mandate any
 particular treatment of the info string.
 
 Here is a simple example with backticks:
@@ -1682,7 +1682,7 @@ them.
 
 [Foo bar]
 .
-<p><a href="my url" title="title">Foo bar</a></p>
+<p><a href="my%20url" title="title">Foo bar</a></p>
 .
 
 The title may be omitted:
@@ -1745,7 +1745,7 @@ case-insensitive (see [matches](#matches)).
 
 [αγω]
 .
-<p><a href="/φου">αγω</a></p>
+<p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
 .
 
 Here is a link reference definition with no corresponding link.
@@ -1994,11 +1994,11 @@ form of the definition is:
 > transforming X in such-and-such a way is a container of type Y
 > with these blocks as its content.
 
-So, we explain what counts as a block quote or list item by
-explaining how these can be *generated* from their contents.
-This should suffice to define the syntax, although it does not
-give a recipe for *parsing* these constructions.  (A recipe is
-provided below in the section entitled [A parsing strategy].)
+So, we explain what counts as a block quote or list item by explaining
+how these can be *generated* from their contents. This should suffice
+to define the syntax, although it does not give a recipe for *parsing*
+these constructions.  (A recipe is provided below in the section entitled
+[A parsing strategy](#appendix-a-a-parsing-strategy).)
 
 ## Block quotes
 
@@ -2010,9 +2010,9 @@ The following rules define [block quotes](#block-quote):
 <a id="block-quote"></a>
 
 1.  **Basic case.**  If a string of lines *Ls* constitute a sequence
-    of blocks *Bs*, then the result of appending a [block quote marker]
-    to the beginning of each line in *Ls* is a [block quote](#block-quote)
-    containing *Bs*.
+    of blocks *Bs*, then the result of appending a [block quote
+    marker](#block-quote-marker) to the beginning of each line in *Ls*
+    is a [block quote](#block-quote) containing *Bs*.
 
 2.  **Laziness.**  If a string of lines *Ls* constitute a [block
     quote](#block-quote) with contents *Bs*, then the result of deleting
@@ -3688,7 +3688,7 @@ raw HTML:
 .
 <http://google.com?find=\*>
 .
-<p><a href="http://google.com?find=\*">http://google.com?find=\*</a></p>
+<p><a href="http://google.com?find=%5C*">http://google.com?find=\*</a></p>
 .
 
 .
@@ -3727,47 +3727,59 @@ foo
 
 ## Entities
 
-Entities are parsed as entities, not as literal text, in all contexts
-except code spans and code blocks. Three kinds of entities are recognized.
+With the goal of making this standard as HTML-agnostic as possible, all HTML valid HTML Entities in any
+context are recognized as such and converted into their actual values (i.e. the UTF8 characters representing
+the entity itself) before they are stored in the AST.
+
+This allows implementations that target HTML output to trivially escape the entities when generating HTML,
+and simplifies the job of implementations targetting other languages, as these will only need to handle the
+UTF8 chars and need not be HTML-entity aware.
 
 [Named entities](#name-entities) <a id="named-entities"></a> consist of `&`
-+ a string of 2-32 alphanumerics beginning with a letter + `;`.
++ any of the valid HTML5 entity names + `;`. The [following document](http://www.whatwg.org/specs/web-apps/current-work/multipage/entities.json)
+is used as an authoritative source of the valid entity names and their corresponding codepoints.
+
+Conforming implementations that target Markdown don't need to generate entities for all the valid
+named entities that exist, with the exception of `"` (`&quot;`), `&` (`&amp;`), `<` (`&lt;`) and `>` (`&gt;`),
+which always need to be written as entities for security reasons.
 
 .
 &nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;
 .
-<p>&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;</p>
+<p>  &amp; © Æ Ď ¾ ℋ ⅆ ∲</p>
 .
 
 [Decimal entities](#decimal-entities) <a id="decimal-entities"></a>
-consist of `&#` + a string of 1--8 arabic digits + `;`.
+consist of `&#` + a string of 1--8 arabic digits + `;`. Again, these entities need to be recognised
+and tranformed into their corresponding UTF8 codepoints. Invalid Unicode codepoints will be written
+as the "unknown codepoint" character (`0xFFFD`)
 
 .
-&#1; &#35; &#1234; &#992; &#98765432;
+&#35; &#1234; &#992; &#98765432;
 .
-<p>&#1; &#35; &#1234; &#992; &#98765432;</p>
+<p># Ӓ Ϡ �</p>
 .
 
 [Hexadecimal entities](#hexadecimal-entities) <a id="hexadecimal-entities"></a>
 consist of `&#` + either `X` or `x` + a string of 1-8 hexadecimal digits
-+ `;`.
++ `;`. They will also be parsed and turned into their corresponding UTF8 values in the AST.
 
 .
-&#x1; &#X22; &#XD06; &#xcab;
+&#X22; &#XD06; &#xcab;
 .
-<p>&#x1; &#X22; &#XD06; &#xcab;</p>
+<p>&quot; ആ ಫ</p>
 .
 
 Here are some nonentities:
 
 .
-&nbsp &x; &#; &#x; &#123456789; &ThisIsWayTooLongToBeAnEntityIsntIt; &hi?;
+&nbsp &x; &#; &#x; &ThisIsWayTooLongToBeAnEntityIsntIt; &hi?;
 .
-<p>&amp;nbsp &amp;x; &amp;#; &amp;#x; &amp;#123456789; &amp;ThisIsWayTooLongToBeAnEntityIsntIt; &amp;hi?;</p>
+<p>&amp;nbsp &amp;x; &amp;#; &amp;#x; &amp;ThisIsWayTooLongToBeAnEntityIsntIt; &amp;hi?;</p>
 .
 
 Although HTML5 does accept some entities without a trailing semicolon
-(such as `&copy`), these are not recognized as entities here:
+(such as `&copy`), these are not recognized as entities here, because it makes the grammar too ambiguous:
 
 .
 &copy
@@ -3775,13 +3787,12 @@ Although HTML5 does accept some entities without a trailing semicolon
 <p>&amp;copy</p>
 .
 
-On the other hand, many strings that are not on the list of HTML5
-named entities are recognized as entities here:
+Strings that are not on the list of HTML5 named entities are not recognized as entities either:
 
 .
 &MadeUpEntity;
 .
-<p>&MadeUpEntity;</p>
+<p>&amp;MadeUpEntity;</p>
 .
 
 Entities are recognized in any context besides code spans or
@@ -3797,7 +3808,7 @@ code blocks, including raw HTML, URLs, [link titles](#link-title), and
 .
 [foo](/f&ouml;&ouml; "f&ouml;&ouml;")
 .
-<p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
+<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
 .
 
 .
@@ -3805,7 +3816,7 @@ code blocks, including raw HTML, URLs, [link titles](#link-title), and
 
 [foo]: /f&ouml;&ouml; "f&ouml;&ouml;"
 .
-<p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
+<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
 .
 
 .
@@ -3813,7 +3824,7 @@ code blocks, including raw HTML, URLs, [link titles](#link-title), and
 foo
 ```
 .
-<pre><code class="language-f&ouml;&ouml;">foo
+<pre><code class="language-föö">foo
 </code></pre>
 .
 
@@ -3946,7 +3957,7 @@ But this is a link:
 .
 <http://foo.bar.`baz>`
 .
-<p><a href="http://foo.bar.`baz">http://foo.bar.`baz</a>`</p>
+<p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
 .
 
 And this is an HTML tag:
@@ -4030,7 +4041,7 @@ for efficient parsing strategies that do not backtrack:
 
     (a) it is not part of a sequence of four or more unescaped `_`s,
     (b) it is not followed by whitespace,
-    (c) is is not preceded by an ASCII alphanumeric character, and
+    (c) it is not preceded by an ASCII alphanumeric character, and
     (d) either it is not followed by a `_` character or it is
         followed immediately by strong emphasis.
 
@@ -4755,7 +4766,7 @@ braces:
 .
 [link](</my uri>)
 .
-<p><a href="/my uri">link</a></p>
+<p><a href="/my%20uri">link</a></p>
 .
 
 The destination cannot contain line breaks, even with pointy braces:
@@ -4806,12 +4817,14 @@ in Markdown:
 <p><a href="foo):">link</a></p>
 .
 
-URL-escaping and entities should be left alone inside the destination:
+URL-escaping and should be left alone inside the destination, as all URL-escaped characters
+are also valid URL characters. HTML entities in the destination will be parsed into their UTF8
+codepoints, as usual, and optionally URL-escaped when written as HTML.
 
 .
 [link](foo%20b&auml;)
 .
-<p><a href="foo%20b&auml;">link</a></p>
+<p><a href="foo%20b%C3%A4">link</a></p>
 .
 
 Note that, because titles can often be parsed as destinations,
@@ -4821,7 +4834,7 @@ get unexpected results:
 .
 [link]("title")
 .
-<p><a href="&quot;title&quot;">link</a></p>
+<p><a href="%22title%22">link</a></p>
 .
 
 Titles may be in single quotes, double quotes, or parentheses:

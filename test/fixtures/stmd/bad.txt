@@ -21,6 +21,40 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1678
+
+.
+[Foo bar]:
+<my url>
+'title'
+
+[Foo bar]
+.
+<p><a href="my%20url" title="title">Foo bar</a></p>
+.
+
+error:
+
+<p><a href="my url" title="title">Foo bar</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1743
+
+.
+[ΑΓΩ]: /φου
+
+[αγω]
+.
+<p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
+.
+
+error:
+
+<p><a href="/φου">αγω</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3550
 
 .
@@ -50,7 +84,139 @@ baz</li>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4325
+src line: 3688
+
+.
+<http://google.com?find=\*>
+.
+<p><a href="http://google.com?find=%5C*">http://google.com?find=\*</a></p>
+.
+
+error:
+
+<p><a href="http://google.com?find=\*">http://google.com?find=\*</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3746
+
+.
+&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;
+.
+<p>  &amp; © Æ Ď ¾ ℋ ⅆ ∲</p>
+.
+
+error:
+
+<p>&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3757
+
+.
+&#35; &#1234; &#992; &#98765432;
+.
+<p># Ӓ Ϡ �</p>
+.
+
+error:
+
+<p>&#35; &#1234; &#992; &#98765432;</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3767
+
+.
+&#X22; &#XD06; &#xcab;
+.
+<p>&quot; ആ ಫ</p>
+.
+
+error:
+
+<p>&#X22; &#XD06; &#xcab;</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3792
+
+.
+&MadeUpEntity;
+.
+<p>&amp;MadeUpEntity;</p>
+.
+
+error:
+
+<p>&MadeUpEntity;</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3808
+
+.
+[foo](/f&ouml;&ouml; "f&ouml;&ouml;")
+.
+<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+.
+
+error:
+
+<p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3814
+
+.
+[foo]
+
+[foo]: /f&ouml;&ouml; "f&ouml;&ouml;"
+.
+<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+.
+
+error:
+
+<p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3822
+
+.
+``` f&ouml;&ouml;
+foo
+```
+.
+<pre><code class="language-föö">foo
+</code></pre>
+.
+
+error:
+
+<pre><code class="language-f&ouml;&ouml;">foo
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3957
+
+.
+<http://foo.bar.`baz>`
+.
+<p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
+.
+
+error:
+
+<p><a href="http://foo.bar.`baz">http://foo.bar.`baz</a>`</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4336
 
 .
 *here is a \**
@@ -64,7 +230,49 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 4879
+src line: 4766
+
+.
+[link](</my uri>)
+.
+<p><a href="/my%20uri">link</a></p>
+.
+
+error:
+
+<p><a href="/my uri">link</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4824
+
+.
+[link](foo%20b&auml;)
+.
+<p><a href="foo%20b%C3%A4">link</a></p>
+.
+
+error:
+
+<p><a href="foo%20b&auml;">link</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4834
+
+.
+[link]("title")
+.
+<p><a href="%22title%22">link</a></p>
+.
+
+error:
+
+<p><a href="&quot;title&quot;">link</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4892
 
 .
 [link](   /uri
@@ -80,7 +288,7 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5156
+src line: 5169
 
 .
 [[[foo]]]
@@ -97,7 +305,7 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5235
+src line: 5248
 
 .
 ![foo *bar*]
@@ -113,7 +321,7 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5243
+src line: 5256
 
 .
 ![foo *bar*][]
@@ -129,7 +337,7 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5251
+src line: 5264
 
 .
 ![foo *bar*][foobar]
@@ -145,7 +353,7 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5311
+src line: 5324
 
 .
 ![*foo* bar][]
@@ -161,7 +369,7 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5351
+src line: 5364
 
 .
 ![*foo* bar]
