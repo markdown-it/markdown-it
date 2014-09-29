@@ -1315,6 +1315,66 @@ Hi
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1652
+
+.
+[foo]: /url "title"
+
+[foo]
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1660
+
+.
+   [foo]: 
+      /url  
+           'the title'  
+
+[foo]
+.
+<p><a href="/url" title="the title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1670
+
+.
+[Foo*bar\]]:my_(url) 'title (with parens)'
+
+[Foo*bar\]]
+.
+<p><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1678
+
+.
+[Foo bar]:
+<my url>
+'title'
+
+[Foo bar]
+.
+<p><a href="my url" title="title">Foo bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1690
+
+.
+[foo]:
+/url
+
+[foo]
+.
+<p><a href="/url">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 1701
 
 .
@@ -1324,6 +1384,59 @@ src line: 1701
 .
 <p>[foo]:</p>
 <p>[foo]</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1712
+
+.
+[foo]
+
+[foo]: url
+.
+<p><a href="url">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1723
+
+.
+[foo]
+
+[foo]: first
+[foo]: second
+.
+<p><a href="first">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1735
+
+.
+[FOO]: /url
+
+[Foo]
+.
+<p><a href="/url">Foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1743
+
+.
+[ΑΓΩ]: /φου
+
+[αγω]
+.
+<p><a href="/φου">αγω</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1754
+
+.
+[foo]: /url
+.
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1375,6 +1488,51 @@ Foo
 <p>Foo
 [bar]: /baz</p>
 <p>[bar]</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1813
+
+.
+# [Foo]
+[foo]: /url
+> bar
+.
+<h1><a href="/url">Foo</a></h1>
+<blockquote>
+<p>bar</p>
+</blockquote>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1827
+
+.
+[foo]: /foo-url "foo"
+[bar]: /bar-url
+  "bar"
+[baz]: /baz-url
+
+[foo],
+[bar],
+[baz]
+.
+<p><a href="/foo-url" title="foo">foo</a>,
+<a href="/bar-url" title="bar">bar</a>,
+<a href="/baz-url">baz</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1847
+
+.
+[foo]
+
+> [foo]: /url
+.
+<p><a href="/url">foo</a></p>
+<blockquote>
+</blockquote>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2651,6 +2809,23 @@ src line: 3415
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3430
+
+.
+- a
+- b
+
+  [ref]: /url
+- d
+.
+<ul>
+<li><p>a</p></li>
+<li><p>b</p></li>
+<li><p>d</p></li>
+</ul>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3446
 
 .
@@ -2913,6 +3088,17 @@ src line: 3704
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3710
+
+.
+[foo]
+
+[foo]: /bar\* "ti\*tle"
+.
+<p><a href="/bar*" title="ti*tle">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3718
 
 .
@@ -2992,6 +3178,17 @@ src line: 3797
 
 .
 [foo](/f&ouml;&ouml; "f&ouml;&ouml;")
+.
+<p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3803
+
+.
+[foo]
+
+[foo]: /f&ouml;&ouml; "f&ouml;&ouml;"
 .
 <p><a href="/f&ouml;&ouml;" title="f&ouml;&ouml;">foo</a></p>
 .
@@ -4077,6 +4274,300 @@ src line: 4898
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4927
+
+.
+[foo][bar]
+
+[bar]: /url "title"
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4937
+
+.
+[*foo\!*][bar]
+
+[bar]: /url "title"
+.
+<p><a href="/url" title="title"><em>foo!</em></a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4947
+
+.
+[foo][BaR]
+
+[bar]: /url "title"
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4957
+
+.
+[Толпой][Толпой] is a Russian word.
+
+[ТОЛПОЙ]: /url
+.
+<p><a href="/url">Толпой</a> is a Russian word.</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4968
+
+.
+[Foo
+  bar]: /url
+
+[Baz][Foo bar]
+.
+<p><a href="/url">Baz</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4979
+
+.
+[foo] [bar]
+
+[bar]: /url "title"
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4987
+
+.
+[foo]
+[bar]
+
+[bar]: /url "title"
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4999
+
+.
+[foo]: /url1
+
+[foo]: /url2
+
+[bar][foo]
+.
+<p><a href="/url1">bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5013
+
+.
+[bar][foo\!]
+
+[foo!]: /url
+.
+<p>[bar][foo!]</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5030
+
+.
+[foo][]
+
+[foo]: /url "title"
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5038
+
+.
+[*foo* bar][]
+
+[*foo* bar]: /url "title"
+.
+<p><a href="/url" title="title"><em>foo</em> bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5048
+
+.
+[Foo][]
+
+[foo]: /url "title"
+.
+<p><a href="/url" title="title">Foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5060
+
+.
+[foo] 
+[]
+
+[foo]: /url "title"
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5079
+
+.
+[foo]
+
+[foo]: /url "title"
+.
+<p><a href="/url" title="title">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5087
+
+.
+[*foo* bar]
+
+[*foo* bar]: /url "title"
+.
+<p><a href="/url" title="title"><em>foo</em> bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5095
+
+.
+[[*foo* bar]]
+
+[*foo* bar]: /url "title"
+.
+<p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5105
+
+.
+[Foo]
+
+[foo]: /url "title"
+.
+<p><a href="/url" title="title">Foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5116
+
+.
+\[foo]
+
+[foo]: /url "title"
+.
+<p>[foo]</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5127
+
+.
+[foo*]: /url
+
+*[foo*]
+.
+<p>*<a href="/url">foo*</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5138
+
+.
+[foo`]: /url
+
+[foo`]`
+.
+<p>[foo<code>]</code></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5148
+
+.
+[[[foo]]]
+
+[[[foo]]]: /url
+.
+<p><a href="/url">[[foo]]</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5167
+
+.
+[\[foo]
+
+[\[foo]: /url
+.
+<p><a href="/url">[foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5177
+
+.
+[foo][bar]
+
+[foo]: /url1
+[bar]: /url2
+.
+<p><a href="/url2">foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5189
+
+.
+[foo][bar][baz]
+
+[baz]: /url
+.
+<p>[foo]<a href="/url">bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5200
+
+.
+[foo][bar][baz]
+
+[baz]: /url1
+[bar]: /url2
+.
+<p><a href="/url2">foo</a><a href="/url1">baz</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5212
+
+.
+[foo][bar][baz]
+
+[baz]: /url1
+[foo]: /url2
+.
+<p>[foo]<a href="/url1">bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5229
 
 .
@@ -4110,6 +4601,126 @@ src line: 5271
 ![foo](<url>)
 .
 <p><img src="url" alt="foo" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5277
+
+.
+![](/url)
+.
+<p><img src="/url" alt="" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5285
+
+.
+![foo] [bar]
+
+[bar]: /url
+.
+<p><img src="/url" alt="foo" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5293
+
+.
+![foo] [bar]
+
+[BAR]: /url
+.
+<p><img src="/url" alt="foo" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5303
+
+.
+![foo][]
+
+[foo]: /url "title"
+.
+<p><img src="/url" alt="foo" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5321
+
+.
+![Foo][]
+
+[foo]: /url "title"
+.
+<p><img src="/url" alt="Foo" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5332
+
+.
+![foo] 
+[]
+
+[foo]: /url "title"
+.
+<p><img src="/url" alt="foo" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5343
+
+.
+![foo]
+
+[foo]: /url "title"
+.
+<p><img src="/url" alt="foo" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5359
+
+.
+![[foo]]
+
+[[foo]]: /url "title"
+.
+<p><img src="/url" alt="[foo]" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5369
+
+.
+![Foo]
+
+[foo]: /url "title"
+.
+<p><img src="/url" alt="Foo" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5380
+
+.
+\!\[foo]
+
+[foo]: /url "title"
+.
+<p>![foo]</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5391
+
+.
+\![foo]
+
+[foo]: /url "title"
+.
+<p>!<a href="/url" title="title">foo</a></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
