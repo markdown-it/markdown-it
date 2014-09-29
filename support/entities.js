@@ -40,7 +40,7 @@ http.get('http://www.w3.org/TR/html5/entities.json', function (res) {
       out[entity.slice(1, -1)] = strToUni(entities[entity].characters);
     });
 
-    var result = []
+    var result = [];
 
     Object.keys(out).forEach(function (key) {
       result.push('  "' + key + '":"' + out[key] + '"');
