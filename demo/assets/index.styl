@@ -24,16 +24,22 @@ body
   .result
     display none
 
-.result-mode, .source-clear
+.demo-control
   position absolute
   right 15px
   top 0
   padding 0 10px
   border-radius 0 4px
-  font-weight bold
   font-size 12px
   background-color #666
   color #fff !important
+  opacity .6
+  transition opacity 0.5s ease-in-out
+  &:hover
+    opacity 1
+  a
+    margin 0 20px
+    color #fff !important
 
 .hljs
   background none
@@ -44,8 +50,6 @@ body
   position absolute
   right -60px
   top 44px
-  -webkit-transform rotate(45deg)
-  -moz-transform rotate(45deg)
   transform rotate(45deg)
   width 230px
   z-index 10000

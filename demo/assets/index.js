@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var mdHtml, mdSrc;
+  var mdHtml, mdSrc, permalink;
 
   var options = {
     html: true,
@@ -24,6 +24,13 @@
     var source = $('.source').val();
     $('.result').html(mdHtml.render(source));
     $('.result-src-content').text(mdSrc.render(source));
+    try {
+      if (source) {
+        permalink.href = '#md=' + encodeURIComponent(source);
+      } else {
+        permalink.href = '';
+      }
+    } catch (__) {}
   }
 
 
@@ -33,7 +40,14 @@
       window.hljs.highlightBlock(block);
     });
 
+    // Restore content if opened by permalink
+    if (location.hash && location.hash.toString().slice(0,4) === '#md=') {
+      $('.source').val(decodeURIComponent(location.hash.slice(4)));
+    }
+
     mdInit();
+
+    permalink = document.getElementById('permalink');
 
     $('.source').on('keyup paste cut mouseup', updateResult);
     $('.source-clear').on('click', function (event) {

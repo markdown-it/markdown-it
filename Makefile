@@ -15,7 +15,7 @@ GITHUB_PROJ := https://github.com//jonschlinkert/${NPM_PACKAGE}
 demo: lint browserify
 	./support/demodata.js > demo/sample.json
 	jade demo/index.jade -P --obj demo/sample.json
-	stylus demo/assets/index.styl
+	stylus -u autoprefixer-stylus -c demo/assets/index.styl
 	rm -rf demo/sample.json
 
 
