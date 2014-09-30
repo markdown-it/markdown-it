@@ -51,18 +51,19 @@ html
             title='css class language prefix for fenced code blocks'
           )
 
-      .row
-        .col-xs-6
+    .container.full-height
+      .row.full-height
+        .col-xs-6.full-height
           .demo-control
             a.source-clear(href='#') clear
             a#permalink(href='./' title='Share this snippet as link'): strong permalink
-          textarea.source= s.source
-        section.col-xs-6
+          textarea.source.full-height= s.source
+        section.col-xs-6.full-height
           .demo-control
             a.result-mode(href='#') html / source
-          .result
-          pre.result-src
-            code.result-src-content
+          .result.full-height
+          pre.result-src.full-height
+            code.result-src-content.full-height
 
     .gh-ribbon
       a(href='https://github.com/jonschlinkert/remarkable' target='_blank') Fork me on GitHub
