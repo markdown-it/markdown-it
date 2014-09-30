@@ -2754,11 +2754,16 @@ LexerBlock.prototype.tokenize = function (state, startLine, endLine) {
       throw new Error('None of rules updated state.line');
     }
 
-    line = state.line;
-
     // set state.tight iff we had an empty line before current tag
     // i.e. latest empty line should not count
     state.tight = !hasEmptyLines;
+
+    // paragraph might "eat" one newline after it in nested lists
+    if (isEmpty(state, state.line - 1)) {
+      hasEmptyLines = true;
+    }
+
+    line = state.line;
 
     if (line < endLine && isEmpty(state, line)) {
       hasEmptyLines = true;
@@ -4169,8 +4174,11 @@ function isAlphaNum(code) {
          (code >= 0x61 /* a */ && code <= 0x7A /* z */);
 }
 
-// returns the amount of markers (1, 2, 3), or -1 on failure;
+// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
 // "start" should point at a valid marker
+//
+// note: in case if 4+ markers it is still not a valid emphasis,
+// should be treated as a special case
 function parseStart(state, start) {
   var pos = start, lastChar, count,
       max = Math.min(state.posMax, pos + 4),
@@ -4195,7 +4203,7 @@ function parseStart(state, start) {
   if (count >= 4) {
     // check condition 1
     // sequence of four or more unescaped markers can't start an emphasis
-    return -1;
+    return count;
   }
 
   // check condition 2, marker followed by whitespace
@@ -4210,16 +4218,17 @@ function parseStart(state, start) {
   return count;
 }
 
-// returns the amount of markers (1, 2, 3), or -1 on failure;
+// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
 // "start" should point at a valid marker
+//
+// note: in case if 4+ markers it is still not a valid emphasis,
+// should be treated as a special case
 function parseEnd(state, start) {
   var pos = start, lastChar, count,
       max = Math.min(state.posMax, pos + 4),
       marker = state.src.charCodeAt(start);
 
   lastChar = state.pending.length !== 0 ? state.pending.charCodeAt(state.pending.length - 1) : -1;
-
-  if (lastChar === marker) { return -1; }
 
   while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
   count = pos - start;
@@ -4234,7 +4243,7 @@ function parseEnd(state, start) {
   if (count >= 4) {
     // check condition 1
     // sequence of four or more unescaped markers can't start an emphasis
-    return -1;
+    return count;
   }
 
   // check condition 2, marker preceded by whitespace
@@ -4264,12 +4273,18 @@ module.exports = function emphasis(state/*, silent*/) {
       breakOutOfOuterLoop,
       max = state.posMax,
       start = state.pos,
+      haveLiteralAsterisk,
       marker = state.src.charCodeAt(start);
 
   if (marker !== 0x5F/* _ */ && marker !== 0x2A /* * */) { return false; }
 
   startCount = parseStart(state, start);
   if (startCount < 0) { return false; }
+  if (startCount >= 4) {
+    state.pos += startCount;
+    state.pending += state.src.slice(start, startCount);
+    return true;
+  }
 
   oldLength = state.tokens.length;
   oldPending = state.pending;
@@ -4280,9 +4295,9 @@ module.exports = function emphasis(state/*, silent*/) {
   len = rules.length;
 
   while (state.pos < max) {
-    if (state.src.charCodeAt(state.pos) === marker) {
+    if (state.src.charCodeAt(state.pos) === marker && !haveLiteralAsterisk) {
       count = parseEnd(state, state.pos);
-      if (count >= 1) {
+      if (count >= 1 && count < 4) {
         oldCount = stack.pop();
         newCount = count;
 
@@ -4336,7 +4351,13 @@ module.exports = function emphasis(state/*, silent*/) {
       if (ok) { break; }
     }
 
-    if (!ok) { state.pending += state.src[state.pos++]; }
+    if (ok) {
+      haveLiteralAsterisk = false;
+    } else {
+      haveLiteralAsterisk = state.src.charCodeAt(state.pos) === marker;
+      state.pending += state.src[state.pos];
+      state.pos++;
+    }
   }
 
   // restore old state
@@ -4539,8 +4560,6 @@ module.exports = function htmltag(state) {
 'use strict';
 
 
-var skipSpaces = require('../helpers').skipSpaces;
-
 //
 // Parse link label
 //
@@ -4738,7 +4757,11 @@ function links(state) {
     // [link](  <href>  "title"  )
     //        ^^ skipping these spaces
     pos++;
-    if ((pos = skipSpaces(state, pos)) >= max) { return false; }
+    for (; pos < max; pos++) {
+      code = state.src.charCodeAt(pos);
+      if (code !== 0x20 && code !== 0x0A) { break; }
+    }
+    if (pos >= max) { return false; }
 
     // [link](  <href>  "title"  )
     //          ^^^^^^ parsing link destination
@@ -4753,7 +4776,10 @@ function links(state) {
     // [link](  <href>  "title"  )
     //                ^^ skipping these spaces
     start = pos;
-    pos = skipSpaces(state, pos);
+    for (; pos < max; pos++) {
+      code = state.src.charCodeAt(pos);
+      if (code !== 0x20 && code !== 0x0A) { break; }
+    }
 
     // [link](  <href>  "title"  )
     //                  ^^^^^^^ parsing link title
@@ -4762,7 +4788,10 @@ function links(state) {
 
       // [link](  <href>  "title"  )
       //                         ^^ skipping these spaces
-      pos = skipSpaces(state, pos);
+      for (; pos < max; pos++) {
+        code = state.src.charCodeAt(pos);
+        if (code !== 0x20 && code !== 0x0A) { break; }
+      }
     } else {
       title = '';
     }
@@ -4837,7 +4866,7 @@ module.exports.parseLinkDestination = parseLinkDestination;
 module.exports.parseLinkTitle = parseLinkTitle;
 module.exports.normalizeReference = normalizeReference;
 
-},{"../helpers":6}],28:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 // Proceess '\n'
 
 module.exports = function escape(state) {
