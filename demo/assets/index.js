@@ -1,32 +1,51 @@
-$(function() {
-  // highlight snippets
-  $('pre.code-sample code').each(function(i, block) {
-    hljs.highlightBlock(block);
+(function () {
+  'use strict';
+
+  var mdHtml, mdSrc;
+
+  var options = {
+    html: true,
+    xhtml: true,
+    breaks: false,
+    langprefix: 'language-'
+  };
+
+  function mdInit() {
+    mdHtml = new window.Remarkable(options);
+    mdSrc = new window.Remarkable(options);
+
+    // Beautify output of parser for html content
+    mdHtml.renderer.rules.table_open = function () {
+      return '<table class="table table-striped">\n';
+    };
+  }
+
+  function updateResult() {
+    var source = $('.source').val();
+    $('.result').html(mdHtml.render(source));
+    $('.result-src-content').text(mdSrc.render(source));
+  }
+
+
+  $(function() {
+    // highlight snippet
+    $('pre.code-sample code').each(function(i, block) {
+      window.hljs.highlightBlock(block);
+    });
+
+    mdInit();
+
+    $('.source').on('keyup paste cut mouseup', updateResult);
+    $('.source-clear').on('click', function (event) {
+      $('.source').val('');
+      updateResult();
+      event.preventDefault();
+    });
+    $('.result-mode').on('click', function (event) {
+      $('body').toggleClass('result-as-text');
+      event.preventDefault();
+    });
+
+    updateResult();
   });
-});
-
-var md = new window.Remarkable({
-  html: true,
-  xhtml: true,
-  breaks: false,
-  langprefix: 'language-'
-});
-
-md.renderer.rules.table_open = function () {
-  return '<table class="table table-striped">\n';
-}
-
-
-function updateResult() {
-  var result = md.render($('#demo1 .source').val());
-  $('#demo1 .result').html(result);
-  $('#demo1 .result-text-data').text(result);
-}
-
-$('#demo1 .source').on('keyup paste cut mouseup', updateResult);
-$('#demo1 .mode').on('click', function (event) {
-  $('#demo1').toggleClass('result-as-text');
-  event.preventDefault();
-});
-
-updateResult();
+})();

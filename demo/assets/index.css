@@ -3,7 +3,7 @@ body {
   overflow: hidden;
 }
 
-.source, .result, .result-text {
+.source, .result, .result-src {
   width: 100%;
   height: 350px;
 }
@@ -13,25 +13,26 @@ body {
   overflow: auto;
 }
 
-.result-text {
+.result-src {
   display: none;
 }
-.result-text-data {
+.result-src-content {
   white-space: pre;
 }
 
-.result-as-text .result-text {
+.result-as-text .result-src {
   display: block;
 }
 .result-as-text .result {
   display: none;
 }
 
-.mode {
+.result-mode, .source-clear {
   position: absolute;
   right: 15px;
   top: 0;
   padding: 0 10px;
+  border-radius: 0 4px;
   font-weight: bold;
   font-size: 12px;
   background-color: #666;

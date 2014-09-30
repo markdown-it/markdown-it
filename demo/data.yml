@@ -1,9 +1,6 @@
 
 self:
-  demo1:
-    title: Simple markdown
-    description: |
-      That's a sample of typical `remarkable` use. You can play with content
+  demo:
     code: |
       var Remarkable = require('remarkable');
 
@@ -89,16 +86,3 @@ self:
       [Basic link](https://github.com/jonschlinkert/remarkable)
 
       [Link with title](https://github.com/jonschlinkert/remarkable "Awesome markdown parser")
-
-  demo2:
-    title: Code highlight
-
-  # Advanced demos
-
-  demo3:
-    title: Typograph
-  demo4:
-    title: Block macros
-  demo5:
-    title: Custom tag (lexer plugin)
-

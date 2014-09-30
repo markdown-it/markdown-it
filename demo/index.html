@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/styles/default.min.css">
     <script src="../dist/remarkable.js"></script>
     <link rel="stylesheet" href="./assets/index.css">
+    <script src="./assets/index.js"></script>
   </head>
   <body>
     <div class="container">
       <h1>remarkable demo</h1>
-      <p><a data-toggle="collapse" href="#code-sample-demo1">Show code</a></p>
-      <pre id="code-sample-demo1" class="collapse code-sample"><code class="js">var Remarkable = require('remarkable');
+      <p><a data-toggle="collapse" href="#code-sample">Show code sample</a></p>
+      <pre id="code-sample" class="collapse code-sample"><code class="js">var Remarkable = require('remarkable');
 
 var md = new Remarkable({
   html: true,
@@ -25,8 +26,8 @@ var md = new Remarkable({
 console.log(md.parse('# Remarkable rulezz!'));
 // =&gt; &lt;h1&gt;Remarkable rulezz!&lt;/h1&gt;
 </code></pre>
-      <div id="demo1" class="row">
-        <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-6"><a href="#" class="source-clear">clear</a>
           <textarea class="source"># h1 Heading
 ## h2 Heading
 ### h3 Heading
@@ -101,13 +102,12 @@ console.log(text);
 [Link with title](https://github.com/jonschlinkert/remarkable &quot;Awesome markdown parser&quot;)
 </textarea>
         </div>
-        <section class="col-xs-6"><a href="#" class="mode">html / source</a>
+        <section class="col-xs-6"><a href="#" class="result-mode">html / source</a>
           <div class="result"></div>
-          <pre class="result-text"><code class="result-text-data"></code></pre>
+          <pre class="result-src"><code class="result-src-content"></code></pre>
         </section>
       </div>
     </div>
     <div class="gh-ribbon"><a href="https://github.com/jonschlinkert/remarkable">Fork me on GitHub</a></div>
-    <script src="./assets/index.js"></script>
   </body>
 </html>
