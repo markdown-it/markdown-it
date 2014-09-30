@@ -27,7 +27,8 @@
     "eslint": "0.8.0",
     "eslint-plugin-nodeca": "^1.0.0",
     "jade": "1.6.0",
+    "js-yaml": "3.2.2",
     "mocha": "*",
-    "uglifyjs": "*"
+    "uglify-js": "*"
   }
 }

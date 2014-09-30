@@ -1,18 +1,21 @@
 mixin sample(name)
   - var s = self.self[name];
-  h3= s.title
-  if s.description
-    p= s.description
+  //-h3= s.title
+  //-if s.description
+  //-  p= s.description
   p: a(data-toggle='collapse' href='#code-sample-' + name) Show code
 
-  pre.collapse(id='code-sample-' + name)
+  pre.collapse.code-sample(id='code-sample-' + name)
     code.js= s.code
 
   .row(id=name)
     .col-xs-6
       textarea.source= s.source
     section.col-xs-6
+      a.mode(href='#') html / source
       .result
+      pre.result-text
+        code.result-text-data
 
 doctype html
 html
@@ -28,15 +31,15 @@ html
     script(src='../dist/remarkable.js')
 
     link(rel='stylesheet' href='./assets/index.css')
-    script(src='./assets/index.js')
 
   body
     .container
       h1 remarkable demo
 
-      h2 Basic examples
+      //-h2 Basic examples
 
       +sample('demo1')
+    //-
       +sample('demo2')
 
       h2 Advanced examples
@@ -45,5 +48,7 @@ html
       +sample('demo4')
       +sample('demo5')
 
+    .gh-ribbon
+      a(href='https://github.com/jonschlinkert/remarkable') Fork me on GitHub
 
-
+    script(src='./assets/index.js')

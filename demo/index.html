@@ -8,26 +8,18 @@
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/styles/default.min.css">
     <script src="../dist/remarkable.js"></script>
     <link rel="stylesheet" href="./assets/index.css">
-    <script src="./assets/index.js"></script>
   </head>
   <body>
     <div class="container">
       <h1>remarkable demo</h1>
-      <h2>Basic examples</h2>
-      <h3>Simple markdown</h3>
-      <p>That's a sample of typical `remarkable` use. You can play with content
-</p>
       <p><a data-toggle="collapse" href="#code-sample-demo1">Show code</a></p>
-      <pre id="code-sample-demo1" class="collapse"><code class="js">var Remarkable = require('remarkable');
+      <pre id="code-sample-demo1" class="collapse code-sample"><code class="js">var Remarkable = require('remarkable');
 
 var md = new Remarkable({
-  gfm: true,
-  tables: true,
+  html: true,
+  xhtml: true,
   breaks: false,
-  pedantic: false,
-  sanitize: true,
-  smartLists: true,
-  smartypants: false
+  langprefix: 'language-'
 });
 
 console.log(md.parse('# Remarkable rulezz!'));
@@ -109,55 +101,13 @@ console.log(text);
 [Link with title](https://github.com/jonschlinkert/remarkable &quot;Awesome markdown parser&quot;)
 </textarea>
         </div>
-        <section class="col-xs-6">
+        <section class="col-xs-6"><a href="#" class="mode">html / source</a>
           <div class="result"></div>
-        </section>
-      </div>
-      <h3>Code highlight</h3>
-      <p><a data-toggle="collapse" href="#code-sample-demo2">Show code</a></p>
-      <pre id="code-sample-demo2" class="collapse"><code class="js"></code></pre>
-      <div id="demo2" class="row">
-        <div class="col-xs-6">
-          <textarea class="source"></textarea>
-        </div>
-        <section class="col-xs-6">
-          <div class="result"></div>
-        </section>
-      </div>
-      <h2>Advanced examples</h2>
-      <h3>Typograph</h3>
-      <p><a data-toggle="collapse" href="#code-sample-demo3">Show code</a></p>
-      <pre id="code-sample-demo3" class="collapse"><code class="js"></code></pre>
-      <div id="demo3" class="row">
-        <div class="col-xs-6">
-          <textarea class="source"></textarea>
-        </div>
-        <section class="col-xs-6">
-          <div class="result"></div>
-        </section>
-      </div>
-      <h3>Block macros</h3>
-      <p><a data-toggle="collapse" href="#code-sample-demo4">Show code</a></p>
-      <pre id="code-sample-demo4" class="collapse"><code class="js"></code></pre>
-      <div id="demo4" class="row">
-        <div class="col-xs-6">
-          <textarea class="source"></textarea>
-        </div>
-        <section class="col-xs-6">
-          <div class="result"></div>
-        </section>
-      </div>
-      <h3>Custom tag (lexer plugin)</h3>
-      <p><a data-toggle="collapse" href="#code-sample-demo5">Show code</a></p>
-      <pre id="code-sample-demo5" class="collapse"><code class="js"></code></pre>
-      <div id="demo5" class="row">
-        <div class="col-xs-6">
-          <textarea class="source"></textarea>
-        </div>
-        <section class="col-xs-6">
-          <div class="result"></div>
+          <pre class="result-text"><code class="result-text-data"></code></pre>
         </section>
       </div>
     </div>
+    <div class="gh-ribbon"><a href="https://github.com/jonschlinkert/remarkable">Fork me on GitHub</a></div>
+    <script src="./assets/index.js"></script>
   </body>
 </html>

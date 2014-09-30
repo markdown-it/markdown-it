@@ -8,13 +8,10 @@ self:
       var Remarkable = require('remarkable');
 
       var md = new Remarkable({
-        gfm: true,
-        tables: true,
+        html: true,
+        xhtml: true,
         breaks: false,
-        pedantic: false,
-        sanitize: true,
-        smartLists: true,
-        smartypants: false
+        langprefix: 'language-'
       });
 
       console.log(md.parse('# Remarkable rulezz!'));
