@@ -13,9 +13,10 @@ GITHUB_PROJ := https://github.com//jonschlinkert/${NPM_PACKAGE}
 
 
 demo: lint browserify
-	js-yaml demo/data.yml > demo/data.json
-	jade demo/index.jade -P --obj demo/data.json
-	rm -rf demo/data.json
+	./support/demodata.js > demo/sample.json
+	jade demo/index.jade -P --obj demo/sample.json
+	stylus demo/assets/index.styl
+	rm -rf demo/sample.json
 
 
 lint:
