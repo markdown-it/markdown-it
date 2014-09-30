@@ -4,3 +4,4 @@ env:
 
 globals:
   $: false
+  _: false

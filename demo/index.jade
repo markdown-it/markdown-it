@@ -1,7 +1,11 @@
 doctype html
 html
   head
+    title Remarkable demo
+
     script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js')
 
     script(src='http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js')
     link(rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css')
@@ -17,11 +21,35 @@ html
   body
     .container
       - var s = self.self.demo;
-      h1 remarkable demo
+      h1 Remarkable demo
 
       p: a(data-toggle='collapse' href='#code-sample') Show code sample
       pre.collapse.code-sample(id='code-sample')
         code.js= s.code
+
+      .form-inline.demo-options
+        .checkbox
+          label._tip(title='enable html tags in source text')
+            input#html(type='checkbox')
+            |  html
+        .checkbox
+          label._tip(title='add / to single tags (<br /> instead of <br>')
+            input#xhtml(type='checkbox')
+            |  xhtml
+        .checkbox
+          label._tip(title='newlines in paragraphs are rendered as <br>')
+            input#breaks(type='checkbox')
+            |  breaks
+        .checkbox
+          label._tip(title='enable output highlight for fenced blocks')
+            input#_highlight(type='checkbox')
+            |  highlight
+        .form-group
+          input#langprefix.form-control._tip(
+            type='input'
+            placeholder='language prefix'
+            title='css class language prefix for fenced code blocks'
+          )
 
       .row
         .col-xs-6

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Remarkable demo</title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js"></script>
@@ -12,7 +14,7 @@
   </head>
   <body>
     <div class="container">
-      <h1>remarkable demo</h1>
+      <h1>Remarkable demo</h1>
       <p><a data-toggle="collapse" href="#code-sample">Show code sample</a></p>
       <pre id="code-sample" class="collapse code-sample"><code class="js">var Remarkable = require('remarkable');
 
@@ -26,6 +28,31 @@ var md = new Remarkable({
 console.log(md.parse('# Remarkable rulezz!'));
 // =&gt; &lt;h1&gt;Remarkable rulezz!&lt;/h1&gt;
 </code></pre>
+      <div class="form-inline demo-options">
+        <div class="checkbox">
+          <label title="enable html tags in source text" class="_tip">
+            <input id="html" type="checkbox"> html
+          </label>
+        </div>
+        <div class="checkbox">
+          <label title="add / to single tags (&lt;br /&gt; instead of &lt;br&gt;" class="_tip">
+            <input id="xhtml" type="checkbox"> xhtml
+          </label>
+        </div>
+        <div class="checkbox">
+          <label title="newlines in paragraphs are rendered as &lt;br&gt;" class="_tip">
+            <input id="breaks" type="checkbox"> breaks
+          </label>
+        </div>
+        <div class="checkbox">
+          <label title="enable output highlight for fenced blocks" class="_tip">
+            <input id="_highlight" type="checkbox"> highlight
+          </label>
+        </div>
+        <div class="form-group">
+          <input id="langprefix" type="input" placeholder="language prefix" title="css class language prefix for fenced code blocks" class="form-control _tip">
+        </div>
+      </div>
       <div class="row">
         <div class="col-xs-6">
           <div class="demo-control"><a href="#" class="source-clear">clear</a><a id="permalink" href="./" title="Share this snippet as link"><strong>permalink</strong></a></div>
