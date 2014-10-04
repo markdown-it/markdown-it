@@ -8,9 +8,7 @@ remarkable
 
 Markdown parser done right. Fast and easy to extend.
 
-[Live demo](http://jonschlinkert.github.io/remarkable/demo/)
-
-/INTRO/
+__[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
 
 
 Install
@@ -35,11 +33,14 @@ Usage
 ```javascript
 var Remarkable = require('remarkable');
 var md = new Remarkable({
-  html: false,
-  xhtml: false,
-  breaks: true,
-  langprefix: 'language-',
-  highlight: function (str, lang) { return str; }
+  html: false,              // enable html tags in source
+  xhtml: false,             // use '/' to close single tags (<br />)
+  breaks: true,             // convert '\n' in paragraphs into <br>
+  langprefix: 'language-',  // css language prefix for fenced blocks
+
+  // Should return HTML markup for highlighted text,
+  // or empty string to escape source
+  highlight: function (str, lang) { return ''; }
 });
 
 console.log(md.parse('# Remarkable rulezz!'));
@@ -54,10 +55,7 @@ var md = new Remarkable();
 
 md.set({
   html: false,
-  xhtml: false,
-  breaks: true,
-  langprefix: 'language-',
-  highlight: function (str, lang) { return str; }
+  breaks: true
 });
 ```
 
