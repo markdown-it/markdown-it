@@ -14,6 +14,22 @@
     _src: false
   };
 
+  defaults.highlight = function (str, lang) {
+    if (!defaults._highlight) { return ''; }
+
+    var hljs = window.hljs;
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        //console.log(lang, hljs.highlight(lang, str));
+        return hljs.highlight(lang, str).value;
+      } catch (__) {}
+    }
+
+    try { return hljs.highlightAuto(str).value; } catch (__) {}
+
+    return '';
+  };
+
   function mdInit() {
     mdHtml = new window.Remarkable(defaults);
     mdSrc = new window.Remarkable(defaults);

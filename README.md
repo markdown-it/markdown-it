@@ -33,12 +33,13 @@ Usage
 -----
 
 ```javascript
-var Remarkable = require('remarkable')();
+var Remarkable = require('remarkable');
 var md = new Remarkable({
   html: false,
   xhtml: false,
   breaks: true,
-  langprefix: 'language-'
+  langprefix: 'language-',
+  highlight: function (str, lang) { return str; }
 });
 
 console.log(md.parse('# Remarkable rulezz!'));
@@ -55,7 +56,8 @@ md.set({
   html: false,
   xhtml: false,
   breaks: true,
-  langprefix: 'language-'
+  langprefix: 'language-',
+  highlight: function (str, lang) { return str; }
 });
 ```
 
