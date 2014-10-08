@@ -1,0 +1,5 @@
+.
+~~Strikeout~~
+.
+<p><del>Strikeout</del></p>
+.

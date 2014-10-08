@@ -1,0 +1,30 @@
+copyright
+.
+(c) (C)
+.
+<p>© ©</p>
+.
+
+
+reserved
+.
+(r) (R)
+.
+<p>® ®</p>
+.
+
+
+trademark
+.
+(tm) (TM)
+.
+<p>™ ™</p>
+.
+
+
+plus-minus
+.
++/-5
+.
+<p>±5</p>
+.
