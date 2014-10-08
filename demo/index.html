@@ -15,14 +15,17 @@
   <body>
     <div class="container">
       <h1>Remarkable demo</h1>
-      <p><a data-toggle="collapse" href="#code-sample">Show code sample</a></p>
+      <p><a data-toggle="collapse" href="#code-sample">code sample</a></p>
       <pre id="code-sample" class="collapse code-sample"><code class="js">var Remarkable = require('remarkable');
-
 var md = new Remarkable({
-  html: true,
-  xhtml: true,
-  breaks: false,
-  langprefix: 'language-'
+  html: false,              // enable html tags in source
+  xhtml: false,             // use '/' to close single tags (&lt;br /&gt;)
+  breaks: true,             // convert '\n' in paragraphs into &lt;br&gt;
+  langPrefix: 'language-',  // css language prefix for fenced blocks
+
+  // Should return HTML markup for highlighted text,
+  // or empty string to escape source
+  highlight: function (str, lang) { return ''; }
 });
 
 console.log(md.parse('# Remarkable rulezz!'));
@@ -50,7 +53,7 @@ console.log(md.parse('# Remarkable rulezz!'));
           </label>
         </div>
         <div class="form-group">
-          <input id="langprefix" type="input" placeholder="language prefix" title="css class language prefix for fenced code blocks" class="form-control _tip">
+          <input id="langPrefix" type="input" placeholder="language prefix" title="css class language prefix for fenced code blocks" class="form-control _tip">
         </div>
       </div>
     </div>

@@ -2,9 +2,9 @@
 'use strict';
 
 
-module.exports = require('./lib/parser');
+module.exports = require('./lib/');
 
-},{"./lib/parser":31}],1:[function(require,module,exports){
+},{"./lib/":7}],1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2446,11 +2446,13 @@ module.exports = {
   html: false,
   xhtml: false,
   breaks: false,
-  langprefix: 'language-'
+  maxLevel: 20,
+  langPrefix: 'language-',
+  highlight: function (/*str*/) { return ''; }
 };
 
 },{}],6:[function(require,module,exports){
-// Common functions for lexers
+// Common functions for parsers
 
 'use strict';
 
@@ -2607,13 +2609,241 @@ exports.fromCodePoint = fromCodePoint;
 exports.replaceEntities = replaceEntities;
 
 },{"./common/entities":1}],7:[function(require,module,exports){
-// Block lexer
+// Main perser class
+
+'use strict';
+
+
+var assign = require('object-assign');
+
+
+var Renderer     = require('./renderer');
+var ParserBlock  = require('./parser_block');
+var ParserInline = require('./parser_inline');
+var defaults     = require('./defaults');
+
+// Main class
+//
+function Remarkable(options) {
+  this.options  = assign({}, defaults);
+  this.state    = null;
+
+  this.inline   = new ParserInline();
+  this.block    = new ParserBlock();
+  this.renderer = new Renderer();
+
+  // a bunch of cross-references between parsers
+  // used for link reference definitions
+  this.block.inline = this.inline;
+
+  if (options) { this.set(options); }
+}
+
+
+Remarkable.prototype.set = function (options) {
+  assign(this.options, options);
+};
+
+
+Remarkable.prototype.render = function (src) {
+  var tokens, tok, i, l, env = { references: Object.create(null) };
+
+  // Parse blocks
+  tokens = this.block.parse(src, this.options, env);
+
+  // Parse inlines
+  for (i = 0, l = tokens.length; i < l; i++) {
+    tok = tokens[i];
+    if (tok.type === 'inline') {
+      tok.children = this.inline.parse(tok.content, this.options, env);
+    }
+  }
+
+  // Render
+  return this.renderer.render(tokens, this.options, env);
+};
+
+
+module.exports = Remarkable;
+
+},{"./defaults":5,"./parser_block":9,"./parser_inline":10,"./renderer":12,"object-assign":36}],8:[function(require,module,exports){
+
+'use strict';
+
+//
+// Parse link label
+//
+// this function assumes that first character ("[") already matches;
+// returns the end of the label
+function parseLinkLabel(state, start) {
+  var level, found, marker, ok,
+      labelEnd = -1,
+      max = state.posMax,
+      oldPos = state.pos,
+      oldLength = state.tokens.length,
+      oldPending = state.pending,
+      oldFlag = state.validateInsideLink;
+
+  if (state.validateInsideLink) { return -1; }
+
+  state.pos = start + 1;
+  state.validateInsideLink = true;
+  level = 1;
+
+  while (state.pos < max) {
+    marker = state.src.charCodeAt(state.pos);
+    if (marker === 0x5B /* [ */) {
+      level++;
+    } else if (marker === 0x5D /* ] */) {
+      level--;
+      if (level === 0) {
+        found = true;
+        break;
+      }
+    }
+
+    ok = state.parser.tokenizeSingle(state);
+
+    if (!ok) { state.pending += state.src[state.pos++]; }
+  }
+
+  if (found) { labelEnd = state.pos; }
+
+  // restore old state
+  state.pos = oldPos;
+  state.tokens.length = oldLength;
+  state.pending = oldPending;
+  state.validateInsideLink = oldFlag;
+
+  return labelEnd;
+}
+
+//
+// Parse link destination
+//
+// on success it returns a string and updates state.pos;
+// on failure it returns null
+function parseLinkDestination(state, pos) {
+  var code, level,
+      max = state.posMax,
+      href = '';
+
+  if (state.src.charCodeAt(pos) === 0x3C /* < */) {
+    pos++;
+    while (pos < max) {
+      code = state.src.charCodeAt(pos);
+      if (code === 0x0A /* \n */) { return false; }
+      if (code === 0x3E /* > */) {
+        state.pos = pos + 1;
+        state.link_content = href;
+        return true;
+      }
+      if (code === 0x5C /* \ */ && pos + 1 < max) {
+        pos++;
+        href += state.src[pos++];
+        continue;
+      }
+
+      href += state.src[pos++];
+    }
+
+    // no closing '>'
+    return false;
+  }
+
+  // this should be ... } else { ... branch
+
+  level = 0;
+  while (pos < max) {
+    code = state.src.charCodeAt(pos);
+
+    if (code === 0x20) { break; }
+
+    // ascii control characters
+    if (code < 0x20 || code === 0x7F) { break; }
+
+    if (code === 0x5C /* \ */ && pos + 1 < max) {
+      pos++;
+      href += state.src[pos++];
+      continue;
+    }
+
+    if (code === 0x28 /* ( */) {
+      level++;
+      if (level > 1) { break; }
+    }
+
+    if (code === 0x29 /* ) */) {
+      level--;
+      if (level < 0) { break; }
+    }
+
+    href += state.src[pos++];
+  }
+
+  if (!href.length) { return false; }
+
+  state.pos = pos;
+  state.link_content = href;
+  return true;
+}
+
+//
+// Parse link title
+//
+// on success it returns a string and updates state.pos;
+// on failure it returns null
+function parseLinkTitle(state, pos) {
+  var title, code,
+      max = state.posMax,
+      marker = state.src.charCodeAt(pos);
+
+  if (marker !== 0x22 /* " */ && marker !== 0x27 /* ' */ && marker !== 0x28 /* ( */) { return false; }
+
+  pos++;
+  title = '';
+
+  // if opening marker is "(", switch it to closing marker ")"
+  if (marker === 0x28) { marker = 0x29; }
+
+  while (pos < max) {
+    code = state.src.charCodeAt(pos);
+    if (code === marker) {
+      state.pos = pos + 1;
+      state.link_content = title;
+      return true;
+    }
+    if (code === 0x5C /* \ */ && pos + 1 < max) {
+      pos++;
+      title += state.src[pos++];
+      continue;
+    }
+
+    title += state.src[pos++];
+  }
+
+  return false;
+}
+
+function normalizeReference(str) {
+  return str.trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+module.exports.parseLinkLabel = parseLinkLabel;
+module.exports.parseLinkDestination = parseLinkDestination;
+module.exports.parseLinkTitle = parseLinkTitle;
+module.exports.normalizeReference = normalizeReference;
+
+},{}],9:[function(require,module,exports){
+// Block parser
 
 
 'use strict';
 
 
-var State           = require('./lexer_block/state_block');
+var Ruler           = require('./ruler');
+var State           = require('./rules_block/state_block');
+
 var skipEmptyLines  = require('./helpers').skipEmptyLines;
 var isEmpty         = require('./helpers').isEmpty;
 
@@ -2621,111 +2851,48 @@ var isEmpty         = require('./helpers').isEmpty;
 var rules = [];
 
 // `list` should be after `hr`, but before `heading`
-rules.push(require('./lexer_block/code'));
-rules.push(require('./lexer_block/fences'));
-rules.push(require('./lexer_block/blockquote'));
-rules.push(require('./lexer_block/hr'));
-rules.push(require('./lexer_block/list'));
-rules.push(require('./lexer_block/heading'));
-rules.push(require('./lexer_block/lheading'));
-rules.push(require('./lexer_block/htmlblock'));
-rules.push(require('./lexer_block/table'));
-rules.push(require('./lexer_block/paragraph'));
+rules.push([ require('./rules_block/code') ]);
+rules.push([ require('./rules_block/fences'),     'paragraph', 'blockquote', 'list' ]);
+rules.push([ require('./rules_block/blockquote'), 'paragraph', 'blockquote', 'list' ]);
+rules.push([ require('./rules_block/hr'),         'paragraph', 'blockquote', 'list' ]);
+rules.push([ require('./rules_block/list'),       'paragraph', 'blockquote' ]);
+rules.push([ require('./rules_block/heading'),    'paragraph', 'blockquote' ]);
+rules.push([ require('./rules_block/lheading') ]);
+rules.push([ require('./rules_block/htmlblock'),  'paragraph', 'blockquote' ]);
+rules.push([ require('./rules_block/table'),      'paragraph' ]);
+rules.push([ require('./rules_block/paragraph') ]);
 
 
-function functionName(fn) {
-  var ret = fn.toString();
-  ret = ret.substr('function '.length);
-  ret = ret.substr(0, ret.indexOf('('));
-  return ret;
-}
-
-function findByName(self, name) {
-  for (var i = 0; i < self.rules.length; i++) {
-    if (functionName(self.rules[i]) === name) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-
-// Block Lexer class
+// Block Parser class
 //
-function LexerBlock() {
-  this.rules = [];
-  this.rules_named = {};
+function ParserBlock() {
+  this._rules = [];
+  this._rulesParagraphTerm  = [];
+  this._rulesBlockquoteTerm = [];
+  this._rulesListTerm       = [];
+
+  this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
   for (var i = 0; i < rules.length; i++) {
-    this.after(null, rules[i]);
+    this.ruler.after(rules[i][0], rules[i].slice(1));
   }
 }
 
 
-// Replace/delete lexer function
-//
-LexerBlock.prototype.at = function (name, fn) {
-  var index = findByName(name);
-  if (index === -1) {
-    throw new Error('Lexer rule not found: ' + name);
-  }
-
-  if (fn) {
-    this.rules[index] = fn;
-  } else {
-    this.rules = this.rules.slice(0, index).concat(this.rules.slice(index + 1));
-  }
-
-  this.rules_named[functionName(fn)] = fn;
-};
-
-
-// Add function to lexer chain before one with given name.
-// Or add to start, if name not defined
-//
-LexerBlock.prototype.before = function (name, fn) {
-  if (!name) {
-    this.rules.unshift(fn);
-    this.rules_named[functionName(fn)] = fn;
-    return;
-  }
-
-  var index = findByName(name);
-  if (index === -1) {
-    throw new Error('Lexer rule not found: ' + name);
-  }
-
-  this.rules.splice(index, 0, fn);
-  this.rules_named[functionName(fn)] = fn;
-};
-
-
-// Add function to lexer chain after one with given name.
-// Or add to end, if name not defined
-//
-LexerBlock.prototype.after = function (name, fn) {
-  if (!name) {
-    this.rules.push(fn);
-    this.rules_named[functionName(fn)] = fn;
-    return;
-  }
-
-  var index = findByName(name);
-  if (index === -1) {
-    throw new Error('Lexer rule not found: ' + name);
-  }
-
-  this.rules.splice(index + 1, 0, fn);
-  this.rules_named[functionName(fn)] = fn;
+ParserBlock.prototype.rulesUpdate = function () {
+  this._rules = this.ruler.getRules();
+  this._rulesParagraphTerm  = this.ruler.getRules('paragraph');
+  this._rulesBlockquoteTerm = this.ruler.getRules('blockquote');
+  this._rulesListTerm       = this.ruler.getRules('list');
 };
 
 
 // Generate tokens for input range
 //
-LexerBlock.prototype.tokenize = function (state, startLine, endLine) {
+ParserBlock.prototype.tokenize = function (state, startLine, endLine) {
   var ok, i,
-      rules = this.rules,
-      len = this.rules.length,
+      rules = this._rules,
+      len = this._rules.length,
       line = startLine,
       hasEmptyLines = false;
 
@@ -2777,7 +2944,7 @@ LexerBlock.prototype.tokenize = function (state, startLine, endLine) {
 };
 
 
-LexerBlock.prototype.parse = function (src, options, env) {
+ParserBlock.prototype.parse = function (src, options, env) {
   var state, lineStart = 0, lastTabPos = 0;
 
   if (!src) { return ''; }
@@ -2810,7 +2977,6 @@ LexerBlock.prototype.parse = function (src, options, env) {
     });
   }
 
-
   state = new State(
     src,
     this,
@@ -2822,1141 +2988,85 @@ LexerBlock.prototype.parse = function (src, options, env) {
   this.tokenize(state, state.line, state.lineMax);
 
   return state.tokens;
-
 };
 
 
-module.exports = LexerBlock;
+module.exports = ParserBlock;
 
-},{"./helpers":6,"./lexer_block/blockquote":8,"./lexer_block/code":9,"./lexer_block/fences":10,"./lexer_block/heading":11,"./lexer_block/hr":12,"./lexer_block/htmlblock":13,"./lexer_block/lheading":14,"./lexer_block/list":15,"./lexer_block/paragraph":16,"./lexer_block/state_block":17,"./lexer_block/table":18}],8:[function(require,module,exports){
-// Block quotes
+},{"./helpers":6,"./ruler":13,"./rules_block/blockquote":14,"./rules_block/code":15,"./rules_block/fences":16,"./rules_block/heading":17,"./rules_block/hr":18,"./rules_block/htmlblock":19,"./rules_block/lheading":20,"./rules_block/list":21,"./rules_block/paragraph":22,"./rules_block/state_block":23,"./rules_block/table":24}],10:[function(require,module,exports){
+// Inline parser
 
 'use strict';
 
 
-var skipSpaces      = require('../helpers').skipSpaces;
-
-
-module.exports = function blockquote(state, startLine, endLine, silent) {
-  var nextLine, lastLineEmpty, oldTShift, oldBMarks, i, oldIndent, oldListMode,
-      rules_named = state.lexer.rules_named,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  if (pos > max) { return false; }
-
-  // check the block quote marker
-  if (state.src.charCodeAt(pos++) !== 0x3E/* > */) { return false; }
-
-  // we know that it's going to be a valid blockquote,
-  // so no point trying to find the end of it in silent mode
-  if (silent) { return true; }
-
-  // skip one optional space after '>'
-  if (state.src.charCodeAt(pos) === 0x20) { pos++; }
-
-  state.bqMarks[startLine]++;
-  state.bqLevel++;
-  oldIndent = state.blkIndent;
-  state.blkIndent = 0;
-
-  oldBMarks = [ state.bMarks[startLine] ];
-  state.bMarks[startLine] = pos;
-
-  // check if we have an empty blockquote
-  pos = pos < max ? skipSpaces(state, pos) : pos;
-  lastLineEmpty = pos >= max;
-
-  oldTShift = [ state.tShift[startLine] ];
-  state.tShift[startLine] = pos - state.bMarks[startLine];
-
-  // Search the end of the block
-  //
-  // Block ends with either:
-  //  1. an empty line outside:
-  //     ```
-  //     > test
-  //
-  //     ```
-  //  2. an empty line inside:
-  //     ```
-  //     >
-  //     test
-  //     ```
-  //  3. another tag
-  //     ```
-  //     > test
-  //      - - -
-  //     ```
-  for (nextLine = startLine + 1; nextLine < endLine; nextLine++) {
-    pos = state.bMarks[nextLine] + state.tShift[nextLine];
-    max = state.eMarks[nextLine];
-
-    if (pos >= max) {
-      // Case 1: line is not inside the blockquote, and this line is empty.
-      break;
-    }
-
-    if (state.src.charCodeAt(pos++) === 0x3E/* > */) {
-      state.bqMarks[nextLine]++;
-      // This line is inside the blockquote.
-
-      // skip one optional space after '>'
-      if (state.src.charCodeAt(pos) === 0x20) { pos++; }
-
-      oldBMarks.push(state.bMarks[nextLine]);
-      state.bMarks[nextLine] = pos;
-
-      pos = pos < max ? skipSpaces(state, pos) : pos;
-      lastLineEmpty = pos >= max;
-
-      oldTShift.push(state.tShift[nextLine]);
-      state.tShift[nextLine] = pos - state.bMarks[nextLine];
-      continue;
-    }
-
-    // Case 2: line is not inside the blockquote, and the last line was empty.
-    if (lastLineEmpty) { break; }
-
-    // Case 3: another tag found.
-    if (rules_named.fences(state, nextLine, endLine, true)) { break; }
-    if (rules_named.hr(state, nextLine, endLine, true)) { break; }
-    if (rules_named.list(state, nextLine, endLine, true)) { break; }
-    if (rules_named.heading(state, nextLine, endLine, true)) { break; }
-    // setex header can't interrupt paragraph
-    // if (rules_named.lheading(state, nextLine, endLine, true)) { break; }
-    if (rules_named.blockquote(state, nextLine, endLine, true)) { break; }
-    if (rules_named.table(state, nextLine, endLine, true)) { break; }
-    //if (rules_named.tag(state, nextLine, endLine, true)) { break; }
-    //if (rules_named.def(state, nextLine, endLine, true)) { break; }
-
-    oldBMarks.push(state.bMarks[nextLine]);
-    oldTShift.push(state.tShift[nextLine]);
-  }
-
-  oldListMode = state.listMode;
-  state.listMode = false;
-  state.tokens.push({ type: 'blockquote_open' });
-  state.lexer.tokenize(state, startLine, nextLine);
-  state.tokens.push({ type: 'blockquote_close' });
-  state.listMode = oldListMode;
-
-  // Restore original tShift; this might not be necessary since the parser
-  // has already been here, but just to make sure we can do that.
-  for (i = 0; i < oldTShift.length; i++) {
-    state.bMarks[i + startLine] = oldBMarks[i];
-    state.tShift[i + startLine] = oldTShift[i];
-  }
-  state.bqLevel--;
-  state.blkIndent = oldIndent;
-
-  return true;
-};
-
-},{"../helpers":6}],9:[function(require,module,exports){
-// Code block (4 spaces padded)
-
-'use strict';
-
-
-var isEmpty  = require('../helpers').isEmpty;
-var getLines = require('../helpers').getLines;
-
-
-module.exports = function code(state, startLine, endLine, silent) {
-  var nextLine, last;
-
-  if (state.tShift[startLine] - state.blkIndent < 4) { return false; }
-
-  last = nextLine = startLine + 1;
-
-  while (nextLine < endLine) {
-    if (state.bqMarks[nextLine] < state.bqLevel) { break; }
-    if (isEmpty(state, nextLine)) {
-      nextLine++;
-      if (state.options.pedantic) {
-        last = nextLine;
-      }
-      continue;
-    }
-    if (state.tShift[nextLine] - state.blkIndent >= 4) {
-      nextLine++;
-      last = nextLine;
-      continue;
-    }
-    break;
-  }
-
-  if (silent) { return true; }
-
-  state.tokens.push({
-    type: 'code',
-    content: getLines(state, startLine, last, 4 + state.blkIndent, true),
-    block: true
-  });
-
-  state.line = nextLine;
-  return true;
-};
-
-},{"../helpers":6}],10:[function(require,module,exports){
-// fences (``` lang, ~~~ lang)
-
-'use strict';
-
-
-var skipSpaces      = require('../helpers').skipSpaces;
-var skipChars       = require('../helpers').skipChars;
-var getLines        = require('../helpers').getLines;
-
-
-module.exports = function fences(state, startLine, endLine, silent) {
-  var marker, len, params, nextLine, mem,
-      haveEndMarker = false,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  if (pos + 3 > max) { return false; }
-
-  marker = state.src.charCodeAt(pos);
-
-  if (marker !== 0x7E/* ~ */ && marker !== 0x60 /* ` */) {
-    return false;
-  }
-
-  // scan marker length
-  mem = pos;
-  pos = skipChars(state, pos, marker);
-
-  len = pos - mem;
-
-  if (len < 3) { return false; }
-
-  params = state.src.slice(pos, max).trim();
-
-  if (params.indexOf('`') >= 0) { return false; }
-
-  // Since start is found, we can report success here in validation mode
-  if (silent) { return true; }
-
-  // search end of block
-  nextLine = startLine;
-
-  for (;;) {
-    nextLine++;
-    if (nextLine >= endLine) {
-      // unclosed block should be autoclosed by end of document.
-      // also block seems to be autoclosed by end of parent
-      /*if (state.blkLevel === 0) {
-        break;
-      }
-      return false;*/
-      break;
-    }
-
-    pos = mem = state.bMarks[nextLine] + state.tShift[nextLine];
-    max = state.eMarks[nextLine];
-
-    if (pos < max && state.tShift[nextLine] < state.blkIndent) {
-      // non-empty line with negative indent should stop the list:
-      // - ```
-      //  test
-      break;
-    }
-    if (pos < max && state.bqMarks[nextLine] < state.bqLevel) { break; }
-
-    if (state.src.charCodeAt(pos) !== marker) { continue; }
-
-    pos = skipChars(state, pos, marker);
-
-    // closing code fence must be at least as long as the opening one
-    if (pos - mem < len) { continue; }
-
-    // make sure tail has spaces only
-    pos = skipSpaces(state, pos);
-
-    if (pos < max) { continue; }
-
-    haveEndMarker = true;
-    // found!
-    break;
-  }
-
-  // If a fence has heading spaces, they should be removed from its inner block
-  len = state.tShift[startLine];
-
-  state.tokens.push({
-    type: 'fence',
-    params: params,
-    content: getLines(state, startLine + 1, nextLine, len, true)
-  });
-
-  state.line = nextLine + (haveEndMarker ? 1 : 0);
-  return true;
-};
-
-},{"../helpers":6}],11:[function(require,module,exports){
-// heading (#, ##, ...)
-
-'use strict';
-
-
-var isWhiteSpace    = require('../helpers').isWhiteSpace;
-var skipSpaces      = require('../helpers').skipSpaces;
-var skipCharsBack   = require('../helpers').skipCharsBack;
-
-
-module.exports = function heading(state, startLine, endLine, silent) {
-  var ch, level,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  if (pos >= max) { return false; }
-
-  ch  = state.src.charCodeAt(pos);
-
-  if (ch !== 0x23/* # */ || pos >= max) { return false; }
-
-  // count heading level
-  level = 1;
-  ch = state.src.charCodeAt(++pos);
-  while (ch === 0x23/* # */ && pos < max && level <= 6) {
-    level++;
-    ch = state.src.charCodeAt(++pos);
-  }
-
-  if (level > 6 || (pos < max && !isWhiteSpace(ch))) { return false; }
-
-  // skip spaces before heading text
-  pos = skipSpaces(state, pos);
-
-  // Now pos contains offset of first heared char
-  // Let's cut tails like '    ###  ' from the end of string
-
-  max = skipCharsBack(state, max, 0x20/* space */, pos);
-  max = skipCharsBack(state, max, 0x23/* # */, pos);
-
-  if (max < state.eMarks[startLine] &&
-      state.src.charCodeAt(max) === 0x23/* # */ &&
-      state.src.charCodeAt(max - 1) === 0x5C/* \ */) {
-    max++;
-  }
-
-  // ## Foo   ####
-  //       ^^^
-  max = skipCharsBack(state, max, 0x20/* space */, pos);
-
-  if (silent) { return true; }
-
-  state.tokens.push({ type: 'heading_open', level: level });
-  // only if header is not empty
-  if (pos < max) {
-    state.tokens.push({
-      type: 'inline',
-      content: state.src.slice(pos, max).trim()
-    });
-  }
-  state.tokens.push({ type: 'heading_close', level: level });
-
-  state.line = startLine + 1;
-  return true;
-};
-
-},{"../helpers":6}],12:[function(require,module,exports){
-// Horizontal rule
-
-'use strict';
-
-
-var isWhiteSpace    = require('../helpers').isWhiteSpace;
-
-
-module.exports = function hr(state, startLine, endLine, silent) {
-  var marker, cnt, ch,
-      pos = state.bMarks[startLine],
-      max = state.eMarks[startLine];
-
-  pos += state.tShift[startLine];
-
-  if (pos > max) { return false; }
-
-  marker = state.src.charCodeAt(pos++);
-
-  // Check hr marker
-  if (marker !== 0x2A/* * */ &&
-      marker !== 0x2D/* - */ &&
-      marker !== 0x5F/* _ */) {
-    return false;
-  }
-
-  // markers can be mixed with spaces, but there should be at least 3 one
-
-  cnt = 1;
-  while (pos < max) {
-    ch = state.src.charCodeAt(pos++);
-    if (ch !== marker && !isWhiteSpace(ch)) { return false; }
-    if (ch === marker) { cnt++; }
-  }
-
-  if (cnt < 3) { return false; }
-
-  if (silent) { return true; }
-
-  state.tokens.push({ type: 'hr' });
-
-  state.line = startLine + 1;
-  return true;
-};
-
-},{"../helpers":6}],13:[function(require,module,exports){
-// HTML block
-
-'use strict';
-
-
-var isEmpty   = require('../helpers').isEmpty;
-var getLines  = require('../helpers').getLines;
-
-var block_names = require('../common/html_blocks');
-
-
-var HTML_TAG_OPEN_RE = /^<([a-zA-Z]{1,15})[\s\/>]/;
-var HTML_TAG_CLOSE_RE = /^<\/([a-zA-Z]{1,15})[\s>]/;
-
-function isLetter(ch) {
-  /*eslint no-bitwise:0*/
-  var lc = ch | 0x20; // to lower case
-  return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */);
-}
-
-module.exports = function htmlblock(state, startLine, endLine, silent) {
-  var ch, match, nextLine,
-      pos = state.bMarks[startLine],
-      max = state.eMarks[startLine],
-      shift = state.tShift[startLine];
-
-  pos += shift;
-
-  if (!state.options.html) { return false; }
-
-  if (shift > 3 || pos + 2 >= max || state.blkLevel > 0) { return false; }
-
-  if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
-
-  ch = state.src.charCodeAt(pos + 1);
-
-  if (ch === 0x21/* ! */ || ch === 0x3F/* ? */) {
-    // Directive start / comment start / processing instruction start
-    if (silent) { return true; }
-
-  } else if (ch === 0x2F/* / */ || isLetter(ch)) {
-
-    // Probably start or end of tag
-    if (ch === 0x2F/* \ */) {
-      // closing tag
-      match = state.src.slice(pos, max).match(HTML_TAG_CLOSE_RE);
-      if (!match) { return false; }
-    } else {
-      // opening tag
-      match = state.src.slice(pos, max).match(HTML_TAG_OPEN_RE);
-      if (!match) { return false; }
-    }
-    // Make sure tag name is valid
-    if (block_names.indexOf(match[1].toLowerCase()) < 0) { return false; }
-    if (silent) { return true; }
-
-  } else {
-    return false;
-  }
-
-  // If we are here - we detected HTML block.
-  // Let's roll down till empty line (block end).
-  nextLine = startLine + 1;
-  while (nextLine < state.lineMax && !isEmpty(state, nextLine)) {
-    nextLine++;
-  }
-
-  state.tokens.push({
-    type: 'htmlblock',
-    content: getLines(state, startLine, nextLine, 0, true)
-  });
-
-  state.line = nextLine;
-  return true;
-};
-
-},{"../common/html_blocks":2,"../helpers":6}],14:[function(require,module,exports){
-// lheading (---, ===)
-
-'use strict';
-
-
-var skipSpaces      = require('../helpers').skipSpaces;
-var skipChars       = require('../helpers').skipChars;
-var skipCharsBack   = require('../helpers').skipCharsBack;
-
-
-module.exports = function lheading(state, startLine, endLine, silent) {
-  var marker, pos, max,
-      next = startLine + 1;
-
-  if (next >= endLine) { return false; }
-  if (state.tShift[next] < state.blkIndent) { return false; }
-  if (state.bqMarks[next] < state.bqLevel) { return false; }
-
-  // Scan next line
-  if (state.tShift[next] - state.blkIndent > 3) { return false; }
-
-  pos = state.bMarks[next] + state.tShift[next];
-  max = state.eMarks[next];
-
-  marker = state.src.charCodeAt(pos);
-
-  if (marker !== 0x2D/* - */ && marker !== 0x3D/* = */) { return false; }
-
-  pos = skipChars(state, pos, marker);
-
-  pos = skipSpaces(state, pos);
-
-  if (pos < max) { return false; }
-
-  if (silent) { return true; }
-
-  pos = state.bMarks[startLine] + state.tShift[startLine];
-  max = skipCharsBack(state, state.eMarks[startLine], 0x20/* space */, pos);
-
-  state.tokens.push({ type: 'heading_open', level: marker === 0x3D/* = */ ? 1 : 2 });
-  state.tokens.push({
-    type: 'inline',
-    content: state.src.slice(pos, max).trim()
-  });
-  state.tokens.push({ type: 'heading_close', level: marker === 0x3D/* = */ ? 1 : 2 });
-
-  state.line = next + 1;
-  return true;
-};
-
-},{"../helpers":6}],15:[function(require,module,exports){
-// Lists
-
-'use strict';
-
-
-var isEmpty    = require('../helpers').isEmpty;
-var skipSpaces = require('../helpers').skipSpaces;
-
-
-// Search `[-+*][\n ]`, returns next pos arter marker on success
-// or -1 on fail.
-function skipBulletListMarker(state, startLine) {
-  var marker, pos, max;
-
-  pos = state.bMarks[startLine] + state.tShift[startLine];
-  max = state.eMarks[startLine];
-
-  if (pos >= max) { return -1; }
-
-  marker = state.src.charCodeAt(pos++);
-  // Check bullet
-  if (marker !== 0x2A/* * */ &&
-      marker !== 0x2D/* - */ &&
-      marker !== 0x2B/* + */) {
-    return -1;
-  }
-
-  if (pos < max && state.src.charCodeAt(pos) !== 0x20) {
-    // " 1.test " - is not a list item
-    return -1;
-  }
-
-  return pos;
-}
-
-// Search `\d+[.)][\n ]`, returns next pos arter marker on success
-// or -1 on fail.
-function skipOrderedListMarker(state, startLine) {
-  var ch,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
-      max = state.eMarks[startLine];
-
-  if (pos + 1 >= max) { return -1; }
-
-  ch = state.src.charCodeAt(pos++);
-
-  if (ch < 0x30/* 0 */ || ch > 0x39/* 9 */) { return -1; }
-
-  for (;;) {
-    // EOL -> fail
-    if (pos >= max) { return -1; }
-
-    ch = state.src.charCodeAt(pos++);
-
-    if (ch >= 0x30/* 0 */ && ch <= 0x39/* 9 */) {
-      continue;
-    }
-
-    // found valid marker
-    if (ch === 0x29/* ) */ || ch === 0x2e/* . */) {
-      break;
-    }
-
-    return -1;
-  }
-
-
-  if (pos < max && state.src.charCodeAt(pos) !== 0x20/* space */) {
-    // " 1.test " - is not a list item
-    return -1;
-  }
-  return pos;
-}
-
-
-module.exports = function list(state, startLine, endLine, silent) {
-  var nextLine,
-      indent,
-      oldTShift,
-      oldIndent,
-      oldTight,
-      oldListMode,
-      start,
-      posAfterMarker,
-      max,
-      indentAfterMarker,
-      markerValue,
-      markerCharCode,
-      isOrdered,
-      contentStart,
-      listTokIdx,
-      prevEmptyEnd,
-      rules_named = state.lexer.rules_named;
-
-  // Detect list type and position after marker
-  if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
-    isOrdered = true;
-  } else if ((posAfterMarker = skipBulletListMarker(state, startLine)) >= 0) {
-    isOrdered = false;
-  } else {
-    return false;
-  }
-  // We should terminate list on style change. Remember first one to compare.
-  markerCharCode = state.src.charCodeAt(posAfterMarker - 1);
-
-  // For validation mode we can terminate immediately
-  if (silent) { return true; }
-
-  // Start list
-  listTokIdx = state.tokens.length;
-
-  if (isOrdered) {
-    start = state.bMarks[startLine] + state.tShift[startLine];
-    markerValue = Number(state.src.substr(start, posAfterMarker - start - 1));
-
-    state.tokens.push({
-      type: 'ordered_list_open',
-      order: markerValue,
-      tight: true
-    });
-
-  } else {
-    state.tokens.push({
-      type: 'bullet_list_open',
-      tight: true
-    });
-  }
-
-  //
-  // Iterate list items
-  //
-
-  nextLine = startLine;
-  prevEmptyEnd = false;
-
-  while (nextLine < endLine) {
-    contentStart = skipSpaces(state, posAfterMarker);
-    max = state.eMarks[nextLine];
-
-    if (contentStart >= max) {
-      // trimming space in "-    \n  3" case, indent is 1 here
-      indentAfterMarker = 1;
-    } else {
-      indentAfterMarker = contentStart - posAfterMarker;
-    }
-
-    // If we have more than 4 spaces, the indent is 1
-    // (the rest is just indented code block)
-    if (indentAfterMarker > 4) { indentAfterMarker = 1; }
-
-    // If indent is less than 1, assume that it's one, example:
-    //  "-\n  test"
-    if (indentAfterMarker < 1) { indentAfterMarker = 1; }
-
-    // "  -  test"
-    //  ^^^^^ - calculating total length of this thing
-    indent = (posAfterMarker - state.bMarks[nextLine]) + indentAfterMarker;
-
-    // Run sublexer & write tokens
-    state.tokens.push({ type: 'list_item_open' });
-
-    //nextLine++;
-
-    oldIndent = state.blkIndent;
-    oldTight = state.tight;
-    oldTShift = state.tShift[startLine];
-    oldListMode = state.listMode;
-    state.tShift[startLine] = contentStart - state.bMarks[startLine];
-    state.blkIndent = indent;
-    state.tight = true;
-    state.listMode = true;
-
-    state.lexer.tokenize(state, startLine, endLine, true);
-
-    // If any of list item is tight, mark list as tight
-    if (!state.tight || prevEmptyEnd) {
-      state.tokens[listTokIdx].tight = false;
-    }
-    // Item become loose if finish with empty line,
-    // but we should filter last element, because it means list finish
-    prevEmptyEnd = (state.line - startLine) > 1 && isEmpty(state, state.line - 1);
-
-    state.blkIndent = oldIndent;
-    state.tShift[startLine] = oldTShift;
-    state.tight = oldTight;
-    state.listMode = oldListMode;
-
-    state.tokens.push({ type: 'list_item_close' });
-
-    nextLine = startLine = state.line;
-    contentStart = state.bMarks[startLine];
-
-    if (nextLine >= endLine) { break; }
-
-    if (isEmpty(state, nextLine)) {
-      if (nextLine >= endLine || isEmpty(state, nextLine)) {
-        // two newlines end the list
-        break;
-      } else {
-        nextLine++;
-      }
-    }
-
-    //
-    // Try to check if list is terminated or continued.
-    //
-    if (state.tShift[nextLine] < state.blkIndent) { break; }
-    if (state.bqMarks[nextLine] < state.bqLevel) { break; }
-
-    // fail if terminating block found
-    if (rules_named.fences(state, nextLine, endLine, true)) { break; }
-    if (rules_named.blockquote(state, nextLine, endLine, true)) { break; }
-    if (rules_named.hr(state, nextLine, endLine, true)) { break; }
-
-    // fail if list has another type
-    if (isOrdered) {
-      posAfterMarker = skipOrderedListMarker(state, nextLine);
-      if (posAfterMarker < 0) { break; }
-    } else {
-      posAfterMarker = skipBulletListMarker(state, nextLine);
-      if (posAfterMarker < 0) { break; }
-    }
-
-    if (markerCharCode !== state.src.charCodeAt(posAfterMarker - 1)) { break; }
-  }
-
-  // Finilize list
-  if (isOrdered) {
-    state.tokens.push({ type: 'ordered_list_close' });
-  } else {
-    state.tokens.push({ type: 'bullet_list_close' });
-  }
-
-  state.line = nextLine;
-  return true;
-};
-
-},{"../helpers":6}],16:[function(require,module,exports){
-// Paragraph
-
-'use strict';
-
-
-var isEmpty = require('../helpers').isEmpty;
-var getLines = require('../helpers').getLines;
-
-
-module.exports = function paragraph(state, startLine/*, endLine*/) {
-  var endLine, content, ref, t,
-      nextLine = startLine + 1,
-      rules_named = state.lexer.rules_named;
-
-  endLine = state.lineMax;
-
-  // jump line-by-line until empty one or EOF
-  for (; nextLine < endLine && !isEmpty(state, nextLine); nextLine++) {
-    // this would be a code block normally, but after paragraph
-    // it's considered a lazy continuation regardless of what's there
-    if (state.tShift[nextLine] - state.blkIndent > 3) { continue; }
-
-    // Some tags can terminate paragraph without empty line.
-    if (rules_named.fences(state, nextLine, endLine, true)) { break; }
-    if (rules_named.hr(state, nextLine, endLine, true)) { break; }
-    if (rules_named.list(state, nextLine, endLine, true)) { break; }
-    if (rules_named.heading(state, nextLine, endLine, true)) { break; }
-    // setex header can't interrupt paragraph
-    // if (rules_named.lheading(state, nextLine, endLine, true)) { break; }
-    if (rules_named.blockquote(state, nextLine, endLine, true)) { break; }
-    if (rules_named.htmlblock(state, nextLine, endLine, true)) { break; }
-    if (rules_named.table(state, nextLine, endLine, true)) { break; }
-    //if (rules_named.tag(state, nextLine, endLine, true)) { break; }
-    //if (rules_named.def(state, nextLine, endLine, true)) { break; }
-  }
-
-  content = getLines(state, startLine, nextLine, state.blkIndent, false).trim();
-
-  while ((ref = state.lexer.inline.parse_reference(content, state.options, state.env))) {
-    t = state.env.references;
-    t[ref.label] = t[ref.label] || { title: ref.title, href: ref.href };
-    content = ref.remaining.trim();
-  }
-
-  if (content) {
-    state.tokens.push({ type: 'paragraph_open' });
-    state.tokens.push({
-      type: 'inline',
-      content: content
-    });
-    state.tokens.push({ type: 'paragraph_close' });
-  }
-
-  state.line = nextLine;
-  return true;
-};
-
-},{"../helpers":6}],17:[function(require,module,exports){
-// Parser state class
-
-'use strict';
-
-
-function State(src, lexer, tokens, options, env) {
-  var ch, s, start, pos, len, indent, indent_found;
-
-  // TODO: check if we can move string replaces to parser, to avoid
-  // unnesessary call on shadow clone creation. Or check if we can do
-  // cloning more effectively. Profile first.
-
-  // Prepare string to parse:
-  //
-  // - replace tabs with spaces
-  // - remove `\r` to simplify newlines check (???)
-
-  this.src = src;
-
-  // Shortcuts to simplify nested calls
-  this.lexer  = lexer;
-
-  // TODO: (?) set directly for faster access.
-  this.options = options;
-
-  this.env = env;
-
-  //
-  // Internal state vartiables
-  //
-
-  this.tokens = tokens;
-
-  this.bMarks = []; // line begin offsets for fast jumps
-  this.eMarks = []; // line end offsets for fast jumps
-  this.tShift = []; // indent for each line
-
-  // Generate markers.
-  s = this.src;
-  indent = 0;
-  indent_found = false;
-
-  for (start = pos = indent = 0, len = s.length; pos < len; pos++) {
-    ch = s.charCodeAt(pos);
-
-    // TODO: check other spaces and tabs too or keep existing regexp replace ??
-    if (!indent_found && ch === 0x20/* space */) {
-      indent++;
-    }
-    if (!indent_found && ch !== 0x20/* space */) {
-      this.tShift.push(indent);
-      indent_found = true;
-    }
-
-
-    if (ch === 0x0D || ch === 0x0A) {
-      this.bMarks.push(start);
-      this.eMarks.push(pos);
-      indent_found = false;
-      indent = 0;
-      start = pos + 1;
-    }
-    if (ch === 0x0D && pos < len && s.charCodeAt(pos) === 0x0A) {
-      pos++;
-      start++;
-    }
-  }
-  if (ch !== 0x0D || ch !== 0x0A) {
-    this.bMarks.push(start);
-    this.eMarks.push(len);
-    this.tShift.push(indent);
-  }
-
-  // Push fake entry to simplify cache bounds checks
-  this.bMarks.push(s.length);
-  this.eMarks.push(s.length);
-  this.tShift.push(0);
-
-  // inline lexer variables
-  this.pos        = 0; // char index in src
-
-  // block lexer variables
-  this.blkLevel   = 0;
-  this.blkIndent  = 0;
-  this.line       = 0; // line index in src
-  this.lineMax    = this.bMarks.length - 1; // don't count last fake line
-  this.tight      = false; // loose/tight mode for lists
-  this.listMode   = false; // if true, block parser stops on two newlines
-
-  // Stuff for blockquotes
-  this.bqLevel    = 0;
-  this.bqMarks    = [];
-  for (start = 0; start < this.bMarks.length; start++) {
-    this.bqMarks.push(0);
-  }
-
-  // renderer
-  this.result = '';
-}
-
-
-// Create shadow clone of curent state with new input data
-State.prototype.clone = function clone(src) {
-  return new State(
-    src,
-    this.lexer,
-    this.tokens,
-    this.options
-  );
-};
-
-module.exports = State;
-
-},{}],18:[function(require,module,exports){
-// GFM table, non-standard
-
-'use strict';
-
-
-function lineMatch(state, line, reg) {
-  var pos = state.bMarks[line],
-      max = state.eMarks[line];
-
-  return state.src.substr(pos, max - pos).match(reg);
-}
-
-
-module.exports = function table(state, startLine, endLine, silent) {
-  var ch, firstLineMatch, secondLineMatch, i, nextLine, m, rows,
-      aligns, t;
-
-  // should have at least three lines
-  if (startLine + 2 > endLine) { return false; }
-
-  // first character of the second line should be '|' or '-'
-  ch = state.src.charCodeAt(state.bMarks[startLine + 1]
-     + state.tShift[startLine + 1]);
-  if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */) { return false; }
-
-  secondLineMatch = lineMatch(state, startLine + 1,
-    /^ *\|?(( *[:-]-+[:-] *\|)+( *[:-]-+[:-] *))\|? *$/);
-  if (!secondLineMatch) { return false; }
-
-  rows = secondLineMatch[1].split('|');
-  aligns = [];
-  for (i = 0; i < rows.length; i++) {
-    t = rows[i].trim();
-    if (t[t.length - 1] === ':') {
-      aligns[i] = t[0] === ':' ? 'center' : 'right';
-    } else if (t[0] === ':') {
-      aligns[i] = 'left';
-    } else {
-      aligns[i] = '';
-    }
-  }
-
-  firstLineMatch = lineMatch(state, startLine, /^ *\|?(.*?\|.*?)\|? *$/);
-  if (!firstLineMatch) { return false; }
-
-  rows = firstLineMatch[1].split('|');
-  if (aligns.length !== rows.length) { return false; }
-  if (silent) { return true; }
-
-  state.tokens.push({ type: 'table_open' });
-
-  state.tokens.push({ type: 'tr_open' });
-  for (i = 0; i < rows.length; i++) {
-    state.tokens.push({ type: 'th_open', align: aligns[i] });
-    state.tokens.push({
-      type: 'inline',
-      content: rows[i].trim()
-    });
-    state.tokens.push({ type: 'th_close' });
-  }
-  state.tokens.push({ type: 'tr_close' });
-
-  for (nextLine = startLine + 2; nextLine < endLine; nextLine++) {
-    m = lineMatch(state, nextLine, /^ *\|?(.*?\|.*?)\|? *$/);
-    if (!m) { break; }
-    rows = m[1].split('|');
-
-    state.tokens.push({ type: 'tr_open' });
-    for (i = 0; i < rows.length; i++) {
-      state.tokens.push({ type: 'td_open', align: aligns[i] });
-      state.tokens.push({
-        type: 'inline',
-        content: rows[i].replace(/^\|? *| *\|?$/g, '')
-      });
-      state.tokens.push({ type: 'td_close' });
-    }
-    state.tokens.push({ type: 'tr_close' });
-  }
-  state.tokens.push({ type: 'table_close' });
-
-  state.line = nextLine;
-  return true;
-};
-
-},{}],19:[function(require,module,exports){
-// Inline lexer
-
-'use strict';
-
-
-var StateInline = require('./lexer_inline/state_inline');
-var links = require('./lexer_inline/links');
-var skipSpaces = require('./helpers').skipSpaces;
+var Ruler       = require('./ruler');
+var StateInline = require('./rules_inline/state_inline');
 
 ////////////////////////////////////////////////////////////////////////////////
-// Lexer rules
+// Parser rules
 
 var rules = [];
 
 
 // Pure text
-rules.push(require('./lexer_inline/text'));
-rules.push(require('./lexer_inline/newline'));
-rules.push(require('./lexer_inline/escape'));
-rules.push(require('./lexer_inline/backticks'));
+rules.push(require('./rules_inline/text'));
+rules.push(require('./rules_inline/newline'));
+rules.push(require('./rules_inline/escape'));
+rules.push(require('./rules_inline/backticks'));
+rules.push(require('./rules_inline/emphasis'));
+rules.push(require('./rules_inline/links'));
+rules.push(require('./rules_inline/autolink'));
+rules.push(require('./rules_inline/htmltag'));
+rules.push(require('./rules_inline/entity'));
+rules.push(require('./rules_inline/escape_html_char'));
+
+
+// Inline Parser class
 //
-//
-rules.push(require('./lexer_inline/emphasis'));
-rules.push(require('./lexer_inline/links'));
-rules.push(require('./lexer_inline/autolink'));
-rules.push(require('./lexer_inline/htmltag'));
-rules.push(require('./lexer_inline/entity'));
-rules.push(require('./lexer_inline/escape_html_char'));
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Lexer class
-
-
-function functionName(fn) {
-  var ret = fn.toString();
-  ret = ret.substr('function '.length);
-  ret = ret.substr(0, ret.indexOf('('));
-  return ret;
-}
-
-function findByName(self, name) {
-  for (var i = 0; i < self.rules.length; i++) {
-    if (functionName(self.rules[i]) === name) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-
-// Block Lexer class
-//
-function LexerInline() {
-  this.rules = [];
+function ParserInline() {
+  this._rules = [];
 
   // Rule to skip pure text
   // - '{$%@}' reserved for extentions
   // - '<>"' added for internal html escaping
   this.textMatch = /^[^\n\\`*_\[\]!&{}$%@<>"]+/;
 
+  this.ruler = new Ruler(this.rulesUpdate.bind(this));
+
   for (var i = 0; i < rules.length; i++) {
-    this.after(null, rules[i]);
+    this.ruler.after(rules[i]);
   }
 }
 
 
-// Replace/delete lexer function
-//
-LexerInline.prototype.at = function (name, fn) {
-  var index = findByName(name);
-  if (index === -1) {
-    throw new Error('Lexer rule not found: ' + name);
-  }
-
-  if (fn) {
-    this.rules[index] = fn;
-  } else {
-    this.rules = this.rules.slice(0, index).concat(this.rules.slice(index + 1));
-  }
+ParserInline.prototype.rulesUpdate = function () {
+  this._rules = this.ruler.getRules();
 };
 
 
-// Add function to lexer chain before one with given name.
-// Or add to start, if name not defined
+// Generate single token;
+// returns `true` if any rule reported success
 //
-LexerInline.prototype.before = function (name, fn) {
-  if (!name) {
-    this.rules.unshift(fn);
-    return;
+ParserInline.prototype.tokenizeSingle = function (state) {
+  var ok, i,
+      rules = this._rules,
+      len = this._rules.length;
+
+  for (i = 0; i < len; i++) {
+    ok = rules[i](state);
+    if (ok) { break; }
   }
 
-  var index = findByName(name);
-  if (index === -1) {
-    throw new Error('Lexer rule not found: ' + name);
-  }
-
-  this.rules.splice(index, 0, fn);
-};
-
-
-// Add function to lexer chain after one with given name.
-// Or add to end, if name not defined
-//
-LexerInline.prototype.after = function (name, fn) {
-  if (!name) {
-    this.rules.push(fn);
-    return;
-  }
-
-  var index = findByName(name);
-  if (index === -1) {
-    throw new Error('Lexer rule not found: ' + name);
-  }
-
-  this.rules.splice(index + 1, 0, fn);
+  return ok;
 };
 
 
 // Generate tokens for input range
 //
-LexerInline.prototype.tokenize = function (state) {
+ParserInline.prototype.tokenize = function (state) {
   var ok, i,
-      rules = this.rules,
-      len = this.rules.length,
+      rules = this._rules,
+      len = this._rules.length,
       end = state.posMax;
 
   while (state.pos < end) {
@@ -3990,7 +3100,7 @@ LexerInline.prototype.tokenize = function (state) {
 
 // Parse input string.
 //
-LexerInline.prototype.parse = function (str, options, env) {
+ParserInline.prototype.parse = function (str, options, env) {
   var state = new StateInline(str, this, options, env);
 
   this.tokenize(state);
@@ -3998,17 +3108,36 @@ LexerInline.prototype.parse = function (str, options, env) {
   return state.tokens;
 };
 
+
+module.exports = ParserInline;
+
+},{"./ruler":13,"./rules_inline/autolink":25,"./rules_inline/backticks":26,"./rules_inline/emphasis":27,"./rules_inline/entity":28,"./rules_inline/escape":29,"./rules_inline/escape_html_char":30,"./rules_inline/htmltag":31,"./rules_inline/links":32,"./rules_inline/newline":33,"./rules_inline/state_inline":34,"./rules_inline/text":35}],11:[function(require,module,exports){
+
+'use strict';
+
+
+var StateInline          = require('./rules_inline/state_inline');
+var skipSpaces           = require('./helpers').skipSpaces;
+var parseLinkLabel       = require('./links').parseLinkLabel;
+var parseLinkDestination = require('./links').parseLinkDestination;
+var parseLinkTitle       = require('./links').parseLinkTitle;
+var normalizeReference   = require('./links').normalizeReference;
+
+
 // Parse link reference definition.
 //
-LexerInline.prototype.parse_reference = function (str, options) {
-  var state, labelEnd, pos, max, code, start, href, title;
+module.exports = function parse_reference(str, parser, options, env) {
+  var state, labelEnd, pos, max, code, start, href, title, label;
 
-  if (str.charCodeAt(0) !== 0x5B/* [ */) { return null; }
+  if (str.charCodeAt(0) !== 0x5B/* [ */) { return -1; }
 
-  state = new StateInline(str, this, options);
-  labelEnd = links.parseLinkLabel(state, 0);
+  // TODO: benchmark this
+  if (str.indexOf(']:') === -1) { return -1; }
 
-  if (labelEnd < 0 || str.charCodeAt(labelEnd + 1) !== 0x3A/* : */) { return null; }
+  state = new StateInline(str, parser, options, env);
+  labelEnd = parseLinkLabel(state, 0);
+
+  if (labelEnd < 0 || str.charCodeAt(labelEnd + 1) !== 0x3A/* : */) { return -1; }
 
   max = state.posMax;
 
@@ -4021,8 +3150,8 @@ LexerInline.prototype.parse_reference = function (str, options) {
 
   // [label]:   destination   'title'
   //            ^^^^^^^^^^^ parse this
-  href = links.parseLinkDestination(state, pos);
-  if (href === null) { return null; }
+  if (!parseLinkDestination(state, pos)) { return -1; }
+  href = state.link_content;
   pos = state.pos;
 
   // [label]:   destination   'title'
@@ -4035,7 +3164,8 @@ LexerInline.prototype.parse_reference = function (str, options) {
 
   // [label]:   destination   'title'
   //                          ^^^^^^^ parse this
-  if (pos < max && start !== pos && (title = links.parseLinkTitle(state, pos)) !== null) {
+  if (pos < max && start !== pos && parseLinkTitle(state, pos)) {
+    title = state.link_content;
     pos = state.pos;
   } else {
     title = '';
@@ -4044,983 +3174,15 @@ LexerInline.prototype.parse_reference = function (str, options) {
 
   // ensure that the end of the line is empty
   pos = skipSpaces(state, pos);
-  if (pos < max && state.src.charCodeAt(pos) !== 0x0A) { return null; }
+  if (pos < max && state.src.charCodeAt(pos) !== 0x0A) { return -1; }
 
-  return {
-    label: links.normalizeReference(str.slice(1, labelEnd)),
-    title: title,
-    href: href,
-    remaining: str.slice(pos)
-  };
+  label = normalizeReference(str.slice(1, labelEnd));
+  env.references[label] = env.references[label] || { title: title, href: href };
+
+  return pos;
 };
 
-
-module.exports = LexerInline;
-
-},{"./helpers":6,"./lexer_inline/autolink":20,"./lexer_inline/backticks":21,"./lexer_inline/emphasis":22,"./lexer_inline/entity":23,"./lexer_inline/escape":24,"./lexer_inline/escape_html_char":25,"./lexer_inline/htmltag":26,"./lexer_inline/links":27,"./lexer_inline/newline":28,"./lexer_inline/state_inline":29,"./lexer_inline/text":30}],20:[function(require,module,exports){
-// Process autolinks '<protocol:...>'
-
-
-var escapeHtml  = require('../helpers').escapeHtml;
-var url_schemas = require('../common/url_schemas');
-
-
-/*eslint max-len:0*/
-var EMAIL_RE    = /^<([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/;
-var AUTOLINK_RE = /^<([a-zA-Z.\-]{1,25}):([^<>\x00-\x20]*)>/;
-
-
-module.exports = function autolink(state) {
-  var tail, linkMatch, emailMatch, pos = state.pos;
-
-  if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
-
-  tail = state.src.slice(pos);
-
-  if (tail.indexOf('>') < 0) { return false; }
-
-  linkMatch = tail.match(AUTOLINK_RE);
-
-  if (linkMatch) {
-    if (url_schemas.indexOf(linkMatch[1].toLowerCase()) < 0) { return false; }
-
-    state.push({
-      type: 'link_open',
-      href: linkMatch[0].slice(1, -1)
-    });
-    state.push({
-      type: 'text',
-      content: escapeHtml(linkMatch[0].slice(1, -1))
-    });
-    state.push({ type: 'link_close' });
-
-    state.pos += linkMatch[0].length;
-    return true;
-  }
-
-  emailMatch = tail.match(EMAIL_RE);
-
-  if (emailMatch) {
-    state.tokens.push({
-      type: 'link_open',
-      href: 'mailto:' + emailMatch[0].slice(1, -1)
-    });
-    state.tokens.push({
-      type: 'text',
-      content: escapeHtml(emailMatch[0].slice(1, -1))
-    });
-    state.tokens.push({ type: 'link_close' });
-
-    state.pos += emailMatch[0].length;
-    return true;
-  }
-
-  return false;
-};
-
-},{"../common/url_schemas":4,"../helpers":6}],21:[function(require,module,exports){
-// Parse backticks
-
-var END_RE = /`+/g;
-
-module.exports = function backticks(state) {
-  var start, code, max, marker, match,
-      pos = state.pos,
-      ch = state.src.charCodeAt(pos);
-
-  if (ch !== 0x60/* ` */) { return false; }
-
-  start = pos;
-  pos++;
-  max = state.posMax;
-
-  while (pos < max && state.src.charCodeAt(pos) === 0x60/* ` */) { pos++; }
-
-  marker = state.src.slice(start, pos);
-
-  END_RE = /`+/g;
-  END_RE.lastIndex = pos;
-
-  while ((match = END_RE.exec(state.src)) !== null) {
-    if (match[0].length === marker.length) {
-      code = state.src.slice(pos, END_RE.lastIndex - marker.length);
-      state.push({
-        type: 'code',
-        content: code
-                  .replace(/[ \n]+/g,' ')
-                  .trim(),
-        block: false
-      });
-
-      state.pos += marker.length * 2 + code.length;
-      return true;
-    }
-  }
-
-  state.pending += marker;
-  state.pos += marker.length;
-  return true;
-};
-
-},{}],22:[function(require,module,exports){
-// Process *this* and _that_
-
-'use strict';
-
-
-function isAlphaNum(code) {
-  return (code >= 0x30 /* 0 */ && code <= 0x39 /* 9 */) ||
-         (code >= 0x41 /* A */ && code <= 0x5A /* Z */) ||
-         (code >= 0x61 /* a */ && code <= 0x7A /* z */);
-}
-
-// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
-// "start" should point at a valid marker
-//
-// note: in case if 4+ markers it is still not a valid emphasis,
-// should be treated as a special case
-function parseStart(state, start) {
-  var pos = start, lastChar, count,
-      max = Math.min(state.posMax, pos + 4),
-      marker = state.src.charCodeAt(start);
-
-  lastChar = state.pending.length !== 0 ? state.pending.charCodeAt(state.pending.length - 1) : -1;
-
-  if (lastChar === marker) { return -1; }
-
-  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
-  if (pos >= max) { return -1; }
-  count = pos - start;
-
-  // Quoting spec:
-  //
-  // Character can open emphasis iff
-  //  1. it is not part of a sequence of four or more unescaped markers,
-  //  2. it is not followed by whitespace,
-  //  3. it is "_" and it is not preceded by an ASCII alphanumeric character, and
-  //  4. either it is not followed by a marker or it is followed immediately by strong emphasis.
-
-  if (count >= 4) {
-    // check condition 1
-    // sequence of four or more unescaped markers can't start an emphasis
-    return count;
-  }
-
-  // check condition 2, marker followed by whitespace
-  if (state.src.charCodeAt(pos) === 0x20) { return -1; }
-
-  if (marker === 0x5F /* _ */) {
-    // check condition 3, if it's the beginning of the word
-    // we need to look back for this
-    if (isAlphaNum(lastChar)) { return -1; }
-  }
-
-  return count;
-}
-
-// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
-// "start" should point at a valid marker
-//
-// note: in case if 4+ markers it is still not a valid emphasis,
-// should be treated as a special case
-function parseEnd(state, start) {
-  var pos = start, lastChar, count,
-      max = Math.min(state.posMax, pos + 4),
-      marker = state.src.charCodeAt(start);
-
-  lastChar = state.pending.length !== 0 ? state.pending.charCodeAt(state.pending.length - 1) : -1;
-
-  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
-  count = pos - start;
-
-  // Quoting spec:
-  //
-  // Character can close emphasis iff
-  //  1. it is not part of a sequence of four or more unescaped markers,
-  //  2. it is not preceded by whitespace,
-  //  3. it is not "_" or it is not followed by an ASCII alphanumeric character
-
-  if (count >= 4) {
-    // check condition 1
-    // sequence of four or more unescaped markers can't start an emphasis
-    return count;
-  }
-
-  // check condition 2, marker preceded by whitespace
-  if (lastChar === 0x20) { return -1; }
-
-  if (marker === 0x5F) {
-    // check condition 3, if it's the end of the word
-    if (pos < max && isAlphaNum(state.src.charCodeAt(pos))) { return -1; }
-  }
-
-  return count;
-}
-
-module.exports = function emphasis(state/*, silent*/) {
-  var startCount,
-      count,
-      oldLength,
-      oldPending,
-      found,
-      ok,
-      i,
-      oldCount,
-      newCount,
-      len,
-      rules,
-      stack,
-      breakOutOfOuterLoop,
-      max = state.posMax,
-      start = state.pos,
-      haveLiteralAsterisk,
-      marker = state.src.charCodeAt(start);
-
-  if (marker !== 0x5F/* _ */ && marker !== 0x2A /* * */) { return false; }
-
-  startCount = parseStart(state, start);
-  if (startCount < 0) { return false; }
-  if (startCount >= 4) {
-    state.pos += startCount;
-    state.pending += state.src.slice(start, startCount);
-    return true;
-  }
-
-  oldLength = state.tokens.length;
-  oldPending = state.pending;
-
-  state.pos = start + startCount;
-  stack = [ startCount ];
-  rules = state.lexer.rules;
-  len = rules.length;
-
-  while (state.pos < max) {
-    if (state.src.charCodeAt(state.pos) === marker && !haveLiteralAsterisk) {
-      count = parseEnd(state, state.pos);
-      if (count >= 1 && count < 4) {
-        oldCount = stack.pop();
-        newCount = count;
-
-        while (oldCount !== newCount) {
-          if (oldCount === 3) {
-            // e.g. `***foo*`
-            stack.push(3 - newCount);
-            break;
-          }
-
-          if (newCount < oldCount) {
-            // assert(oldCount == 2 && newCount == 1)
-            // i.e. `**foo* bar*`
-            // not valid for now, but might be in the future
-
-            // eslint is misconfigured, so it doesn't accept "break MAIN;"
-            // here is a crappy workaround
-            breakOutOfOuterLoop = true;
-            break;
-          }
-
-          // assert(newCount > oldCount)
-          newCount -= oldCount;
-
-          if (stack.length === 0) { break; }
-          state.pos += oldCount;
-          oldCount = stack.pop();
-        }
-
-        if (breakOutOfOuterLoop) { break; }
-
-        if (stack.length === 0) {
-          startCount = oldCount;
-          found = true;
-          break;
-        }
-        state.pos += count;
-        continue;
-      }
-
-      count = parseStart(state, state.pos);
-      if (count >= 1) {
-        stack.push(count);
-        state.pos += count;
-        continue;
-      }
-    }
-
-    for (i = 0; i < len; i++) {
-      if (rules[i] !== emphasis) { ok = rules[i](state); }
-      if (ok) { break; }
-    }
-
-    if (ok) {
-      haveLiteralAsterisk = false;
-    } else {
-      haveLiteralAsterisk = state.src.charCodeAt(state.pos) === marker;
-      state.pending += state.src[state.pos];
-      state.pos++;
-    }
-  }
-
-  // restore old state
-  state.tokens.length = oldLength;
-  state.pending = oldPending;
-
-  if (!found) {
-    // parser failed to find ending tag, so it's not valid emphasis
-    state.pos = start;
-    return false;
-  }
-
-  // found!
-  state.posMax = state.pos;
-  state.pos = start + startCount;
-  if (state.pending) { state.pushPending(); }
-  if (startCount === 2 || startCount === 3) { state.push({ type: 'strong_open' }); }
-  if (startCount === 1 || startCount === 3) { state.push({ type: 'em_open' }); }
-  state.lexer.tokenize(state);
-  if (startCount === 1 || startCount === 3) { state.push({ type: 'em_close' }); }
-  if (startCount === 2 || startCount === 3) { state.push({ type: 'strong_close' }); }
-  state.pos = state.posMax + startCount;
-  state.posMax = max;
-  return true;
-};
-
-},{}],23:[function(require,module,exports){
-// Proceess html entity - &#123;, &#xAF;, &quot;, ...
-
-'use strict';
-
-var entities          = require('../common/entities');
-var escapeHtml        = require('../helpers').escapeHtml;
-var isValidEntityCode = require('../helpers').isValidEntityCode;
-var fromCodePoint     = require('../helpers').fromCodePoint;
-
-
-var DIGITAL_RE = /^&#((?:x[a-f0-9]{1,8}|[0-9]{1,8}));/i;
-var NAMED_RE   = /^&([a-z][a-z0-9]{1,31});/i;
-
-
-module.exports = function entity(state) {
-  var ch, code, match, pos = state.pos, max = state.posMax;
-
-  if (state.src.charCodeAt(pos) !== 0x26/* & */) { return false; }
-
-  if (pos + 1 < max) {
-    ch = state.src.charCodeAt(pos + 1);
-
-    if (ch === 0x23 /* # */) {
-      match = state.src.slice(pos).match(DIGITAL_RE);
-      if (match) {
-        code = match[1][0].toLowerCase() === 'x' ? parseInt(match[1].slice(1), 16) : parseInt(match[1], 10);
-        state.pending += isValidEntityCode(code) ? escapeHtml(fromCodePoint(code)) : fromCodePoint(0xFFFD);
-        state.pos += match[0].length;
-        return true;
-      }
-    } else {
-      match = state.src.slice(pos).match(NAMED_RE);
-      if (match) {
-        if (entities.hasOwnProperty(match[1])) {
-          state.pending += escapeHtml(entities[match[1]]);
-          state.pos += match[0].length;
-          return true;
-        }
-      }
-    }
-  }
-
-  state.pending += '&amp;';
-  state.pos++;
-  return true;
-};
-
-},{"../common/entities":1,"../helpers":6}],24:[function(require,module,exports){
-// Proceess escaped chars and hardbreaks
-
-var ESCAPED = '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-'
-                      .split('')
-                      .map(function(ch) { return ch.charCodeAt(0); });
-
-module.exports = function escape(state) {
-  var ch, pos = state.pos, max = state.posMax;
-
-  if (state.src.charCodeAt(pos) !== 0x5C/* \ */) { return false; }
-
-  pos++;
-
-  if (pos < max) {
-    ch = state.src.charCodeAt(pos);
-
-    if (ESCAPED.indexOf(ch) >= 0) {
-      // escape html chars if needed
-      if (ch === 0x26/* & */) {
-        state.pending += '&amp;';
-      } else if (ch === 0x3C/* < */) {
-        state.pending += '&lt;';
-      } else if (ch === 0x3E/* > */) {
-        state.pending += '&gt;';
-      } else if (ch === 0x22/* " */) {
-        state.pending += '&quot;';
-      } else {
-        state.pending += state.src[pos];
-      }
-      state.pos += 2;
-      return true;
-    }
-
-    if (ch === 0x0A) {
-      state.push({
-        type: 'hardbreak'
-      });
-
-      pos++;
-      // skip leading whitespaces from next line
-      while (pos < max && state.src.charCodeAt(pos) === 0x20) { pos++; }
-
-      state.pos = pos;
-      return true;
-    }
-  }
-
-  state.pending += '\\';
-  state.pos++;
-  return true;
-};
-
-},{}],25:[function(require,module,exports){
-// Process < > " (& was processed in markdown escape)
-
-module.exports = function escape_html_char(state) {
-  var ch = state.src.charCodeAt(state.pos);
-
-  if (ch === 0x3C/* < */) {
-    state.pending += '&lt;';
-  } else if (ch === 0x3E/* > */) {
-    state.pending += '&gt;';
-  } else if (ch === 0x22/* " */) {
-    state.pending += '&quot;';
-  } else {
-    return false;
-  }
-
-  state.pos++;
-  return true;
-};
-
-},{}],26:[function(require,module,exports){
-// Process html tags
-
-'use strict';
-
-
-var HTML_TAG_RE = require('../common/html_re').HTML_TAG_RE;
-
-
-function isLetter(ch) {
-  /*eslint no-bitwise:0*/
-  var lc = ch | 0x20; // to lower case
-  return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */);
-}
-
-
-module.exports = function htmltag(state) {
-  var ch, match, max, pos = state.pos;
-
-  if (!state.options.html) { return false; }
-
-  // Check start
-  max = state.posMax;
-  if (state.src.charCodeAt(pos) !== 0x3C/* < */ ||
-      pos + 2 >= max) {
-    return false;
-  }
-
-  // Quick fail on second char
-  ch = state.src.charCodeAt(pos + 1);
-  if (ch !== 0x21/* ! */ &&
-      ch !== 0x3F/* ? */ &&
-      ch !== 0x2F/* / */ &&
-      !isLetter(ch)) {
-    return false;
-  }
-
-  match = state.src.slice(pos).match(HTML_TAG_RE);
-  if (!match) { return false; }
-
-  state.push({
-    type: 'htmltag',
-    content: state.src.slice(pos, pos + match[0].length)
-  });
-//console.log(state.tokens)
-  state.pos += match[0].length;
-  return true;
-};
-
-},{"../common/html_re":3}],27:[function(require,module,exports){
-// Process [links](<to> "stuff")
-
-'use strict';
-
-
-//
-// Parse link label
-//
-// this function assumes that first character ("[") already matches;
-// returns the end of the label
-function parseLinkLabel(state, start) {
-  var level, rules, len, found, marker, i, ok,
-      labelEnd = -1,
-      max = state.posMax,
-      oldPos = state.pos,
-      oldLength = state.tokens.length,
-      oldPending = state.pending;
-
-  state.pos = start + 1;
-  level = 1;
-  rules = state.lexer.rules;
-  len = rules.length;
-
-  while (state.pos < max) {
-    marker = state.src.charCodeAt(state.pos);
-    if (marker === 0x5B /* [ */) {
-      level++;
-    } else if (marker === 0x5D /* ] */) {
-      level--;
-      if (level === 0) {
-        found = true;
-        break;
-      }
-    }
-
-    for (i = 0; i < len; i++) {
-      // skip emphasis because it has lower priority, compare:
-      //  [foo *bar]()*
-      //  [foo `bar]()`
-      if (rules[i].name !== 'emphasis' && rules[i].name !== 'links') {
-        ok = rules[i](state);
-      }
-      if (ok) { break; }
-    }
-
-    if (!ok) { state.pending += state.src[state.pos++]; }
-  }
-
-  if (found) { labelEnd = state.pos; }
-
-  // restore old state
-  state.pos = oldPos;
-  state.tokens.length = oldLength;
-  state.pending = oldPending;
-
-  return labelEnd;
-}
-
-//
-// Parse link destination
-//
-// on success it returns a string and updates state.pos;
-// on failure it returns null
-function parseLinkDestination(state, pos) {
-  var code, level,
-      max = state.posMax,
-      href = '';
-
-  if (state.src.charCodeAt(pos) === 0x3C /* < */) {
-    pos++;
-    while (pos < max) {
-      code = state.src.charCodeAt(pos);
-      if (code === 0x0A /* \n */) { return null; }
-      if (code === 0x3E /* > */) {
-        state.pos = pos + 1;
-        return href;
-      }
-      if (code === 0x5C /* \ */ && pos + 1 < max) {
-        pos++;
-        href += state.src[pos++];
-        continue;
-      }
-
-      href += state.src[pos++];
-    }
-
-    // no closing '>'
-    return null;
-  }
-
-  // this should be ... } else { ... branch
-
-  level = 0;
-  while (pos < max) {
-    code = state.src.charCodeAt(pos);
-
-    if (code === 0x20) { break; }
-
-    // ascii control characters
-    if (code < 0x20 || code === 0x7F) { break; }
-
-    if (code === 0x5C /* \ */ && pos + 1 < max) {
-      pos++;
-      href += state.src[pos++];
-      continue;
-    }
-
-    if (code === 0x28 /* ( */) {
-      level++;
-      if (level > 1) { break; }
-    }
-
-    if (code === 0x29 /* ) */) {
-      level--;
-      if (level < 0) { break; }
-    }
-
-    href += state.src[pos++];
-  }
-
-  if (!href.length) { return null; }
-
-  state.pos = pos;
-  return href;
-}
-
-//
-// Parse link title
-//
-// on success it returns a string and updates state.pos;
-// on failure it returns null
-function parseLinkTitle(state, pos) {
-  var title, code,
-      max = state.posMax,
-      marker = state.src.charCodeAt(pos);
-
-  if (marker !== 0x22 /* " */ && marker !== 0x27 /* ' */ && marker !== 0x28 /* ( */) { return null; }
-
-  pos++;
-  title = '';
-
-  // if opening marker is "(", switch it to closing marker ")"
-  if (marker === 0x28) { marker = 0x29; }
-
-  while (pos < max) {
-    code = state.src.charCodeAt(pos);
-    if (code === marker) {
-      state.pos = pos + 1;
-      return title;
-    }
-    if (code === 0x5C /* \ */ && pos + 1 < max) {
-      pos++;
-      title += state.src[pos++];
-      continue;
-    }
-
-    title += state.src[pos++];
-  }
-
-  return null;
-}
-
-function normalizeReference(str) {
-  return str.trim().replace(/\s+/g, ' ').toLowerCase();
-}
-
-function links(state) {
-  var labelStart,
-      labelEnd,
-      label,
-      href,
-      title,
-      pos,
-      ref,
-      code,
-      isImage = false,
-      max = state.posMax,
-      start = state.pos,
-      marker = state.src.charCodeAt(start);
-
-  if (marker === 0x21/* ! */) {
-    isImage = true;
-    marker = state.src.charCodeAt(++start);
-  }
-
-  if (marker !== 0x5B/* [ */) { return false; }
-
-  labelStart = start + 1;
-  labelEnd = parseLinkLabel(state, start);
-
-  // parser failed to find ']', so it's not a valid link
-  if (pos < 0) { return false; }
-
-  pos = labelEnd + 1;
-  if (pos < max && state.src.charCodeAt(pos) === 0x28/* ( */) {
-    //
-    // Inline link
-    //
-
-    // [link](  <href>  "title"  )
-    //        ^^ skipping these spaces
-    pos++;
-    for (; pos < max; pos++) {
-      code = state.src.charCodeAt(pos);
-      if (code !== 0x20 && code !== 0x0A) { break; }
-    }
-    if (pos >= max) { return false; }
-
-    // [link](  <href>  "title"  )
-    //          ^^^^^^ parsing link destination
-    start = pos;
-    href = parseLinkDestination(state, pos);
-    if (href !== null) {
-      pos = state.pos;
-    } else {
-      href = '';
-    }
-
-    // [link](  <href>  "title"  )
-    //                ^^ skipping these spaces
-    start = pos;
-    for (; pos < max; pos++) {
-      code = state.src.charCodeAt(pos);
-      if (code !== 0x20 && code !== 0x0A) { break; }
-    }
-
-    // [link](  <href>  "title"  )
-    //                  ^^^^^^^ parsing link title
-    if (pos < max && start !== pos && (title = parseLinkTitle(state, pos)) !== null) {
-      pos = state.pos;
-
-      // [link](  <href>  "title"  )
-      //                         ^^ skipping these spaces
-      for (; pos < max; pos++) {
-        code = state.src.charCodeAt(pos);
-        if (code !== 0x20 && code !== 0x0A) { break; }
-      }
-    } else {
-      title = '';
-    }
-
-    if (pos >= max || state.src.charCodeAt(pos) !== 0x29/* ) */) {
-      state.pos = labelStart - 1;
-      return false;
-    }
-    pos++;
-  } else {
-    //
-    // Link reference
-    //
-
-    // [foo]  [bar]
-    //      ^^ optional whitespace (can include newlines)
-    for (; pos < max; pos++) {
-      code = state.src.charCodeAt(pos);
-      if (code !== 0x20 && code !== 0x0A) { break; }
-    }
-
-    if (pos < max && state.src.charCodeAt(pos) === 0x5B/* [ */) {
-      start = pos + 1;
-      pos = parseLinkLabel(state, pos);
-      if (pos >= 0) {
-        label = state.src.slice(start, pos++);
-      } else {
-        pos = start - 1;
-      }
-    }
-
-    // covers label === '' and label === undefined
-    // (collapsed reference link and shortcut reference link respectively)
-    if (!label) { label = state.src.slice(labelStart, labelEnd); }
-
-    ref = state.env.references[normalizeReference(label)];
-    if (!ref) {
-      state.pos = labelStart - 1;
-      return false;
-    }
-    href = ref.href;
-    title = ref.title;
-  }
-
-  //
-  // We found the end of the link, and know for a fact it's a valid link;
-  // so all that's left to do is to call tokenizer.
-  //
-  state.pos = labelStart;
-  state.posMax = labelEnd;
-  if (state.pending) { state.pushPending(); }
-
-  if (isImage) {
-    state.push({ type: 'image',
-                 src: href,
-                 title: title,
-                 alt: state.src.substr(labelStart, labelEnd - labelStart) });
-  } else {
-    state.push({ type: 'link_open', href: href, title: title });
-    state.lexer.tokenize(state);
-    state.push({ type: 'link_close' });
-  }
-
-  state.pos = pos;
-  state.posMax = max;
-  return true;
-}
-
-module.exports = links;
-module.exports.parseLinkLabel = parseLinkLabel;
-module.exports.parseLinkDestination = parseLinkDestination;
-module.exports.parseLinkTitle = parseLinkTitle;
-module.exports.normalizeReference = normalizeReference;
-
-},{}],28:[function(require,module,exports){
-// Proceess '\n'
-
-module.exports = function escape(state) {
-  var pmax, max, pos = state.pos;
-
-  if (state.src.charCodeAt(pos) !== 0x0A/* \n */) { return false; }
-
-  pmax = state.pending.length - 1;
-  max = state.posMax;
-
-  // '  \n' -> hardbreak
-  // Lookup in pending chars is bad practice! Don't copy to other rules!
-  // Pending string is stored in concat mode, indexed lookups will cause
-  // convertion to flat mode.
-  if (pmax >= 0 && state.pending.charCodeAt(pmax) === 0x20) {
-    if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 0x20) {
-      state.pending = state.pending.replace(/ +$/, '');
-      state.push({
-        type: 'hardbreak'
-      });
-    } else {
-      state.pending = state.pending.slice(0, -1);
-      state.push({
-        type: 'softbreak'
-      });
-    }
-
-  } else {
-    state.push({
-      type: 'softbreak'
-    });
-  }
-
-  pos++;
-
-  // skip heading spaces for next line
-  while (pos < max && state.src.charCodeAt(pos) === 0x20) { pos++; }
-
-  state.pos = pos;
-  return true;
-};
-
-},{}],29:[function(require,module,exports){
-// Inline parser state
-
-'use strict';
-
-
-function StateInline(src, lexer, options, env) {
-  this.src = src;
-  this.env = env;
-  this.options = options;
-  this.lexer = lexer;
-  this.tokens = [];
-  this.pos = 0;
-  this.pending = '';
-  this.posMax = this.src.length;
-}
-
-
-StateInline.prototype.pushPending = function () {
-  var pending = this.pending;
-
-  this.tokens.push({
-    type: 'text',
-    content: pending
-  });
-  this.pending = '';
-};
-
-StateInline.prototype.push = function (token) {
-  if (this.pending) {
-    this.pushPending();
-  }
-
-  this.tokens.push(token);
-};
-
-module.exports = StateInline;
-
-},{}],30:[function(require,module,exports){
-// Skip text characters for text token, place those to pendibg buffer
-// and increment current pos
-
-module.exports = function text(state) {
-  var match = state.src.slice(state.pos).match(state.lexer.textMatch);
-
-  if (!match) { return false; }
-
-  state.pending += match[0];
-  state.pos += match[0].length;
-
-  return true;
-};
-
-},{}],31:[function(require,module,exports){
-// Main perser class
-
-'use strict';
-
-
-var assign = require('object-assign');
-
-
-var Renderer    = require('./renderer');
-var LexerBlock  = require('./lexer_block');
-var LexerInline = require('./lexer_inline');
-var defaults    = require('./defaults');
-
-// Main class
-//
-function Parser(options) {
-  this.options  = assign({}, defaults);
-  this.state    = null;
-
-  this.inline   = new LexerInline();
-  this.block    = new LexerBlock();
-  this.renderer = new Renderer();
-
-  // a bunch of cross-references between parsers
-  // used for link reference definitions
-  this.block.inline = this.inline;
-
-  if (options) { this.set(options); }
-}
-
-
-Parser.prototype.set = function (options) {
-  assign(this.options, options);
-};
-
-
-Parser.prototype.render = function (src) {
-  var tokens, tok, i, l, env = { references: Object.create(null) };
-
-  // Parse blocks
-  tokens = this.block.parse(src, this.options, env);
-
-  // Parse inlines
-  for (i = 0, l = tokens.length; i < l; i++) {
-    tok = tokens[i];
-    if (tok.type === 'inline') {
-      tok.children = this.inline.parse(tok.content, this.options, env);
-    }
-  }
-
-  // Render
-  return this.renderer.render(tokens, this.options, env);
-};
-
-
-module.exports = Parser;
-
-},{"./defaults":5,"./lexer_block":7,"./lexer_inline":19,"./renderer":32,"object-assign":33}],32:[function(require,module,exports){
+},{"./helpers":6,"./links":8,"./rules_inline/state_inline":34}],12:[function(require,module,exports){
 'use strict';
 
 
@@ -5076,26 +3238,30 @@ rules.code = function (tokens, idx /*, options*/) {
 
 rules.fence = function (tokens, idx, options) {
   var token = tokens[idx];
-  var langMark = '';
-  var langPrefix = options.langprefix || '';
-  var params;
+  var langClass = '';
+  var langPrefix = options.langPrefix || '';
+  var params, langName = '';
+  var highlighted;
 
   if (token.params) {
     params = token.params.split(/ +/g);
-    langMark = ' class="' + langPrefix + escapeHtml(replaceEntities(unescapeMd(params[0]))) + '"';
+    langName = escapeHtml(replaceEntities(unescapeMd(params[0])));
+    langClass = ' class="' + langPrefix + langName + '"';
   }
 
-  return  '<pre><code' + langMark + '>'
-        + escapeHtml(token.content)
+  highlighted = options.highlight(token.content, langName) || escapeHtml(token.content);
+
+  return  '<pre><code' + langClass + '>'
+        + highlighted
         + '</code></pre>' + getBreak(tokens, idx);
 };
 
 
 rules.heading_open = function (tokens, idx /*, options*/) {
-  return '<h' + tokens[idx].level + '>';
+  return '<h' + tokens[idx].hLevel + '>';
 };
 rules.heading_close = function (tokens, idx /*, options*/) {
-  return '</h' + tokens[idx].level + '>\n';
+  return '</h' + tokens[idx].hLevel + '>\n';
 };
 
 
@@ -5291,7 +3457,1979 @@ Renderer.prototype.render = function (tokens, options) {
 
 module.exports = Renderer;
 
-},{"./helpers":6,"object-assign":33}],33:[function(require,module,exports){
+},{"./helpers":6,"object-assign":36}],13:[function(require,module,exports){
+// Ruler is helper class to build responsibility chains from parse rules.
+// It allows:
+//
+// - easy stack rules chains
+// - getting main chain and named chains content (as arrays of functions)
+
+'use strict';
+
+
+////////////////////////////////////////////////////////////////////////////////
+// helpers
+
+function _class(obj) { return Object.prototype.toString.call(obj); }
+function isFunction(obj) { return _class(obj) === '[object Function]'; }
+
+function functionName(fn) {
+  var ret = fn.toString();
+  ret = ret.substr('function '.length);
+  ret = ret.substr(0, ret.indexOf('('));
+  return ret;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+function Ruler(compileFn) {
+  this.compile = compileFn; // callback to call after each change
+
+  // List of added rules. Each element is:
+  //
+  // {
+  //   name: XXX,
+  //   fn: Function(),
+  //   alt: [ name2, name3 ]
+  // }
+  //
+  this.rules = [];
+}
+
+
+// Find rule index by name
+//
+Ruler.prototype.find = function (name) {
+  for (var i = 0; i < this.rules.length; i++) {
+    if (this.rules[i].name === name) {
+      return i;
+    }
+  }
+  return -1;
+};
+
+
+// Replace/delete parser function
+//
+Ruler.prototype.at = function (name, fn, altNames) {
+  var index = this.find(name);
+
+  if (index === -1) {
+    throw new Error('Parser rule not found: ' + name);
+  }
+
+  if (isFunction(fn)) {
+    this.rules[index].fn = fn;
+    if (altNames) {
+      this.rules[index].alt = altNames;
+    }
+  } else {
+    this.rules = this.rules.slice(0, index).concat(this.rules.slice(index + 1));
+  }
+
+  this.compile();
+};
+
+
+// Add function to parser chain before one with given name.
+// Or add to start, if name not defined
+//
+Ruler.prototype.before = function (name, fn, altNames) {
+  var index;
+
+  if (isFunction(name)) {
+    altNames = fn;
+    fn = name;
+    name = '';
+  }
+
+  if (!name) {
+    this.rules.unshift({
+      name: functionName(fn),
+      fn: fn,
+      alt: altNames || []
+    });
+
+  } else {
+
+    index = this.find(name);
+    if (index === -1) {
+      throw new Error('Parser rule not found: ' + name);
+    }
+    this.rules.splice(index, 0, fn);
+  }
+
+  this.compile();
+};
+
+
+// Add function to parser chain after one with given name.
+// Or add to end, if name not defined
+//
+Ruler.prototype.after = function (name, fn, altNames) {
+  var index;
+
+  if (isFunction(name)) {
+    altNames = fn;
+    fn = name;
+    name = '';
+  }
+
+  if (!name) {
+    this.rules.push({
+      name: functionName(fn),
+      fn: fn,
+      alt: altNames || []
+    });
+
+  } else {
+
+    index = this.find(name);
+    if (index === -1) {
+      throw new Error('Parser rule not found: ' + name);
+    }
+    this.rules.splice(index + 1, 0, fn);
+  }
+
+  this.compile();
+};
+
+
+// Get rules list as array of functions. By default returns main chain
+//
+Ruler.prototype.getRules = function (chainName) {
+  var result = [];
+
+  if (!chainName) {
+    this.rules.forEach(function (rule) {
+      result.push(rule.fn);
+    });
+    return result;
+  }
+
+  this.rules.forEach(function (rule) {
+    if (rule.alt.indexOf(chainName) >= 0) {
+      result.push(rule.fn);
+    }
+  });
+  return result;
+};
+
+
+module.exports = Ruler;
+
+},{}],14:[function(require,module,exports){
+// Block quotes
+
+'use strict';
+
+
+var skipSpaces      = require('../helpers').skipSpaces;
+
+
+module.exports = function blockquote(state, startLine, endLine, silent) {
+  var nextLine, lastLineEmpty, oldTShift, oldBMarks, oldIndent, oldListMode,
+      terminatorRules = state.parser._rulesBlockquoteTerm, i, l, terminate,
+      pos = state.bMarks[startLine] + state.tShift[startLine],
+      max = state.eMarks[startLine];
+
+  if (pos > max) { return false; }
+
+  // check the block quote marker
+  if (state.src.charCodeAt(pos++) !== 0x3E/* > */) { return false; }
+
+  if (state.level >= state.options.maxLevel) { return false; }
+
+  // we know that it's going to be a valid blockquote,
+  // so no point trying to find the end of it in silent mode
+  if (silent) { return true; }
+
+  // skip one optional space after '>'
+  if (state.src.charCodeAt(pos) === 0x20) { pos++; }
+
+  state.bqMarks[startLine]++;
+  state.bqLevel++;
+  oldIndent = state.blkIndent;
+  state.blkIndent = 0;
+
+  oldBMarks = [ state.bMarks[startLine] ];
+  state.bMarks[startLine] = pos;
+
+  // check if we have an empty blockquote
+  pos = pos < max ? skipSpaces(state, pos) : pos;
+  lastLineEmpty = pos >= max;
+
+  oldTShift = [ state.tShift[startLine] ];
+  state.tShift[startLine] = pos - state.bMarks[startLine];
+
+  // Search the end of the block
+  //
+  // Block ends with either:
+  //  1. an empty line outside:
+  //     ```
+  //     > test
+  //
+  //     ```
+  //  2. an empty line inside:
+  //     ```
+  //     >
+  //     test
+  //     ```
+  //  3. another tag
+  //     ```
+  //     > test
+  //      - - -
+  //     ```
+  for (nextLine = startLine + 1; nextLine < endLine; nextLine++) {
+    pos = state.bMarks[nextLine] + state.tShift[nextLine];
+    max = state.eMarks[nextLine];
+
+    if (pos >= max) {
+      // Case 1: line is not inside the blockquote, and this line is empty.
+      break;
+    }
+
+    if (state.src.charCodeAt(pos++) === 0x3E/* > */) {
+      state.bqMarks[nextLine]++;
+      // This line is inside the blockquote.
+
+      // skip one optional space after '>'
+      if (state.src.charCodeAt(pos) === 0x20) { pos++; }
+
+      oldBMarks.push(state.bMarks[nextLine]);
+      state.bMarks[nextLine] = pos;
+
+      pos = pos < max ? skipSpaces(state, pos) : pos;
+      lastLineEmpty = pos >= max;
+
+      oldTShift.push(state.tShift[nextLine]);
+      state.tShift[nextLine] = pos - state.bMarks[nextLine];
+      continue;
+    }
+
+    // Case 2: line is not inside the blockquote, and the last line was empty.
+    if (lastLineEmpty) { break; }
+
+    // Case 3: another tag found.
+    terminate = false;
+    for (i = 0, l = terminatorRules.length; i < l; i++) {
+      if (terminatorRules[i](state, nextLine, endLine, true)) {
+        terminate = true;
+        break;
+      }
+    }
+    if (terminate) { break; }
+
+    oldBMarks.push(state.bMarks[nextLine]);
+    oldTShift.push(state.tShift[nextLine]);
+  }
+
+  oldListMode = state.listMode;
+  state.listMode = false;
+  state.tokens.push({ type: 'blockquote_open', level: state.level++ });
+  state.parser.tokenize(state, startLine, nextLine);
+  state.tokens.push({ type: 'blockquote_close', level: --state.level });
+  state.listMode = oldListMode;
+
+  // Restore original tShift; this might not be necessary since the parser
+  // has already been here, but just to make sure we can do that.
+  for (i = 0; i < oldTShift.length; i++) {
+    state.bMarks[i + startLine] = oldBMarks[i];
+    state.tShift[i + startLine] = oldTShift[i];
+  }
+  state.bqLevel--;
+  state.blkIndent = oldIndent;
+
+  return true;
+};
+
+},{"../helpers":6}],15:[function(require,module,exports){
+// Code block (4 spaces padded)
+
+'use strict';
+
+
+var isEmpty  = require('../helpers').isEmpty;
+var getLines = require('../helpers').getLines;
+
+
+module.exports = function code(state, startLine, endLine, silent) {
+  var nextLine, last;
+
+  if (state.tShift[startLine] - state.blkIndent < 4) { return false; }
+
+  last = nextLine = startLine + 1;
+
+  while (nextLine < endLine) {
+    if (state.bqMarks[nextLine] < state.bqLevel) { break; }
+    if (isEmpty(state, nextLine)) {
+      nextLine++;
+      continue;
+    }
+    if (state.tShift[nextLine] - state.blkIndent >= 4) {
+      nextLine++;
+      last = nextLine;
+      continue;
+    }
+    break;
+  }
+
+  if (silent) { return true; }
+
+  state.tokens.push({
+    type: 'code',
+    content: getLines(state, startLine, last, 4 + state.blkIndent, true),
+    block: true,
+    level: state.level
+  });
+
+  state.line = nextLine;
+  return true;
+};
+
+},{"../helpers":6}],16:[function(require,module,exports){
+// fences (``` lang, ~~~ lang)
+
+'use strict';
+
+
+var skipSpaces      = require('../helpers').skipSpaces;
+var skipChars       = require('../helpers').skipChars;
+var getLines        = require('../helpers').getLines;
+
+
+module.exports = function fences(state, startLine, endLine, silent) {
+  var marker, len, params, nextLine, mem,
+      haveEndMarker = false,
+      pos = state.bMarks[startLine] + state.tShift[startLine],
+      max = state.eMarks[startLine];
+
+  if (pos + 3 > max) { return false; }
+
+  marker = state.src.charCodeAt(pos);
+
+  if (marker !== 0x7E/* ~ */ && marker !== 0x60 /* ` */) {
+    return false;
+  }
+
+  // scan marker length
+  mem = pos;
+  pos = skipChars(state, pos, marker);
+
+  len = pos - mem;
+
+  if (len < 3) { return false; }
+
+  params = state.src.slice(pos, max).trim();
+
+  if (params.indexOf('`') >= 0) { return false; }
+
+  // Since start is found, we can report success here in validation mode
+  if (silent) { return true; }
+
+  // search end of block
+  nextLine = startLine;
+
+  for (;;) {
+    nextLine++;
+    if (nextLine >= endLine) {
+      // unclosed block should be autoclosed by end of document.
+      // also block seems to be autoclosed by end of parent
+      /*if (state.blkLevel === 0) {
+        break;
+      }
+      return false;*/
+      break;
+    }
+
+    pos = mem = state.bMarks[nextLine] + state.tShift[nextLine];
+    max = state.eMarks[nextLine];
+
+    if (pos < max && state.tShift[nextLine] < state.blkIndent) {
+      // non-empty line with negative indent should stop the list:
+      // - ```
+      //  test
+      break;
+    }
+    if (pos < max && state.bqMarks[nextLine] < state.bqLevel) { break; }
+
+    if (state.src.charCodeAt(pos) !== marker) { continue; }
+
+    pos = skipChars(state, pos, marker);
+
+    // closing code fence must be at least as long as the opening one
+    if (pos - mem < len) { continue; }
+
+    // make sure tail has spaces only
+    pos = skipSpaces(state, pos);
+
+    if (pos < max) { continue; }
+
+    haveEndMarker = true;
+    // found!
+    break;
+  }
+
+  // If a fence has heading spaces, they should be removed from its inner block
+  len = state.tShift[startLine];
+
+  state.tokens.push({
+    type: 'fence',
+    params: params,
+    content: getLines(state, startLine + 1, nextLine, len, true),
+    level: state.level
+  });
+
+  state.line = nextLine + (haveEndMarker ? 1 : 0);
+  return true;
+};
+
+},{"../helpers":6}],17:[function(require,module,exports){
+// heading (#, ##, ...)
+
+'use strict';
+
+
+var isWhiteSpace    = require('../helpers').isWhiteSpace;
+var skipSpaces      = require('../helpers').skipSpaces;
+var skipCharsBack   = require('../helpers').skipCharsBack;
+
+
+module.exports = function heading(state, startLine, endLine, silent) {
+  var ch, level,
+      pos = state.bMarks[startLine] + state.tShift[startLine],
+      max = state.eMarks[startLine];
+
+  if (pos >= max) { return false; }
+
+  ch  = state.src.charCodeAt(pos);
+
+  if (ch !== 0x23/* # */ || pos >= max) { return false; }
+
+  // count heading level
+  level = 1;
+  ch = state.src.charCodeAt(++pos);
+  while (ch === 0x23/* # */ && pos < max && level <= 6) {
+    level++;
+    ch = state.src.charCodeAt(++pos);
+  }
+
+  if (level > 6 || (pos < max && !isWhiteSpace(ch))) { return false; }
+
+  // skip spaces before heading text
+  pos = skipSpaces(state, pos);
+
+  // Now pos contains offset of first heared char
+  // Let's cut tails like '    ###  ' from the end of string
+
+  max = skipCharsBack(state, max, 0x20/* space */, pos);
+  max = skipCharsBack(state, max, 0x23/* # */, pos);
+
+  if (max < state.eMarks[startLine] &&
+      state.src.charCodeAt(max) === 0x23/* # */ &&
+      state.src.charCodeAt(max - 1) === 0x5C/* \ */) {
+    max++;
+  }
+
+  // ## Foo   ####
+  //       ^^^
+  max = skipCharsBack(state, max, 0x20/* space */, pos);
+
+  if (silent) { return true; }
+
+  state.tokens.push({ type: 'heading_open', hLevel: level, level: state.level });
+  // only if header is not empty
+  if (pos < max) {
+    state.tokens.push({
+      type: 'inline',
+      content: state.src.slice(pos, max).trim(),
+      level: state.level + 1
+    });
+  }
+  state.tokens.push({ type: 'heading_close', hLevel: level, level: state.level });
+
+  state.line = startLine + 1;
+  return true;
+};
+
+},{"../helpers":6}],18:[function(require,module,exports){
+// Horizontal rule
+
+'use strict';
+
+
+var isWhiteSpace    = require('../helpers').isWhiteSpace;
+
+
+module.exports = function hr(state, startLine, endLine, silent) {
+  var marker, cnt, ch,
+      pos = state.bMarks[startLine],
+      max = state.eMarks[startLine];
+
+  pos += state.tShift[startLine];
+
+  if (pos > max) { return false; }
+
+  marker = state.src.charCodeAt(pos++);
+
+  // Check hr marker
+  if (marker !== 0x2A/* * */ &&
+      marker !== 0x2D/* - */ &&
+      marker !== 0x5F/* _ */) {
+    return false;
+  }
+
+  // markers can be mixed with spaces, but there should be at least 3 one
+
+  cnt = 1;
+  while (pos < max) {
+    ch = state.src.charCodeAt(pos++);
+    if (ch !== marker && !isWhiteSpace(ch)) { return false; }
+    if (ch === marker) { cnt++; }
+  }
+
+  if (cnt < 3) { return false; }
+
+  if (silent) { return true; }
+
+  state.tokens.push({ type: 'hr', level: state.level });
+
+  state.line = startLine + 1;
+  return true;
+};
+
+},{"../helpers":6}],19:[function(require,module,exports){
+// HTML block
+
+'use strict';
+
+
+var isEmpty   = require('../helpers').isEmpty;
+var getLines  = require('../helpers').getLines;
+
+var block_names = require('../common/html_blocks');
+
+
+var HTML_TAG_OPEN_RE = /^<([a-zA-Z]{1,15})[\s\/>]/;
+var HTML_TAG_CLOSE_RE = /^<\/([a-zA-Z]{1,15})[\s>]/;
+
+function isLetter(ch) {
+  /*eslint no-bitwise:0*/
+  var lc = ch | 0x20; // to lower case
+  return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */);
+}
+
+module.exports = function htmlblock(state, startLine, endLine, silent) {
+  var ch, match, nextLine,
+      pos = state.bMarks[startLine],
+      max = state.eMarks[startLine],
+      shift = state.tShift[startLine];
+
+  pos += shift;
+
+  if (!state.options.html) { return false; }
+
+  if (shift > 3 || pos + 2 >= max || state.blkLevel > 0) { return false; }
+
+  if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
+
+  ch = state.src.charCodeAt(pos + 1);
+
+  if (ch === 0x21/* ! */ || ch === 0x3F/* ? */) {
+    // Directive start / comment start / processing instruction start
+    if (silent) { return true; }
+
+  } else if (ch === 0x2F/* / */ || isLetter(ch)) {
+
+    // Probably start or end of tag
+    if (ch === 0x2F/* \ */) {
+      // closing tag
+      match = state.src.slice(pos, max).match(HTML_TAG_CLOSE_RE);
+      if (!match) { return false; }
+    } else {
+      // opening tag
+      match = state.src.slice(pos, max).match(HTML_TAG_OPEN_RE);
+      if (!match) { return false; }
+    }
+    // Make sure tag name is valid
+    if (block_names.indexOf(match[1].toLowerCase()) < 0) { return false; }
+    if (silent) { return true; }
+
+  } else {
+    return false;
+  }
+
+  // If we are here - we detected HTML block.
+  // Let's roll down till empty line (block end).
+  nextLine = startLine + 1;
+  while (nextLine < state.lineMax && !isEmpty(state, nextLine)) {
+    nextLine++;
+  }
+
+  state.tokens.push({
+    type: 'htmlblock',
+    level: state.level,
+    content: getLines(state, startLine, nextLine, 0, true)
+  });
+
+  state.line = nextLine;
+  return true;
+};
+
+},{"../common/html_blocks":2,"../helpers":6}],20:[function(require,module,exports){
+// lheading (---, ===)
+
+'use strict';
+
+
+var skipSpaces      = require('../helpers').skipSpaces;
+var skipChars       = require('../helpers').skipChars;
+var skipCharsBack   = require('../helpers').skipCharsBack;
+
+
+module.exports = function lheading(state, startLine, endLine, silent) {
+  var marker, pos, max,
+      next = startLine + 1;
+
+  if (next >= endLine) { return false; }
+  if (state.tShift[next] < state.blkIndent) { return false; }
+  if (state.bqMarks[next] < state.bqLevel) { return false; }
+
+  // Scan next line
+  if (state.tShift[next] - state.blkIndent > 3) { return false; }
+
+  pos = state.bMarks[next] + state.tShift[next];
+  max = state.eMarks[next];
+
+  marker = state.src.charCodeAt(pos);
+
+  if (marker !== 0x2D/* - */ && marker !== 0x3D/* = */) { return false; }
+
+  pos = skipChars(state, pos, marker);
+
+  pos = skipSpaces(state, pos);
+
+  if (pos < max) { return false; }
+
+  if (silent) { return true; }
+
+  pos = state.bMarks[startLine] + state.tShift[startLine];
+  max = skipCharsBack(state, state.eMarks[startLine], 0x20/* space */, pos);
+
+  state.tokens.push({
+    type: 'heading_open',
+    hLevel: marker === 0x3D/* = */ ? 1 : 2,
+    level: state.level
+  });
+  state.tokens.push({
+    type: 'inline',
+    content: state.src.slice(pos, max).trim(),
+    level: state.level + 1
+  });
+  state.tokens.push({
+    type: 'heading_close',
+    hLevel: marker === 0x3D/* = */ ? 1 : 2,
+    level: state.level
+  });
+
+  state.line = next + 1;
+  return true;
+};
+
+},{"../helpers":6}],21:[function(require,module,exports){
+// Lists
+
+'use strict';
+
+
+var isEmpty    = require('../helpers').isEmpty;
+var skipSpaces = require('../helpers').skipSpaces;
+
+
+// Search `[-+*][\n ]`, returns next pos arter marker on success
+// or -1 on fail.
+function skipBulletListMarker(state, startLine) {
+  var marker, pos, max;
+
+  pos = state.bMarks[startLine] + state.tShift[startLine];
+  max = state.eMarks[startLine];
+
+  if (pos >= max) { return -1; }
+
+  marker = state.src.charCodeAt(pos++);
+  // Check bullet
+  if (marker !== 0x2A/* * */ &&
+      marker !== 0x2D/* - */ &&
+      marker !== 0x2B/* + */) {
+    return -1;
+  }
+
+  if (pos < max && state.src.charCodeAt(pos) !== 0x20) {
+    // " 1.test " - is not a list item
+    return -1;
+  }
+
+  return pos;
+}
+
+// Search `\d+[.)][\n ]`, returns next pos arter marker on success
+// or -1 on fail.
+function skipOrderedListMarker(state, startLine) {
+  var ch,
+      pos = state.bMarks[startLine] + state.tShift[startLine],
+      max = state.eMarks[startLine];
+
+  if (pos + 1 >= max) { return -1; }
+
+  ch = state.src.charCodeAt(pos++);
+
+  if (ch < 0x30/* 0 */ || ch > 0x39/* 9 */) { return -1; }
+
+  for (;;) {
+    // EOL -> fail
+    if (pos >= max) { return -1; }
+
+    ch = state.src.charCodeAt(pos++);
+
+    if (ch >= 0x30/* 0 */ && ch <= 0x39/* 9 */) {
+      continue;
+    }
+
+    // found valid marker
+    if (ch === 0x29/* ) */ || ch === 0x2e/* . */) {
+      break;
+    }
+
+    return -1;
+  }
+
+
+  if (pos < max && state.src.charCodeAt(pos) !== 0x20/* space */) {
+    // " 1.test " - is not a list item
+    return -1;
+  }
+  return pos;
+}
+
+
+module.exports = function list(state, startLine, endLine, silent) {
+  var nextLine,
+      indent,
+      oldTShift,
+      oldIndent,
+      oldTight,
+      oldListMode,
+      start,
+      posAfterMarker,
+      max,
+      indentAfterMarker,
+      markerValue,
+      markerCharCode,
+      isOrdered,
+      contentStart,
+      listTokIdx,
+      prevEmptyEnd,
+      terminatorRules = state.parser._rulesListTerm, i, l, terminate;
+
+  // Detect list type and position after marker
+  if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
+    isOrdered = true;
+  } else if ((posAfterMarker = skipBulletListMarker(state, startLine)) >= 0) {
+    isOrdered = false;
+  } else {
+    return false;
+  }
+
+  if (state.level >= state.options.maxLevel) { return false; }
+
+  // We should terminate list on style change. Remember first one to compare.
+  markerCharCode = state.src.charCodeAt(posAfterMarker - 1);
+
+  // For validation mode we can terminate immediately
+  if (silent) { return true; }
+
+  // Start list
+  listTokIdx = state.tokens.length;
+
+  if (isOrdered) {
+    start = state.bMarks[startLine] + state.tShift[startLine];
+    markerValue = Number(state.src.substr(start, posAfterMarker - start - 1));
+
+    state.tokens.push({
+      type: 'ordered_list_open',
+      order: markerValue,
+      tight: true,
+      level: state.level++
+    });
+
+  } else {
+    state.tokens.push({
+      type: 'bullet_list_open',
+      tight: true,
+      level: state.level++
+    });
+  }
+
+  //
+  // Iterate list items
+  //
+
+  nextLine = startLine;
+  prevEmptyEnd = false;
+
+  while (nextLine < endLine) {
+    contentStart = skipSpaces(state, posAfterMarker);
+    max = state.eMarks[nextLine];
+
+    if (contentStart >= max) {
+      // trimming space in "-    \n  3" case, indent is 1 here
+      indentAfterMarker = 1;
+    } else {
+      indentAfterMarker = contentStart - posAfterMarker;
+    }
+
+    // If we have more than 4 spaces, the indent is 1
+    // (the rest is just indented code block)
+    if (indentAfterMarker > 4) { indentAfterMarker = 1; }
+
+    // If indent is less than 1, assume that it's one, example:
+    //  "-\n  test"
+    if (indentAfterMarker < 1) { indentAfterMarker = 1; }
+
+    // "  -  test"
+    //  ^^^^^ - calculating total length of this thing
+    indent = (posAfterMarker - state.bMarks[nextLine]) + indentAfterMarker;
+
+    // Run subparser & write tokens
+    state.tokens.push({ type: 'list_item_open', level: state.level++ });
+
+    //nextLine++;
+
+    oldIndent = state.blkIndent;
+    oldTight = state.tight;
+    oldTShift = state.tShift[startLine];
+    oldListMode = state.listMode;
+    state.tShift[startLine] = contentStart - state.bMarks[startLine];
+    state.blkIndent = indent;
+    state.tight = true;
+    state.listMode = true;
+
+    state.parser.tokenize(state, startLine, endLine, true);
+
+    // If any of list item is tight, mark list as tight
+    if (!state.tight || prevEmptyEnd) {
+      state.tokens[listTokIdx].tight = false;
+    }
+    // Item become loose if finish with empty line,
+    // but we should filter last element, because it means list finish
+    prevEmptyEnd = (state.line - startLine) > 1 && isEmpty(state, state.line - 1);
+
+    state.blkIndent = oldIndent;
+    state.tShift[startLine] = oldTShift;
+    state.tight = oldTight;
+    state.listMode = oldListMode;
+
+    state.tokens.push({ type: 'list_item_close', level: --state.level });
+
+    nextLine = startLine = state.line;
+    contentStart = state.bMarks[startLine];
+
+    if (nextLine >= endLine) { break; }
+
+    if (isEmpty(state, nextLine)) {
+      if (nextLine >= endLine || isEmpty(state, nextLine)) {
+        // two newlines end the list
+        break;
+      } else {
+        nextLine++;
+      }
+    }
+
+    //
+    // Try to check if list is terminated or continued.
+    //
+    if (state.tShift[nextLine] < state.blkIndent) { break; }
+    if (state.bqMarks[nextLine] < state.bqLevel) { break; }
+
+    // fail if terminating block found
+    terminate = false;
+    for (i = 0, l = terminatorRules.length; i < l; i++) {
+      if (terminatorRules[i](state, nextLine, endLine, true)) {
+        terminate = true;
+        break;
+      }
+    }
+    if (terminate) { break; }
+
+    // fail if list has another type
+    if (isOrdered) {
+      posAfterMarker = skipOrderedListMarker(state, nextLine);
+      if (posAfterMarker < 0) { break; }
+    } else {
+      posAfterMarker = skipBulletListMarker(state, nextLine);
+      if (posAfterMarker < 0) { break; }
+    }
+
+    if (markerCharCode !== state.src.charCodeAt(posAfterMarker - 1)) { break; }
+  }
+
+  // Finilize list
+  if (isOrdered) {
+    state.tokens.push({ type: 'ordered_list_close', level: --state.level });
+  } else {
+    state.tokens.push({ type: 'bullet_list_close', level: --state.level });
+  }
+
+  state.line = nextLine;
+  return true;
+};
+
+},{"../helpers":6}],22:[function(require,module,exports){
+// Paragraph
+
+'use strict';
+
+
+var isEmpty  = require('../helpers').isEmpty;
+var getLines = require('../helpers').getLines;
+var parseRef = require('../parser_ref');
+
+
+module.exports = function paragraph(state, startLine/*, endLine*/) {
+  var endLine, content, pos, terminate, i, l,
+      nextLine = startLine + 1,
+      terminatorRules = state.parser._rulesParagraphTerm;
+
+  endLine = state.lineMax;
+
+  // jump line-by-line until empty one or EOF
+  for (; nextLine < endLine && !isEmpty(state, nextLine); nextLine++) {
+    // this would be a code block normally, but after paragraph
+    // it's considered a lazy continuation regardless of what's there
+    if (state.tShift[nextLine] - state.blkIndent > 3) { continue; }
+
+    // Some tags can terminate paragraph without empty line.
+    terminate = false;
+    for (i = 0, l = terminatorRules.length; i < l; i++) {
+      if (terminatorRules[i](state, nextLine, endLine, true)) {
+        terminate = true;
+        break;
+      }
+    }
+    if (terminate) { break; }
+  }
+
+  content = getLines(state, startLine, nextLine, state.blkIndent, false).trim();
+
+  while (content.length) {
+    pos = parseRef(content, state.parser.inline, state.options, state.env);
+    if (pos < 0) { break; }
+    content = content.slice(pos).trim();
+  }
+
+  if (content.length) {
+    state.tokens.push({ type: 'paragraph_open', level: state.level });
+    state.tokens.push({
+      type: 'inline',
+      content: content,
+      level: state.level + 1
+    });
+    state.tokens.push({ type: 'paragraph_close', level: state.level });
+  }
+
+  state.line = nextLine;
+  return true;
+};
+
+},{"../helpers":6,"../parser_ref":11}],23:[function(require,module,exports){
+// Parser state class
+
+'use strict';
+
+
+function State(src, parser, tokens, options, env) {
+  var ch, s, start, pos, len, indent, indent_found;
+
+  // TODO: check if we can move string replaces to parser, to avoid
+  // unnesessary call on shadow clone creation. Or check if we can do
+  // cloning more effectively. Profile first.
+
+  // Prepare string to parse:
+  //
+  // - replace tabs with spaces
+  // - remove `\r` to simplify newlines check (???)
+
+  this.src = src;
+
+  // Shortcuts to simplify nested calls
+  this.parser = parser;
+
+  // TODO: (?) set directly for faster access.
+  this.options = options;
+
+  this.env = env;
+
+  //
+  // Internal state vartiables
+  //
+
+  this.tokens = tokens;
+
+  this.bMarks = []; // line begin offsets for fast jumps
+  this.eMarks = []; // line end offsets for fast jumps
+  this.tShift = []; // indent for each line
+
+  // Generate markers.
+  s = this.src;
+  indent = 0;
+  indent_found = false;
+
+  for (start = pos = indent = 0, len = s.length; pos < len; pos++) {
+    ch = s.charCodeAt(pos);
+
+    // TODO: check other spaces and tabs too or keep existing regexp replace ??
+    if (!indent_found && ch === 0x20/* space */) {
+      indent++;
+    }
+    if (!indent_found && ch !== 0x20/* space */) {
+      this.tShift.push(indent);
+      indent_found = true;
+    }
+
+
+    if (ch === 0x0D || ch === 0x0A) {
+      this.bMarks.push(start);
+      this.eMarks.push(pos);
+      indent_found = false;
+      indent = 0;
+      start = pos + 1;
+    }
+    if (ch === 0x0D && pos < len && s.charCodeAt(pos) === 0x0A) {
+      pos++;
+      start++;
+    }
+  }
+  if (ch !== 0x0D || ch !== 0x0A) {
+    this.bMarks.push(start);
+    this.eMarks.push(len);
+    this.tShift.push(indent);
+  }
+
+  // Push fake entry to simplify cache bounds checks
+  this.bMarks.push(s.length);
+  this.eMarks.push(s.length);
+  this.tShift.push(0);
+
+  // inline parser variables
+  this.pos        = 0; // char index in src
+
+  // block parser variables
+  this.blkLevel   = 0;
+  this.blkIndent  = 0;
+  this.line       = 0; // line index in src
+  this.lineMax    = this.bMarks.length - 1; // don't count last fake line
+  this.tight      = false; // loose/tight mode for lists
+  this.listMode   = false; // if true, block parser stops on two newlines
+
+  // Stuff for blockquotes
+  this.bqLevel    = 0;
+  this.bqMarks    = [];
+  for (start = 0; start < this.bMarks.length; start++) {
+    this.bqMarks.push(0);
+  }
+
+  this.level = 0;
+
+  // renderer
+  this.result = '';
+}
+
+
+// Create shadow clone of curent state with new input data
+State.prototype.clone = function clone(src) {
+  return new State(
+    src,
+    this.parser,
+    this.tokens,
+    this.options
+  );
+};
+
+module.exports = State;
+
+},{}],24:[function(require,module,exports){
+// GFM table, non-standard
+
+'use strict';
+
+
+function lineMatch(state, line, reg) {
+  var pos = state.bMarks[line],
+      max = state.eMarks[line];
+
+  return state.src.substr(pos, max - pos).match(reg);
+}
+
+
+module.exports = function table(state, startLine, endLine, silent) {
+  var ch, firstLineMatch, secondLineMatch, i, nextLine, m, rows,
+      aligns, t;
+
+  // should have at least three lines
+  if (startLine + 2 > endLine) { return false; }
+
+  // first character of the second line should be '|' or '-'
+  ch = state.src.charCodeAt(state.bMarks[startLine + 1]
+     + state.tShift[startLine + 1]);
+  if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */) { return false; }
+
+  secondLineMatch = lineMatch(state, startLine + 1,
+    /^ *\|?(( *[:-]-+[:-] *\|)+( *[:-]-+[:-] *))\|? *$/);
+  if (!secondLineMatch) { return false; }
+
+  rows = secondLineMatch[1].split('|');
+  aligns = [];
+  for (i = 0; i < rows.length; i++) {
+    t = rows[i].trim();
+    if (t[t.length - 1] === ':') {
+      aligns[i] = t[0] === ':' ? 'center' : 'right';
+    } else if (t[0] === ':') {
+      aligns[i] = 'left';
+    } else {
+      aligns[i] = '';
+    }
+  }
+
+  firstLineMatch = lineMatch(state, startLine, /^ *\|?(.*?\|.*?)\|? *$/);
+  if (!firstLineMatch) { return false; }
+
+  rows = firstLineMatch[1].split('|');
+  if (aligns.length !== rows.length) { return false; }
+  if (silent) { return true; }
+
+  state.tokens.push({ type: 'table_open', level: state.level++ });
+
+  state.tokens.push({ type: 'tr_open', level: state.level++ });
+  for (i = 0; i < rows.length; i++) {
+    state.tokens.push({ type: 'th_open', align: aligns[i], level: state.level++ });
+    state.tokens.push({
+      type: 'inline',
+      content: rows[i].trim(),
+      level: state.level
+    });
+    state.tokens.push({ type: 'th_close', level: --state.level });
+  }
+  state.tokens.push({ type: 'tr_close', level: --state.level });
+
+  for (nextLine = startLine + 2; nextLine < endLine; nextLine++) {
+    m = lineMatch(state, nextLine, /^ *\|?(.*?\|.*?)\|? *$/);
+    if (!m) { break; }
+    rows = m[1].split('|');
+
+    state.tokens.push({ type: 'tr_open', level: state.level++ });
+    for (i = 0; i < rows.length; i++) {
+      state.tokens.push({ type: 'td_open', align: aligns[i], level: state.level++ });
+      state.tokens.push({
+        type: 'inline',
+        content: rows[i].replace(/^\|? *| *\|?$/g, '')
+      });
+      state.tokens.push({ type: 'td_close', level: --state.level });
+    }
+    state.tokens.push({ type: 'tr_close', level: --state.level });
+  }
+  state.tokens.push({ type: 'table_close', level: --state.level });
+
+  state.line = nextLine;
+  return true;
+};
+
+},{}],25:[function(require,module,exports){
+// Process autolinks '<protocol:...>'
+
+
+var escapeHtml  = require('../helpers').escapeHtml;
+var url_schemas = require('../common/url_schemas');
+
+
+/*eslint max-len:0*/
+var EMAIL_RE    = /^<([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/;
+var AUTOLINK_RE = /^<([a-zA-Z.\-]{1,25}):([^<>\x00-\x20]*)>/;
+
+
+module.exports = function autolink(state) {
+  var tail, linkMatch, emailMatch, pos = state.pos;
+
+  if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
+
+  tail = state.src.slice(pos);
+
+  if (tail.indexOf('>') < 0) { return false; }
+
+  linkMatch = tail.match(AUTOLINK_RE);
+
+  if (linkMatch) {
+    if (url_schemas.indexOf(linkMatch[1].toLowerCase()) < 0) { return false; }
+
+    state.push({
+      type: 'link_open',
+      href: linkMatch[0].slice(1, -1),
+      level: state.level
+    });
+    state.push({
+      type: 'text',
+      content: escapeHtml(linkMatch[0].slice(1, -1)),
+      level: state.level + 1
+    });
+    state.push({ type: 'link_close', level: state.level });
+
+    state.pos += linkMatch[0].length;
+    return true;
+  }
+
+  emailMatch = tail.match(EMAIL_RE);
+
+  if (emailMatch) {
+    state.push({
+      type: 'link_open',
+      href: 'mailto:' + emailMatch[0].slice(1, -1),
+      level: state.level
+    });
+    state.push({
+      type: 'text',
+      content: escapeHtml(emailMatch[0].slice(1, -1)),
+      level: state.level + 1
+    });
+    state.push({ type: 'link_close', level: state.level });
+
+    state.pos += emailMatch[0].length;
+    return true;
+  }
+
+  return false;
+};
+
+},{"../common/url_schemas":4,"../helpers":6}],26:[function(require,module,exports){
+// Parse backticks
+
+var END_RE = /`+/g;
+
+module.exports = function backticks(state) {
+  var start, code, max, marker, match,
+      pos = state.pos,
+      ch = state.src.charCodeAt(pos);
+
+  if (ch !== 0x60/* ` */) { return false; }
+
+  start = pos;
+  pos++;
+  max = state.posMax;
+
+  while (pos < max && state.src.charCodeAt(pos) === 0x60/* ` */) { pos++; }
+
+  marker = state.src.slice(start, pos);
+
+  END_RE = /`+/g;
+  END_RE.lastIndex = pos;
+
+  while ((match = END_RE.exec(state.src)) !== null) {
+    if (match[0].length === marker.length) {
+      code = state.src.slice(pos, END_RE.lastIndex - marker.length);
+      state.push({
+        type: 'code',
+        content: code
+                  .replace(/[ \n]+/g,' ')
+                  .trim(),
+        block: false,
+        level: state.level
+      });
+
+      state.pos += marker.length * 2 + code.length;
+      return true;
+    }
+  }
+
+  state.pending += marker;
+  state.pos += marker.length;
+  return true;
+};
+
+},{}],27:[function(require,module,exports){
+// Process *this* and _that_
+
+'use strict';
+
+
+function isAlphaNum(code) {
+  return (code >= 0x30 /* 0 */ && code <= 0x39 /* 9 */) ||
+         (code >= 0x41 /* A */ && code <= 0x5A /* Z */) ||
+         (code >= 0x61 /* a */ && code <= 0x7A /* z */);
+}
+
+// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
+// "start" should point at a valid marker
+//
+// note: in case if 4+ markers it is still not a valid emphasis,
+// should be treated as a special case
+function parseStart(state, start) {
+  var pos = start, lastChar, count,
+      max = Math.min(state.posMax, pos + 4),
+      marker = state.src.charCodeAt(start);
+
+  lastChar = state.pending.length !== 0 ? state.pending.charCodeAt(state.pending.length - 1) : -1;
+
+  if (lastChar === marker) { return -1; }
+
+  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
+  if (pos >= max) { return -1; }
+  count = pos - start;
+
+  // Quoting spec:
+  //
+  // Character can open emphasis iff
+  //  1. it is not part of a sequence of four or more unescaped markers,
+  //  2. it is not followed by whitespace,
+  //  3. it is "_" and it is not preceded by an ASCII alphanumeric character, and
+  //  4. either it is not followed by a marker or it is followed immediately by strong emphasis.
+
+  if (count >= 4) {
+    // check condition 1
+    // sequence of four or more unescaped markers can't start an emphasis
+    return count;
+  }
+
+  // check condition 2, marker followed by whitespace
+  if (state.src.charCodeAt(pos) === 0x20) { return -1; }
+
+  if (marker === 0x5F /* _ */) {
+    // check condition 3, if it's the beginning of the word
+    // we need to look back for this
+    if (isAlphaNum(lastChar)) { return -1; }
+  }
+
+  return count;
+}
+
+// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
+// "start" should point at a valid marker
+//
+// note: in case if 4+ markers it is still not a valid emphasis,
+// should be treated as a special case
+function parseEnd(state, start) {
+  var pos = start, lastChar, count,
+      max = Math.min(state.posMax, pos + 4),
+      marker = state.src.charCodeAt(start);
+
+  lastChar = state.pending.length !== 0 ? state.pending.charCodeAt(state.pending.length - 1) : -1;
+
+  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
+  count = pos - start;
+
+  // Quoting spec:
+  //
+  // Character can close emphasis iff
+  //  1. it is not part of a sequence of four or more unescaped markers,
+  //  2. it is not preceded by whitespace,
+  //  3. it is not "_" or it is not followed by an ASCII alphanumeric character
+
+  if (count >= 4) {
+    // check condition 1
+    // sequence of four or more unescaped markers can't start an emphasis
+    return count;
+  }
+
+  // check condition 2, marker preceded by whitespace
+  if (lastChar === 0x20) { return -1; }
+
+  if (marker === 0x5F) {
+    // check condition 3, if it's the end of the word
+    if (pos < max && isAlphaNum(state.src.charCodeAt(pos))) { return -1; }
+  }
+
+  return count;
+}
+
+module.exports = function emphasis(state/*, silent*/) {
+  var startCount,
+      count,
+      oldLength,
+      oldPending,
+      oldFlag,
+      found,
+      ok,
+      oldCount,
+      newCount,
+      stack,
+      breakOutOfOuterLoop,
+      max = state.posMax,
+      start = state.pos,
+      haveLiteralAsterisk,
+      marker = state.src.charCodeAt(start);
+
+  if (marker !== 0x5F/* _ */ && marker !== 0x2A /* * */) { return false; }
+
+  // skip emphasis in links because it has lower priority, compare:
+  //  [foo *bar]()*
+  //  [foo `bar]()`
+  if (state.validateInsideEm || state.validateInsideLink) { return false; }
+
+  startCount = parseStart(state, start);
+  if (startCount < 0) { return false; }
+  if (startCount >= 4) {
+    state.pos += startCount;
+    state.pending += state.src.slice(start, startCount);
+    return true;
+  }
+
+  if (state.level >= state.options.maxLevel) { return false; }
+
+  oldLength = state.tokens.length;
+  oldPending = state.pending;
+  oldFlag = state.validateInsideEm;
+
+  state.pos = start + startCount;
+  stack = [ startCount ];
+  state.validateInsideEm = true;
+
+  while (state.pos < max) {
+    if (state.src.charCodeAt(state.pos) === marker && !haveLiteralAsterisk) {
+      count = parseEnd(state, state.pos);
+      if (count >= 1 && count < 4) {
+        oldCount = stack.pop();
+        newCount = count;
+
+        while (oldCount !== newCount) {
+          if (oldCount === 3) {
+            // e.g. `***foo*`
+            stack.push(3 - newCount);
+            break;
+          }
+
+          if (newCount < oldCount) {
+            // assert(oldCount == 2 && newCount == 1)
+            // i.e. `**foo* bar*`
+            // not valid for now, but might be in the future
+
+            // eslint is misconfigured, so it doesn't accept "break MAIN;"
+            // here is a crappy workaround
+            breakOutOfOuterLoop = true;
+            break;
+          }
+
+          // assert(newCount > oldCount)
+          newCount -= oldCount;
+
+          if (stack.length === 0) { break; }
+          state.pos += oldCount;
+          oldCount = stack.pop();
+        }
+
+        if (breakOutOfOuterLoop) { break; }
+
+        if (stack.length === 0) {
+          startCount = oldCount;
+          found = true;
+          break;
+        }
+        state.pos += count;
+        continue;
+      }
+
+      count = parseStart(state, state.pos);
+      if (count >= 1) {
+        stack.push(count);
+        state.pos += count;
+        continue;
+      }
+    }
+
+    ok = state.parser.tokenizeSingle(state);
+
+    if (ok) {
+      haveLiteralAsterisk = false;
+    } else {
+      haveLiteralAsterisk = state.src.charCodeAt(state.pos) === marker;
+      state.pending += state.src[state.pos];
+      state.pos++;
+    }
+  }
+
+  // restore old state
+  state.tokens.length = oldLength;
+  state.pending = oldPending;
+  state.validateInsideEm = oldFlag;
+
+  if (!found) {
+    // parser failed to find ending tag, so it's not valid emphasis
+    state.pos = start;
+    return false;
+  }
+
+  // found!
+  state.posMax = state.pos;
+  state.pos = start + startCount;
+
+  if (startCount === 2 || startCount === 3) {
+    state.push({ type: 'strong_open', level: state.level++ });
+  }
+  if (startCount === 1 || startCount === 3) {
+    state.push({ type: 'em_open', level: state.level++ });
+  }
+
+  state.parser.tokenize(state);
+
+  if (startCount === 1 || startCount === 3) {
+    state.push({ type: 'em_close', level: --state.level });
+  }
+  if (startCount === 2 || startCount === 3) {
+    state.push({ type: 'strong_close', level: --state.level });
+  }
+
+  state.pos = state.posMax + startCount;
+  state.posMax = max;
+  return true;
+};
+
+},{}],28:[function(require,module,exports){
+// Proceess html entity - &#123;, &#xAF;, &quot;, ...
+
+'use strict';
+
+var entities          = require('../common/entities');
+var escapeHtml        = require('../helpers').escapeHtml;
+var isValidEntityCode = require('../helpers').isValidEntityCode;
+var fromCodePoint     = require('../helpers').fromCodePoint;
+
+
+var DIGITAL_RE = /^&#((?:x[a-f0-9]{1,8}|[0-9]{1,8}));/i;
+var NAMED_RE   = /^&([a-z][a-z0-9]{1,31});/i;
+
+
+module.exports = function entity(state) {
+  var ch, code, match, pos = state.pos, max = state.posMax;
+
+  if (state.src.charCodeAt(pos) !== 0x26/* & */) { return false; }
+
+  if (pos + 1 < max) {
+    ch = state.src.charCodeAt(pos + 1);
+
+    if (ch === 0x23 /* # */) {
+      match = state.src.slice(pos).match(DIGITAL_RE);
+      if (match) {
+        code = match[1][0].toLowerCase() === 'x' ? parseInt(match[1].slice(1), 16) : parseInt(match[1], 10);
+        state.pending += isValidEntityCode(code) ? escapeHtml(fromCodePoint(code)) : fromCodePoint(0xFFFD);
+        state.pos += match[0].length;
+        return true;
+      }
+    } else {
+      match = state.src.slice(pos).match(NAMED_RE);
+      if (match) {
+        if (entities.hasOwnProperty(match[1])) {
+          state.pending += escapeHtml(entities[match[1]]);
+          state.pos += match[0].length;
+          return true;
+        }
+      }
+    }
+  }
+
+  state.pending += '&amp;';
+  state.pos++;
+  return true;
+};
+
+},{"../common/entities":1,"../helpers":6}],29:[function(require,module,exports){
+// Proceess escaped chars and hardbreaks
+
+var ESCAPED = '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-'
+                      .split('')
+                      .map(function(ch) { return ch.charCodeAt(0); });
+
+module.exports = function escape(state) {
+  var ch, pos = state.pos, max = state.posMax;
+
+  if (state.src.charCodeAt(pos) !== 0x5C/* \ */) { return false; }
+
+  pos++;
+
+  if (pos < max) {
+    ch = state.src.charCodeAt(pos);
+
+    if (ESCAPED.indexOf(ch) >= 0) {
+      // escape html chars if needed
+      if (ch === 0x26/* & */) {
+        state.pending += '&amp;';
+      } else if (ch === 0x3C/* < */) {
+        state.pending += '&lt;';
+      } else if (ch === 0x3E/* > */) {
+        state.pending += '&gt;';
+      } else if (ch === 0x22/* " */) {
+        state.pending += '&quot;';
+      } else {
+        state.pending += state.src[pos];
+      }
+      state.pos += 2;
+      return true;
+    }
+
+    if (ch === 0x0A) {
+      state.push({
+        type: 'hardbreak',
+        level: state.level
+      });
+
+      pos++;
+      // skip leading whitespaces from next line
+      while (pos < max && state.src.charCodeAt(pos) === 0x20) { pos++; }
+
+      state.pos = pos;
+      return true;
+    }
+  }
+
+  state.pending += '\\';
+  state.pos++;
+  return true;
+};
+
+},{}],30:[function(require,module,exports){
+// Process < > " (& was processed in markdown escape)
+
+module.exports = function escape_html_char(state) {
+  var ch = state.src.charCodeAt(state.pos);
+
+  if (ch === 0x3C/* < */) {
+    state.pending += '&lt;';
+  } else if (ch === 0x3E/* > */) {
+    state.pending += '&gt;';
+  } else if (ch === 0x22/* " */) {
+    state.pending += '&quot;';
+  } else {
+    return false;
+  }
+
+  state.pos++;
+  return true;
+};
+
+},{}],31:[function(require,module,exports){
+// Process html tags
+
+'use strict';
+
+
+var HTML_TAG_RE = require('../common/html_re').HTML_TAG_RE;
+
+
+function isLetter(ch) {
+  /*eslint no-bitwise:0*/
+  var lc = ch | 0x20; // to lower case
+  return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */);
+}
+
+
+module.exports = function htmltag(state) {
+  var ch, match, max, pos = state.pos;
+
+  if (!state.options.html) { return false; }
+
+  // Check start
+  max = state.posMax;
+  if (state.src.charCodeAt(pos) !== 0x3C/* < */ ||
+      pos + 2 >= max) {
+    return false;
+  }
+
+  // Quick fail on second char
+  ch = state.src.charCodeAt(pos + 1);
+  if (ch !== 0x21/* ! */ &&
+      ch !== 0x3F/* ? */ &&
+      ch !== 0x2F/* / */ &&
+      !isLetter(ch)) {
+    return false;
+  }
+
+  match = state.src.slice(pos).match(HTML_TAG_RE);
+  if (!match) { return false; }
+
+  state.push({
+    type: 'htmltag',
+    content: state.src.slice(pos, pos + match[0].length),
+    level: state.level
+  });
+//console.log(state.tokens)
+  state.pos += match[0].length;
+  return true;
+};
+
+},{"../common/html_re":3}],32:[function(require,module,exports){
+// Process [links](<to> "stuff")
+
+'use strict';
+
+var parseLinkLabel       = require('../links').parseLinkLabel;
+var parseLinkDestination = require('../links').parseLinkDestination;
+var parseLinkTitle       = require('../links').parseLinkTitle;
+var normalizeReference   = require('../links').normalizeReference;
+
+
+function links(state) {
+  var labelStart,
+      labelEnd,
+      label,
+      href,
+      title,
+      pos,
+      ref,
+      code,
+      isImage = false,
+      max = state.posMax,
+      start = state.pos,
+      marker = state.src.charCodeAt(start);
+
+  if (marker === 0x21/* ! */) {
+    isImage = true;
+    marker = state.src.charCodeAt(++start);
+  }
+
+  if (marker !== 0x5B/* [ */) { return false; }
+  if (state.level >= state.options.maxLevel) { return false; }
+
+  labelStart = start + 1;
+  labelEnd = parseLinkLabel(state, start);
+
+  // parser failed to find ']', so it's not a valid link
+  if (labelEnd < 0) { return false; }
+
+  pos = labelEnd + 1;
+  if (pos < max && state.src.charCodeAt(pos) === 0x28/* ( */) {
+    //
+    // Inline link
+    //
+
+    // [link](  <href>  "title"  )
+    //        ^^ skipping these spaces
+    pos++;
+    for (; pos < max; pos++) {
+      code = state.src.charCodeAt(pos);
+      if (code !== 0x20 && code !== 0x0A) { break; }
+    }
+    if (pos >= max) { return false; }
+
+    // [link](  <href>  "title"  )
+    //          ^^^^^^ parsing link destination
+    start = pos;
+    if (parseLinkDestination(state, pos)) {
+      href = state.link_content;
+      pos = state.pos;
+    } else {
+      href = '';
+    }
+
+    // [link](  <href>  "title"  )
+    //                ^^ skipping these spaces
+    start = pos;
+    for (; pos < max; pos++) {
+      code = state.src.charCodeAt(pos);
+      if (code !== 0x20 && code !== 0x0A) { break; }
+    }
+
+    // [link](  <href>  "title"  )
+    //                  ^^^^^^^ parsing link title
+    if (pos < max && start !== pos && parseLinkTitle(state, pos)) {
+      title = state.link_content;
+      pos = state.pos;
+
+      // [link](  <href>  "title"  )
+      //                         ^^ skipping these spaces
+      for (; pos < max; pos++) {
+        code = state.src.charCodeAt(pos);
+        if (code !== 0x20 && code !== 0x0A) { break; }
+      }
+    } else {
+      title = '';
+    }
+
+    if (pos >= max || state.src.charCodeAt(pos) !== 0x29/* ) */) {
+      state.pos = labelStart - 1;
+      return false;
+    }
+    pos++;
+  } else {
+    //
+    // Link reference
+    //
+
+    // [foo]  [bar]
+    //      ^^ optional whitespace (can include newlines)
+    for (; pos < max; pos++) {
+      code = state.src.charCodeAt(pos);
+      if (code !== 0x20 && code !== 0x0A) { break; }
+    }
+
+    if (pos < max && state.src.charCodeAt(pos) === 0x5B/* [ */) {
+      start = pos + 1;
+      pos = parseLinkLabel(state, pos);
+      if (pos >= 0) {
+        label = state.src.slice(start, pos++);
+      } else {
+        pos = start - 1;
+      }
+    }
+
+    // covers label === '' and label === undefined
+    // (collapsed reference link and shortcut reference link respectively)
+    if (!label) { label = state.src.slice(labelStart, labelEnd); }
+
+    ref = state.env.references[normalizeReference(label)];
+    if (!ref) {
+      state.pos = labelStart - 1;
+      return false;
+    }
+    href = ref.href;
+    title = ref.title;
+  }
+
+  //
+  // We found the end of the link, and know for a fact it's a valid link;
+  // so all that's left to do is to call tokenizer.
+  //
+  state.pos = labelStart;
+  state.posMax = labelEnd;
+
+  if (isImage) {
+    state.push({
+      type: 'image',
+      src: href,
+      title: title,
+      alt: state.src.substr(labelStart, labelEnd - labelStart),
+      level: state.level
+    });
+  } else {
+    state.push({
+      type: 'link_open',
+      href: href,
+      title: title,
+      level: state.level++
+    });
+    state.parser.tokenize(state);
+    state.push({ type: 'link_close', level: --state.level });
+  }
+
+  state.pos = pos;
+  state.posMax = max;
+  return true;
+}
+
+module.exports = links;
+
+},{"../links":8}],33:[function(require,module,exports){
+// Proceess '\n'
+
+module.exports = function escape(state) {
+  var pmax, max, pos = state.pos;
+
+  if (state.src.charCodeAt(pos) !== 0x0A/* \n */) { return false; }
+
+  pmax = state.pending.length - 1;
+  max = state.posMax;
+
+  // '  \n' -> hardbreak
+  // Lookup in pending chars is bad practice! Don't copy to other rules!
+  // Pending string is stored in concat mode, indexed lookups will cause
+  // convertion to flat mode.
+  if (pmax >= 0 && state.pending.charCodeAt(pmax) === 0x20) {
+    if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 0x20) {
+      state.pending = state.pending.replace(/ +$/, '');
+      state.push({
+        type: 'hardbreak',
+        level: state.level
+      });
+    } else {
+      state.pending = state.pending.slice(0, -1);
+      state.push({
+        type: 'softbreak',
+        level: state.level
+      });
+    }
+
+  } else {
+    state.push({
+      type: 'softbreak',
+      level: state.level
+    });
+  }
+
+  pos++;
+
+  // skip heading spaces for next line
+  while (pos < max && state.src.charCodeAt(pos) === 0x20) { pos++; }
+
+  state.pos = pos;
+  return true;
+};
+
+},{}],34:[function(require,module,exports){
+// Inline parser state
+
+'use strict';
+
+
+function StateInline(src, parser, options, env) {
+  this.src = src;
+  this.env = env;
+  this.options = options;
+  this.parser = parser;
+  this.tokens = [];
+  this.pos = 0;
+  this.pending = '';
+  this.posMax = this.src.length;
+  this.validateInsideEm = false;
+  this.validateInsideLink = false;
+  this.level = 0;
+  this.link_content = '';
+  this.pendingLevel = 0;
+}
+
+
+StateInline.prototype.pushPending = function () {
+  var pending = this.pending;
+
+  this.tokens.push({
+    type: 'text',
+    content: pending,
+    level: this.pendingLevel
+  });
+  this.pending = '';
+};
+
+StateInline.prototype.push = function (token) {
+  if (this.pending) {
+    this.pushPending();
+  }
+
+  this.tokens.push(token);
+  this.pendingLevel = this.level;
+};
+
+module.exports = StateInline;
+
+},{}],35:[function(require,module,exports){
+// Skip text characters for text token, place those to pendibg buffer
+// and increment current pos
+
+module.exports = function text(state) {
+  var match = state.src.slice(state.pos).match(state.parser.textMatch);
+
+  if (!match) { return false; }
+
+  state.pending += match[0];
+  state.pos += match[0].length;
+
+  return true;
+};
+
+},{}],36:[function(require,module,exports){
 'use strict';
 
 function ToObject(val) {
