@@ -7,7 +7,7 @@
     html: true,
     xhtml: true,
     breaks: false,
-    langprefix: 'language-',
+    langPrefix: 'language-',
 
     // options below are for demo only
     _highlight: false,

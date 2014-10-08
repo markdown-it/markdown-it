@@ -61,7 +61,7 @@ readFile(options.spec, 'utf8', function (error, input) {
         html: true,
         breaks: false,
         xhtml: true,
-        langprefix: 'language-'
+        langPrefix: 'language-'
       });
 
   if (error) {

@@ -14,7 +14,7 @@ describe('stmd', function () {
     html: true,
     xhtml: true,
     breaks: false,
-    langprefix: 'language-'
+    langPrefix: 'language-'
   });
 
   utils.addSpecTests(path.join(__dirname, 'fixtures/stmd/good.txt'), md);

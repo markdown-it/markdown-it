@@ -10,7 +10,7 @@ var md = new Remarkable({
   html: true,
   xhtml: true,
   breaks: false,
-  langprefix: 'language-'
+  langPrefix: 'language-'
 });
 
 var data = fs.readFileSync(path.join(__dirname, '/samples/cdata.md'), 'utf8');

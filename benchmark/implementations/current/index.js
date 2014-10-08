@@ -5,7 +5,7 @@ var md = new Remarkable({
   html: true,
   xhtml: true,
   breaks: false,
-  langprefix: 'language-'
+  langPrefix: 'language-'
 });
 
 exports.run = function(data) {
