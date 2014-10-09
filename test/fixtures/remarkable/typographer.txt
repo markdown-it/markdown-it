@@ -22,9 +22,47 @@ trademark
 .
 
 
+paragraph
+.
+(p) (P)
+.
+<p>§ §</p>
+.
+
+
 plus-minus
 .
-+/-5
++-5
 .
 <p>±5</p>
 .
+
+
+ellipsis
+.
+test.. test... test..... test?..... test!....
+.
+<p>test… test… test… test?.. test!..</p>
+.
+
+
+dupes
+.
+!!!!!! ???? ,,
+.
+<p>!!! ??? ,</p>
+.
+
+
+em-dashes
+.
+-- remarkable -- super --
+.
+<p>— remarkable — super —</p>
+.
+
+
+
+TODO:
+
+- "Monitor 21""
