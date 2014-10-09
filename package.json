@@ -17,8 +17,7 @@
   ],
   "main": "index.js",
   "dependencies": {
-    "argparse": "~ 0.1.15",
-    "object-assign": "^1.0.0"
+    "argparse": "~ 0.1.15"
   },
   "devDependencies": {
     "ansi": "^0.3.0",
