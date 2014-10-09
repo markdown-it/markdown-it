@@ -6,12 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var Remarkable = require('../');
 
-var md = new Remarkable({
-  html: true,
-  xhtml: true,
-  breaks: false,
-  langPrefix: 'language-'
-});
+var md = new Remarkable('commonmark');
 
 var data = fs.readFileSync(path.join(__dirname, '/samples/lorem1.txt'), 'utf8');
 

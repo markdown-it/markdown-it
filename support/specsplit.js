@@ -57,12 +57,7 @@ function readFile(filename, encoding, callback) {
 
 readFile(options.spec, 'utf8', function (error, input) {
   var good = [], bad = [],
-      markdown = new Remarkable({
-        html: true,
-        breaks: false,
-        xhtml: true,
-        langPrefix: 'language-'
-      });
+      markdown = new Remarkable('commonmark');
 
   if (error) {
     if (error.code === 'ENOENT') {

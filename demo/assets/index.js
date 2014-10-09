@@ -5,7 +5,7 @@
 
   var defaults = {
     html: true,
-    xhtml: true,
+    xhtmlOut: true,
     breaks: false,
     langPrefix: 'language-',
 

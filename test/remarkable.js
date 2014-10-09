@@ -11,9 +11,9 @@ var Remarked = require('../');
 
 describe('Default', function () {
   var md = new Remarked({
-    breaks: false,
     langPrefix: '',
-    typographer: true
+    typographer: true,
+    linkify: true
   });
 
   utils.addSpecTests(path.join(__dirname, 'fixtures/remarkable'), md);

@@ -10,12 +10,7 @@ var Remarked = require('../');
 
 
 describe('stmd', function () {
-  var md = new Remarked({
-    html: true,
-    xhtml: true,
-    breaks: false,
-    langPrefix: 'language-'
-  });
+  var md = new Remarked('commonmark');
 
   utils.addSpecTests(path.join(__dirname, 'fixtures/stmd/good.txt'), md);
 });
