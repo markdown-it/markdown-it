@@ -28,36 +28,40 @@ html
         code.js= s.code
 
       .form-inline.demo-options
-        .checkbox
+        .checkbox.not-strict
           label._tip(title='enable html tags in source text')
             input#html(type='checkbox')
             |  html
-        .checkbox
+        .checkbox.not-strict
           label._tip(title='produce xtml output (add / to single tags (<br /> instead of <br>)')
             input#xhtmlOut(type='checkbox')
             |  xhtmlOut
-        .checkbox
+        .checkbox.not-strict
           label._tip(title='newlines in paragraphs are rendered as <br>')
             input#breaks(type='checkbox')
             |  breaks
-        .checkbox
+        .checkbox.not-strict
           label._tip(title='autoconvert link-like texts to links')
             input#linkify(type='checkbox')
             |  linkify
-        .checkbox
+        .checkbox.not-strict
           label._tip(title='do typographyc replacements, (c) -> © and so on')
             input#typographer(type='checkbox')
             |  typographer
-        .checkbox
+        .checkbox.not-strict
           label._tip(title='enable output highlight for fenced blocks')
             input#_highlight(type='checkbox')
             |  highlight
-        .form-group
+        .form-group.not-strict
           input#langPrefix.form-control._tip(
             type='input'
             placeholder='language prefix'
             title='css class language prefix for fenced code blocks'
           )
+        .checkbox
+          label._tip(title='force strict CommonMark mode - output will be equal to reference parser')
+            input#_strict(type='checkbox')
+            |  CommonMark strict
 
     .container.full-height
       .row.full-height

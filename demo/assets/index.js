@@ -13,6 +13,7 @@
 
     // options below are for demo only
     _highlight: false,
+    _strict: false,
     _src: false
   };
 
@@ -32,9 +33,18 @@
     return '';
   };
 
+  function setOptionClass(name, val) {
+    if (val) {
+      $('body').addClass('opt_' + name);
+    } else {
+      $('body').removeClass('opt_' + name);
+    }
+  }
+
   function mdInit() {
-    mdHtml = new window.Remarkable(defaults);
-    mdSrc = new window.Remarkable(defaults);
+    var opts = defaults._strict ? 'commonmark' : defaults;
+    mdHtml = new window.Remarkable(opts);
+    mdSrc = new window.Remarkable(opts);
 
     // Beautify output of parser for html content
     mdHtml.renderer.rules.table_open = function () {
@@ -108,10 +118,13 @@
       if (_.isBoolean(val)) {
         $el.prop('checked', val);
         $el.on('change', function () {
-          defaults[key] = Boolean($el.prop('checked'));
+          var value = Boolean($el.prop('checked'));
+          setOptionClass(key, value);
+          defaults[key] = value;
           mdInit();
           updateResult();
         });
+        setOptionClass(key, val);
 
       } else {
         $(el).val(val);
