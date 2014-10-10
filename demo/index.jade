@@ -33,13 +33,21 @@ html
             input#html(type='checkbox')
             |  html
         .checkbox
-          label._tip(title='add / to single tags (<br /> instead of <br>')
-            input#xhtml(type='checkbox')
-            |  xhtml
+          label._tip(title='produce xtml output (add / to single tags (<br /> instead of <br>)')
+            input#xhtmlOut(type='checkbox')
+            |  xhtmlOut
         .checkbox
           label._tip(title='newlines in paragraphs are rendered as <br>')
             input#breaks(type='checkbox')
             |  breaks
+        .checkbox
+          label._tip(title='autoconvert link-like texts to links')
+            input#linkify(type='checkbox')
+            |  linkify
+        .checkbox
+          label._tip(title='do typographyc replacements, (c) -> © and so on')
+            input#typographer(type='checkbox')
+            |  typographer
         .checkbox
           label._tip(title='enable output highlight for fenced blocks')
             input#_highlight(type='checkbox')
