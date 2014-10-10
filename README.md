@@ -8,11 +8,14 @@ remarkable
 
 Markdown parser done right. Fast and easy to extend.
 
+- Configurable syntax! You can add new rules and even replace existing ones.
+- Support [CommonMark](http://commonmark.org/) spec.
+- Very high speed.
+
 __[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
 
 
-Install
--------
+## Install
 
 node.js:
 
@@ -27,8 +30,7 @@ bower install remarkable --save
 ```
 
 
-Usage
------
+## Usage
 
 ```javascript
 var Remarkable = require('remarkable');
@@ -38,7 +40,7 @@ var md = new Remarkable({
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
-  linkify:      false,        // autoconvert url-like texts to links
+  linkify:      false,        // Autoconvert url-like texts to links
   typographer:  false,        // Enable smartypants and other sweet transforms
 
   // Highlighter function. Should return escaped html,
@@ -62,16 +64,82 @@ md.set({
 });
 ```
 
+__Note.__ To acheive best performance, don't modify `Remarkable` instance on
+the fly. If you need several configurations - create multiple instances and
+setup each appropriately.
 
-Authors
--------
+You can also reset parser to strict [CommonMark](http://commonmark.org/) mode:
+
+```javascript
+var Remarkable = require('remarkable');
+var md = new Remarkable('commonmark');
+```
+
+### Typorgapher
+
+Though full weigh typograpic replacements are language specific, `remarkabple`
+provides the most common and universal case coverage:
+
+```javascript
+var Remarkable = require('remarkable');
+var md = new Remarkable({ typographer: true });
+
+md.typographer.set({
+  singleQuotes: '‘’',
+  doubleQuotes: '“”', // «» - russian, „“ - deutch
+  copyright:    true, // (c) (C) -> ©
+  trademark:    true, // (tm) (TM) -> ™
+  registered:   true, // (r) (R) -> ®
+  plusminus:    true, // +- -> ±
+  paragraph:    true, // (p) (P) -> §
+  ellipsis:     true, // ... -> …
+  dupes:        true, // ???????? -> ???, !!!!! -> !!!, `,,` -> `,`
+  emDashes:     true  // -- -> —
+})
+```
+
+
+## References / Thanks
+
+Big thanks to [John MacFarlane](https://github.com/jgm) for his work on
+CommonMark spec and reference implementations. His work saved us a lot of time
+during this project development.
+
+Links:
+
+1. https://github.com/jgm/stmd - reference CommonMark implementations in C & JS,
+   also contains latest spec & online demo.
+2. http://talk.commonmark.org - CommonMark forum, good place to collaborate
+   developpers efforts.
+
+
+## Development / Modification
+
+Parser consists of several responsibilities chains, filled with rules. You can
+reconfigure anyone as you wish. Render also can be modified and extended. See
+source code to understand details. Pay attention to this properties:
+
+```javascript
+Remarkable.block
+Remarkable.block.ruler
+Remarkable.inline
+Remarkable.inline.ruler
+Remarkable.typographer
+Remarkable.typographer.ruler
+Remarkable.linkifier
+Remarkable.linkifier.ruler
+Remarkable.renderer
+Remarkable.renderer.rules
+```
+
+
+## Authors
 
 - Jon Schlinkert [github/jonschlinkert](https://github.com/jonschlinkert)
 - Alex Kocharin [github/rlidwka](https://github.com/rlidwka)
 - Vitaly Puzrin [github/puzrin](https://github.com/puzrin)
 
 
-License
--------
+## License
 
 [MIT](https://github.com/jonschlinkert/remarkable/blob/master/LICENSE)

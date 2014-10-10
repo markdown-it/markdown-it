@@ -27,6 +27,10 @@ test.. test... test..... test?..... test!....
 
 Remarkable -- awesome
 
+"Smartypants, double quotes"
+
+'Smartypants, single quotes'
+
 
 ## Emphasis
 
