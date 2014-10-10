@@ -2542,15 +2542,14 @@ module.exports = {
 module.exports = {
   singleQuotes: '‘’',
   doubleQuotes: '“”', // «» - russian, „“ - deutch
-  copyright:    true,
-  trademark:    true,
-  registered:   true,
-  plusminus:    true,
-  paragraph:    true,
-  ellipsis:     true,
-  dupes:        true,
-  emDashes:     true,
-  linkify:      true
+  copyright:    true, // (c) (C) → ©
+  trademark:    true, // (tm) (TM) → ™
+  registered:   true, // (r) (R) → ®
+  plusminus:    true, // +- → ±
+  paragraph:    true, // (p) (P) → §
+  ellipsis:     true, // ... → …
+  dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
+  emDashes:     true  // -- → —
 };
 
 },{}],10:[function(require,module,exports){
@@ -2806,6 +2805,11 @@ function parseLinkLabel(state, start) {
 
   if (state.validateInsideLink) { return -1; }
 
+  if (state.label_nest_level) {
+    state.label_nest_level--;
+    return -1;
+  }
+
   state.pos = start + 1;
   state.validateInsideLink = true;
   level = 1;
@@ -2827,7 +2831,12 @@ function parseLinkLabel(state, start) {
     if (!ok) { state.pending += state.src[state.pos++]; }
   }
 
-  if (found) { labelEnd = state.pos; }
+  if (found) {
+    labelEnd = state.pos;
+    state.label_nest_level = 0;
+  } else {
+    state.label_nest_level = level - 1;
+  }
 
   // restore old state
   state.pos = oldPos;
@@ -5557,6 +5566,9 @@ function links(state) {
     // Link reference
     //
 
+    // do not allow nested reference links
+    if (state.linkLevel > 0) { return false; }
+
     // [foo]  [bar]
     //      ^^ optional whitespace (can include newlines)
     for (; pos < max; pos++) {
@@ -5609,7 +5621,9 @@ function links(state) {
       title: title,
       level: state.level++
     });
+    state.linkLevel++;
     state.parser.tokenize(state);
+    state.linkLevel--;
     state.push({ type: 'link_close', level: --state.level });
   }
 
@@ -5683,9 +5697,11 @@ function StateInline(src, parser, options, env) {
   this.posMax = this.src.length;
   this.validateInsideEm = false;
   this.validateInsideLink = false;
+  this.linkLevel = 0;
   this.level = 0;
   this.link_content = '';
   this.pendingLevel = 0;
+  this.label_nest_level = 0; // for stmd-like backtrack optimization
 }
 
 
