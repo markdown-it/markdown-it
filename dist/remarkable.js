@@ -3463,8 +3463,20 @@ rules.table_open = function (/*tokens, idx, options*/) {
 rules.table_close = function (/*tokens, idx, options*/) {
   return '</table>\n';
 };
+rules.thead_open = function (/*tokens, idx, options*/) {
+  return '\t<thead>\n';
+};
+rules.thead_close = function (/*tokens, idx, options*/) {
+  return '\t</thead>\n';
+};
+rules.tbody_open = function (/*tokens, idx, options*/) {
+  return '\t<tbody>\n';
+};
+rules.tbody_close = function (/*tokens, idx, options*/) {
+  return '\t</tbody>\n';
+};
 rules.tr_open = function (/*tokens, idx, options*/) {
-  return '<tr>\n';
+  return '\t\t<tr>';
 };
 rules.tr_close = function (/*tokens, idx, options*/) {
   return '</tr>\n';
@@ -3472,20 +3484,20 @@ rules.tr_close = function (/*tokens, idx, options*/) {
 rules.th_open = function (tokens, idx /*, options*/) {
   var token = tokens[idx];
   return '<th'
-    + (token.align ? ' align="' + token.align + '"' : '')
+    + (token.align ? ' style="text-align:' + token.align + '"' : '')
     + '>';
 };
 rules.th_close = function (/*tokens, idx, options*/) {
-  return '</th>\n';
+  return '</th>';
 };
 rules.td_open = function (tokens, idx /*, options*/) {
   var token = tokens[idx];
   return '<td'
-    + (token.align ? ' align="' + token.align + '"' : '')
+    + (token.align ? ' style="text-align:' + token.align + '"' : '')
     + '>';
 };
 rules.td_close = function (/*tokens, idx, options*/) {
-  return '</td>\n';
+  return '</td>';
 };
 
 
@@ -4781,7 +4793,7 @@ module.exports = function table(state, startLine, endLine, silent) {
   // first character of the second line should be '|' or '-'
   ch = state.src.charCodeAt(state.bMarks[startLine + 1]
      + state.tShift[startLine + 1]);
-  if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */) { return false; }
+  if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */ && ch !== 0x3A/* : */) { return false; }
 
   secondLineMatch = lineMatch(state, startLine + 1,
     /^ *\|?(( *[:-]-+[:-] *\|)+( *[:-]-+[:-] *))\|? *$/);
@@ -4808,6 +4820,7 @@ module.exports = function table(state, startLine, endLine, silent) {
   if (silent) { return true; }
 
   state.tokens.push({ type: 'table_open', level: state.level++ });
+  state.tokens.push({ type: 'thead_open', level: state.level++ });
 
   state.tokens.push({ type: 'tr_open', level: state.level++ });
   for (i = 0; i < rows.length; i++) {
@@ -4820,6 +4833,8 @@ module.exports = function table(state, startLine, endLine, silent) {
     state.tokens.push({ type: 'th_close', level: --state.level });
   }
   state.tokens.push({ type: 'tr_close', level: --state.level });
+  state.tokens.push({ type: 'thead_close', level: --state.level });
+  state.tokens.push({ type: 'tbody_open', level: state.level++ });
 
   for (nextLine = startLine + 2; nextLine < endLine; nextLine++) {
     m = lineMatch(state, nextLine, /^ *\|?(.*?\|.*?)\|? *$/);
@@ -4837,6 +4852,7 @@ module.exports = function table(state, startLine, endLine, silent) {
     }
     state.tokens.push({ type: 'tr_close', level: --state.level });
   }
+  state.tokens.push({ type: 'tbody_close', level: --state.level });
   state.tokens.push({ type: 'table_close', level: --state.level });
 
   state.line = nextLine;

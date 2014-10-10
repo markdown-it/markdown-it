@@ -35,38 +35,43 @@ console.log(md.parse('# Remarkable rulezz!'));
 // =&gt; &lt;h1&gt;Remarkable rulezz!&lt;/h1&gt;
 </code></pre>
       <div class="form-inline demo-options">
-        <div class="checkbox">
+        <div class="checkbox not-strict">
           <label title="enable html tags in source text" class="_tip">
             <input id="html" type="checkbox"> html
           </label>
         </div>
-        <div class="checkbox">
+        <div class="checkbox not-strict">
           <label title="produce xtml output (add / to single tags (&lt;br /&gt; instead of &lt;br&gt;)" class="_tip">
             <input id="xhtmlOut" type="checkbox"> xhtmlOut
           </label>
         </div>
-        <div class="checkbox">
+        <div class="checkbox not-strict">
           <label title="newlines in paragraphs are rendered as &lt;br&gt;" class="_tip">
             <input id="breaks" type="checkbox"> breaks
           </label>
         </div>
-        <div class="checkbox">
+        <div class="checkbox not-strict">
           <label title="autoconvert link-like texts to links" class="_tip">
             <input id="linkify" type="checkbox"> linkify
           </label>
         </div>
-        <div class="checkbox">
+        <div class="checkbox not-strict">
           <label title="do typographyc replacements, (c) -&gt; © and so on" class="_tip">
             <input id="typographer" type="checkbox"> typographer
           </label>
         </div>
-        <div class="checkbox">
+        <div class="checkbox not-strict">
           <label title="enable output highlight for fenced blocks" class="_tip">
             <input id="_highlight" type="checkbox"> highlight
           </label>
         </div>
-        <div class="form-group">
+        <div class="form-group not-strict">
           <input id="langPrefix" type="input" placeholder="language prefix" title="css class language prefix for fenced code blocks" class="form-control _tip">
+        </div>
+        <div class="checkbox">
+          <label title="force strict CommonMark mode - output will be equal to reference parser" class="_tip">
+            <input id="_strict" type="checkbox"> CommonMark strict
+          </label>
         </div>
       </div>
     </div>
@@ -74,7 +79,18 @@ console.log(md.parse('# Remarkable rulezz!'));
       <div class="row full-height">
         <div class="col-xs-6 full-height">
           <div class="demo-control"><a href="#" class="source-clear">clear</a><a id="permalink" href="./" title="Share this snippet as link"><strong>permalink</strong></a></div>
-          <textarea class="source full-height"># h1 Heading
+          <textarea class="source full-height">---
+__Advertisement :)__
+
+- __[pica](http://nodeca.github.io/pica/demo/)__ - high quality and fast image
+  resize in browser.
+- __[babelfish](https://github.com/nodeca/babelfish/)__ - developpers friendly
+  i18n with plurals support and easy syntax.
+You will like those projects!
+
+---
+
+# h1 Heading
 ## h2 Heading
 ### h3 Heading
 #### h4 Heading
@@ -142,17 +158,12 @@ Unordered
 + Lorem ipsum dolor sit amet
 + Consectetur adipiscing elit
 + Integer molestie lorem at massa
-+ Facilisis in pretium nisl aliquet
-+ Nulla volutpat aliquam velit
   - Phasellus iaculis neque
-  - Purus sodales ultricies
   - Vestibulum laoreet porttitor sem
   - Ac tristique libero volutpat at
-    * Consectetur adipiscing elit
-    * Integer molestie lorem at massa
+    * Facilisis in pretium nisl aliquet
+    * Nulla volutpat aliquam velit
 + Faucibus porta lacus fringilla vel
-+ Aenean sit amet erat nunc
-+ Eget porttitor lorem
 
 Ordered
 
@@ -160,10 +171,6 @@ Ordered
 2. Consectetur adipiscing elit
 3. Integer molestie lorem at massa
 4. Facilisis in pretium nisl aliquet
-5. Nulla volutpat aliquam velit
-6. Faucibus porta lacus fringilla vel
-7. Aenean sit amet erat nunc
-8. Eget porttitor lorem
 
 
 ## Code
@@ -187,24 +194,11 @@ Sample text here...
 Syntax highlighting
 
 ``` js
-grunt.initConfig({
-  assemble: {
-    options: {
-      assets: 'docs/assets',
-      data: 'src/data/*.{json,yml}',
-      helpers: 'src/custom-helpers.js',
-      partials: ['src/partials/**/*.{hbs,md}']
-    },
-    pages: {
-      options: {
-        layout: 'default.hbs'
-      },
-      files: {
-        './': ['src/templates/pages/index.hbs']
-      }
-    }
-  }
+var foo = function (bar) {
+  return bar++;
 };
+
+console.log(foo(5));
 ```
 
 ## Tables
