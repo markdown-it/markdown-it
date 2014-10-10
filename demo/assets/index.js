@@ -4,15 +4,15 @@
   var mdHtml, mdSrc, permalink;
 
   var defaults = {
-    html:         true,        // Enable html tags in source
-    xhtmlOut:     true,        // Use '/' to close single tags (<br />)
+    html:         false,        // Enable html tags in source
+    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
     breaks:       false,        // Convert '\n' in paragraphs into <br>
     langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert url-like texts to links
-    typographer:  false,        // Enable smartypants and other sweet transforms
+    linkify:      true,        // autoconvert url-like texts to links
+    typographer:  true,        // Enable smartypants and other sweet transforms
 
     // options below are for demo only
-    _highlight: false,
+    _highlight: true,
     _strict: false,
     _src: false
   };
