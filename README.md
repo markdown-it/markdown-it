@@ -9,7 +9,11 @@ remarkable
 Markdown parser done right. Fast and easy to extend.
 
 - Configurable syntax! You can add new rules and even replace existing ones.
-- Support [CommonMark](http://commonmark.org/) spec.
+- Implements [CommonMark](http://commonmark.org/) spec + extentions:
+  - strikeout
+  - tables
+  - linkify (autoconvert links from text)
+  - typographer
 - Very high speed.
 
 __[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
@@ -77,7 +81,7 @@ var md = new Remarkable('commonmark');
 
 ### Typorgapher
 
-Though full weigh typograpic replacements are language specific, `remarkabple`
+Though full weigh typograpic replacements are language specific, `remarkable`
 provides the most common and universal case coverage:
 
 ```javascript
@@ -87,14 +91,14 @@ var md = new Remarkable({ typographer: true });
 md.typographer.set({
   singleQuotes: '‘’',
   doubleQuotes: '“”', // «» - russian, „“ - deutch
-  copyright:    true, // (c) (C) -> ©
-  trademark:    true, // (tm) (TM) -> ™
-  registered:   true, // (r) (R) -> ®
-  plusminus:    true, // +- -> ±
+  copyright:    true, // (c) (C) → ©
+  trademark:    true, // (tm) (TM) → ™
+  registered:   true, // (r) (R) → ®
+  plusminus:    true, // +- → ±
   paragraph:    true, // (p) (P) -> §
-  ellipsis:     true, // ... -> …
-  dupes:        true, // ???????? -> ???, !!!!! -> !!!, `,,` -> `,`
-  emDashes:     true  // -- -> —
+  ellipsis:     true, // ... → …
+  dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
+  emDashes:     true  // -- → —
 })
 ```
 
