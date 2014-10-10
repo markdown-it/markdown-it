@@ -39,6 +39,7 @@ bower install remarkable --save
 ```javascript
 var Remarkable = require('remarkable');
 
+// This values are default
 var md = new Remarkable({
   html:         false,        // Enable html tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
@@ -79,6 +80,32 @@ var Remarkable = require('remarkable');
 var md = new Remarkable('commonmark');
 ```
 
+### Highligh fenced blocks
+
+To highlight content of fenced block, assing function to `highlight` option:
+
+```javascript
+var Remarkable = require('remarkable');
+var hljs       = require('highlight.js') // https://highlightjs.org/
+
+// This values are default
+var md = new Remarkable({
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(lang, str).value;
+      } catch (__) {}
+    }
+
+    try {
+      return hljs.highlightAuto(str).value;
+    } catch (__) {}
+
+    return ''; // use external default escaping
+  }
+});
+```
+
 ### Typorgapher
 
 Though full weigh typograpic replacements are language specific, `remarkable`
@@ -88,6 +115,7 @@ provides the most common and universal case coverage:
 var Remarkable = require('remarkable');
 var md = new Remarkable({ typographer: true });
 
+// This values are default
 md.typographer.set({
   singleQuotes: '‘’',
   doubleQuotes: '“”', // «» - russian, „“ - deutch
@@ -96,11 +124,18 @@ md.typographer.set({
   registered:   true, // (r) (R) → ®
   plusminus:    true, // +- → ±
   paragraph:    true, // (p) (P) -> §
-  ellipsis:     true, // ... → …
+  ellipsis:     true, // ... → … (also ?.... → ?.., !.... → !..)
   dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
   emDashes:     true  // -- → —
 })
 ```
+
+### More extras
+
+This extentions are anabled by default
+
+- [Strike out](https://help.github.com/articles/github-flavored-markdown/#strikethrough)
+- [tables](https://help.github.com/articles/github-flavored-markdown/#tables)
 
 
 ## References / Thanks

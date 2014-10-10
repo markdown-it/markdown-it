@@ -44,7 +44,6 @@ body {
   position: absolute;
   right: 15px;
   top: 0;
-  padding: 0 10px;
   border-radius: 0 4px;
   font-size: 12px;
   background-color: #666;
@@ -57,8 +56,14 @@ body {
   opacity: 1;
 }
 .demo-control a {
-  margin: 0 20px;
+  padding: 0 20px;
   color: #fff !important;
+}
+.demo-control a:first-child {
+  padding-left: 30px;
+}
+.demo-control a:last-child {
+  padding-right: 30px;
 }
 .hljs {
   background: none;
