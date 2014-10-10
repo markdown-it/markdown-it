@@ -1,0 +1,11 @@
+linkify
+.
+url http://www.youtube.com/watch?v=5Jt5GEr4AYg.
+.
+<p>url <a href="http://www.youtube.com/watch?v=5Jt5GEr4AYg">http://www.youtube.com/watch?v=5Jt5GEr4AYg</a>.</p>
+.
+.
+don't touch text in links <https://example.com>
+.
+<p>don't touch text in links <a href="https://example.com">https://example.com</a></p>
+.
