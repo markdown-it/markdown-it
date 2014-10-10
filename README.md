@@ -9,11 +9,8 @@ remarkable
 Markdown parser done right. Fast and easy to extend.
 
 - Configurable syntax! You can add new rules and even replace existing ones.
-- Implements [CommonMark](http://commonmark.org/) spec + extentions:
-  - strikeout
-  - tables
-  - linkify (autoconvert links from text)
-  - typographer
+- Implements [CommonMark](http://commonmark.org/) spec + extentions
+  (strikethrough, tables, URL autolinking, typographer).
 - Very high speed.
 
 __[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
@@ -130,12 +127,15 @@ md.typographer.set({
 })
 ```
 
+Of cause, you can add your own rules or replace default one with something
+more advanced, specific for your language.
+
 ### More extras
 
-This extentions are anabled by default
+This extentions are enabled by default:
 
-- [Strike out](https://help.github.com/articles/github-flavored-markdown/#strikethrough)
-- [tables](https://help.github.com/articles/github-flavored-markdown/#tables)
+- [Strikethrough](https://help.github.com/articles/github-flavored-markdown/#strikethrough)
+- [Tables](https://help.github.com/articles/github-flavored-markdown/#tables)
 
 
 ## References / Thanks

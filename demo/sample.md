@@ -54,7 +54,7 @@ __This is bold text__
 
 _This is italic text_
 
-~~Strike through this text.~~
+~~Strike through this text~~
 
 
 ## Blockquotes
