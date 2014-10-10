@@ -1,3 +1,14 @@
+---
+__Advertisement :)__
+
+- __[pica](http://nodeca.github.io/pica/demo/)__ - high quality and fast image
+  resize in browser.
+- __[babelfish](https://github.com/nodeca/babelfish/)__ - developpers friendly
+  i18n with plurals support and easy syntax.
+You will like those projects!
+
+---
+
 # h1 Heading
 ## h2 Heading
 ### h3 Heading
@@ -66,17 +77,12 @@ Unordered
 + Lorem ipsum dolor sit amet
 + Consectetur adipiscing elit
 + Integer molestie lorem at massa
-+ Facilisis in pretium nisl aliquet
-+ Nulla volutpat aliquam velit
   - Phasellus iaculis neque
-  - Purus sodales ultricies
   - Vestibulum laoreet porttitor sem
   - Ac tristique libero volutpat at
-    * Consectetur adipiscing elit
-    * Integer molestie lorem at massa
+    * Facilisis in pretium nisl aliquet
+    * Nulla volutpat aliquam velit
 + Faucibus porta lacus fringilla vel
-+ Aenean sit amet erat nunc
-+ Eget porttitor lorem
 
 Ordered
 
@@ -84,10 +90,6 @@ Ordered
 2. Consectetur adipiscing elit
 3. Integer molestie lorem at massa
 4. Facilisis in pretium nisl aliquet
-5. Nulla volutpat aliquam velit
-6. Faucibus porta lacus fringilla vel
-7. Aenean sit amet erat nunc
-8. Eget porttitor lorem
 
 
 ## Code
@@ -111,24 +113,11 @@ Sample text here...
 Syntax highlighting
 
 ``` js
-grunt.initConfig({
-  assemble: {
-    options: {
-      assets: 'docs/assets',
-      data: 'src/data/*.{json,yml}',
-      helpers: 'src/custom-helpers.js',
-      partials: ['src/partials/**/*.{hbs,md}']
-    },
-    pages: {
-      options: {
-        layout: 'default.hbs'
-      },
-      files: {
-        './': ['src/templates/pages/index.hbs']
-      }
-    }
-  }
+var foo = function (bar) {
+  return bar++;
 };
+
+console.log(foo(5));
 ```
 
 ## Tables
