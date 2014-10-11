@@ -12,7 +12,7 @@ CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut -b -6) master)
 GITHUB_PROJ := https://github.com//jonschlinkert/${NPM_PACKAGE}
 
 
-demo: lint browserify
+demo: lint
 	./support/demodata.js > demo/sample.json
 	jade demo/index.jade -P --obj demo/sample.json
 	stylus -u autoprefixer-stylus demo/assets/index.styl
