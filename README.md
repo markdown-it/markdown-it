@@ -33,7 +33,7 @@ bower install remarkable --save
 
 ## Usage
 
-```javascript
+```js
 var Remarkable = require('remarkable');
 
 // This values are default
@@ -56,7 +56,7 @@ console.log(md.parse('# Remarkable rulezz!'));
 
 You can define options via `set` method:
 
-```javascript
+```js
 var Remarkable = require('remarkable');
 var md = new Remarkable();
 
@@ -72,7 +72,7 @@ setup each appropriately.
 
 You can also reset parser to strict [CommonMark](http://commonmark.org/) mode:
 
-```javascript
+```js
 var Remarkable = require('remarkable');
 var md = new Remarkable('commonmark');
 ```
@@ -81,7 +81,7 @@ var md = new Remarkable('commonmark');
 
 To highlight content of fenced block, assing function to `highlight` option:
 
-```javascript
+```js
 var Remarkable = require('remarkable');
 var hljs       = require('highlight.js') // https://highlightjs.org/
 
@@ -108,7 +108,7 @@ var md = new Remarkable({
 Though full weigh typograpic replacements are language specific, `remarkable`
 provides the most common and universal case coverage:
 
-```javascript
+```js
 var Remarkable = require('remarkable');
 var md = new Remarkable({ typographer: true });
 
@@ -158,7 +158,7 @@ Parser consists of several responsibilities chains, filled with rules. You can
 reconfigure anyone as you wish. Render also can be modified and extended. See
 source code to understand details. Pay attention to this properties:
 
-```javascript
+```js
 Remarkable.block
 Remarkable.block.ruler
 Remarkable.inline
@@ -171,6 +171,15 @@ Remarkable.renderer
 Remarkable.renderer.rules
 ```
 
+To prettify plugins init, we `Remarked` has `.use()` helper for curried calls:
+
+```js
+var md = new Remarkable();
+
+md.use(plugin1)
+  .use(plugin2, opts)
+  .use(plugin3);
+```
 
 ## Authors
 
