@@ -56,7 +56,7 @@
   function updateResult() {
     var source = $('.source').val();
     $('.result').html(mdHtml.render(source));
-    $('.result-src-content').text(mdSrc.render(source));
+    $('.result-src-content').html(window.hljs.highlight('html', mdSrc.render(source)).value);
     try {
       if (source) {
         // serialize state - source and options
