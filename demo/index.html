@@ -29,7 +29,7 @@ var md = new Remarkable({
 
   // Highlighter function. Should return escaped html,
   // or '' if input not changed
-  highlight: function (/*str, lang*/) {
+  highlight: function (str, lang) {
     if (lang &amp;&amp; hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(lang, str).value;
@@ -148,7 +148,7 @@ __This is bold text__
 
 _This is italic text_
 
-~~Strike through this text.~~
+~~Strike through this text~~
 
 
 ## Blockquotes
