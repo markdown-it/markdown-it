@@ -114,8 +114,8 @@ var md = new Remarkable({ typographer: true });
 
 // This values are default
 md.typographer.set({
-  singleQuotes: '‘’',
-  doubleQuotes: '“”', // «» - russian, „“ - deutch
+  singleQuotes: '‘’', // set empty to disable
+  doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
   copyright:    true, // (c) (C) → ©
   trademark:    true, // (tm) (TM) → ™
   registered:   true, // (r) (R) → ®
@@ -123,7 +123,7 @@ md.typographer.set({
   paragraph:    true, // (p) (P) -> §
   ellipsis:     true, // ... → … (also ?.... → ?.., !.... → !..)
   dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
-  emDashes:     true  // -- → —
+  dashes:       true  // -- → &ndash;, --- → &mdash;
 })
 ```
 

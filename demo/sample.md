@@ -71,7 +71,7 @@ Unordered
 
 + Create a list by starting a line with `+`, `-`, or `*`
 + Sub-lists are made by indenting 2 spaces:
-  - You can also can mix symbols around with out any differance:
+  - Marker character change forces new list start:
     * Ac tristique libero volutpat at
     + Facilisis in pretium nisl aliquet
     - Nulla volutpat aliquam velit
@@ -83,8 +83,14 @@ Ordered
 2. Consectetur adipiscing elit
 3. Integer molestie lorem at massa
 
+
 1. You can use sequential numbers...
 1. ...or keep all the numbers as `1.`
+
+Start numbering with offset:
+
+57. foo
+1. bar
 
 
 ## Code
