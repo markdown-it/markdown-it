@@ -54,12 +54,28 @@ dupes
 .
 
 
-em-dashes
+dashes
 .
--- remarkable -- super --
+---remarkable --- super---
+
+remarkable---awesome
+
+abc ----
 .
-<p>— remarkable — super —</p>
+<p>—remarkable — super—</p>
+<p>remarkable—awesome</p>
+<p>abc ----</p>
 .
+.
+--remarkable -- super--
+
+remarkable--awesome
+.
+<p>–remarkable – super–</p>
+<p>remarkable–awesome</p>
+.
+
+
 
 
 TODO:
