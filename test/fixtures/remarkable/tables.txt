@@ -67,3 +67,46 @@ Cell 1  |Cell 2  |Cell 3  |Cell 4
 	</tbody>
 </table>
 .
+
+Nested tables inside blockquotes:
+
+.
+> foo|foo
+> ---|---
+> bar|bar
+baz|baz
+.
+<blockquote>
+<table>
+	<thead>
+		<tr><th>foo</th><th>foo</th></tr>
+	</thead>
+	<tbody>
+		<tr><td>bar</td><td>bar</td></tr>
+	</tbody>
+</table>
+</blockquote>
+<p>baz|baz</p>
+.
+
+Nested tables inside lists:
+
+.
+-   foo|foo
+    ---|---
+    bar|bar
+   baz|baz
+.
+<ul>
+<li><table>
+	<thead>
+		<tr><th>foo</th><th>foo</th></tr>
+	</thead>
+	<tbody>
+		<tr><td>bar</td><td>bar</td></tr>
+	</tbody>
+</table>
+</li>
+</ul>
+<p>baz|baz</p>
+.
