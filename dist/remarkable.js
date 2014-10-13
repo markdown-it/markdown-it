@@ -2484,13 +2484,13 @@ function isValidEntityCode(c) {
   /*eslint no-bitwise:0*/
   // broken sequence
   if (c >= 0xD800 && c <= 0xDFFF) { return false; }
-  if (c >= 0xF5 && c <= 0xFF) { return false; }
-  if (c === 0xC0 || c === 0xC1) { return false; }
   // never used
   if (c >= 0xFDD0 && c <= 0xFDEF) { return false; }
   if ((c & 0xFFFF) === 0xFFFF || (c & 0xFFFF) === 0xFFFE) { return false; }
   // control codes
-  if (c <= 0x1F) { return false; }
+  if (c >= 0x00 && c <= 0x08) { return false; }
+  if (c === 0x0B) { return false; }
+  if (c >= 0x0E && c <= 0x1F) { return false; }
   if (c >= 0x7F && c <= 0x9F) { return false; }
   // out of range
   if (c > 0x10FFFF) { return false; }
@@ -2608,8 +2608,8 @@ module.exports = {
 
 
 module.exports = {
-  singleQuotes: '‘’',
-  doubleQuotes: '“”', // «» - russian, „“ - deutch
+  singleQuotes: '‘’', // set empty to disable
+  doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
   copyright:    true, // (c) (C) → ©
   trademark:    true, // (tm) (TM) → ™
   registered:   true, // (r) (R) → ®
@@ -2617,7 +2617,7 @@ module.exports = {
   paragraph:    true, // (p) (P) → §
   ellipsis:     true, // ... → …
   dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
-  emDashes:     true  // -- → —
+  dashes:       true  // -- → —
 };
 
 },{}],10:[function(require,module,exports){
@@ -2664,6 +2664,8 @@ function Remarkable(options) {
 }
 
 
+// Set options, if you did not passed those to constructor
+//
 Remarkable.prototype.set = function (options) {
   if (String(options).toLowerCase() === 'commonmark') {
     assign(this.options, cmmDefaults);
@@ -2675,6 +2677,22 @@ Remarkable.prototype.set = function (options) {
 };
 
 
+// Sugar for curried plugins init:
+//
+// var md = new Remarkable();
+//
+// md.use(plugin1)
+//   .use(plugin2, opts)
+//   .use(plugin3);
+//
+Remarkable.prototype.use = function (plugin, opts) {
+  plugin(this, opts);
+  return this;
+};
+
+
+// Main method that does all magic :)
+//
 Remarkable.prototype.render = function (src) {
   var tokens, tok, i, l, env = { references: Object.create(null) };
 
@@ -2696,7 +2714,7 @@ Remarkable.prototype.render = function (src) {
 
 module.exports = Remarkable;
 
-},{"./common/utils":5,"./defaults/commonmark":6,"./defaults/commonmark_rules":7,"./defaults/remarkable":8,"./parser_block":12,"./parser_inline":13,"./renderer":15,"./rules_typographer/linkify":40,"./typographer":42}],11:[function(require,module,exports){
+},{"./common/utils":5,"./defaults/commonmark":6,"./defaults/commonmark_rules":7,"./defaults/remarkable":8,"./parser_block":12,"./parser_inline":13,"./renderer":15,"./rules_typographer/linkify":40,"./typographer":43}],11:[function(require,module,exports){
 
 'use strict';
 
@@ -2988,17 +3006,13 @@ ParserBlock.prototype.parse = function (src, options, env) {
 
   if (!src) { return ''; }
 
-  if (src.indexOf('\r') >= 0) {
-    src = src.replace(/\r/, '');
-  }
+  // Normalize spaces
+  src = src.replace(/\u00a0/g, ' ');
 
-  if (src.indexOf('\u00a0') >= 0) {
-    src = src.replace(/\u00a0/g, ' ');
-  }
-
-  if (src.indexOf('\u2424') >= 0) {
-    src = src.replace(/\u2424/g, '\n');
-  }
+  // Normalize newlines
+  src = src.replace(/\r\n/, '\n');
+  src = src.replace(/\r\u0085/, '\n');
+  src = src.replace(/[\u2424\u2028\u0085]/g, '\n');
 
   // Replace tabs with proper number of spaces (1..4)
   if (src.indexOf('\t') >= 0) {
@@ -3379,19 +3393,19 @@ rules.table_close = function (/*tokens, idx, options*/) {
   return '</table>\n';
 };
 rules.thead_open = function (/*tokens, idx, options*/) {
-  return '\t<thead>\n';
+  return '<thead>\n';
 };
 rules.thead_close = function (/*tokens, idx, options*/) {
-  return '\t</thead>\n';
+  return '</thead>\n';
 };
 rules.tbody_open = function (/*tokens, idx, options*/) {
-  return '\t<tbody>\n';
+  return '<tbody>\n';
 };
 rules.tbody_close = function (/*tokens, idx, options*/) {
-  return '\t</tbody>\n';
+  return '</tbody>\n';
 };
 rules.tr_open = function (/*tokens, idx, options*/) {
-  return '\t\t<tr>';
+  return '<tr>';
 };
 rules.tr_close = function (/*tokens, idx, options*/) {
   return '</tr>\n';
@@ -4704,7 +4718,7 @@ module.exports = State;
 
 
 function lineMatch(state, line, reg) {
-  var pos = state.bMarks[line],
+  var pos = state.bMarks[line] + state.blkIndent,
       max = state.eMarks[line];
 
   return state.src.substr(pos, max - pos).match(reg);
@@ -4717,6 +4731,9 @@ module.exports = function table(state, startLine, endLine, silent) {
 
   // should have at least three lines
   if (startLine + 2 > endLine) { return false; }
+
+  if (state.tShift[startLine + 1] < state.blkIndent) { return false; }
+  if (state.bqMarks[startLine + 1] < state.bqLevel) { return false; }
 
   // first character of the second line should be '|' or '-'
   ch = state.src.charCodeAt(state.bMarks[startLine + 1]
@@ -4731,9 +4748,9 @@ module.exports = function table(state, startLine, endLine, silent) {
   aligns = [];
   for (i = 0; i < rows.length; i++) {
     t = rows[i].trim();
-    if (t[t.length - 1] === ':') {
-      aligns[i] = t[0] === ':' ? 'center' : 'right';
-    } else if (t[0] === ':') {
+    if (t.charCodeAt(t.length - 1) === 0x3A/* : */) {
+      aligns[i] = t.charCodeAt(0) === 0x3A/* : */ ? 'center' : 'right';
+    } else if (t.charCodeAt(0) === 0x3A/* : */) {
       aligns[i] = 'left';
     } else {
       aligns[i] = '';
@@ -4765,6 +4782,9 @@ module.exports = function table(state, startLine, endLine, silent) {
   state.tokens.push({ type: 'tbody_open', level: state.level++ });
 
   for (nextLine = startLine + 2; nextLine < endLine; nextLine++) {
+    if (state.tShift[nextLine] < state.blkIndent) { break; }
+    if (state.bqMarks[nextLine] < state.bqLevel) { break; }
+
     m = lineMatch(state, nextLine, /^ *\|?(.*?\|.*?)\|? *$/);
     if (!m) { break; }
     rows = m[1].split('|');
@@ -5726,15 +5746,25 @@ var autolinker = new Autolinker({
   }
 });
 
+function isLinkOpen(str) {
+  return /^<a[>\s]/i.test(str);
+}
+function isLinkClose(str) {
+  return /^<\/a\s*>/i.test(str);
+}
+
 
 module.exports = function linkify(t, state) {
   var i, token, text, nodes, ln, pos, level,
+      htmlLinkLevel = 0,
       tokens = state.tokens;
 
+  // We scan from the end, to keep position when new tags added.
+  // Use reversed logic in links start/end match
   for (i = tokens.length - 1; i >= 0; i--) {
     token = tokens[i];
 
-    // Skip content of links
+    // Skip content of markdown links
     if (token.type === 'link_close') {
       i--;
       while (tokens[i].type !== 'link_open' && tokens[i].level !== token.level) {
@@ -5743,6 +5773,17 @@ module.exports = function linkify(t, state) {
       i--;
       continue;
     }
+
+    // Skip content of html tag links
+    if (token.type === 'htmltag') {
+      if (isLinkOpen(token.content) && htmlLinkLevel > 0) {
+        htmlLinkLevel--;
+      }
+      if (isLinkClose(token.content)) {
+        htmlLinkLevel++;
+      }
+    }
+    if (htmlLinkLevel > 0) { continue; }
 
     if (token.type === 'text' &&
         (token.content.indexOf('://') ||
@@ -5801,7 +5842,7 @@ module.exports = function linkify(t, state) {
   }
 };
 
-},{"../common/utils":5,"autolinker":43}],41:[function(require,module,exports){
+},{"../common/utils":5,"autolinker":44}],41:[function(require,module,exports){
 // Simple typographyc replacements
 //
 'use strict';
@@ -5846,8 +5887,13 @@ module.exports = function replace(t, state) {
            text.indexOf(',,') >= 0)) {
         text = text.replace(/([?!]){4,}/g, '$1$1$1').replace(/,{2,}/g, ',');
       }
-      if (options.emDashes && text.indexOf('--') >= 0) {
-        text = text.replace(/(^|\s)--(\s|$)/mg, '$1—$2');
+      if (options.dashes && text.indexOf('--') >= 0) {
+        text = text
+                // em-dash
+                .replace(/(^|[^-])---([^-]|$)/mg, '$1\u2014$2')
+                // en-dash
+                .replace(/(^|\s)--(\s|$)/mg, '$1\u2013$2')
+                .replace(/(^|[^-\s])--([^-\s]|$)/mg, '$1\u2013$2');
       }
 
       token.content = text;
@@ -5856,6 +5902,119 @@ module.exports = function replace(t, state) {
 };
 
 },{}],42:[function(require,module,exports){
+// Convert straight quotation marks to typographic ones
+//
+'use strict';
+
+
+var quoteReg = /&quot;|'/g;
+var punctReg = /[-\s()\[\]]/;
+var apostrophe = '’';
+
+// This function returns true if the character at `pos`
+// could be inside a word.
+function isLetter(str, pos) {
+  if (pos < 0 || pos >= str.length) { return false; }
+  return !punctReg.test(str[pos]);
+}
+
+
+function addQuote(obj, tokenId, posId, str) {
+  if (!obj[tokenId]) { obj[tokenId] = {}; }
+  obj[tokenId][posId] = str;
+}
+
+
+module.exports = function smartquotes(typographer, state) {
+  /*eslint max-depth:0*/
+  var i, token, text, t, pos, max, thisLevel, lastSpace, nextSpace, item, canOpen, canClose, j, isSingle, fn, chars,
+      options = typographer.options,
+      replace = {},
+      tokens = state.tokens,
+      stack = [];
+
+  for (i = 0; i < tokens.length; i++) {
+    token = tokens[i];
+    thisLevel = tokens[i].level;
+
+    for (j = stack.length - 1; j >= 0; j--) {
+      if (stack[j].level <= thisLevel) { break; }
+    }
+    stack.length = j + 1;
+
+    if (token.type === 'text') {
+      text = token.content;
+      pos = 0;
+      max = text.length;
+
+      while (pos < max) {
+        quoteReg.lastIndex = pos;
+        t = quoteReg.exec(text);
+        if (!t) { break; }
+
+        lastSpace = !isLetter(text, t.index - 1);
+        pos = t.index + t[0].length;
+        isSingle = t[0] === "'";
+        nextSpace = !isLetter(text, pos);
+
+        if (!nextSpace && !lastSpace) {
+          // middle word
+          if (isSingle) {
+            addQuote(replace, i, t.index, apostrophe);
+          }
+          continue;
+        }
+
+        canOpen = !nextSpace;
+        canClose = !lastSpace;
+
+        if (canClose) {
+          // this could be a closing quote, rewind the stack to get a match
+          for (j = stack.length - 1; j >= 0; j--) {
+            item = stack[j];
+            if (stack[j].level < thisLevel) { break; }
+            if (item.single === isSingle && stack[j].level === thisLevel) {
+              item = stack[j];
+              chars = isSingle ? options.singleQuotes : options.doubleQuotes;
+              if (chars) {
+                addQuote(replace, item.token, item.start, chars[0]);
+                addQuote(replace, i, t.index, chars[1]);
+              }
+              stack.length = j;
+              canOpen = false; // should be "continue OUTER;", but eslint refuses labels :(
+              break;
+            }
+          }
+        }
+
+        if (canOpen) {
+          stack.push({
+            token: i,
+            start: t.index,
+            end: pos,
+            single: isSingle,
+            level: thisLevel
+          });
+        } else if (canClose && isSingle) {
+          addQuote(replace, i, t.index, apostrophe);
+        }
+      }
+    }
+  }
+
+  fn = function(str, pos) {
+    if (!replace[i][pos]) { return str; }
+    return replace[i][pos];
+  };
+
+  for (i = 0; i < tokens.length; i++) {
+    if (!replace[i]) { continue; }
+    quoteReg.lastIndex = 0;
+    tokens[i].content = tokens[i].content.replace(quoteReg, fn);
+  }
+};
+
+},{}],43:[function(require,module,exports){
 // Class of typographic replacements rules
 //
 'use strict';
@@ -5874,6 +6033,7 @@ var rules = [];
 
 
 rules.push(require('./rules_typographer/replace'));
+rules.push(require('./rules_typographer/smartquotes'));
 
 
 function Typographer() {
@@ -5912,7 +6072,7 @@ Typographer.prototype.process = function (state) {
 
 module.exports = Typographer;
 
-},{"./common/utils":5,"./defaults/typographer":9,"./ruler":16,"./rules_typographer/replace":41}],43:[function(require,module,exports){
+},{"./common/utils":5,"./defaults/typographer":9,"./ruler":16,"./rules_typographer/replace":41,"./rules_typographer/smartquotes":42}],44:[function(require,module,exports){
 /*!
  * Autolinker.js
  * 0.12.2
