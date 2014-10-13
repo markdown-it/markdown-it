@@ -6,11 +6,12 @@ var path = require('path');
 
 
 var utils = require('./utils');
-var Remarked = require('../');
+var Remarkable = require('../');
 
 
 describe('Default', function () {
-  var md = new Remarked({
+  var md = new Remarkable({
+    html: true,
     langPrefix: '',
     typographer: true,
     linkify: true
