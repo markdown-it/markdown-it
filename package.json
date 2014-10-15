@@ -1,6 +1,13 @@
 {
   "name": "remarkable",
   "version": "1.0.0",
+  "description": "Markdown parser, done right. Commonmark support, extensions, syntax plugins, high speed - all in one.",
+  "keywords": [
+    "markdown",
+    "md",
+    "commonmark",
+    "parser"
+  ],
   "homepage": "https://github.com/jonschlinkert/remarkable",
   "repository": {
     "type": "git",
@@ -9,12 +16,7 @@
   "bugs": {
     "url": "https://github.com/jonschlinkert/remarkable/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/jonschlinkert/remarkable/blob/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "main": "index.js",
   "dependencies": {
     "argparse": "~ 0.1.15",
