@@ -12,13 +12,14 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
+    "benchmark",
     "bower_components",
+    "demo",
+    "lib",
+    "node_modules",
+    "support",
     "test",
     "Makefile",
-    "index*",
-    "lib",
-    "benchmark",
-    "demo"
+    "index*"
   ]
 }
