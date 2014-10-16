@@ -8,12 +8,13 @@ var Remarkable = require('../');
 
 var md = new Remarkable({
   html: true,
-  linkify: true,
-  typographer: true
+  linkify: false,
+  typographer: false
 });
 
-var data = fs.readFileSync(path.join(__dirname, '/samples/lorem1.txt'), 'utf8');
+//var data = fs.readFileSync(path.join(__dirname, '/samples/lorem1.txt'), 'utf8');
+var data = fs.readFileSync(path.join(__dirname, '../test/fixtures/stmd/spec.txt'), 'utf8');
 
-for (var i = 0; i < 200; i++) {
+for (var i = 0; i < 20; i++) {
   md.render(data);
 }
