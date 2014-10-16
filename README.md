@@ -135,7 +135,7 @@ more advanced, specific for your language.
 This extentions are enabled by default:
 
 - [Strikethrough](https://help.github.com/articles/github-flavored-markdown/#strikethrough)
-- [Tables](https://help.github.com/articles/github-flavored-markdown/#tables)
+- [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
 
 
 ## References / Thanks
@@ -171,7 +171,7 @@ Remarkable.renderer
 Remarkable.renderer.rules
 ```
 
-To prettify plugins init, we `Remarked` has `.use()` helper for curried calls:
+To prettify plugins init, `Remarked` has `.use()` helper for curried calls:
 
 ```js
 var md = new Remarkable();
