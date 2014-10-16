@@ -1,11 +1,7 @@
 'use strict'
 
 var Remarkable = require('../../../');
-var md = new Remarkable({
-  html: true,
-  linkify: true,
-  typographer: true
-});
+var md = new Remarkable('commonmark');
 
 exports.run = function(data) {
   return md.render(data);
