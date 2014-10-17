@@ -66,9 +66,9 @@ md.set({
 });
 ```
 
-__Note.__ To acheive best performance, don't modify `Remarkable` instance on
+__Note.__ To acheive best performance, don't modify the `Remarkable` instance on
 the fly. If you need several configurations - create multiple instances and
-setup each appropriately.
+initialise each appropriately.
 
 You can also reset parser to strict [CommonMark](http://commonmark.org/) mode:
 
@@ -85,7 +85,7 @@ To highlight content of fenced block, assing function to `highlight` option:
 var Remarkable = require('remarkable');
 var hljs       = require('highlight.js') // https://highlightjs.org/
 
-// This values are default
+// These values are default
 var md = new Remarkable({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
@@ -103,16 +103,16 @@ var md = new Remarkable({
 });
 ```
 
-### Typorgapher
+### Typographer
 
-Though full weigh typograpic replacements are language specific, `remarkable`
+Though full-weight typograpic replacements are language specific, `remarkable`
 provides the most common and universal case coverage:
 
 ```js
 var Remarkable = require('remarkable');
 var md = new Remarkable({ typographer: true });
 
-// This values are default
+// These values are default
 md.typographer.set({
   singleQuotes: '‘’', // set empty to disable
   doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
@@ -127,12 +127,12 @@ md.typographer.set({
 })
 ```
 
-Of cause, you can add your own rules or replace default one with something
+Of course, you can add your own rules or replace default ones with something
 more advanced, specific for your language.
 
 ### More extras
 
-This extentions are enabled by default:
+These extensions are enabled by default:
 
 - [Strikethrough](https://help.github.com/articles/github-flavored-markdown/#strikethrough)
 - [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
@@ -140,9 +140,9 @@ This extentions are enabled by default:
 
 ## References / Thanks
 
-Big thanks to [John MacFarlane](https://github.com/jgm) for his work on
+Big thanks to [John MacFarlane](https://github.com/jgm) for his work on the
 CommonMark spec and reference implementations. His work saved us a lot of time
-during this project development.
+during this project's development.
 
 Links:
 
