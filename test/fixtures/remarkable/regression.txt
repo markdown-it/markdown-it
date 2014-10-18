@@ -17,3 +17,46 @@ Regression tests for link backtracking optimizations:
 <p>[[some unrelated text <a href="foo">[link]</a></p>
 .
 
+This is not a valid emphasis, because \n considered a whitespace:
+
+.
+**test
+**
+
+**
+test**
+
+**
+test
+**
+.
+<p>**test
+**</p>
+<p>**
+test**</p>
+<p>**
+test
+**</p>
+.
+
+Same for strikethrough:
+
+.
+~~test
+~~
+
+~~
+test~~
+
+~~
+test
+~~
+.
+<p>~~test
+~~</p>
+<p>~~
+test~~</p>
+<p>~~
+test
+~~</p>
+.
