@@ -1355,8 +1355,8 @@ name is one of the following (case-insensitive):
 `output`, `col`, `p`, `colgroup`, `pre`, `dd`, `progress`, `div`,
 `section`, `dl`, `table`, `td`, `dt`, `tbody`, `embed`, `textarea`,
 `fieldset`, `tfoot`, `figcaption`, `th`, `figure`, `thead`, `footer`,
-`footer`, `tr`, `form`, `ul`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`,
-`video`, `script`, `style`.
+`tr`, `form`, `ul`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `video`,
+`script`, `style`.
 
 An [HTML block](#html-block) <a id="html-block"></a> begins with an
 [HTML block tag](#html-block-tag), [HTML comment](#html-comment),
@@ -2010,7 +2010,7 @@ The following rules define [block quotes](#block-quote):
 <a id="block-quote"></a>
 
 1.  **Basic case.**  If a string of lines *Ls* constitute a sequence
-    of blocks *Bs*, then the result of appending a [block quote
+    of blocks *Bs*, then the result of prepending a [block quote
     marker](#block-quote-marker) to the beginning of each line in *Ls*
     is a [block quote](#block-quote) containing *Bs*.
 
@@ -3686,9 +3686,9 @@ raw HTML:
 .
 
 .
-<http://google.com?find=\*>
+<http://example.com?find=\*>
 .
-<p><a href="http://google.com?find=%5C*">http://google.com?find=\*</a></p>
+<p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
 .
 
 .
@@ -3727,21 +3727,25 @@ foo
 
 ## Entities
 
-With the goal of making this standard as HTML-agnostic as possible, all HTML valid HTML Entities in any
-context are recognized as such and converted into their actual values (i.e. the UTF8 characters representing
-the entity itself) before they are stored in the AST.
+With the goal of making this standard as HTML-agnostic as possible, all
+valid HTML entities in any context are recognized as such and
+converted into unicode characters before they are stored in the AST.
 
-This allows implementations that target HTML output to trivially escape the entities when generating HTML,
-and simplifies the job of implementations targetting other languages, as these will only need to handle the
-UTF8 chars and need not be HTML-entity aware.
+This allows implementations that target HTML output to trivially escape
+the entities when generating HTML, and simplifies the job of
+implementations targetting other languages, as these will only need to
+handle the unicode chars and need not be HTML-entity aware.
 
 [Named entities](#name-entities) <a id="named-entities"></a> consist of `&`
-+ any of the valid HTML5 entity names + `;`. The [following document](http://www.whatwg.org/specs/web-apps/current-work/multipage/entities.json)
-is used as an authoritative source of the valid entity names and their corresponding codepoints.
++ any of the valid HTML5 entity names + `;`. The
+[following document](http://www.whatwg.org/specs/web-apps/current-work/multipage/entities.json)
+is used as an authoritative source of the valid entity names and their
+corresponding codepoints.
 
-Conforming implementations that target Markdown don't need to generate entities for all the valid
-named entities that exist, with the exception of `"` (`&quot;`), `&` (`&amp;`), `<` (`&lt;`) and `>` (`&gt;`),
-which always need to be written as entities for security reasons.
+Conforming implementations that target HTML don't need to generate
+entities for all the valid named entities that exist, with the exception
+of `"` (`&quot;`), `&` (`&amp;`), `<` (`&lt;`) and `>` (`&gt;`), which
+always need to be written as entities for security reasons.
 
 .
 &nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;
@@ -3750,9 +3754,10 @@ which always need to be written as entities for security reasons.
 .
 
 [Decimal entities](#decimal-entities) <a id="decimal-entities"></a>
-consist of `&#` + a string of 1--8 arabic digits + `;`. Again, these entities need to be recognised
-and tranformed into their corresponding UTF8 codepoints. Invalid Unicode codepoints will be written
-as the "unknown codepoint" character (`0xFFFD`)
+consist of `&#` + a string of 1--8 arabic digits + `;`. Again, these
+entities need to be recognised and tranformed into their corresponding
+UTF8 codepoints. Invalid Unicode codepoints will be written as the
+"unknown codepoint" character (`0xFFFD`)
 
 .
 &#35; &#1234; &#992; &#98765432;
@@ -3779,7 +3784,8 @@ Here are some nonentities:
 .
 
 Although HTML5 does accept some entities without a trailing semicolon
-(such as `&copy`), these are not recognized as entities here, because it makes the grammar too ambiguous:
+(such as `&copy`), these are not recognized as entities here, because it
+makes the grammar too ambiguous:
 
 .
 &copy
@@ -3787,7 +3793,8 @@ Although HTML5 does accept some entities without a trailing semicolon
 <p>&amp;copy</p>
 .
 
-Strings that are not on the list of HTML5 named entities are not recognized as entities either:
+Strings that are not on the list of HTML5 named entities are not
+recognized as entities either:
 
 .
 &MadeUpEntity;
@@ -4035,7 +4042,7 @@ for efficient parsing strategies that do not backtrack:
     (a) it is not part of a sequence of four or more unescaped `*`s,
     (b) it is not followed by whitespace, and
     (c) either it is not followed by a `*` character or it is
-        followed immediately by strong emphasis.
+        followed immediately by emphasis or strong emphasis.
 
 2.  A single `_` character [can open emphasis](#can-open-emphasis) iff
 
@@ -4043,7 +4050,7 @@ for efficient parsing strategies that do not backtrack:
     (b) it is not followed by whitespace,
     (c) it is not preceded by an ASCII alphanumeric character, and
     (d) either it is not followed by a `_` character or it is
-        followed immediately by strong emphasis.
+        followed immediately by emphasis or strong emphasis.
 
 3.  A single `*` character [can close emphasis](#can-close-emphasis)
     <a id="can-close-emphasis"></a> iff
@@ -4098,6 +4105,11 @@ for efficient parsing strategies that do not backtrack:
     sequentially until a delimiter that [can close strong
     emphasis](#can-close-strong-emphasis), and that uses the
     same character (`_` or `*`) as the opening delimiter, is reached.
+
+11. In case of ambiguity, strong emphasis takes precedence.  Thus,
+    `**foo**` is `<strong>foo</strong>`, not `<em><em>foo</em></em>`,
+    and `***foo***` is `<strong><em>foo</em></strong>`, not
+    `<em><strong>foo</strong></em>` or `<em><em><em>foo</em></em></em>`.
 
 These rules can be illustrated through a series of examples.
 
@@ -4345,6 +4357,32 @@ __this is a double underscore (`__`)__
 <p><strong>this is a double underscore (<code>__</code>)</strong></p>
 .
 
+Or use the other emphasis character:
+
+.
+*_*
+.
+<p><em>_</em></p>
+.
+
+.
+_*_
+.
+<p><em>*</em></p>
+.
+
+.
+*__*
+.
+<p><em>__</em></p>
+.
+
+.
+_**_
+.
+<p><em>**</em></p>
+.
+
 `*` delimiters allow intra-word emphasis; `_` delimiters do not:
 
 .
@@ -4520,6 +4558,36 @@ __foo _bar_ baz__
 <p><strong>foo <em>bar</em> baz</strong></p>
 .
 
+.
+**foo, *bar*, baz**
+.
+<p><strong>foo, <em>bar</em>, baz</strong></p>
+.
+
+.
+__foo, _bar_, baz__
+.
+<p><strong>foo, <em>bar</em>, baz</strong></p>
+.
+
+But note:
+
+.
+*foo**bar**baz*
+.
+<p><em>foo</em><em>bar</em><em>baz</em></p>
+.
+
+.
+**foo*bar*baz**
+.
+<p><em><em>foo</em>bar</em>baz**</p>
+.
+
+The difference is that in the two preceding cases,
+the internal delimiters [can close emphasis](#can-close-emphasis),
+while in the cases with spaces, they cannot.
+
 Note that you cannot nest emphasis directly inside emphasis
 using the same delimeter, or strong emphasis directly inside
 strong emphasis:
@@ -4601,7 +4669,7 @@ However, a string of four or more `****` can never close emphasis:
 <p>*foo****</p>
 .
 
-Note that there are some asymmetries here:
+We retain symmetry in these cases:
 
 .
 *foo**
@@ -4609,7 +4677,7 @@ Note that there are some asymmetries here:
 **foo*
 .
 <p><em>foo</em>*</p>
-<p>**foo*</p>
+<p>*<em>foo</em></p>
 .
 
 .
@@ -4618,16 +4686,10 @@ Note that there are some asymmetries here:
 **foo* bar*
 .
 <p><em>foo <em>bar</em></em></p>
-<p>**foo* bar*</p>
+<p><em><em>foo</em> bar</em></p>
 .
 
 More cases with mismatched delimiters:
-
-.
-**foo* bar*
-.
-<p>**foo* bar*</p>
-.
 
 .
 *bar***
@@ -4638,7 +4700,7 @@ More cases with mismatched delimiters:
 .
 ***foo*
 .
-<p>***foo*</p>
+<p>**<em>foo</em></p>
 .
 
 .
@@ -4650,7 +4712,7 @@ More cases with mismatched delimiters:
 .
 ***foo**
 .
-<p>***foo**</p>
+<p>*<strong>foo</strong></p>
 .
 
 .
@@ -4817,9 +4879,10 @@ in Markdown:
 <p><a href="foo):">link</a></p>
 .
 
-URL-escaping and should be left alone inside the destination, as all URL-escaped characters
-are also valid URL characters. HTML entities in the destination will be parsed into their UTF8
-codepoints, as usual, and optionally URL-escaped when written as HTML.
+URL-escaping should be left alone inside the destination, as all
+URL-escaped characters are also valid URL characters. HTML entities in
+the destination will be parsed into their UTF-8 codepoints, as usual, and
+optionally URL-escaped when written as HTML.
 
 .
 [link](foo%20b&auml;)
@@ -5504,9 +5567,9 @@ spec](http://www.whatwg.org/specs/web-apps/current-work/multipage/forms.html#e-m
 Examples of email autolinks:
 
 .
-<foo@bar.baz.com>
+<foo@bar.example.com>
 .
-<p><a href="mailto:foo@bar.baz.com">foo@bar.baz.com</a></p>
+<p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
 .
 
 .
@@ -5548,15 +5611,15 @@ These are not autolinks:
 .
 
 .
-http://google.com
+http://example.com
 .
-<p>http://google.com</p>
+<p>http://example.com</p>
 .
 
 .
-foo@bar.baz.com
+foo@bar.example.com
 .
-<p>foo@bar.baz.com</p>
+<p>foo@bar.example.com</p>
 .
 
 ## Raw HTML
