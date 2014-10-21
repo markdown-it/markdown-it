@@ -25,8 +25,8 @@ Strikeouts have the same priority as emphases:
 
 ~~**test~~**
 .
-<p><strong>~~test</strong>~~</p>
-<p><del>**test</del>**</p>
+<p>**<del>test**</del></p>
+<p>~~<strong>test~~</strong></p>
 .
 
 Strikeouts have the same priority as emphases with respect to links:
@@ -52,10 +52,13 @@ Strikeouts have the same priority as emphases with respect to backticks:
 Nested strikeouts:
 .
 ~~foo ~~bar~~ baz~~
-
-~~f **o ~~o b~~ a** r~~
 .
 <p><del>foo <del>bar</del> baz</del></p>
+.
+
+.
+~~f **o ~~o b~~ a** r~~
+.
 <p><del>f <strong>o <del>o b</del> a</strong> r</del></p>
 .
 
