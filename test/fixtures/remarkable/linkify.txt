@@ -29,3 +29,18 @@ don't touch text in html <a> tags
 <p><a href="https://example.com">https://example.com</a></p>
 .
 
+
+match links without protocol
+.
+www.example.org
+.
+<p><a href="http://www.example.org">www.example.org</a></p>
+.
+
+
+properly cut domain end
+.
+www.example.org版权所有
+.
+<p><a href="http://www.example.org">www.example.org</a>版权所有</p>
+.
