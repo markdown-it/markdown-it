@@ -1,8 +1,10 @@
-1.1.1 / WIP
+1.1.1 / 2014-10-22
 ------------------
 
 - Fixed `Ruler.after()` method.
+- Fixed linkification
 - Simplified loose/tight rendering.
+- Refactored inline parser. No close coupled code in rules anymore.
 
 
 1.1.0 / 2014-10-20
