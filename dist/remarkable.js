@@ -1,4 +1,4 @@
-/*! remarkable 1.1.0 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
+/*! remarkable 1.1.1 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
 'use strict';
 
 
@@ -2739,19 +2739,17 @@ function parseLinkLabel(state, start) {
       labelEnd = -1,
       max = state.posMax,
       oldPos = state.pos,
-      oldLength = state.tokens.length,
-      oldPending = state.pending,
-      oldFlag = state.validateInsideLink;
+      oldFlag = state.isInLabel;
 
-  if (state.validateInsideLink) { return -1; }
+  if (state.isInLabel) { return -1; }
 
-  if (state.label_nest_level) {
-    state.label_nest_level--;
+  if (state.labelUnmatchedScopes) {
+    state.labelUnmatchedScopes--;
     return -1;
   }
 
   state.pos = start + 1;
-  state.validateInsideLink = true;
+  state.isInLabel = true;
   level = 1;
 
   while (state.pos < max) {
@@ -2766,23 +2764,21 @@ function parseLinkLabel(state, start) {
       }
     }
 
-    ok = state.parser.tokenizeSingle(state);
+    ok = state.parser.skipToken(state);
 
-    if (!ok) { state.pending += state.src[state.pos++]; }
+    if (!ok) { state.pos++; }
   }
 
   if (found) {
     labelEnd = state.pos;
-    state.label_nest_level = 0;
+    state.labelUnmatchedScopes = 0;
   } else {
-    state.label_nest_level = level - 1;
+    state.labelUnmatchedScopes = level - 1;
   }
 
   // restore old state
   state.pos = oldPos;
-  state.tokens.length = oldLength;
-  state.pending = oldPending;
-  state.validateInsideLink = oldFlag;
+  state.isInLabel = oldFlag;
 
   return labelEnd;
 }
@@ -2804,7 +2800,7 @@ function parseLinkDestination(state, pos) {
       if (code === 0x0A /* \n */) { return false; }
       if (code === 0x3E /* > */) {
         state.pos = pos + 1;
-        state.link_content = href;
+        state.linkContent = href;
         return true;
       }
       if (code === 0x5C /* \ */ && pos + 1 < max) {
@@ -2855,7 +2851,7 @@ function parseLinkDestination(state, pos) {
   if (!state.parser.validateLink(href)) { return false; }
 
   state.pos = pos;
-  state.link_content = href;
+  state.linkContent = href;
   return true;
 }
 
@@ -2881,7 +2877,7 @@ function parseLinkTitle(state, pos) {
     code = state.src.charCodeAt(pos);
     if (code === marker) {
       state.pos = pos + 1;
-      state.link_content = title;
+      state.linkContent = title;
       return true;
     }
     if (code === 0x5C /* \ */ && pos + 1 < max) {
@@ -3117,20 +3113,27 @@ ParserInline.prototype.rulesUpdate = function () {
 };
 
 
-// Generate single token;
+// Skip single token by running all rules in validation mode;
 // returns `true` if any rule reported success
 //
-ParserInline.prototype.tokenizeSingle = function (state) {
-  var ok, i,
+ParserInline.prototype.skipToken = function (state) {
+  var i, pos = state.pos,
       rules = this._rules,
       len = this._rules.length;
 
-  for (i = 0; i < len; i++) {
-    ok = rules[i](state);
-    if (ok) { break; }
+  if (state.cache[pos] !== undefined) {
+    state.pos = state.cache[pos];
+    return true;
   }
 
-  return ok;
+  for (i = 0; i < len; i++) {
+    if (rules[i](state, true)) {
+      state.cache[pos] = state.pos;
+      return true;
+    }
+  }
+
+  return false;
 };
 
 
@@ -3152,7 +3155,7 @@ ParserInline.prototype.tokenize = function (state) {
     // - return true
 
     for (i = 0; i < len; i++) {
-      ok = rules[i](state);
+      ok = rules[i](state, false);
       if (ok) { break; }
     }
 
@@ -3230,7 +3233,7 @@ module.exports = function parse_reference(str, parser, options, env) {
   // [label]:   destination   'title'
   //            ^^^^^^^^^^^ parse this
   if (!parseLinkDestination(state, pos)) { return -1; }
-  href = state.link_content;
+  href = state.linkContent;
   pos = state.pos;
 
   // [label]:   destination   'title'
@@ -3244,7 +3247,7 @@ module.exports = function parse_reference(str, parser, options, env) {
   // [label]:   destination   'title'
   //                          ^^^^^^^ parse this
   if (pos < max && start !== pos && parseLinkTitle(state, pos)) {
-    title = state.link_content;
+    title = state.linkContent;
     pos = state.pos;
   } else {
     title = '';
@@ -3372,11 +3375,11 @@ rules.ordered_list_close = function (tokens, idx /*, options*/) {
 };
 
 
-rules.paragraph_open = function (/*tokens, idx, options*/) {
-  return '<p>';
+rules.paragraph_open = function (tokens, idx/*, options*/) {
+  return tokens[idx].tight ? '' : '<p>';
 };
 rules.paragraph_close = function (tokens, idx /*, options*/) {
-  return '</p>' + getBreak(tokens, idx);
+  return (tokens[idx].tight ? '' : '</p>') + getBreak(tokens, idx);
 };
 
 
@@ -3504,52 +3507,15 @@ Renderer.prototype.renderInline = function (tokens, options) {
 
 
 Renderer.prototype.render = function (tokens, options) {
-  var i, len, name,
+  var i, len,
       result = '',
-      rules = this.rules,
-      tightStack = [];
-
-  // wrap paragraphs on top level by default
-  var tight = false;
+      rules = this.rules;
 
   for (i = 0, len = tokens.length; i < len; i++) {
-    name = tokens[i].type;
-
-    // Dirty stack machine to track lists style (loose/tight)
-    if (name === 'ordered_list_open' || name === 'bullet_list_open') {
-      tightStack.push(tight);
-      tight = tokens[i].tight;
-    }
-    if (name === 'ordered_list_close' || name === 'bullet_list_close') {
-      tight = tightStack.pop();
-    }
-    if (name === 'blockquote_open') {
-      tightStack.push(tight);
-      tight = false;
-    }
-    if (name === 'blockquote_close') {
-      tight = tightStack.pop();
-    }
-
-
-    // in tight mode just ignore paragraphs for lists
-    // TODO - track right nesting to blockquotes
-    if (name === 'paragraph_open' && tight) {
-      continue;
-    }
-    if (name === 'paragraph_close' && tight) {
-      // Quick hack - texts should have LF if followed by blocks
-      if (tokens[i + 1].type !== 'list_item_close') {
-        result += '\n';
-      }
-
-      continue;
-    }
-
     if (tokens[i].type === 'inline') {
       result += this.renderInline(tokens[i].children, options);
     } else {
-      result += rules[name](tokens, i, options);
+      result += rules[tokens[i].type](tokens, i, options);
     }
   }
 
@@ -3693,7 +3659,7 @@ Ruler.prototype.after = function (name, fn, altNames) {
     if (index === -1) {
       throw new Error('Parser rule not found: ' + name);
     }
-    this.rules.splice(index + 1, 0, fn);
+    this.rules.splice(index + 1, 0, rule);
   }
 
   this.compile();
@@ -4377,7 +4343,9 @@ module.exports = function list(state, startLine, endLine, silent) {
       prevEmptyEnd,
       listLines,
       itemLines,
-      terminatorRules = state.parser._rulesListTerm, i, l, terminate;
+      tight = true,
+      terminatorRules = state.parser._rulesListTerm,
+      i, l, terminate, level, tokens;
 
   // Detect list type and position after marker
   if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
@@ -4406,7 +4374,6 @@ module.exports = function list(state, startLine, endLine, silent) {
     state.tokens.push({
       type: 'ordered_list_open',
       order: markerValue,
-      tight: true,
       lines: listLines = [ startLine, 0 ],
       level: state.level++
     });
@@ -4414,7 +4381,6 @@ module.exports = function list(state, startLine, endLine, silent) {
   } else {
     state.tokens.push({
       type: 'bullet_list_open',
-      tight: true,
       lines: listLines = [ startLine, 0 ],
       level: state.level++
     });
@@ -4472,7 +4438,7 @@ module.exports = function list(state, startLine, endLine, silent) {
 
     // If any of list item is tight, mark list as tight
     if (!state.tight || prevEmptyEnd) {
-      state.tokens[listTokIdx].tight = false;
+      tight = false;
     }
     // Item become loose if finish with empty line,
     // but we should filter last element, because it means list finish
@@ -4483,7 +4449,10 @@ module.exports = function list(state, startLine, endLine, silent) {
     state.tight = oldTight;
     state.parentType = oldParentType;
 
-    state.tokens.push({ type: 'list_item_close', level: --state.level });
+    state.tokens.push({
+      type: 'list_item_close',
+      level: --state.level
+    });
 
     nextLine = startLine = state.line;
     itemLines[1] = nextLine;
@@ -4523,14 +4492,28 @@ module.exports = function list(state, startLine, endLine, silent) {
   }
 
   // Finilize list
-  if (isOrdered) {
-    state.tokens.push({ type: 'ordered_list_close', level: --state.level });
-  } else {
-    state.tokens.push({ type: 'bullet_list_close', level: --state.level });
-  }
+  state.tokens.push({
+    type: isOrdered ? 'ordered_list_close' : 'bullet_list_close',
+    level: --state.level
+  });
   listLines[1] = nextLine;
 
   state.line = nextLine;
+
+  // mark paragraphs tight if needed
+  if (tight) {
+    level = state.level + 2;
+    tokens = state.tokens;
+
+    for (i = listTokIdx + 2, l = tokens.length - 2; i < l; i++) {
+      if (tokens[i].level === level && tokens[i].type === 'paragraph_open') {
+        tokens[i].tight = true;
+        i += 2;
+        tokens[i].tight = true;
+      }
+    }
+  }
+
   return true;
 };
 
@@ -4579,6 +4562,7 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
   if (content.length) {
     state.tokens.push({
       type: 'paragraph_open',
+      tight: false,
       lines: [ startLine, state.line ],
       level: state.level
     });
@@ -4591,6 +4575,7 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
     });
     state.tokens.push({
       type: 'paragraph_close',
+      tight: false,
       level: state.level
     });
   }
@@ -4913,7 +4898,7 @@ var EMAIL_RE    = /^<([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9
 var AUTOLINK_RE = /^<([a-zA-Z.\-]{1,25}):([^<>\x00-\x20]*)>/;
 
 
-module.exports = function autolink(state) {
+module.exports = function autolink(state, silent) {
   var tail, linkMatch, emailMatch, url, pos = state.pos;
 
   if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
@@ -4931,17 +4916,19 @@ module.exports = function autolink(state) {
 
     if (!state.parser.validateLink(url)) { return false; }
 
-    state.push({
-      type: 'link_open',
-      href: url,
-      level: state.level
-    });
-    state.push({
-      type: 'text',
-      content: escapeHtml(url),
-      level: state.level + 1
-    });
-    state.push({ type: 'link_close', level: state.level });
+    if (!silent) {
+      state.push({
+        type: 'link_open',
+        href: url,
+        level: state.level
+      });
+      state.push({
+        type: 'text',
+        content: escapeHtml(url),
+        level: state.level + 1
+      });
+      state.push({ type: 'link_close', level: state.level });
+    }
 
     state.pos += linkMatch[0].length;
     return true;
@@ -4955,17 +4942,19 @@ module.exports = function autolink(state) {
 
     if (!state.parser.validateLink('mailto:' + url)) { return false; }
 
-    state.push({
-      type: 'link_open',
-      href: 'mailto:' + url,
-      level: state.level
-    });
-    state.push({
-      type: 'text',
-      content: escapeHtml(url),
-      level: state.level + 1
-    });
-    state.push({ type: 'link_close', level: state.level });
+    if (!silent) {
+      state.push({
+        type: 'link_open',
+        href: 'mailto:' + url,
+        level: state.level
+      });
+      state.push({
+        type: 'text',
+        content: escapeHtml(url),
+        level: state.level + 1
+      });
+      state.push({ type: 'link_close', level: state.level });
+    }
 
     state.pos += emailMatch[0].length;
     return true;
@@ -4977,7 +4966,7 @@ module.exports = function autolink(state) {
 },{"../common/url_schemas":4,"../common/utils":5}],29:[function(require,module,exports){
 // Parse backticks
 
-module.exports = function backticks(state) {
+module.exports = function backticks(state, silent) {
   var start, max, marker, matchStart, matchEnd,
       pos = state.pos,
       ch = state.src.charCodeAt(pos);
@@ -5000,20 +4989,22 @@ module.exports = function backticks(state) {
     while (matchEnd < max && state.src.charCodeAt(matchEnd) === 0x60/* ` */) { matchEnd++; }
 
     if (matchEnd - matchStart === marker.length) {
-      state.push({
-        type: 'code',
-        content: state.src.slice(pos, matchStart)
-                            .replace(/[ \n]+/g,' ')
-                            .trim(),
-        block: false,
-        level: state.level
-      });
+      if (!silent) {
+        state.push({
+          type: 'code',
+          content: state.src.slice(pos, matchStart)
+                              .replace(/[ \n]+/g,' ')
+                              .trim(),
+          block: false,
+          level: state.level
+        });
+      }
       state.pos = matchEnd;
       return true;
     }
   }
 
-  state.pending += marker;
+  if (!silent) { state.pending += marker; }
   state.pos += marker.length;
   return true;
 };
@@ -5030,102 +5021,55 @@ function isAlphaNum(code) {
          (code >= 0x61 /* a */ && code <= 0x7A /* z */);
 }
 
-// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
+// parse sequence of emphasis markers,
 // "start" should point at a valid marker
-//
-// note: in case if 4+ markers it is still not a valid emphasis,
-// should be treated as a special case
-function parseStart(state, start) {
+function scanDelims(state, start) {
   var pos = start, lastChar, nextChar, count,
+      can_open = true,
+      can_close = true,
       max = state.posMax,
       marker = state.src.charCodeAt(start);
 
   lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
 
   while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
-  if (pos >= max) { return -1; }
+  if (pos >= max) { can_open = false; }
   count = pos - start;
 
-  // Quoting spec:
-  //
-  // Character can open emphasis iff
-  //  1. it is not part of a sequence of four or more unescaped markers,
-  //  2. it is not followed by whitespace,
-  //  3. it is "_" and it is not preceded by an ASCII alphanumeric character, and
-  //  4. either it is not followed by a marker or it is followed immediately by strong emphasis.
-
   if (count >= 4) {
-    // check condition 1
-    // sequence of four or more unescaped markers can't start an emphasis
-    return count;
+    // sequence of four or more unescaped markers can't start/end an emphasis
+    can_open = can_close = false;
+  } else {
+    nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
+
+    // check whitespace conditions
+    if (nextChar === 0x20 || nextChar === 0x0A) { can_open = false; }
+    if (lastChar === 0x20 || lastChar === 0x0A) { can_close = false; }
+
+    if (marker === 0x5F /* _ */) {
+      // check if we aren't inside the word
+      if (isAlphaNum(lastChar)) { can_open = false; }
+      if (isAlphaNum(nextChar)) { can_close = false; }
+    }
   }
 
-  // check condition 2, marker followed by whitespace
-  nextChar = state.src.charCodeAt(pos);
-  if (nextChar === 0x20 || nextChar === 0x0A) { return -1; }
-
-  if (marker === 0x5F /* _ */) {
-    // check condition 3, if it's the beginning of the word
-    // we need to look back for this
-    if (isAlphaNum(lastChar)) { return -1; }
-  }
-
-  return count;
+  return {
+    can_open: can_open,
+    can_close: can_close,
+    delims: count
+  };
 }
 
-// returns the amount of markers (1, 2, 3, 4+), or -1 on failure;
-// "start" should point at a valid marker
-//
-// note: in case if 4+ markers it is still not a valid emphasis,
-// should be treated as a special case
-function parseEnd(state, start) {
-  var pos = start, lastChar, count,
-      max = state.posMax,
-      marker = state.src.charCodeAt(start);
-
-  lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
-
-  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
-  count = pos - start;
-
-  // Quoting spec:
-  //
-  // Character can close emphasis iff
-  //  1. it is not part of a sequence of four or more unescaped markers,
-  //  2. it is not preceded by whitespace,
-  //  3. it is not "_" or it is not followed by an ASCII alphanumeric character
-
-  if (count >= 4) {
-    // check condition 1
-    // sequence of four or more unescaped markers can't start an emphasis
-    return count;
-  }
-
-  // check condition 2, marker preceded by whitespace
-  if (lastChar === 0x20 || lastChar === 0x0A) { return -1; }
-
-  if (marker === 0x5F) {
-    // check condition 3, if it's the end of the word
-    if (pos < max && isAlphaNum(state.src.charCodeAt(pos))) { return -1; }
-  }
-
-  return count;
-}
-
-module.exports = function emphasis(state/*, silent*/) {
+module.exports = function emphasis(state, silent) {
   var startCount,
       count,
-      oldLength,
-      oldPending,
-      oldFlag,
       found,
-      ok,
       oldCount,
       newCount,
       stack,
+      res,
       max = state.posMax,
       start = state.pos,
-      haveLiteralAsterisk,
       marker = state.src.charCodeAt(start);
 
   if (marker !== 0x5F/* _ */ && marker !== 0x2A /* * */) { return false; }
@@ -5133,30 +5077,26 @@ module.exports = function emphasis(state/*, silent*/) {
   // skip emphasis in links because it has lower priority, compare:
   //  [foo *bar]()*
   //  [foo `bar]()`
-  if (state.validateInsideEm || state.validateInsideLink) { return false; }
+  if (silent && state.isInLabel) { return false; }
 
-  startCount = parseStart(state, start);
-  if (startCount < 0) { return false; }
-  if (startCount >= 4) {
+  res = scanDelims(state, start);
+  startCount = res.delims;
+  if (!res.can_open) {
     state.pos += startCount;
-    state.pending += state.src.slice(start, startCount);
+    if (!silent) { state.pending += state.src.slice(start, state.pos); }
     return true;
   }
 
   if (state.level >= state.options.maxNesting) { return false; }
 
-  oldLength = state.tokens.length;
-  oldPending = state.pending;
-  oldFlag = state.validateInsideEm;
-
   state.pos = start + startCount;
   stack = [ startCount ];
-  state.validateInsideEm = true;
 
   while (state.pos < max) {
-    if (state.src.charCodeAt(state.pos) === marker && !haveLiteralAsterisk) {
-      count = parseEnd(state, state.pos);
-      if (count >= 1 && count < 4) {
+    if (state.src.charCodeAt(state.pos) === marker) {
+      res = scanDelims(state, state.pos);
+      count = res.delims;
+      if (res.can_close) {
         oldCount = stack.pop();
         newCount = count;
 
@@ -5182,30 +5122,10 @@ module.exports = function emphasis(state/*, silent*/) {
         state.pos += count;
         continue;
       }
-
-      count = parseStart(state, state.pos);
-      if (count >= 1 && count < 4) {
-        stack.push(count);
-        state.pos += count;
-        continue;
-      }
     }
 
-    ok = state.parser.tokenizeSingle(state);
-
-    if (ok) {
-      haveLiteralAsterisk = false;
-    } else {
-      haveLiteralAsterisk = state.src.charCodeAt(state.pos) === marker;
-      state.pending += state.src[state.pos];
-      state.pos++;
-    }
+    if (!state.parser.skipToken(state)) { state.pos++; }
   }
-
-  // restore old state
-  state.tokens.length = oldLength;
-  state.pending = oldPending;
-  state.validateInsideEm = oldFlag;
 
   if (!found) {
     // parser failed to find ending tag, so it's not valid emphasis
@@ -5217,20 +5137,22 @@ module.exports = function emphasis(state/*, silent*/) {
   state.posMax = state.pos;
   state.pos = start + startCount;
 
-  if (startCount === 2 || startCount === 3) {
-    state.push({ type: 'strong_open', level: state.level++ });
-  }
-  if (startCount === 1 || startCount === 3) {
-    state.push({ type: 'em_open', level: state.level++ });
-  }
+  if (!silent) {
+    if (startCount === 2 || startCount === 3) {
+      state.push({ type: 'strong_open', level: state.level++ });
+    }
+    if (startCount === 1 || startCount === 3) {
+      state.push({ type: 'em_open', level: state.level++ });
+    }
 
-  state.parser.tokenize(state);
+    state.parser.tokenize(state);
 
-  if (startCount === 1 || startCount === 3) {
-    state.push({ type: 'em_close', level: --state.level });
-  }
-  if (startCount === 2 || startCount === 3) {
-    state.push({ type: 'strong_close', level: --state.level });
+    if (startCount === 1 || startCount === 3) {
+      state.push({ type: 'em_close', level: --state.level });
+    }
+    if (startCount === 2 || startCount === 3) {
+      state.push({ type: 'strong_close', level: --state.level });
+    }
   }
 
   state.pos = state.posMax + startCount;
@@ -5253,7 +5175,7 @@ var DIGITAL_RE = /^&#((?:x[a-f0-9]{1,8}|[0-9]{1,8}));/i;
 var NAMED_RE   = /^&([a-z][a-z0-9]{1,31});/i;
 
 
-module.exports = function entity(state) {
+module.exports = function entity(state, silent) {
   var ch, code, match, pos = state.pos, max = state.posMax;
 
   if (state.src.charCodeAt(pos) !== 0x26/* & */) { return false; }
@@ -5264,8 +5186,10 @@ module.exports = function entity(state) {
     if (ch === 0x23 /* # */) {
       match = state.src.slice(pos).match(DIGITAL_RE);
       if (match) {
-        code = match[1][0].toLowerCase() === 'x' ? parseInt(match[1].slice(1), 16) : parseInt(match[1], 10);
-        state.pending += isValidEntityCode(code) ? escapeHtml(fromCodePoint(code)) : fromCodePoint(0xFFFD);
+        if (!silent) {
+          code = match[1][0].toLowerCase() === 'x' ? parseInt(match[1].slice(1), 16) : parseInt(match[1], 10);
+          state.pending += isValidEntityCode(code) ? escapeHtml(fromCodePoint(code)) : fromCodePoint(0xFFFD);
+        }
         state.pos += match[0].length;
         return true;
       }
@@ -5273,7 +5197,7 @@ module.exports = function entity(state) {
       match = state.src.slice(pos).match(NAMED_RE);
       if (match) {
         if (entities.hasOwnProperty(match[1])) {
-          state.pending += escapeHtml(entities[match[1]]);
+          if (!silent) { state.pending += escapeHtml(entities[match[1]]); }
           state.pos += match[0].length;
           return true;
         }
@@ -5281,7 +5205,7 @@ module.exports = function entity(state) {
     }
   }
 
-  state.pending += '&amp;';
+  if (!silent) { state.pending += '&amp;'; }
   state.pos++;
   return true;
 };
@@ -5294,8 +5218,8 @@ var ESCAPED = {};
 '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-'
   .split('').forEach(function(ch) { ESCAPED[ch.charCodeAt(0)] = true; });
 
-module.exports = function escape(state) {
-  var ch, pos = state.pos, max = state.posMax;
+module.exports = function escape(state, silent) {
+  var ch, str, pos = state.pos, max = state.posMax;
 
   if (state.src.charCodeAt(pos) !== 0x5C/* \ */) { return false; }
 
@@ -5307,25 +5231,28 @@ module.exports = function escape(state) {
     if (typeof ESCAPED[ch] !== 'undefined') {
       // escape html chars if needed
       if (ch === 0x26/* & */) {
-        state.pending += '&amp;';
+        str = '&amp;';
       } else if (ch === 0x3C/* < */) {
-        state.pending += '&lt;';
+        str = '&lt;';
       } else if (ch === 0x3E/* > */) {
-        state.pending += '&gt;';
+        str = '&gt;';
       } else if (ch === 0x22/* " */) {
-        state.pending += '&quot;';
+        str = '&quot;';
       } else {
-        state.pending += state.src[pos];
+        str = state.src[pos];
       }
+      if (!silent) { state.pending += str; }
       state.pos += 2;
       return true;
     }
 
     if (ch === 0x0A) {
-      state.push({
-        type: 'hardbreak',
-        level: state.level
-      });
+      if (!silent) {
+        state.push({
+          type: 'hardbreak',
+          level: state.level
+        });
+      }
 
       pos++;
       // skip leading whitespaces from next line
@@ -5336,7 +5263,7 @@ module.exports = function escape(state) {
     }
   }
 
-  state.pending += '\\';
+  if (!silent) { state.pending += '\\'; }
   state.pos++;
   return true;
 };
@@ -5344,19 +5271,21 @@ module.exports = function escape(state) {
 },{}],33:[function(require,module,exports){
 // Process < > " (& was processed in markdown escape)
 
-module.exports = function escape_html_char(state) {
-  var ch = state.src.charCodeAt(state.pos);
+module.exports = function escape_html_char(state, silent) {
+  var ch = state.src.charCodeAt(state.pos),
+      str;
 
   if (ch === 0x3C/* < */) {
-    state.pending += '&lt;';
+    str = '&lt;';
   } else if (ch === 0x3E/* > */) {
-    state.pending += '&gt;';
+    str = '&gt;';
   } else if (ch === 0x22/* " */) {
-    state.pending += '&quot;';
+    str = '&quot;';
   } else {
     return false;
   }
 
+  if (!silent) { state.pending += str; }
   state.pos++;
   return true;
 };
@@ -5377,7 +5306,7 @@ function isLetter(ch) {
 }
 
 
-module.exports = function htmltag(state) {
+module.exports = function htmltag(state, silent) {
   var ch, match, max, pos = state.pos;
 
   if (!state.options.html) { return false; }
@@ -5401,12 +5330,13 @@ module.exports = function htmltag(state) {
   match = state.src.slice(pos).match(HTML_TAG_RE);
   if (!match) { return false; }
 
-  state.push({
-    type: 'htmltag',
-    content: state.src.slice(pos, pos + match[0].length),
-    level: state.level
-  });
-//console.log(state.tokens)
+  if (!silent) {
+    state.push({
+      type: 'htmltag',
+      content: state.src.slice(pos, pos + match[0].length),
+      level: state.level
+    });
+  }
   state.pos += match[0].length;
   return true;
 };
@@ -5422,7 +5352,7 @@ var parseLinkTitle       = require('../links').parseLinkTitle;
 var normalizeReference   = require('../links').normalizeReference;
 
 
-function links(state) {
+module.exports = function links(state, silent) {
   var labelStart,
       labelEnd,
       label,
@@ -5469,7 +5399,7 @@ function links(state) {
     //          ^^^^^^ parsing link destination
     start = pos;
     if (parseLinkDestination(state, pos)) {
-      href = state.link_content;
+      href = state.linkContent;
       pos = state.pos;
     } else {
       href = '';
@@ -5486,7 +5416,7 @@ function links(state) {
     // [link](  <href>  "title"  )
     //                  ^^^^^^^ parsing link title
     if (pos < max && start !== pos && parseLinkTitle(state, pos)) {
-      title = state.link_content;
+      title = state.linkContent;
       pos = state.pos;
 
       // [link](  <href>  "title"  )
@@ -5546,41 +5476,41 @@ function links(state) {
   // We found the end of the link, and know for a fact it's a valid link;
   // so all that's left to do is to call tokenizer.
   //
-  state.pos = labelStart;
-  state.posMax = labelEnd;
+  if (!silent) {
+    state.pos = labelStart;
+    state.posMax = labelEnd;
 
-  if (isImage) {
-    state.push({
-      type: 'image',
-      src: href,
-      title: title,
-      alt: state.src.substr(labelStart, labelEnd - labelStart),
-      level: state.level
-    });
-  } else {
-    state.push({
-      type: 'link_open',
-      href: href,
-      title: title,
-      level: state.level++
-    });
-    state.linkLevel++;
-    state.parser.tokenize(state);
-    state.linkLevel--;
-    state.push({ type: 'link_close', level: --state.level });
+    if (isImage) {
+      state.push({
+        type: 'image',
+        src: href,
+        title: title,
+        alt: state.src.substr(labelStart, labelEnd - labelStart),
+        level: state.level
+      });
+    } else {
+      state.push({
+        type: 'link_open',
+        href: href,
+        title: title,
+        level: state.level++
+      });
+      state.linkLevel++;
+      state.parser.tokenize(state);
+      state.linkLevel--;
+      state.push({ type: 'link_close', level: --state.level });
+    }
   }
 
   state.pos = pos;
   state.posMax = max;
   return true;
-}
-
-module.exports = links;
+};
 
 },{"../links":11}],36:[function(require,module,exports){
 // Proceess '\n'
 
-module.exports = function newline(state) {
+module.exports = function newline(state, silent) {
   var pmax, max, pos = state.pos;
 
   if (state.src.charCodeAt(pos) !== 0x0A/* \n */) { return false; }
@@ -5592,26 +5522,28 @@ module.exports = function newline(state) {
   // Lookup in pending chars is bad practice! Don't copy to other rules!
   // Pending string is stored in concat mode, indexed lookups will cause
   // convertion to flat mode.
-  if (pmax >= 0 && state.pending.charCodeAt(pmax) === 0x20) {
-    if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 0x20) {
-      state.pending = state.pending.replace(/ +$/, '');
-      state.push({
-        type: 'hardbreak',
-        level: state.level
-      });
+  if (!silent) {
+    if (pmax >= 0 && state.pending.charCodeAt(pmax) === 0x20) {
+      if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 0x20) {
+        state.pending = state.pending.replace(/ +$/, '');
+        state.push({
+          type: 'hardbreak',
+          level: state.level
+        });
+      } else {
+        state.pending = state.pending.slice(0, -1);
+        state.push({
+          type: 'softbreak',
+          level: state.level
+        });
+      }
+
     } else {
-      state.pending = state.pending.slice(0, -1);
       state.push({
         type: 'softbreak',
         level: state.level
       });
     }
-
-  } else {
-    state.push({
-      type: 'softbreak',
-      level: state.level
-    });
   }
 
   pos++;
@@ -5641,11 +5573,22 @@ function StateInline(src, parser, options, env) {
   this.pending = '';
   this.pendingLevel = 0;
 
-  this.validateInsideEm = false;
-  this.validateInsideLink = false;
-  this.linkLevel = 0;
-  this.link_content = '';
-  this.label_nest_level = 0; // for stmd-like backtrack optimization
+  this.cache = {};        // Stores { start: end } pairs. Useful for backtrack
+                          // optimization of pairs parse (emphasis, strikes).
+
+  // Link parser state vars
+
+  this.isInLabel = false; // Set true when seek link label - we should disable
+                          // "paired" rules (emphasis, strikes) to not skip
+                          // tailing `]`
+
+  this.linkLevel = 0;     // Increment for each nesting link. Used to prevent
+                          // nesting in definitions
+
+  this.linkContent = '';  // Temporary storage for link url
+
+  this.labelUnmatchedScopes = 0; // Track unpaired `[` for link labels
+                                 // (backtrack optimization)
 }
 
 
@@ -5675,14 +5618,9 @@ module.exports = StateInline;
 
 'use strict';
 
-module.exports = function strikethrough(state) {
-  var oldLength,
-      oldPending,
-      oldFlag,
-      found,
-      ok,
+module.exports = function strikethrough(state, silent) {
+  var found,
       pos,
-      stack,
       max = state.posMax,
       start = state.pos,
       lastChar,
@@ -5694,7 +5632,7 @@ module.exports = function strikethrough(state) {
 
   // make del lower a priority tag with respect to links, same as <em>;
   // this code also prevents recursion
-  if (state.validateInsideEm || state.validateInsideLink) { return false; }
+  if (silent && state.isInLabel) { return false; }
 
   if (state.level >= state.options.maxNesting) { return false; }
 
@@ -5710,17 +5648,11 @@ module.exports = function strikethrough(state) {
   if (pos !== start + 2) {
     // sequence of 3+ markers taking as literal, same as in a emphasis
     state.pos += pos - start;
-    state.pending += state.src.slice(start, pos);
+    if (!silent) { state.pending += state.src.slice(start, pos); }
     return true;
   }
 
-  oldLength = state.tokens.length;
-  oldPending = state.pending;
-  oldFlag = state.validateInsideEm;
-
   state.pos = start + 2;
-  state.validateInsideEm = true;
-  stack = 1;
 
   while (state.pos + 1 < max) {
     if (state.src.charCodeAt(state.pos) === 0x7E/* ~ */) {
@@ -5730,14 +5662,6 @@ module.exports = function strikethrough(state) {
         if (nextChar !== 0x7E/* ~ */ && lastChar !== 0x7E/* ~ */) {
           if (lastChar !== 0x20 && lastChar !== 0x0A) {
             // closing '~~'
-            stack--;
-          } else if (nextChar !== 0x20 && nextChar !== 0x0A) {
-            // opening '~~'
-            stack++;
-          } // else {
-            //  // standalone ' ~~ ' indented with spaces
-            //}
-          if (stack <= 0) {
             found = true;
             break;
           }
@@ -5745,18 +5669,8 @@ module.exports = function strikethrough(state) {
       }
     }
 
-    ok = state.parser.tokenizeSingle(state);
-
-    if (!ok) {
-      state.pending += state.src[state.pos];
-      state.pos++;
-    }
+    if (!state.parser.skipToken(state)) { state.pos++; }
   }
-
-  // restore old state
-  state.tokens.length = oldLength;
-  state.pending = oldPending;
-  state.validateInsideEm = oldFlag;
 
   if (!found) {
     // parser failed to find ending tag, so it's not valid emphasis
@@ -5768,9 +5682,11 @@ module.exports = function strikethrough(state) {
   state.posMax = state.pos;
   state.pos = start + 2;
 
-  state.push({ type: 'del_open', level: state.level++ });
-  state.parser.tokenize(state);
-  state.push({ type: 'del_close', level: --state.level });
+  if (!silent) {
+    state.push({ type: 'del_open', level: state.level++ });
+    state.parser.tokenize(state);
+    state.push({ type: 'del_close', level: --state.level });
+  }
 
   state.pos = state.posMax + 2;
   state.posMax = max;
@@ -5781,12 +5697,12 @@ module.exports = function strikethrough(state) {
 // Skip text characters for text token, place those to pendibg buffer
 // and increment current pos
 
-module.exports = function text(state) {
+module.exports = function text(state, silent) {
   var match = state.src.slice(state.pos).match(state.parser.textMatch);
 
   if (!match) { return false; }
 
-  state.pending += match[0];
+  if (!silent) { state.pending += match[0]; }
   state.pos += match[0].length;
 
   return true;
@@ -5810,7 +5726,7 @@ var autolinker = new Autolinker({
   replaceFn: function (autolinker, match) {
     // Only collect matched strings but don't change anything.
     if (match.getType() === 'url') {
-      links.push(match.getUrl());
+      links.push({ text: match.matchedText, url: match.getUrl() });
     }
     return false;
   }
@@ -5870,9 +5786,12 @@ module.exports = function linkify(t, state) {
 
       for (ln = 0; ln < links.length; ln++) {
 
-        if (!state.parser.validateLink(links[ln])) { continue; }
+        if (!state.parser.validateLink(links[ln].url)) { continue; }
 
-        pos = text.indexOf(links[ln]);
+        pos = text.indexOf(links[ln].text);
+
+        if (pos === -1) { continue; }
+
         if (pos) {
           level = level;
           nodes.push({
@@ -5883,20 +5802,20 @@ module.exports = function linkify(t, state) {
         }
         nodes.push({
           type: 'link_open',
-          href: links[ln],
+          href: links[ln].url,
           title: '',
           level: level++
         });
         nodes.push({
           type: 'text',
-          content: escapeHtml(links[ln]),
+          content: escapeHtml(links[ln].text),
           level: level
         });
         nodes.push({
           type: 'link_close',
           level: --level
         });
-        text = text.slice(pos + links[ln].length);
+        text = text.slice(pos + links[ln].text.length);
       }
       if (text.length) {
         nodes.push({
