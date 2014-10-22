@@ -1,3 +1,10 @@
+1.1.1 / WIP
+------------------
+
+- Fixed `Ruler.after()` method.
+- Simplified loose/tight rendering.
+
+
 1.1.0 / 2014-10-20
 ------------------
 
