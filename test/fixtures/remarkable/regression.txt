@@ -60,3 +60,14 @@ test~~</p>
 test
 ~~</p>
 .
+
+Link priority, not covered by stmd tests:
+
+.
+[**link]()**
+
+**[link**]()
+.
+<p><a href="">**link</a>**</p>
+<p>**<a href="">link**</a></p>
+.
