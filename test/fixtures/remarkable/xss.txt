@@ -1,3 +1,11 @@
+.
+[normal link](javascript)
+.
+<p><a href="javascript">normal link</a></p>
+.
+
+
+
 Should not allow some protocols in links and images
 
 .
@@ -23,6 +31,13 @@ Should not allow some protocols in links and images
 .
 <p>[xss link](VBSCRIPT:alert(1))</p>
 .
+
+.
+[xss link](file:///123)
+.
+<p>[xss link](file:///123)</p>
+.
+
 
 .
 [xss link](&#34;&#62;&#60;script&#62;alert&#40;&#34;xss&#34;&#41;&#60;/script&#62;)
