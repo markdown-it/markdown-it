@@ -77,3 +77,13 @@ Link label has priority over emphasis (not covered by stmd tests):
 <p>**<a href="">link**</a></p>
 .
 
+Issue #55:
+
+.
+![test]
+
+![test](foo bar)
+.
+<p>![test]</p>
+<p>![test](foo bar)</p>
+.
