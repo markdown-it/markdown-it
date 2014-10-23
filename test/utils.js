@@ -65,7 +65,8 @@ function addSpecTests(fPath, markdown, skip) {
       input.replace(/^\.\n([\s\S]*?)^\.\n([\s\S]*?)^\.$/gm, function(__, md, html, offset, orig) {
         var line = orig.slice(0, offset).split(/\r?\n/g).length;
 
-        if (!skip) {
+        // Also skip tests if file name starts with "_"
+        if (!skip && path.basename(fPath)[0] !== '_') {
           it('line ' + line, function () {
             assert.strictEqual(html, markdown.render(md));
           });

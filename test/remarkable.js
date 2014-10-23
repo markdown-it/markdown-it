@@ -9,7 +9,7 @@ var utils = require('./utils');
 var Remarkable = require('../');
 
 
-describe('Default', function () {
+describe('remarkable', function () {
   var md = new Remarkable({
     html: true,
     langPrefix: '',
