@@ -1,6 +1,7 @@
-1.1.2 / WIP
+1.1.2 / 2014-10-23
 ------------------
 
+- Fixed speed regression.
 - Use base64 encoding for permalinks (workaround for github).
 - Improved default link validator.
 - Updated cache storage logic for inline parser.

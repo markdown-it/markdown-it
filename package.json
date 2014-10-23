@@ -1,6 +1,6 @@
 {
   "name": "remarkable",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Markdown parser, done right. Commonmark support, extensions, syntax plugins, high speed - all in one.",
   "keywords": [
     "markdown",

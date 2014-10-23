@@ -135,7 +135,7 @@ more advanced, specific for your language.
 These extensions are enabled by default:
 
 - [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
-- [\<del>](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM strikethrough) - `~~text~~`
+- [\<del>](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM strikethrough) - `~~deleted text~~`
 
 
 ## References / Thanks
