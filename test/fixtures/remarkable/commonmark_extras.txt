@@ -41,31 +41,6 @@ test
 .
 
 
-
-The same for strikethrough:
-
-.
-~~test
-~~
-
-~~
-test~~
-
-~~
-test
-~~
-.
-<p>~~test
-~~</p>
-<p>~~
-test~~</p>
-<p>~~
-test
-~~</p>
-.
-
-
-
 Link label has priority over emphasis (not covered by stmd tests):
 
 .

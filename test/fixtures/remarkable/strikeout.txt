@@ -68,3 +68,26 @@ foo ~~ bar ~~ baz
 .
 <p>foo ~~ bar ~~ baz</p>
 .
+
+
+Newline should be considered a whitespace:
+
+.
+~~test
+~~
+
+~~
+test~~
+
+~~
+test
+~~
+.
+<p>~~test
+~~</p>
+<p>~~
+test~~</p>
+<p>~~
+test
+~~</p>
+.
