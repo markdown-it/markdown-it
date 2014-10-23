@@ -1,4 +1,3 @@
-
 Regression tests for link backtracking optimizations:
 
 .
@@ -16,6 +15,8 @@ Regression tests for link backtracking optimizations:
 .
 <p>[[some unrelated text <a href="foo">[link]</a></p>
 .
+
+
 
 This is not a valid emphasis, because \n considered a whitespace:
 
@@ -39,7 +40,9 @@ test
 **</p>
 .
 
-Same for strikethrough:
+
+
+The same for strikethrough:
 
 .
 ~~test
@@ -61,7 +64,9 @@ test
 ~~</p>
 .
 
-Link priority, not covered by stmd tests:
+
+
+Link label has priority over emphasis (not covered by stmd tests):
 
 .
 [**link]()**
@@ -71,3 +76,4 @@ Link priority, not covered by stmd tests:
 <p><a href="">**link</a>**</p>
 <p>**<a href="">link**</a></p>
 .
+
