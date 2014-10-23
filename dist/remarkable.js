@@ -1,4 +1,4 @@
-/*! remarkable 1.1.1 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
+/*! remarkable 1.1.2 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
 'use strict';
 
 
@@ -2735,7 +2735,7 @@ module.exports = Remarkable;
 // this function assumes that first character ("[") already matches;
 // returns the end of the label
 function parseLinkLabel(state, start) {
-  var level, found, marker, ok,
+  var level, found, marker,
       labelEnd = -1,
       max = state.posMax,
       oldPos = state.pos,
@@ -2764,9 +2764,7 @@ function parseLinkLabel(state, start) {
       }
     }
 
-    ok = state.parser.skipToken(state);
-
-    if (!ok) { state.pos++; }
+    state.parser.skipToken(state);
   }
 
   if (found) {
@@ -3073,7 +3071,7 @@ rules.push(require('./rules_inline/text'));
 rules.push(require('./rules_inline/newline'));
 rules.push(require('./rules_inline/escape'));
 rules.push(require('./rules_inline/backticks'));
-rules.push(require('./rules_inline/strikethrough'));
+rules.push(require('./rules_inline/del'));
 rules.push(require('./rules_inline/emphasis'));
 rules.push(require('./rules_inline/links'));
 rules.push(require('./rules_inline/autolink'));
@@ -3081,8 +3079,20 @@ rules.push(require('./rules_inline/htmltag'));
 rules.push(require('./rules_inline/entity'));
 rules.push(require('./rules_inline/escape_html_char'));
 
+var BAD_PROTOCOLS = [ 'vbscript', 'javascript', 'file' ];
+
 function validateLink(url) {
-  if (url.indexOf('javas' + 'cript:') === 0) { return false; }
+  var str = '';
+
+  try {
+    str = decodeURI(url).trim().toLowerCase();
+  } catch (_) {}
+
+  if (!str) { return false; }
+
+  if (str.indexOf(':') >= 0 && BAD_PROTOCOLS.indexOf(str.split(':')[0]) >= 0) {
+    return false;
+  }
   return true;
 }
 
@@ -3117,23 +3127,24 @@ ParserInline.prototype.rulesUpdate = function () {
 // returns `true` if any rule reported success
 //
 ParserInline.prototype.skipToken = function (state) {
-  var i, pos = state.pos,
+  var i, cached_pos, pos = state.pos,
       rules = this._rules,
       len = this._rules.length;
 
-  if (state.cache[pos] !== undefined) {
-    state.pos = state.cache[pos];
-    return true;
+  if ((cached_pos = state.cacheGet(pos)) > 0) {
+    state.pos = cached_pos;
+    return;
   }
 
   for (i = 0; i < len; i++) {
     if (rules[i](state, true)) {
-      state.cache[pos] = state.pos;
-      return true;
+      state.cacheSet(pos, state.pos);
+      return;
     }
   }
 
-  return false;
+  state.pos++;
+  state.cacheSet(pos, state.pos);
 };
 
 
@@ -3195,7 +3206,7 @@ ParserInline.prototype.parse = function (str, options, env) {
 
 module.exports = ParserInline;
 
-},{"./ruler":16,"./rules_inline/autolink":28,"./rules_inline/backticks":29,"./rules_inline/emphasis":30,"./rules_inline/entity":31,"./rules_inline/escape":32,"./rules_inline/escape_html_char":33,"./rules_inline/htmltag":34,"./rules_inline/links":35,"./rules_inline/newline":36,"./rules_inline/state_inline":37,"./rules_inline/strikethrough":38,"./rules_inline/text":39}],14:[function(require,module,exports){
+},{"./ruler":16,"./rules_inline/autolink":28,"./rules_inline/backticks":29,"./rules_inline/del":30,"./rules_inline/emphasis":31,"./rules_inline/entity":32,"./rules_inline/escape":33,"./rules_inline/escape_html_char":34,"./rules_inline/htmltag":35,"./rules_inline/links":36,"./rules_inline/newline":37,"./rules_inline/state_inline":38,"./rules_inline/text":39}],14:[function(require,module,exports){
 
 'use strict';
 
@@ -3264,7 +3275,7 @@ module.exports = function parse_reference(str, parser, options, env) {
   return pos;
 };
 
-},{"./links":11,"./rules_inline/state_inline":37}],15:[function(require,module,exports){
+},{"./links":11,"./rules_inline/state_inline":38}],15:[function(require,module,exports){
 'use strict';
 
 
@@ -4323,6 +4334,19 @@ function skipOrderedListMarker(state, startLine) {
   return pos;
 }
 
+function markTightParagraphs(state, idx) {
+  var i, l,
+      level = state.level + 2;
+
+  for (i = idx + 2, l = state.tokens.length - 2; i < l; i++) {
+    if (state.tokens[i].level === level && state.tokens[i].type === 'paragraph_open') {
+      state.tokens[i + 2].tight = true;
+      state.tokens[i].tight = true;
+      i += 2;
+    }
+  }
+}
+
 
 module.exports = function list(state, startLine, endLine, silent) {
   var nextLine,
@@ -4345,7 +4369,7 @@ module.exports = function list(state, startLine, endLine, silent) {
       itemLines,
       tight = true,
       terminatorRules = state.parser._rulesListTerm,
-      i, l, terminate, level, tokens;
+      i, l, terminate;
 
   // Detect list type and position after marker
   if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
@@ -4502,16 +4526,7 @@ module.exports = function list(state, startLine, endLine, silent) {
 
   // mark paragraphs tight if needed
   if (tight) {
-    level = state.level + 2;
-    tokens = state.tokens;
-
-    for (i = listTokIdx + 2, l = tokens.length - 2; i < l; i++) {
-      if (tokens[i].level === level && tokens[i].type === 'paragraph_open') {
-        tokens[i].tight = true;
-        i += 2;
-        tokens[i].tight = true;
-      }
-    }
+    markTightParagraphs(state, listTokIdx);
   }
 
   return true;
@@ -5010,6 +5025,86 @@ module.exports = function backticks(state, silent) {
 };
 
 },{}],30:[function(require,module,exports){
+// Process ~~strike through~~
+
+'use strict';
+
+module.exports = function del(state, silent) {
+  var found,
+      pos,
+      max = state.posMax,
+      start = state.pos,
+      lastChar,
+      nextChar;
+
+  if (state.src.charCodeAt(start) !== 0x7E/* ~ */) { return false; }
+  if (start + 4 >= max) { return false; }
+  if (state.src.charCodeAt(start + 1) !== 0x7E/* ~ */) { return false; }
+
+  // make del lower a priority tag with respect to links, same as <em>;
+  // this code also prevents recursion
+  if (silent && state.isInLabel) { return false; }
+
+  if (state.level >= state.options.maxNesting) { return false; }
+
+  lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
+  nextChar = state.src.charCodeAt(start + 2);
+
+  if (lastChar === 0x7E/* ~ */) { return false; }
+  if (nextChar === 0x7E/*   */) { return false; }
+  if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
+
+  pos = start + 2;
+  while (pos < max && state.src.charCodeAt(pos) === 0x7E/* ~ */) { pos++; }
+  if (pos !== start + 2) {
+    // sequence of 3+ markers taking as literal, same as in a emphasis
+    state.pos += pos - start;
+    if (!silent) { state.pending += state.src.slice(start, pos); }
+    return true;
+  }
+
+  state.pos = start + 2;
+
+  while (state.pos + 1 < max) {
+    if (state.src.charCodeAt(state.pos) === 0x7E/* ~ */) {
+      if (state.src.charCodeAt(state.pos + 1) === 0x7E/* ~ */) {
+        lastChar = state.src.charCodeAt(state.pos - 1);
+        nextChar = state.pos + 2 < max ? state.src.charCodeAt(state.pos + 2) : -1;
+        if (nextChar !== 0x7E/* ~ */ && lastChar !== 0x7E/* ~ */) {
+          if (lastChar !== 0x20 && lastChar !== 0x0A) {
+            // closing '~~'
+            found = true;
+            break;
+          }
+        }
+      }
+    }
+
+    state.parser.skipToken(state);
+  }
+
+  if (!found) {
+    // parser failed to find ending tag, so it's not valid emphasis
+    state.pos = start;
+    return false;
+  }
+
+  // found!
+  state.posMax = state.pos;
+  state.pos = start + 2;
+
+  if (!silent) {
+    state.push({ type: 'del_open', level: state.level++ });
+    state.parser.tokenize(state);
+    state.push({ type: 'del_close', level: --state.level });
+  }
+
+  state.pos = state.posMax + 2;
+  state.posMax = max;
+  return true;
+};
+
+},{}],31:[function(require,module,exports){
 // Process *this* and _that_
 
 'use strict';
@@ -5124,7 +5219,7 @@ module.exports = function emphasis(state, silent) {
       }
     }
 
-    if (!state.parser.skipToken(state)) { state.pos++; }
+    state.parser.skipToken(state);
   }
 
   if (!found) {
@@ -5160,7 +5255,7 @@ module.exports = function emphasis(state, silent) {
   return true;
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // Proceess html entity - &#123;, &#xAF;, &quot;, ...
 
 'use strict';
@@ -5210,7 +5305,7 @@ module.exports = function entity(state, silent) {
   return true;
 };
 
-},{"../common/entities":1,"../common/utils":5}],32:[function(require,module,exports){
+},{"../common/entities":1,"../common/utils":5}],33:[function(require,module,exports){
 // Proceess escaped chars and hardbreaks
 
 var ESCAPED = {};
@@ -5268,7 +5363,7 @@ module.exports = function escape(state, silent) {
   return true;
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // Process < > " (& was processed in markdown escape)
 
 module.exports = function escape_html_char(state, silent) {
@@ -5290,7 +5385,7 @@ module.exports = function escape_html_char(state, silent) {
   return true;
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // Process html tags
 
 'use strict';
@@ -5341,7 +5436,7 @@ module.exports = function htmltag(state, silent) {
   return true;
 };
 
-},{"../common/html_re":3}],35:[function(require,module,exports){
+},{"../common/html_re":3}],36:[function(require,module,exports){
 // Process [links](<to> "stuff")
 
 'use strict';
@@ -5362,6 +5457,7 @@ module.exports = function links(state, silent) {
       ref,
       code,
       isImage = false,
+      oldPos = state.pos,
       max = state.posMax,
       start = state.pos,
       marker = state.src.charCodeAt(start);
@@ -5430,7 +5526,7 @@ module.exports = function links(state, silent) {
     }
 
     if (pos >= max || state.src.charCodeAt(pos) !== 0x29/* ) */) {
-      state.pos = labelStart - 1;
+      state.pos = oldPos;
       return false;
     }
     pos++;
@@ -5465,7 +5561,7 @@ module.exports = function links(state, silent) {
 
     ref = state.env.references[normalizeReference(label)];
     if (!ref) {
-      state.pos = labelStart - 1;
+      state.pos = oldPos;
       return false;
     }
     href = ref.href;
@@ -5507,7 +5603,7 @@ module.exports = function links(state, silent) {
   return true;
 };
 
-},{"../links":11}],36:[function(require,module,exports){
+},{"../links":11}],37:[function(require,module,exports){
 // Proceess '\n'
 
 module.exports = function newline(state, silent) {
@@ -5555,7 +5651,7 @@ module.exports = function newline(state, silent) {
   return true;
 };
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 // Inline parser state
 
 'use strict';
@@ -5573,7 +5669,7 @@ function StateInline(src, parser, options, env) {
   this.pending = '';
   this.pendingLevel = 0;
 
-  this.cache = {};        // Stores { start: end } pairs. Useful for backtrack
+  this.cache = [];        // Stores { start: end } pairs. Useful for backtrack
                           // optimization of pairs parse (emphasis, strikes).
 
   // Link parser state vars
@@ -5592,6 +5688,8 @@ function StateInline(src, parser, options, env) {
 }
 
 
+// Flush pending text
+//
 StateInline.prototype.pushPending = function () {
   this.tokens.push({
     type: 'text',
@@ -5601,6 +5699,10 @@ StateInline.prototype.pushPending = function () {
   this.pending = '';
 };
 
+
+// Push new token to "stream".
+// If pending text exists - flush it as text token
+//
 StateInline.prototype.push = function (token) {
   if (this.pending) {
     this.pushPending();
@@ -5611,87 +5713,27 @@ StateInline.prototype.push = function (token) {
 };
 
 
-module.exports = StateInline;
-
-},{}],38:[function(require,module,exports){
-// Process ~~strike through~~
-
-'use strict';
-
-module.exports = function strikethrough(state, silent) {
-  var found,
-      pos,
-      max = state.posMax,
-      start = state.pos,
-      lastChar,
-      nextChar;
-
-  if (state.src.charCodeAt(start) !== 0x7E/* ~ */) { return false; }
-  if (start + 4 >= max) { return false; }
-  if (state.src.charCodeAt(start + 1) !== 0x7E/* ~ */) { return false; }
-
-  // make del lower a priority tag with respect to links, same as <em>;
-  // this code also prevents recursion
-  if (silent && state.isInLabel) { return false; }
-
-  if (state.level >= state.options.maxNesting) { return false; }
-
-  lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
-  nextChar = state.src.charCodeAt(start + 2);
-
-  if (lastChar === 0x7E/* ~ */) { return false; }
-  if (nextChar === 0x7E/*   */) { return false; }
-  if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
-
-  pos = start + 2;
-  while (pos < max && state.src.charCodeAt(pos) === 0x7E/* ~ */) { pos++; }
-  if (pos !== start + 2) {
-    // sequence of 3+ markers taking as literal, same as in a emphasis
-    state.pos += pos - start;
-    if (!silent) { state.pending += state.src.slice(start, pos); }
-    return true;
+// Store value to cache.
+// !!! Implementation has parser-specific optimizations
+// !!! keys MUST be integer, >= 0; values MUST be integer, > 0
+//
+StateInline.prototype.cacheSet = function (key, val) {
+  for (var i = this.cache.length; i <= key; i++) {
+    this.cache.push(0);
   }
 
-  state.pos = start + 2;
-
-  while (state.pos + 1 < max) {
-    if (state.src.charCodeAt(state.pos) === 0x7E/* ~ */) {
-      if (state.src.charCodeAt(state.pos + 1) === 0x7E/* ~ */) {
-        lastChar = state.src.charCodeAt(state.pos - 1);
-        nextChar = state.pos + 2 < max ? state.src.charCodeAt(state.pos + 2) : -1;
-        if (nextChar !== 0x7E/* ~ */ && lastChar !== 0x7E/* ~ */) {
-          if (lastChar !== 0x20 && lastChar !== 0x0A) {
-            // closing '~~'
-            found = true;
-            break;
-          }
-        }
-      }
-    }
-
-    if (!state.parser.skipToken(state)) { state.pos++; }
-  }
-
-  if (!found) {
-    // parser failed to find ending tag, so it's not valid emphasis
-    state.pos = start;
-    return false;
-  }
-
-  // found!
-  state.posMax = state.pos;
-  state.pos = start + 2;
-
-  if (!silent) {
-    state.push({ type: 'del_open', level: state.level++ });
-    state.parser.tokenize(state);
-    state.push({ type: 'del_close', level: --state.level });
-  }
-
-  state.pos = state.posMax + 2;
-  state.posMax = max;
-  return true;
+  this.cache[key] = val;
 };
+
+
+// Get cache value
+//
+StateInline.prototype.cacheGet = function (key) {
+  return key < this.cache.length ? this.cache[key] : 0;
+};
+
+
+module.exports = StateInline;
 
 },{}],39:[function(require,module,exports){
 // Skip text characters for text token, place those to pendibg buffer
