@@ -60,9 +60,9 @@
     try {
       if (source) {
         // serialize state - source and options
-        permalink.href = '#md=' + encodeURIComponent(JSON.stringify({
-          defaults: _.omit(defaults, 'highlight'),
-          source: source
+        permalink.href = '#md64=' + window.btoa(JSON.stringify({
+          source: source,
+          defaults: _.omit(defaults, 'highlight')
         }));
       } else {
         permalink.href = '';
@@ -80,9 +80,17 @@
     });
 
     // Restore content if opened by permalink
-    if (location.hash && location.hash.toString().slice(0,4) === '#md=') {
+    if (location.hash && /^(#md=|#md64=)/.test(location.hash)) {
       try {
-        var cfg = JSON.parse(decodeURIComponent(location.hash.slice(4)));
+        var cfg;
+
+        if (/^#md64=/.test(location.hash)) {
+          cfg = JSON.parse(window.atob(location.hash.slice(6)));
+        } else {
+          // Legacy mode for old links. Those become broken in github posts,
+          // so we switched to base64 encoding.
+          cfg = JSON.parse(decodeURIComponent(location.hash.slice(4)));
+        }
 
         if (_.isString(cfg.source)) {
           $('.source').val(cfg.source);
