@@ -75,9 +75,3 @@ remarkable--awesome
 <p>remarkable–awesome</p>
 .
 
-
-
-
-TODO:
-
-- "Monitor 21""

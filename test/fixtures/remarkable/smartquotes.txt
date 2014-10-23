@@ -1,4 +1,3 @@
-
 Should parse nested quotes:
 
 .
@@ -13,6 +12,7 @@ Should parse nested quotes:
 <p>‘foo ‘bar’ baz’</p>
 .
 
+
 Should not overlap quotes:
 
 .
@@ -21,6 +21,7 @@ Should not overlap quotes:
 <p>‘foo &quot;bar’ baz&quot;</p>
 .
 
+
 Should match quotes on the same level:
 
 .
@@ -28,6 +29,7 @@ Should match quotes on the same level:
 .
 <p>“foo <em>bar</em> baz”</p>
 .
+
 
 Should not match quotes on different levels:
 
@@ -46,6 +48,7 @@ Should not match quotes on different levels:
 <p><em>&quot;foo</em> bar <em>baz&quot;</em></p>
 .
 
+
 Should try and find matching quote in this case:
 
 .
@@ -54,6 +57,16 @@ Should try and find matching quote in this case:
 <p>&quot;foo “bar 'baz”</p>
 .
 
+
+Should not touch 'inches' in quotes:
+
+.
+"Monitor 21""
+.
+<p>“Monitor 21&quot;”</p>
+.
+
+
 Should render an apostrophe as a rsquo:
 
 .
@@ -61,6 +74,7 @@ This isn't and can't be the best approach to implement this...
 .
 <p>This isn’t and can’t be the best approach to implement this…</p>
 .
+
 
 Apostrophe could end the word, that's why original smartypants replaces all of them as rsquo:
 
