@@ -1,6 +1,0 @@
-.
-![xss link](javascript:alert(1))
-.
-<p>![xss link](javascript:alert(1))</p>
-.
-
