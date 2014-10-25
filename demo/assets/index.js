@@ -43,9 +43,13 @@
   }
 
   function mdInit() {
-    var opts = defaults._strict ? 'commonmark' : defaults;
-    mdHtml = new window.Remarkable(opts);
-    mdSrc = new window.Remarkable(opts);
+    if (defaults._strict) {
+      mdHtml = new window.Remarkable('commonmark');
+      mdSrc = new window.Remarkable('commonmark');
+    } else {
+      mdHtml = new window.Remarkable('full', defaults);
+      mdSrc = new window.Remarkable('full', defaults);
+    }
 
     // Beautify output of parser for html content
     mdHtml.renderer.rules.table_open = function () {

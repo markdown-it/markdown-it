@@ -1,7 +1,7 @@
 var Remarkable = require('remarkable');
 var hljs       = require('highlight.js') // https://highlightjs.org/
 
-var md = new Remarkable({
+var md = new Remarkable('full', {
   html:         false,        // Enable html tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>

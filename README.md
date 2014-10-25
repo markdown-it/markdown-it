@@ -9,8 +9,8 @@ Markdown parser done right. Fast and easy to extend.
 __[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
 
 - Configurable syntax! You can add new rules and even replace existing ones.
-- Implements [CommonMark](http://commonmark.org/) spec + extentions
-  (strikethrough, tables, URL autolinking, typographer).
+- Implements [CommonMark](http://commonmark.org/) spec +
+  [syntax extentions](#syntax-extentions) + sugar (URL autolinking, typographer).
 - Very high speed.
 
 
@@ -37,7 +37,7 @@ CDNs for browser: [jsDeliver](http://www.jsdelivr.com/#!remarkable "jsDelivr CDN
 var Remarkable = require('remarkable');
 
 // This values are default
-var md = new Remarkable({
+var md = new Remarkable(/* "default" */, {
   html:         false,        // Enable html tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
@@ -58,10 +58,10 @@ You can define options via `set` method:
 
 ```js
 var Remarkable = require('remarkable');
-var md = new Remarkable();
+var md = new Remarkable('full');
 
 md.set({
-  html: false,
+  html: true,
   breaks: true
 });
 ```
@@ -70,12 +70,23 @@ __Note.__ To acheive best performance, don't modify the `Remarkable` instance on
 the fly. If you need several configurations - create multiple instances and
 initialise each appropriately.
 
-You can also reset parser to strict [CommonMark](http://commonmark.org/) mode:
+Remarkable provides presets to quickly manage active syntax rules and options.
+You can reset parser to strict [CommonMark](http://commonmark.org/) mode:
 
 ```js
 var Remarkable = require('remarkable');
 var md = new Remarkable('commonmark');
 ```
+
+Or you can enable everything:
+
+```js
+var Remarkable = require('remarkable');
+var md = new Remarkable('full');
+```
+
+By default remarkable is configured to be similar to GFM, but with disabled HTML.
+
 
 ### Highligh fenced blocks
 
@@ -100,6 +111,34 @@ var md = new Remarkable({
 
     return ''; // use external default escaping
   }
+});
+```
+
+
+### Syntax extentions
+
+Enabled by default:
+
+- [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
+- [\<del>](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM strikethrough) - `~~deleted text~~`
+
+Disabled by default:
+
+- __\<ins>__ - `~~inserted text~~`
+- __\<mark>__ - `==marked text==`
+
+Manage rules:
+
+```js
+var md = new Remarkable();
+md.inline.ruler.enable([ 'ins', 'mark' ]);
+md.block.ruler.disable([ 'table' ]);
+
+// Enable everything
+md = new Remarkable('full', {
+  html: true,
+  linkify: true,
+  typographer: true,
 });
 ```
 
@@ -129,13 +168,6 @@ md.typographer.set({
 
 Of course, you can add your own rules or replace default ones with something
 more advanced, specific for your language.
-
-### More extras
-
-These extensions are enabled by default:
-
-- [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
-- [\<del>](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM strikethrough) - `~~deleted text~~`
 
 
 ## References / Thanks
