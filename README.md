@@ -124,7 +124,7 @@ Enabled by default:
 
 Disabled by default:
 
-- __\<ins>__ - `~~inserted text~~`
+- __\<ins>__ - `++inserted text++`
 - __\<mark>__ - `==marked text==`
 
 Manage rules:
