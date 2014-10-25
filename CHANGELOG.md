@@ -1,3 +1,12 @@
+1.2.0 / WIP
+------------------
+
+- Added `<ins>` rule.
+- Added `<mark>` rule.
+- Added presets support (default, commonmark, full).
+- Exposed `.configure()` method to load rules & options config with one command.
+
+
 1.1.2 / 2014-10-23
 ------------------
 
