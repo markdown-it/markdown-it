@@ -58,6 +58,8 @@ _This is italic text_
 
 ++Inserted text++
 
+==Marked text==
+
 
 ## Blockquotes
 
