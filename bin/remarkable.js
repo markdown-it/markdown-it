@@ -61,7 +61,7 @@ readFile(options.file, 'utf8', function (error, input) {
     process.exit(1);
   }
 
-  md = new Remarkable({
+  md = new Remarkable('full', {
     html: true,
     xhtmlOut: true,
     typographer: true,

@@ -10,7 +10,7 @@ var Remarkable = require('../');
 
 
 describe('remarkable', function () {
-  var md = new Remarkable({
+  var md = new Remarkable('full', {
     html: true,
     langPrefix: '',
     typographer: true,
