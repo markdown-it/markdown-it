@@ -4,7 +4,7 @@
 
 module.exports = require('./lib/');
 
-},{"./lib/":10}],1:[function(require,module,exports){
+},{"./lib/":9}],1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2446,6 +2446,10 @@ module.exports = [
 'use strict';
 
 
+function _class(obj) { return Object.prototype.toString.call(obj); }
+
+function isString(obj) { return _class(obj) === '[object String]'; }
+
 // Merge objects
 //
 function assign(obj /*from1, from2, from3, ...*/) {
@@ -2529,6 +2533,7 @@ function replaceEntities(str) {
 
 
 exports.assign = assign;
+exports.isString = isString;
 exports.escapeHtml = escapeHtml;
 exports.unescapeMd = unescapeMd;
 exports.isValidEntityCode = isValidEntityCode;
@@ -2542,47 +2547,140 @@ exports.replaceEntities = replaceEntities;
 
 
 module.exports = {
-  html:         true,         // Enable html tags in source
-  xhtmlOut:     true,         // Use '/' to close single tags (<br />)
-  breaks:       false,        // Convert '\n' in paragraphs into <br>
-  langPrefix:   'language-',  // CSS language prefix for fenced blocks
-  linkify:      false,        // autoconvert url-like texts to links
-  typographer:  false,        // Enable smartypants and other sweet transforms
+  options: {
+    html:         true,         // Enable html tags in source
+    xhtmlOut:     true,         // Use '/' to close single tags (<br />)
+    breaks:       false,        // Convert '\n' in paragraphs into <br>
+    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+    linkify:      false,        // autoconvert url-like texts to links
+    typographer:  false,        // Enable smartypants and other sweet transforms
 
-  // Highlighter function. Should return escaped html,
-  // or '' if input not changed
-  highlight: function (/*str, , lang*/) { return ''; },
+    // Highlighter function. Should return escaped html,
+    // or '' if input not changed
+    highlight: function (/*str, , lang*/) { return ''; },
 
-  maxNesting:   20            // Internal protection, recursion limit
+    maxNesting:   20            // Internal protection, recursion limit
+  },
+
+  components: {
+
+    block: {
+      rules: [
+        'blockquote',
+        'code',
+        'fences',
+        'heading',
+        'hr',
+        'htmlblock',
+        'lheading',
+        'list',
+        'paragraph'
+      ]
+    },
+
+    inline: {
+      rules: [
+        'autolink',
+        'backticks',
+        'emphasis',
+        'entity',
+        'escape',
+        'escape_html_char',
+        'htmltag',
+        'links',
+        'newline',
+        'text'
+      ]
+    },
+
+    typographer: {
+      options: {
+        singleQuotes: '‘’', // set empty to disable
+        doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
+        copyright:    true, // (c) (C) → ©
+        trademark:    true, // (tm) (TM) → ™
+        registered:   true, // (r) (R) → ®
+        plusminus:    true, // +- → ±
+        paragraph:    true, // (p) (P) → §
+        ellipsis:     true, // ... → …
+        dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
+        dashes:       true  // -- → —
+      }
+    }
+  }
 };
 
 },{}],7:[function(require,module,exports){
-// List of active rules for strict commonmark mode
+// Remarkable default options
 
-module.exports.block = [
-  'code',
-  'blockquote',
-  'fences',
-  'heading',
-  'hr',
-  'htmlblock',
-  'lheading',
-  'list',
-  'paragraph'
-];
+'use strict';
 
-module.exports.inline = [
-  'autolink',
-  'backticks',
-  'emphasis',
-  'entity',
-  'escape',
-  'escape_html_char',
-  'htmltag',
-  'links',
-  'newline',
-  'text'
-];
+
+module.exports = {
+  options: {
+    html:         false,        // Enable html tags in source
+    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
+    breaks:       false,        // Convert '\n' in paragraphs into <br>
+    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+    linkify:      false,        // autoconvert url-like texts to links
+    typographer:  false,        // Enable smartypants and other sweet transforms
+
+    // Highlighter function. Should return escaped html,
+    // or '' if input not changed
+    highlight: function (/*str, , lang*/) { return ''; },
+
+    maxNesting:   20            // Internal protection, recursion limit
+  },
+
+  components: {
+
+    block: {
+      rules: [
+        'blockquote',
+        'code',
+        'fences',
+        'heading',
+        'hr',
+        'htmlblock',
+        'lheading',
+        'list',
+        'paragraph',
+        'table'
+      ]
+    },
+
+    inline: {
+      rules: [
+        'autolink',
+        'backticks',
+        'del',
+        'emphasis',
+        'entity',
+        'escape',
+        'escape_html_char',
+        'htmltag',
+        'links',
+        'newline',
+        'text'
+      ]
+    },
+
+    typographer: {
+      options: {
+        singleQuotes: '‘’', // set empty to disable
+        doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
+        copyright:    true, // (c) (C) → ©
+        trademark:    true, // (tm) (TM) → ™
+        registered:   true, // (r) (R) → ®
+        plusminus:    true, // +- → ±
+        paragraph:    true, // (p) (P) → §
+        ellipsis:     true, // ... → …
+        dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
+        dashes:       true  // -- → —
+      }
+    }
+  }
+};
 
 },{}],8:[function(require,module,exports){
 // Remarkable default options
@@ -2591,78 +2689,91 @@ module.exports.inline = [
 
 
 module.exports = {
-  html:         false,        // Enable html tags in source
-  xhtmlOut:     false,        // Use '/' to close single tags (<br />)
-  breaks:       false,        // Convert '\n' in paragraphs into <br>
-  langPrefix:   'language-',  // CSS language prefix for fenced blocks
-  linkify:      false,        // autoconvert url-like texts to links
-  typographer:  false,        // Enable smartypants and other sweet transforms
+  options: {
+    html:         false,        // Enable html tags in source
+    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
+    breaks:       false,        // Convert '\n' in paragraphs into <br>
+    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+    linkify:      false,        // autoconvert url-like texts to links
+    typographer:  false,        // Enable smartypants and other sweet transforms
 
-  // Highlighter function. Should return escaped html,
-  // or '' if input not changed
-  highlight: function (/*str, , lang*/) { return ''; },
+    // Highlighter function. Should return escaped html,
+    // or '' if input not changed
+    highlight: function (/*str, , lang*/) { return ''; },
 
-  maxNesting:   20            // Internal protection, recursion limit
+    maxNesting:   20            // Internal protection, recursion limit
+  },
+
+  components: {
+
+    // Don't restrict block/inline rules
+    block: {},
+    inline: {},
+
+    typographer: {
+      options: {
+        singleQuotes: '‘’', // set empty to disable
+        doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
+        copyright:    true, // (c) (C) → ©
+        trademark:    true, // (tm) (TM) → ™
+        registered:   true, // (r) (R) → ®
+        plusminus:    true, // +- → ±
+        paragraph:    true, // (p) (P) → §
+        ellipsis:     true, // ... → …
+        dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
+        dashes:       true  // -- → —
+      }
+    }
+  }
 };
 
 },{}],9:[function(require,module,exports){
-// Default typograph options
-
-'use strict';
-
-
-module.exports = {
-  singleQuotes: '‘’', // set empty to disable
-  doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
-  copyright:    true, // (c) (C) → ©
-  trademark:    true, // (tm) (TM) → ™
-  registered:   true, // (r) (R) → ®
-  plusminus:    true, // +- → ±
-  paragraph:    true, // (p) (P) → §
-  ellipsis:     true, // ... → …
-  dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
-  dashes:       true  // -- → —
-};
-
-},{}],10:[function(require,module,exports){
 // Main perser class
 
 'use strict';
 
 
 var assign       = require('./common/utils').assign;
+var isString     = require('./common/utils').isString;
 var Renderer     = require('./renderer');
 var ParserBlock  = require('./parser_block');
 var ParserInline = require('./parser_inline');
 var Typographer  = require('./typographer');
+var Linkifier    = require('./linkifier');
 
 
-var defaults     = require('./defaults/remarkable');
-var cmmDefaults  = require('./defaults/commonmark');
-var cmmRules     = require('./defaults/commonmark_rules');
+var config = {
+  'default': require('./configs/default'),
+  full: require('./configs/full'),
+  commonmark: require('./configs/commonmark')
+};
 
 
 // Main class
 //
-function Remarkable(options) {
-  this.options  = assign({}, defaults);
+function Remarkable(presetName, options) {
+  if (!options) {
+    if (!isString(presetName)) {
+      options = presetName || {};
+      presetName = 'default';
+    }
+  }
+
+  this.options  = {};
   this.state    = null;
 
   this.inline   = new ParserInline();
   this.block    = new ParserBlock();
   this.renderer = new Renderer();
   this.typographer = new Typographer();
-  this.linkifier   = new Typographer();
-
-  // Linkifier is a separate typographer, for convenience.
-  // Configure it here.
-  this.linkifier.ruler.enable([], true);
-  this.linkifier.ruler.after(require('./rules_typographer/linkify'));
+  this.linkifier   = new Linkifier();
 
   // Cross-references to simplify code (a bit dirty, but easy).
   this.block.inline       = this.inline;
   this.inline.typographer = this.typographer;
   this.inline.linkifier   = this.linkifier;
+
+  this.configure(config[presetName]);
 
   if (options) { this.set(options); }
 }
@@ -2671,12 +2782,28 @@ function Remarkable(options) {
 // Set options, if you did not passed those to constructor
 //
 Remarkable.prototype.set = function (options) {
-  if (String(options).toLowerCase() === 'commonmark') {
-    assign(this.options, cmmDefaults);
-    this.inline.ruler.enable(cmmRules.inline, true);
-    this.block.ruler.enable(cmmRules.block, true);
-  } else {
-    assign(this.options, options);
+  assign(this.options, options);
+};
+
+
+// Batch loader for components rules states & options
+//
+Remarkable.prototype.configure = function (presets) {
+  var self = this;
+
+  if (!presets) { throw new Error('Wrong config name'); }
+
+  if (presets.options) { self.set(presets.options); }
+
+  if (presets.components) {
+    Object.keys(presets.components).forEach(function (name) {
+      if (presets.components[name].rules) {
+        self[name].ruler.enable(presets.components[name].rules, true);
+      }
+      if (presets.components[name].options) {
+        self[name].set(presets.components[name].options);
+      }
+    });
   }
 };
 
@@ -2725,7 +2852,58 @@ Remarkable.prototype.render = function (src) {
 
 module.exports = Remarkable;
 
-},{"./common/utils":5,"./defaults/commonmark":6,"./defaults/commonmark_rules":7,"./defaults/remarkable":8,"./parser_block":12,"./parser_inline":13,"./renderer":15,"./rules_typographer/linkify":40,"./typographer":43}],11:[function(require,module,exports){
+},{"./common/utils":5,"./configs/commonmark":6,"./configs/default":7,"./configs/full":8,"./linkifier":10,"./parser_block":12,"./parser_inline":13,"./renderer":15,"./typographer":45}],10:[function(require,module,exports){
+// Class of link replacement rules
+//
+'use strict';
+
+
+var assign = require('./common/utils').assign;
+var Ruler  = require('./ruler');
+
+
+var rules = [
+  require('./rules_text/linkify')
+];
+
+
+function Linkifier() {
+  this._rules = [];
+
+  this.options  = {};
+
+  this.ruler = new Ruler(this.rulesUpdate.bind(this));
+
+  for (var i = 0; i < rules.length; i++) {
+    this.ruler.after(rules[i]);
+  }
+}
+
+
+Linkifier.prototype.rulesUpdate = function () {
+  this._rules = this.ruler.getRules();
+};
+
+
+Linkifier.prototype.set = function (options) {
+  assign(this.options, options);
+};
+
+
+Linkifier.prototype.process = function (state) {
+  var i, l, rules;
+
+  rules = this._rules;
+
+  for (i = 0, l = rules.length; i < l; i++) {
+    rules[i](this, state);
+  }
+};
+
+
+module.exports = Linkifier;
+
+},{"./common/utils":5,"./ruler":16,"./rules_text/linkify":42}],11:[function(require,module,exports){
 
 'use strict';
 
@@ -3072,6 +3250,8 @@ rules.push(require('./rules_inline/newline'));
 rules.push(require('./rules_inline/escape'));
 rules.push(require('./rules_inline/backticks'));
 rules.push(require('./rules_inline/del'));
+rules.push(require('./rules_inline/ins'));
+rules.push(require('./rules_inline/mark'));
 rules.push(require('./rules_inline/emphasis'));
 rules.push(require('./rules_inline/links'));
 rules.push(require('./rules_inline/autolink'));
@@ -3102,9 +3282,9 @@ function ParserInline() {
   this._rules = [];
 
   // Rule to skip pure text
-  // - '{$%@}' reserved for extentions
+  // - '{}$%@+=' reserved for extentions
   // - '<>"' added for internal html escaping
-  this.textMatch = /^[^\n\\`*_\[\]!&{}$%@<>"~]+/;
+  this.textMatch = /^[^\n\\`*_\[\]!&{}$%@<>"~+=]+/;
 
   // By default CommonMark allows too much in links
   // If you need to restrict it - override this with your validator.
@@ -3206,7 +3386,7 @@ ParserInline.prototype.parse = function (str, options, env) {
 
 module.exports = ParserInline;
 
-},{"./ruler":16,"./rules_inline/autolink":28,"./rules_inline/backticks":29,"./rules_inline/del":30,"./rules_inline/emphasis":31,"./rules_inline/entity":32,"./rules_inline/escape":33,"./rules_inline/escape_html_char":34,"./rules_inline/htmltag":35,"./rules_inline/links":36,"./rules_inline/newline":37,"./rules_inline/state_inline":38,"./rules_inline/text":39}],14:[function(require,module,exports){
+},{"./ruler":16,"./rules_inline/autolink":28,"./rules_inline/backticks":29,"./rules_inline/del":30,"./rules_inline/emphasis":31,"./rules_inline/entity":32,"./rules_inline/escape":33,"./rules_inline/escape_html_char":34,"./rules_inline/htmltag":35,"./rules_inline/ins":36,"./rules_inline/links":37,"./rules_inline/mark":38,"./rules_inline/newline":39,"./rules_inline/state_inline":40,"./rules_inline/text":41}],14:[function(require,module,exports){
 
 'use strict';
 
@@ -3275,7 +3455,7 @@ module.exports = function parse_reference(str, parser, options, env) {
   return pos;
 };
 
-},{"./links":11,"./rules_inline/state_inline":38}],15:[function(require,module,exports){
+},{"./links":11,"./rules_inline/state_inline":40}],15:[function(require,module,exports){
 'use strict';
 
 
@@ -3475,6 +3655,22 @@ rules.del_open = function(/*tokens, idx, options*/) {
 };
 rules.del_close = function(/*tokens, idx, options*/) {
   return '</del>';
+};
+
+
+rules.ins_open = function(/*tokens, idx, options*/) {
+  return '<ins>';
+};
+rules.ins_close = function(/*tokens, idx, options*/) {
+  return '</ins>';
+};
+
+
+rules.mark_open = function(/*tokens, idx, options*/) {
+  return '<mark>';
+};
+rules.mark_close = function(/*tokens, idx, options*/) {
+  return '</mark>';
 };
 
 
@@ -5025,7 +5221,7 @@ module.exports = function backticks(state, silent) {
 };
 
 },{}],30:[function(require,module,exports){
-// Process ~~strike through~~
+// Process ~~deleted text~~
 
 'use strict';
 
@@ -5051,7 +5247,7 @@ module.exports = function del(state, silent) {
   nextChar = state.src.charCodeAt(start + 2);
 
   if (lastChar === 0x7E/* ~ */) { return false; }
-  if (nextChar === 0x7E/*   */) { return false; }
+  if (nextChar === 0x7E/* ~ */) { return false; }
   if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
 
   pos = start + 2;
@@ -5437,6 +5633,86 @@ module.exports = function htmltag(state, silent) {
 };
 
 },{"../common/html_re":3}],36:[function(require,module,exports){
+// Process ++inserted text++
+
+'use strict';
+
+module.exports = function ins(state, silent) {
+  var found,
+      pos,
+      max = state.posMax,
+      start = state.pos,
+      lastChar,
+      nextChar;
+
+  if (state.src.charCodeAt(start) !== 0x2B/* + */) { return false; }
+  if (start + 4 >= max) { return false; }
+  if (state.src.charCodeAt(start + 1) !== 0x2B/* + */) { return false; }
+
+  // make ins lower a priority tag with respect to links, same as <em>;
+  // this code also prevents recursion
+  if (silent && state.isInLabel) { return false; }
+
+  if (state.level >= state.options.maxNesting) { return false; }
+
+  lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
+  nextChar = state.src.charCodeAt(start + 2);
+
+  if (lastChar === 0x2B/* + */) { return false; }
+  if (nextChar === 0x2B/* + */) { return false; }
+  if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
+
+  pos = start + 2;
+  while (pos < max && state.src.charCodeAt(pos) === 0x2B/* + */) { pos++; }
+  if (pos !== start + 2) {
+    // sequence of 3+ markers taking as literal, same as in a emphasis
+    state.pos += pos - start;
+    if (!silent) { state.pending += state.src.slice(start, pos); }
+    return true;
+  }
+
+  state.pos = start + 2;
+
+  while (state.pos + 1 < max) {
+    if (state.src.charCodeAt(state.pos) === 0x2B/* + */) {
+      if (state.src.charCodeAt(state.pos + 1) === 0x2B/* + */) {
+        lastChar = state.src.charCodeAt(state.pos - 1);
+        nextChar = state.pos + 2 < max ? state.src.charCodeAt(state.pos + 2) : -1;
+        if (nextChar !== 0x2B/* + */ && lastChar !== 0x2B/* + */) {
+          if (lastChar !== 0x20 && lastChar !== 0x0A) {
+            // closing '++'
+            found = true;
+            break;
+          }
+        }
+      }
+    }
+
+    state.parser.skipToken(state);
+  }
+
+  if (!found) {
+    // parser failed to find ending tag, so it's not valid emphasis
+    state.pos = start;
+    return false;
+  }
+
+  // found!
+  state.posMax = state.pos;
+  state.pos = start + 2;
+
+  if (!silent) {
+    state.push({ type: 'ins_open', level: state.level++ });
+    state.parser.tokenize(state);
+    state.push({ type: 'ins_close', level: --state.level });
+  }
+
+  state.pos = state.posMax + 2;
+  state.posMax = max;
+  return true;
+};
+
+},{}],37:[function(require,module,exports){
 // Process [links](<to> "stuff")
 
 'use strict';
@@ -5603,7 +5879,87 @@ module.exports = function links(state, silent) {
   return true;
 };
 
-},{"../links":11}],37:[function(require,module,exports){
+},{"../links":11}],38:[function(require,module,exports){
+// Process ++inserted text++
+
+'use strict';
+
+module.exports = function mark(state, silent) {
+  var found,
+      pos,
+      max = state.posMax,
+      start = state.pos,
+      lastChar,
+      nextChar;
+
+  if (state.src.charCodeAt(start) !== 0x3D/* = */) { return false; }
+  if (start + 4 >= max) { return false; }
+  if (state.src.charCodeAt(start + 1) !== 0x3D/* = */) { return false; }
+
+  // make ins lower a priority tag with respect to links, same as <em>;
+  // this code also prevents recursion
+  if (silent && state.isInLabel) { return false; }
+
+  if (state.level >= state.options.maxNesting) { return false; }
+
+  lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
+  nextChar = state.src.charCodeAt(start + 2);
+
+  if (lastChar === 0x3D/* = */) { return false; }
+  if (nextChar === 0x3D/* = */) { return false; }
+  if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
+
+  pos = start + 2;
+  while (pos < max && state.src.charCodeAt(pos) === 0x3D/* = */) { pos++; }
+  if (pos !== start + 2) {
+    // sequence of 3+ markers taking as literal, same as in a emphasis
+    state.pos += pos - start;
+    if (!silent) { state.pending += state.src.slice(start, pos); }
+    return true;
+  }
+
+  state.pos = start + 2;
+
+  while (state.pos + 1 < max) {
+    if (state.src.charCodeAt(state.pos) === 0x3D/* = */) {
+      if (state.src.charCodeAt(state.pos + 1) === 0x3D/* = */) {
+        lastChar = state.src.charCodeAt(state.pos - 1);
+        nextChar = state.pos + 2 < max ? state.src.charCodeAt(state.pos + 2) : -1;
+        if (nextChar !== 0x3D/* = */ && lastChar !== 0x3D/* = */) {
+          if (lastChar !== 0x20 && lastChar !== 0x0A) {
+            // closing '++'
+            found = true;
+            break;
+          }
+        }
+      }
+    }
+
+    state.parser.skipToken(state);
+  }
+
+  if (!found) {
+    // parser failed to find ending tag, so it's not valid emphasis
+    state.pos = start;
+    return false;
+  }
+
+  // found!
+  state.posMax = state.pos;
+  state.pos = start + 2;
+
+  if (!silent) {
+    state.push({ type: 'mark_open', level: state.level++ });
+    state.parser.tokenize(state);
+    state.push({ type: 'mark_close', level: --state.level });
+  }
+
+  state.pos = state.posMax + 2;
+  state.posMax = max;
+  return true;
+};
+
+},{}],39:[function(require,module,exports){
 // Proceess '\n'
 
 module.exports = function newline(state, silent) {
@@ -5651,7 +6007,7 @@ module.exports = function newline(state, silent) {
   return true;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 // Inline parser state
 
 'use strict';
@@ -5735,7 +6091,7 @@ StateInline.prototype.cacheGet = function (key) {
 
 module.exports = StateInline;
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 // Skip text characters for text token, place those to pendibg buffer
 // and increment current pos
 
@@ -5750,7 +6106,7 @@ module.exports = function text(state, silent) {
   return true;
 };
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 // Replace link-like texts with link nodes.
 //
 // Currently restricted to http/https/ftp
@@ -5873,7 +6229,7 @@ module.exports = function linkify(t, state) {
   }
 };
 
-},{"../common/utils":5,"autolinker":44}],41:[function(require,module,exports){
+},{"../common/utils":5,"autolinker":46}],43:[function(require,module,exports){
 // Simple typographyc replacements
 //
 'use strict';
@@ -5932,7 +6288,7 @@ module.exports = function replace(t, state) {
   }
 };
 
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // Convert straight quotation marks to typographic ones
 //
 'use strict';
@@ -6045,8 +6401,8 @@ module.exports = function smartquotes(typographer, state) {
   }
 };
 
-},{}],43:[function(require,module,exports){
-// Class of typographic replacements rules
+},{}],45:[function(require,module,exports){
+// Class of typographic replacement rules
 //
 'use strict';
 
@@ -6055,22 +6411,20 @@ module.exports = function smartquotes(typographer, state) {
 // - miltiplication 2 x 4 -> 2 × 4
 
 
-var defaults   = require('./defaults/typographer');
-var assign     = require('./common/utils').assign;
-var Ruler      = require('./ruler');
+var assign   = require('./common/utils').assign;
+var Ruler    = require('./ruler');
 
 
-var rules = [];
-
-
-rules.push(require('./rules_typographer/replace'));
-rules.push(require('./rules_typographer/smartquotes'));
+var rules = [
+  require('./rules_text/replace'),
+  require('./rules_text/smartquotes')
+];
 
 
 function Typographer() {
   this._rules = [];
 
-  this.options  = assign({}, defaults);
+  this.options = {};
 
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
@@ -6103,7 +6457,7 @@ Typographer.prototype.process = function (state) {
 
 module.exports = Typographer;
 
-},{"./common/utils":5,"./defaults/typographer":9,"./ruler":16,"./rules_typographer/replace":41,"./rules_typographer/smartquotes":42}],44:[function(require,module,exports){
+},{"./common/utils":5,"./ruler":16,"./rules_text/replace":43,"./rules_text/smartquotes":44}],46:[function(require,module,exports){
 /*!
  * Autolinker.js
  * 0.12.2
