@@ -56,6 +56,8 @@ _This is italic text_
 
 ~~Deleted text~~
 
+++Inserted text++
+
 
 ## Blockquotes
 
