@@ -178,7 +178,7 @@ during this project's development.
 
 Links:
 
-1. https://github.com/jgm/stmd - reference CommonMark implementations in C & JS,
+1. https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
    also contains latest spec & online demo.
 2. http://talk.commonmark.org - CommonMark forum, good place to collaborate
    developpers efforts.

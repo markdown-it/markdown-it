@@ -1,4 +1,4 @@
-Taking stmd tests from the spec for benchmarking here:
+Taking commonmark tests from the spec for benchmarking here:
 
 <a><bab><c2c>
 

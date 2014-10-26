@@ -26,7 +26,7 @@ lint:
 test: lint
 	NODE_ENV=test mocha -R spec
 	echo "CommonMark stat:\n"
-	./support/specsplit.js test/fixtures/stmd/spec.txt
+	./support/specsplit.js test/fixtures/commonmark/spec.txt
 
 
 gh-pages:

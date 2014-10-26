@@ -9,8 +9,8 @@ var utils = require('./utils');
 var Remarked = require('../');
 
 
-describe('stmd', function () {
+describe('CommonMark', function () {
   var md = new Remarked('commonmark');
 
-  utils.addSpecTests(path.join(__dirname, 'fixtures/stmd/good.txt'), md);
+  utils.addSpecTests(path.join(__dirname, 'fixtures/commonmark/good.txt'), md);
 });

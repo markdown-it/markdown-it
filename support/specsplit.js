@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /*eslint no-console:0*/
 
-// Fixtures generator from stmd specs. Split spec to working / not working
+// Fixtures generator from commonmark specs. Split spec to working / not working
 // examples, or show total stat.
 
 'use strict';

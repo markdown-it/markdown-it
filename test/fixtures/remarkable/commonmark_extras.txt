@@ -41,7 +41,7 @@ test
 .
 
 
-Link label has priority over emphasis (not covered by stmd tests):
+Link label has priority over emphasis (not covered by commonmark tests):
 
 .
 [**link]()**
@@ -51,6 +51,7 @@ Link label has priority over emphasis (not covered by stmd tests):
 <p><a href="">**link</a>**</p>
 <p>**<a href="">link**</a></p>
 .
+
 
 Issue #55:
 
