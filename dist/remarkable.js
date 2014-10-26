@@ -1,4 +1,4 @@
-/*! remarkable 1.1.2 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
+/*! remarkable 1.2.0 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
 'use strict';
 
 
@@ -2141,8 +2141,8 @@ module.exports = {
 };
 
 },{}],2:[function(require,module,exports){
-// List of valid html blocks names, accorting to stmd spec
-// http://jgm.github.io/stmd/spec.html#html-blocks
+// List of valid html blocks names, accorting to commonmark spec
+// http://jgm.github.io/CommonMark/spec.html#html-blocks
 
 'use strict';
 
@@ -2267,8 +2267,8 @@ var HTML_TAG_RE = replace(/^(?:open_tag|close_tag|comment|processing|declaration
 module.exports.HTML_TAG_RE = HTML_TAG_RE;
 
 },{}],4:[function(require,module,exports){
-// List of valid url schemas, accorting to stmd spec
-// http://jgm.github.io/stmd/spec.html#autolinks
+// List of valid url schemas, accorting to commonmark spec
+// http://jgm.github.io/CommonMark/spec.html#autolinks
 
 'use strict';
 
@@ -2473,14 +2473,6 @@ function assign(obj /*from1, from2, from3, ...*/) {
 }
 
 
-function escapeHtml(str) {
-  if (str.indexOf('&') >= 0) { str = str.replace(/&/g, '&amp;'); }
-  if (str.indexOf('<') >= 0) { str = str.replace(/</g, '&lt;'); }
-  if (str.indexOf('>') >= 0) { str = str.replace(/>/g, '&gt;'); }
-  if (str.indexOf('"') >= 0) { str = str.replace(/"/g, '&quot;'); }
-  return str;
-}
-
 var UNESCAPE_MD_RE = /\\([\\!"#$%&'()*+,.\/:;<=>?@[\]^_`{|}~-])/g;
 
 function unescapeMd(str) {
@@ -2534,7 +2526,6 @@ function replaceEntities(str) {
 
 exports.assign = assign;
 exports.isString = isString;
-exports.escapeHtml = escapeHtml;
 exports.unescapeMd = unescapeMd;
 exports.isValidEntityCode = isValidEntityCode;
 exports.fromCodePoint = fromCodePoint;
@@ -2585,7 +2576,6 @@ module.exports = {
         'emphasis',
         'entity',
         'escape',
-        'escape_html_char',
         'htmltag',
         'links',
         'newline',
@@ -2657,7 +2647,6 @@ module.exports = {
         'emphasis',
         'entity',
         'escape',
-        'escape_html_char',
         'htmltag',
         'links',
         'newline',
@@ -2852,7 +2841,7 @@ Remarkable.prototype.render = function (src) {
 
 module.exports = Remarkable;
 
-},{"./common/utils":5,"./configs/commonmark":6,"./configs/default":7,"./configs/full":8,"./linkifier":10,"./parser_block":12,"./parser_inline":13,"./renderer":15,"./typographer":45}],10:[function(require,module,exports){
+},{"./common/utils":5,"./configs/commonmark":6,"./configs/default":7,"./configs/full":8,"./linkifier":10,"./parser_block":12,"./parser_inline":13,"./renderer":15,"./typographer":44}],10:[function(require,module,exports){
 // Class of link replacement rules
 //
 'use strict';
@@ -2903,7 +2892,7 @@ Linkifier.prototype.process = function (state) {
 
 module.exports = Linkifier;
 
-},{"./common/utils":5,"./ruler":16,"./rules_text/linkify":42}],11:[function(require,module,exports){
+},{"./common/utils":5,"./ruler":16,"./rules_text/linkify":41}],11:[function(require,module,exports){
 
 'use strict';
 
@@ -3184,23 +3173,24 @@ ParserBlock.prototype.tokenize = function (state, startLine, endLine) {
   }
 };
 
+var TABS_SCAN_RE = /[\n\t]/g;
+var NEWLINES_RE  = /\r[\n\u0085]|[\u2424\u2028\u0085]/g;
+var SPACES_RE    = /\u00a0/g;
 
 ParserBlock.prototype.parse = function (src, options, env) {
   var state, lineStart = 0, lastTabPos = 0;
 
-  if (!src) { return ''; }
+  if (!src) { return []; }
 
   // Normalize spaces
-  src = src.replace(/\u00a0/g, ' ');
+  src = src.replace(SPACES_RE, ' ');
 
   // Normalize newlines
-  src = src.replace(/\r\n/, '\n');
-  src = src.replace(/\r\u0085/, '\n');
-  src = src.replace(/[\u2424\u2028\u0085]/g, '\n');
+  src = src.replace(NEWLINES_RE, '\n');
 
   // Replace tabs with proper number of spaces (1..4)
   if (src.indexOf('\t') >= 0) {
-    src = src.replace(/[\n\t]/g, function (match, offset) {
+    src = src.replace(TABS_SCAN_RE, function (match, offset) {
       var result;
       if (src.charCodeAt(offset) === 0x0A) {
         lineStart = offset + 1;
@@ -3257,7 +3247,6 @@ rules.push(require('./rules_inline/links'));
 rules.push(require('./rules_inline/autolink'));
 rules.push(require('./rules_inline/htmltag'));
 rules.push(require('./rules_inline/entity'));
-rules.push(require('./rules_inline/escape_html_char'));
 
 var BAD_PROTOCOLS = [ 'vbscript', 'javascript', 'file' ];
 
@@ -3282,9 +3271,8 @@ function ParserInline() {
   this._rules = [];
 
   // Rule to skip pure text
-  // - '{}$%@+=' reserved for extentions
-  // - '<>"' added for internal html escaping
-  this.textMatch = /^[^\n\\`*_\[\]!&{}$%@<>"~+=]+/;
+  // - '{}$%@+=:' reserved for extentions
+  this.textMatch = /^[^\n\\`*_\[\]!&<{}$%@~+=:]+/;
 
   // By default CommonMark allows too much in links
   // If you need to restrict it - override this with your validator.
@@ -3386,7 +3374,7 @@ ParserInline.prototype.parse = function (str, options, env) {
 
 module.exports = ParserInline;
 
-},{"./ruler":16,"./rules_inline/autolink":28,"./rules_inline/backticks":29,"./rules_inline/del":30,"./rules_inline/emphasis":31,"./rules_inline/entity":32,"./rules_inline/escape":33,"./rules_inline/escape_html_char":34,"./rules_inline/htmltag":35,"./rules_inline/ins":36,"./rules_inline/links":37,"./rules_inline/mark":38,"./rules_inline/newline":39,"./rules_inline/state_inline":40,"./rules_inline/text":41}],14:[function(require,module,exports){
+},{"./ruler":16,"./rules_inline/autolink":28,"./rules_inline/backticks":29,"./rules_inline/del":30,"./rules_inline/emphasis":31,"./rules_inline/entity":32,"./rules_inline/escape":33,"./rules_inline/htmltag":34,"./rules_inline/ins":35,"./rules_inline/links":36,"./rules_inline/mark":37,"./rules_inline/newline":38,"./rules_inline/state_inline":39,"./rules_inline/text":40}],14:[function(require,module,exports){
 
 'use strict';
 
@@ -3455,15 +3443,17 @@ module.exports = function parse_reference(str, parser, options, env) {
   return pos;
 };
 
-},{"./links":11,"./rules_inline/state_inline":40}],15:[function(require,module,exports){
+},{"./links":11,"./rules_inline/state_inline":39}],15:[function(require,module,exports){
 'use strict';
 
 
 var assign          = require('./common/utils').assign;
-var escapeHtml      = require('./common/utils').escapeHtml;
 var unescapeMd      = require('./common/utils').unescapeMd;
 var replaceEntities = require('./common/utils').replaceEntities;
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Helpers
 
 function escapeUrl(str) {
   try {
@@ -3478,6 +3468,26 @@ function unescapeUrl(str) {
   return '';
 }
 
+var HTML_ESCAPE_TEST_RE = /[&<>"]/;
+var HTML_ESCAPE_REPLACE_RE = /[&<>"]/g;
+var HTML_REPLACEMENTS = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;'
+};
+
+function replaceUnsafeChar(ch) {
+  return HTML_REPLACEMENTS[ch];
+}
+
+function escapeHtml(str) {
+  if (HTML_ESCAPE_TEST_RE.test(str)) {
+    return str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar);
+  }
+  return str;
+}
+
 
 // check if we need to hide '\n' before next token
 function getBreak(tokens, idx) {
@@ -3488,6 +3498,8 @@ function getBreak(tokens, idx) {
 
   return '\n';
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 var rules = {};
 
@@ -3683,7 +3695,7 @@ rules.softbreak = function (tokens, idx, options) {
 
 
 rules.text = function (tokens, idx /*, options*/) {
-  return tokens[idx].content;
+  return escapeHtml(tokens[idx].content);
 };
 
 
@@ -5100,7 +5112,6 @@ module.exports = function table(state, startLine, endLine, silent) {
 // Process autolinks '<protocol:...>'
 
 
-var escapeHtml  = require('../common/utils').escapeHtml;
 var url_schemas = require('../common/url_schemas');
 
 
@@ -5135,7 +5146,7 @@ module.exports = function autolink(state, silent) {
       });
       state.push({
         type: 'text',
-        content: escapeHtml(url),
+        content: url,
         level: state.level + 1
       });
       state.push({ type: 'link_close', level: state.level });
@@ -5161,7 +5172,7 @@ module.exports = function autolink(state, silent) {
       });
       state.push({
         type: 'text',
-        content: escapeHtml(url),
+        content: url,
         level: state.level + 1
       });
       state.push({ type: 'link_close', level: state.level });
@@ -5174,7 +5185,7 @@ module.exports = function autolink(state, silent) {
   return false;
 };
 
-},{"../common/url_schemas":4,"../common/utils":5}],29:[function(require,module,exports){
+},{"../common/url_schemas":4}],29:[function(require,module,exports){
 // Parse backticks
 
 module.exports = function backticks(state, silent) {
@@ -5457,7 +5468,6 @@ module.exports = function emphasis(state, silent) {
 'use strict';
 
 var entities          = require('../common/entities');
-var escapeHtml        = require('../common/utils').escapeHtml;
 var isValidEntityCode = require('../common/utils').isValidEntityCode;
 var fromCodePoint     = require('../common/utils').fromCodePoint;
 
@@ -5479,7 +5489,7 @@ module.exports = function entity(state, silent) {
       if (match) {
         if (!silent) {
           code = match[1][0].toLowerCase() === 'x' ? parseInt(match[1].slice(1), 16) : parseInt(match[1], 10);
-          state.pending += isValidEntityCode(code) ? escapeHtml(fromCodePoint(code)) : fromCodePoint(0xFFFD);
+          state.pending += isValidEntityCode(code) ? fromCodePoint(code) : fromCodePoint(0xFFFD);
         }
         state.pos += match[0].length;
         return true;
@@ -5488,7 +5498,7 @@ module.exports = function entity(state, silent) {
       match = state.src.slice(pos).match(NAMED_RE);
       if (match) {
         if (entities.hasOwnProperty(match[1])) {
-          if (!silent) { state.pending += escapeHtml(entities[match[1]]); }
+          if (!silent) { state.pending += entities[match[1]]; }
           state.pos += match[0].length;
           return true;
         }
@@ -5496,7 +5506,7 @@ module.exports = function entity(state, silent) {
     }
   }
 
-  if (!silent) { state.pending += '&amp;'; }
+  if (!silent) { state.pending += '&'; }
   state.pos++;
   return true;
 };
@@ -5504,13 +5514,16 @@ module.exports = function entity(state, silent) {
 },{"../common/entities":1,"../common/utils":5}],33:[function(require,module,exports){
 // Proceess escaped chars and hardbreaks
 
-var ESCAPED = {};
+var ESCAPED = [];
+
+for (var i = 0; i < 256; i++) { ESCAPED.push(0); }
 
 '\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-'
-  .split('').forEach(function(ch) { ESCAPED[ch.charCodeAt(0)] = true; });
+  .split('').forEach(function(ch) { ESCAPED[ch.charCodeAt(0)] = 1; });
+
 
 module.exports = function escape(state, silent) {
-  var ch, str, pos = state.pos, max = state.posMax;
+  var ch, pos = state.pos, max = state.posMax;
 
   if (state.src.charCodeAt(pos) !== 0x5C/* \ */) { return false; }
 
@@ -5519,20 +5532,8 @@ module.exports = function escape(state, silent) {
   if (pos < max) {
     ch = state.src.charCodeAt(pos);
 
-    if (typeof ESCAPED[ch] !== 'undefined') {
-      // escape html chars if needed
-      if (ch === 0x26/* & */) {
-        str = '&amp;';
-      } else if (ch === 0x3C/* < */) {
-        str = '&lt;';
-      } else if (ch === 0x3E/* > */) {
-        str = '&gt;';
-      } else if (ch === 0x22/* " */) {
-        str = '&quot;';
-      } else {
-        str = state.src[pos];
-      }
-      if (!silent) { state.pending += str; }
+    if (ch < 256 && ESCAPED[ch] !== 0) {
+      if (!silent) { state.pending += state.src[pos]; }
       state.pos += 2;
       return true;
     }
@@ -5560,28 +5561,6 @@ module.exports = function escape(state, silent) {
 };
 
 },{}],34:[function(require,module,exports){
-// Process < > " (& was processed in markdown escape)
-
-module.exports = function escape_html_char(state, silent) {
-  var ch = state.src.charCodeAt(state.pos),
-      str;
-
-  if (ch === 0x3C/* < */) {
-    str = '&lt;';
-  } else if (ch === 0x3E/* > */) {
-    str = '&gt;';
-  } else if (ch === 0x22/* " */) {
-    str = '&quot;';
-  } else {
-    return false;
-  }
-
-  if (!silent) { state.pending += str; }
-  state.pos++;
-  return true;
-};
-
-},{}],35:[function(require,module,exports){
 // Process html tags
 
 'use strict';
@@ -5632,7 +5611,7 @@ module.exports = function htmltag(state, silent) {
   return true;
 };
 
-},{"../common/html_re":3}],36:[function(require,module,exports){
+},{"../common/html_re":3}],35:[function(require,module,exports){
 // Process ++inserted text++
 
 'use strict';
@@ -5712,7 +5691,7 @@ module.exports = function ins(state, silent) {
   return true;
 };
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // Process [links](<to> "stuff")
 
 'use strict';
@@ -5879,7 +5858,7 @@ module.exports = function links(state, silent) {
   return true;
 };
 
-},{"../links":11}],38:[function(require,module,exports){
+},{"../links":11}],37:[function(require,module,exports){
 // Process ++inserted text++
 
 'use strict';
@@ -5959,7 +5938,7 @@ module.exports = function mark(state, silent) {
   return true;
 };
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 // Proceess '\n'
 
 module.exports = function newline(state, silent) {
@@ -6007,7 +5986,7 @@ module.exports = function newline(state, silent) {
   return true;
 };
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // Inline parser state
 
 'use strict';
@@ -6091,7 +6070,7 @@ StateInline.prototype.cacheGet = function (key) {
 
 module.exports = StateInline;
 
-},{}],41:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 // Skip text characters for text token, place those to pendibg buffer
 // and increment current pos
 
@@ -6106,7 +6085,7 @@ module.exports = function text(state, silent) {
   return true;
 };
 
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 // Replace link-like texts with link nodes.
 //
 // Currently restricted to http/https/ftp
@@ -6115,7 +6094,6 @@ module.exports = function text(state, silent) {
 
 
 var Autolinker = require('autolinker');
-var escapeHtml = require('../common/utils').escapeHtml;
 
 
 var links = [];
@@ -6206,7 +6184,7 @@ module.exports = function linkify(t, state) {
         });
         nodes.push({
           type: 'text',
-          content: escapeHtml(links[ln].text),
+          content: links[ln].text,
           level: level
         });
         nodes.push({
@@ -6229,7 +6207,7 @@ module.exports = function linkify(t, state) {
   }
 };
 
-},{"../common/utils":5,"autolinker":46}],43:[function(require,module,exports){
+},{"autolinker":45}],42:[function(require,module,exports){
 // Simple typographyc replacements
 //
 'use strict';
@@ -6288,13 +6266,13 @@ module.exports = function replace(t, state) {
   }
 };
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // Convert straight quotation marks to typographic ones
 //
 'use strict';
 
 
-var quoteReg = /&quot;|'/g;
+var quoteReg = /['"]/g;
 var punctReg = /[-\s()\[\]]/;
 var apostrophe = '’';
 
@@ -6401,7 +6379,7 @@ module.exports = function smartquotes(typographer, state) {
   }
 };
 
-},{}],45:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // Class of typographic replacement rules
 //
 'use strict';
@@ -6457,7 +6435,7 @@ Typographer.prototype.process = function (state) {
 
 module.exports = Typographer;
 
-},{"./common/utils":5,"./ruler":16,"./rules_text/replace":43,"./rules_text/smartquotes":44}],46:[function(require,module,exports){
+},{"./common/utils":5,"./ruler":16,"./rules_text/replace":42,"./rules_text/smartquotes":43}],45:[function(require,module,exports){
 /*!
  * Autolinker.js
  * 0.12.2
