@@ -88,7 +88,7 @@ var md = new Remarkable('full');
 By default remarkable is configured to be similar to GFM, but with disabled HTML.
 
 
-### Highligh fenced blocks
+### Highlight fenced blocks
 
 To highlight content of fenced block, assing function to `highlight` option:
 
