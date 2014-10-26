@@ -38,14 +38,14 @@ var Remarkable = require('remarkable');
 
 // This values are default
 var md = new Remarkable(/* "default" */, {
-  html:         false,        // Enable html tags in source
+  html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
-  linkify:      false,        // Autoconvert url-like texts to links
+  linkify:      false,        // Autoconvert URL-like texts to links
   typographer:  false,        // Enable smartypants and other sweet transforms
 
-  // Highlighter function. Should return escaped html,
+  // Highlighter function. Should return escaped HTML,
   // or '' if input not changed
   highlight: function (/*str, , lang*/) { return ''; }
 });
@@ -66,7 +66,7 @@ md.set({
 });
 ```
 
-__Note.__ To acheive best performance, don't modify the `Remarkable` instance on
+__Note.__ To achieve best performance, don't modify the `Remarkable` instance on
 the fly. If you need several configurations - create multiple instances and
 initialise each appropriately.
 
@@ -144,7 +144,7 @@ md = new Remarkable('full', {
 
 ### Typographer
 
-Though full-weight typograpic replacements are language specific, `remarkable`
+Though full-weight typographic replacements are language specific, `remarkable`
 provides the most common and universal case coverage:
 
 ```js
@@ -154,7 +154,7 @@ var md = new Remarkable({ typographer: true });
 // These values are default
 md.typographer.set({
   singleQuotes: '‘’', // set empty to disable
-  doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
+  doubleQuotes: '“”', // set '«»' for Russian, '„“' for German, empty to disable
   copyright:    true, // (c) (C) → ©
   trademark:    true, // (tm) (TM) → ™
   registered:   true, // (r) (R) → ®
@@ -181,7 +181,7 @@ Links:
 1. https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
    also contains latest spec & online demo.
 2. http://talk.commonmark.org - CommonMark forum, good place to collaborate
-   developpers efforts.
+   developers' efforts.
 
 
 ## Development / Modification
