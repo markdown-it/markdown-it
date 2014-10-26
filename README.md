@@ -90,7 +90,7 @@ By default remarkable is configured to be similar to GFM, but with disabled HTML
 
 ### Highlight fenced blocks
 
-To highlight content of fenced block, assing function to `highlight` option:
+To highlight content of fenced block, assign function to `highlight` option:
 
 ```js
 var Remarkable = require('remarkable');
