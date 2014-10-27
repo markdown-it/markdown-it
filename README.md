@@ -6,7 +6,7 @@ remarkable
 
 Markdown parser done right. Fast and easy to extend.
 
-__[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
+__[Live demo](https://jonschlinkert.github.io/remarkable/demo/)__
 
 - Configurable syntax! You can add new rules and even replace existing ones.
 - Implements [CommonMark](http://commonmark.org/) spec +
@@ -124,8 +124,12 @@ Enabled by default:
 
 Disabled by default:
 
-- __\<ins>__ - `++inserted text++`
-- __\<mark>__ - `==marked text==`
+- __\<ins>__ - `++inserted text++` (experimental)
+- __\<mark>__ - `==marked text==` (experimental)
+
+__*__ Experimental extentions can be changed later for something like
+[Critic Markup](http://criticmarkup.com/). Though, you will be able to use
+old-style rules via external plugins, if you like those.
 
 Manage rules:
 
