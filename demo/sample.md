@@ -1,7 +1,7 @@
 ---
 __Advertisement :)__
 
-- __[pica](http://nodeca.github.io/pica/demo/)__ - high quality and fast image
+- __[pica](https://nodeca.github.io/pica/demo/)__ - high quality and fast image
   resize in browser.
 - __[babelfish](https://github.com/nodeca/babelfish/)__ - developpers friendly
   i18n with plurals support and easy syntax.
@@ -153,9 +153,9 @@ Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 
 ## Images
 
-![Minion](http://octodex.github.com/images/minion.png)
+![Minion](https://octodex.github.com/images/minion.png)
 
-![Alt text](http://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
+![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
 
 Like links, Images also have a footnote style syntax
 
@@ -163,4 +163,4 @@ Like links, Images also have a footnote style syntax
 
 With a reference later in the document defining the URL location:
 
-[id]: http://octodex.github.com/images/dojocat.jpg  "The Dojocat"
+[id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
