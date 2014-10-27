@@ -1,7 +1,8 @@
-/benchmark/
-/demo/
-/support/
-/test/
-/.*
-/Makefile
+benchmark/
+coverage/
+demo/
+support/
+test/
+.*
+Makefile
 

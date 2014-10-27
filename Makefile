@@ -28,6 +28,9 @@ test: lint
 	echo "CommonMark stat:\n"
 	./support/specsplit.js test/fixtures/commonmark/spec.txt
 
+cover:
+	rm -rf cover
+	istanbul cover node_modules/.bin/_mocha
 
 gh-pages:
 	if [ "git branch --list gh-pages" ]; then \

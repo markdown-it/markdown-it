@@ -1,4 +1,12 @@
-1.2.0 / WIP
+1.2.1 / WIP
+------------------
+
+- Fixed speed degradation when linkifier enabled.
+- Added coverage reports.
+- Other minor optimizations and cleanup.
+
+
+1.2.0 / 2014-10-26
 ------------------
 
 - Added `<ins>` rule.

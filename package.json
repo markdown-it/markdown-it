@@ -29,6 +29,7 @@
     "browserify": "*",
     "eslint": "0.8.0",
     "eslint-plugin-nodeca": "^1.0.0",
+    "istanbul": "*",
     "jade": "^1.6.0",
     "stylus": "^0.49.1",
     "mocha": "*",
