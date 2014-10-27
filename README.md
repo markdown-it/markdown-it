@@ -1,52 +1,75 @@
-remarkable
-==========
+# remarkable
 
 [![Build Status](https://travis-ci.org/jonschlinkert/remarkable.svg?branch=master)](https://travis-ci.org/jonschlinkert/remarkable)
 [![NPM version](https://img.shields.io/npm/v/remarkable.svg)](https://www.npmjs.org/package/remarkable)
 
-Markdown parser done right. Fast and easy to extend.
+> Markdown parser done right. Fast and easy to extend.
 
-__[Live demo](https://jonschlinkert.github.io/remarkable/demo/)__
+__[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
 
+- Supports the [CommonMark](http://commonmark.org/) spec + extentions
+  (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
-- Implements [CommonMark](http://commonmark.org/) spec +
-  [syntax extentions](#syntax-extentions) + sugar (URL autolinking, typographer).
-- Very high speed.
+- High speed! See the [benchmarks](./benchmark).
 
 
 ## Install
 
-node.js:
+**node.js:**
 
 ```bash
 npm install remarkable --save
 ```
 
-bower:
+**bower:**
 
 ```bash
 bower install remarkable --save
 ```
 
-CDNs for browser: [jsDeliver](http://www.jsdelivr.com/#!remarkable "jsDelivr CDN")
+**browser:**
+
+The following CDN's host remarkable:
+
+ - [jsDeliver](http://www.jsdelivr.com/#!remarkable "jsDelivr CDN")
+
+If you add remarkable to a CDN, please [let us know](https://github.com/jonschlinkert/remarkable/issues) or do PR to add it to the readme!
 
 
 ## Usage
 
 ```js
 var Remarkable = require('remarkable');
+var md = new Remarkable();
 
-// This values are default
-var md = new Remarkable(/* "default" */, {
+console.log(md.parse('# Remarkable rulezz!'));
+// => <h1>Remarkable rulezz!</h1>
+```
+
+
+### Options
+
+By default remarkable is configured to be similar to GFM, but with HTML disabled. This is easy to change
+if you prefer to use different settings.
+
+There are two ways to define options.
+
+#### constructor
+
+Define options in the constructor:
+
+```js
+// Actual default values
+var md = new Remarkable({
   html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
-  linkify:      false,        // Autoconvert URL-like texts to links
+  linkify:      false,        // Autoconvert URL-like text to links
   typographer:  false,        // Enable smartypants and other sweet transforms
 
   // Highlighter function. Should return escaped HTML,
-  // or '' if input not changed
+  // or '' if the source string is not changed
   highlight: function (/*str, , lang*/) { return ''; }
 });
 
@@ -54,11 +77,13 @@ console.log(md.render('# Remarkable rulezz!'));
 // => <h1>Remarkable rulezz!</h1>
 ```
 
-You can define options via `set` method:
+#### .set
+
+Or define options via the `.set()` method:
 
 ```js
 var Remarkable = require('remarkable');
-var md = new Remarkable('full');
+var md = new Remarkable();
 
 md.set({
   html: true,
@@ -66,48 +91,55 @@ md.set({
 });
 ```
 
-__Note:__ To achieve best performance, don't modify the `Remarkable` instance on
-the fly. If you need several configurations, create multiple instances and
-initialise each appropriately.
+**Note:** To achieve the best possible performance, don't modify a `Remarkable` instance on
+the fly. If you need multiple configurations it's best to create multiple instances and initialize
+each with a configuration that is ideal for that instance.
 
-Remarkable provides presets to quickly manage active syntax rules and options.
-You can reset parser to strict [CommonMark](http://commonmark.org/) mode:
+
+### Presets
+
+Remarkable offers some "presets" as a convenience to quickly enable/disable active syntax rules and options
+for common use cases. 
+
+#### commonmark
+
+Enable strict [CommonMark](http://commonmark.org/) mode with the `commonmark` preset:
 
 ```js
 var Remarkable = require('remarkable');
 var md = new Remarkable('commonmark');
 ```
 
-Or you can enable everything:
+#### full
+
+Enable everything with the `full` preset:
 
 ```js
 var Remarkable = require('remarkable');
 var md = new Remarkable('full');
 ```
 
-By default remarkable is configured to be similar to GFM, but with disabled HTML.
 
+### Syntax highlighting
 
-### Highlight fenced blocks
-
-To highlight content of fenced block, assign function to `highlight` option:
+Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
 ```js
 var Remarkable = require('remarkable');
 var hljs       = require('highlight.js') // https://highlightjs.org/
 
-// These values are default
+// Actual default values
 var md = new Remarkable({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(lang, str).value;
-      } catch (__) {}
+      } catch (err) {}
     }
 
     try {
       return hljs.highlightAuto(str).value;
-    } catch (__) {}
+    } catch (err) {}
 
     return ''; // use external default escaping
   }
@@ -127,11 +159,11 @@ Disabled by default:
 - __\<ins>__ - `++inserted text++` (experimental)
 - __\<mark>__ - `==marked text==` (experimental)
 
-__*__ Experimental extentions can be changed later for something like
-[Critic Markup](http://criticmarkup.com/). Though, you will be able to use
-old-style rules via external plugins, if you like those.
+__*__ Experimental extentions can be changed later for something like [Critic Markup](http://criticmarkup.com/), but you will 
+still be able to use old-style rules via external plugins if you prefer.
 
-Manage rules:
+
+### Manage rules
 
 ```js
 var md = new Remarkable();
@@ -146,16 +178,17 @@ md = new Remarkable('full', {
 });
 ```
 
+
 ### Typographer
 
-Though full-weight typographic replacements are language specific, `remarkable`
-provides the most common and universal case coverage:
+Although full-weight typographical replacements are language specific, `remarkable`
+provides coverage for the most common and universal use cases:
 
 ```js
 var Remarkable = require('remarkable');
 var md = new Remarkable({ typographer: true });
 
-// These values are default
+// Actual default values
 md.typographer.set({
   singleQuotes: '‘’', // set empty to disable
   doubleQuotes: '“”', // set '«»' for Russian, '„“' for German, empty to disable
@@ -170,8 +203,21 @@ md.typographer.set({
 })
 ```
 
-Of course, you can add your own rules or replace default ones with something
-more advanced, specific for your language.
+Of course, you can also add your own rules or replace the defaults with something
+more advanced or specific to your language.
+
+
+### Plugins
+
+Easily load plugins with the `.use()` method:
+
+```js
+var md = new Remarkable();
+
+md.use(plugin1)
+  .use(plugin2, opts)
+  .use(plugin3);
+```
 
 
 ## References / Thanks
@@ -180,7 +226,7 @@ Big thanks to [John MacFarlane](https://github.com/jgm) for his work on the
 CommonMark spec and reference implementations. His work saved us a lot of time
 during this project's development.
 
-Links:
+**Related Links:**
 
 1. https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
    also contains latest spec & online demo.
@@ -207,15 +253,6 @@ Remarkable.renderer
 Remarkable.renderer.rules
 ```
 
-To prettify plugins init, `Remarked` has `.use()` helper for curried calls:
-
-```js
-var md = new Remarkable();
-
-md.use(plugin1)
-  .use(plugin2, opts)
-  .use(plugin3);
-```
 
 ## Authors
 
