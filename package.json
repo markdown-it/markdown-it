@@ -27,7 +27,7 @@
     "autoprefixer-stylus": "^0.3.0",
     "benchmark": "^1.0.0",
     "browserify": "*",
-    "eslint": "0.8.0",
+    "eslint": "0.9.1",
     "eslint-plugin-nodeca": "^1.0.0",
     "istanbul": "*",
     "jade": "^1.6.0",

@@ -17,6 +17,7 @@ rules:
   eqeqeq:               2
   guard-for-in:         2
   handle-callback-err:  2
+  key-spacing:          0
   max-depth:            [ 1, 6 ]
   max-nested-callbacks: [ 1, 4 ]
   # string can exceed 80 chars, but should not overflow github website :)
@@ -30,13 +31,14 @@ rules:
   no-eq-null:           2
   no-floating-decimal:  2
   no-lonely-if:         2
+  no-multi-spaces:      0
   no-process-exit:      0
   no-trailing-spaces:   2
   no-underscore-dangle: 0
   quotes:               [ 2, single, avoid-escape ]
   radix:                2
   space-after-keywords: [ 2, always ] # Fixed in master
-  space-in-brackets:    [ 1, always ]
+  space-in-brackets:    [ 1, always, { propertyName: false } ]
 
   # temporary
   no-func-assign:       0
