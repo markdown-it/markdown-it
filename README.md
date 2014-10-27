@@ -66,8 +66,8 @@ md.set({
 });
 ```
 
-__Note.__ To achieve best performance, don't modify the `Remarkable` instance on
-the fly. If you need several configurations - create multiple instances and
+__Note:__ To achieve best performance, don't modify the `Remarkable` instance on
+the fly. If you need several configurations, create multiple instances and
 initialise each appropriately.
 
 Remarkable provides presets to quickly manage active syntax rules and options.
@@ -188,7 +188,7 @@ Links:
 
 Parser consists of several responsibilities chains, filled with rules. You can
 reconfigure anyone as you wish. Render also can be modified and extended. See
-source code to understand details. Pay attention to this properties:
+source code to understand details. Pay attention to these properties:
 
 ```js
 Remarkable.block
