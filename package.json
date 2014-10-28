@@ -20,7 +20,8 @@
   "main": "index.js",
   "dependencies": {
     "argparse": "~ 0.1.15",
-    "autolinker": "~ 0.12.3"
+    "autolinker": "~ 0.12.3",
+    "coveralls": "^2.11.2"
   },
   "devDependencies": {
     "ansi": "^0.3.0",

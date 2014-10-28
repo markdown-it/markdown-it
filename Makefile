@@ -18,19 +18,20 @@ demo: lint
 	stylus -u autoprefixer-stylus demo/assets/index.styl
 	rm -rf demo/sample.json
 
-
 lint:
 	eslint ./
-
 
 test: lint
 	NODE_ENV=test mocha -R spec
 	echo "CommonMark stat:\n"
 	./support/specsplit.js test/fixtures/commonmark/spec.txt
 
-cover:
-	rm -rf cover
+coverage:
+	rm -rf coverage
 	istanbul cover node_modules/.bin/_mocha
+
+test-ci: lint
+	istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
 gh-pages:
 	if [ "git branch --list gh-pages" ]; then \
@@ -38,7 +39,6 @@ gh-pages:
 		fi
 	git branch gh-pages
 	git push origin gh-pages -f
-
 
 publish:
 	@if test 0 -ne `git status --porcelain | wc -l` ; then \
@@ -56,7 +56,6 @@ publish:
 	git tag ${NPM_VERSION} && git push origin ${NPM_VERSION}
 	npm publish ${GITHUB_PROJ}/tarball/${NPM_VERSION}
 
-
 browserify:
 	rm -rf ./dist
 	mkdir dist
@@ -68,7 +67,6 @@ browserify:
 	uglifyjs dist/remarkable.js -c -m \
 		--preamble "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" \
 		> dist/remarkable.min.js
-
 
 todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
