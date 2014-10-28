@@ -39,7 +39,7 @@ bower install remarkable --save
 var Remarkable = require('remarkable');
 var md = new Remarkable();
 
-console.log(md.parse('# Remarkable rulezz!'));
+console.log(md.render('# Remarkable rulezz!'));
 // => <h1>Remarkable rulezz!</h1>
 ```
 
