@@ -86,10 +86,14 @@ html
           textarea.source.full-height= s.source
         section.col-xs-6.full-height
           .demo-control
-            a.result-mode(href='#') html / source
-          .result.full-height
+            a(href='#' data-result-as='html') html
+            a(href='#' data-result-as='src') source
+            a(href='#' data-result-as='debug') debug
+          .result-html.full-height
           pre.result-src.full-height
             code.result-src-content.full-height
+          pre.result-debug.full-height
+            code.result-debug-content.full-height
 
     .gh-ribbon
       a(href='https://github.com/jonschlinkert/remarkable' target='_blank') Fork me on GitHub

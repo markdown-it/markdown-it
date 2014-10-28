@@ -23,32 +23,51 @@ body {
   font-size: 13px;
   padding: 2px;
 }
-.result {
+.result-html {
   padding: 2px 10px;
   overflow: auto;
   background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
-.result img {
+.result-html img {
   max-width: 50%;
 }
-.result-src {
+.result-src,
+.result-debug {
   display: none;
   background-color: #fff;
 }
-.result-src-content {
+.result-src-content,
+.result-debug-content {
   white-space: pre;
 }
-.result-as-text .result-src {
+.result-as-html .result-html {
   display: block;
 }
-.result-as-text .result {
+.result-as-html .result-src,
+.result-as-html .result-debug {
+  display: none;
+}
+.result-as-src .result-src {
+  display: block;
+}
+.result-as-src .result-html,
+.result-as-src .result-debug {
+  display: none;
+}
+.result-as-debug .result-debug {
+  display: block;
+}
+.result-as-debug .result-html,
+.result-as-debug .result-src {
   display: none;
 }
 .demo-control {
   position: absolute;
-  right: 15px;
+  right: 40px;
   top: 0;
-  border-radius: 0 4px;
+  border-radius: 0 0 6px 6px;
   font-size: 12px;
   background-color: #666;
   color: #fff !important;

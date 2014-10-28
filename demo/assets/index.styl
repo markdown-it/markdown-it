@@ -22,32 +22,49 @@ body
   font-size 13px
   padding 2px
 
-.result
+.result-html
   padding 2px 10px
   overflow auto
   background-color #fff
+  border 1px solid #ccc
+  border-radius 4px
   img
     max-width 50%
 
 .result-src
+.result-debug
   display none
   background-color #fff
 
 .result-src-content
+.result-debug-content
   white-space pre
 
-.result-as-text
+.result-as-html
+  .result-html
+    display block
+  .result-src
+  .result-debug
+    display none
+.result-as-src
   .result-src
     display block
-  .result
+  .result-html
+  .result-debug
+    display none
+.result-as-debug
+  .result-debug
+    display block
+  .result-html
+  .result-src
     display none
 
 .demo-control
   position absolute
-  right 15px
+  right 40px
   top 0
   //padding 0 10px
-  border-radius 0 4px
+  border-radius 0 0 6px 6px
   font-size 12px
   background-color #666
   color #fff !important

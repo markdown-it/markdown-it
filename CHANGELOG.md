@@ -3,6 +3,7 @@
 
 - Fixed speed degradation when linkifier enabled.
 - Added coverage reports.
+- Added debug view to demo (show internal representation)
 - Other minor optimizations and cleanup.
 
 

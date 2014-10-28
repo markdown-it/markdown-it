@@ -14,7 +14,7 @@
     // options below are for demo only
     _highlight: true,
     _strict: false,
-    _src: false
+    _view: 'html'               // html / src / debug
   };
 
   defaults.highlight = function (str, lang) {
@@ -42,6 +42,14 @@
     }
   }
 
+  function setResultView(val) {
+    $('body').removeClass('result-as-html');
+    $('body').removeClass('result-as-src');
+    $('body').removeClass('result-as-debug');
+    $('body').addClass('result-as-' + val);
+    defaults._view = val;
+  }
+
   function mdInit() {
     if (defaults._strict) {
       mdHtml = new window.Remarkable('commonmark');
@@ -59,8 +67,13 @@
 
   function updateResult() {
     var source = $('.source').val();
-    $('.result').html(mdHtml.render(source));
+
+    $('.result-html').html(mdHtml.render(source));
     $('.result-src-content').html(window.hljs.highlight('html', mdSrc.render(source)).value);
+
+    var dump = JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2);
+    $('.result-debug-content').html(window.hljs.highlight('json', dump).value);
+
     try {
       if (source) {
         // serialize state - source and options
@@ -107,11 +120,22 @@
         _.forOwn(opts, function (val, key) {
           if (!defaults.hasOwnProperty(key)) { return; }
 
+          // Legacy, for old links
+          if (key === '_src') {
+            defaults._view = val ? 'src' : 'html';
+            return;
+          }
+
           if ((_.isBoolean(defaults[key]) && _.isBoolean(val)) ||
               (_.isString(defaults[key]) && _.isString(val))) {
             defaults[key] = val;
           }
         });
+
+        // sanitize for sure
+        if ([ 'html', 'src', 'debug' ].indexOf(defaults._view) === -1) {
+          defaults._view = 'html';
+        }
       } catch (__) {}
     }
 
@@ -149,11 +173,7 @@
       }
     });
 
-    // Set display mode for result
-    if (defaults._src) {
-      $('body').addClass('result-as-text');
-    }
-
+    setResultView(defaults._view);
 
     mdInit();
     permalink = document.getElementById('permalink');
@@ -167,12 +187,14 @@
       event.preventDefault();
     });
 
-    $('.result-mode').on('click', function (event) {
-      defaults._src = !defaults._src;
-      $('body').toggleClass('result-as-text');
-      // only to update permalink
-      updateResult();
-      event.preventDefault();
+    $(document).on('click', '[data-result-as]', function (event) {
+      var view = $(this).data('resultAs');
+      if (view) {
+        setResultView(view);
+        // only to update permalink
+        updateResult();
+        event.preventDefault();
+      }
     });
 
     updateResult();

@@ -18,12 +18,12 @@
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
+      
       ga('create', 'UA-26895916-3', 'auto');
       ga('require', 'displayfeatures');
       ga('require', 'linkid', 'linkid.js');
       ga('send', 'pageview');
-
+      
     </script>
   </head>
   <body>
@@ -109,7 +109,7 @@ console.log(md.render('# Remarkable rulezz!'));
           <textarea class="source full-height">---
 __Advertisement :)__
 
-- __[pica](http://nodeca.github.io/pica/demo/)__ - high quality and fast image
+- __[pica](https://nodeca.github.io/pica/demo/)__ - high quality and fast image
   resize in browser.
 - __[babelfish](https://github.com/nodeca/babelfish/)__ - developpers friendly
   i18n with plurals support and easy syntax.
@@ -254,7 +254,7 @@ Right aligned columns
 
 [link text](http://dev.nodeca.com)
 
-[link with title](https://nodeca.github.io/pica/demo/ &quot;title text!&quot;)
+[link with title](http://nodeca.github.io/pica/demo/ &quot;title text!&quot;)
 
 Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 
@@ -275,9 +275,10 @@ With a reference later in the document defining the URL location:
 </textarea>
         </div>
         <section class="col-xs-6 full-height">
-          <div class="demo-control"><a href="#" class="result-mode">html / source</a></div>
-          <div class="result full-height"></div>
+          <div class="demo-control"><a href="#" data-result-as="html">html</a><a href="#" data-result-as="src">source</a><a href="#" data-result-as="debug">debug</a></div>
+          <div class="result-html full-height"></div>
           <pre class="result-src full-height"><code class="result-src-content full-height"></code></pre>
+          <pre class="result-debug full-height"><code class="result-debug-content full-height"></code></pre>
         </section>
       </div>
     </div>
