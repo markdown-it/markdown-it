@@ -1,4 +1,4 @@
-/*! remarkable 1.2.0 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
+/*! remarkable 1.2.1 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./":[function(require,module,exports){
 'use strict';
 
 
@@ -2219,7 +2219,6 @@ function replace(regex, options) {
       return new RegExp(regex, options);
     }
     val = val.source || val;
-    //val = val.replace(/(^|[^\[])\^/g, '$1');
     regex = regex.replace(name, val);
     return self;
   };
@@ -2539,14 +2538,14 @@ exports.replaceEntities = replaceEntities;
 
 module.exports = {
   options: {
-    html:         true,         // Enable html tags in source
+    html:         true,         // Enable HTML tags in source
     xhtmlOut:     true,         // Use '/' to close single tags (<br />)
     breaks:       false,        // Convert '\n' in paragraphs into <br>
     langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert url-like texts to links
+    linkify:      false,        // autoconvert URL-like texts to links
     typographer:  false,        // Enable smartypants and other sweet transforms
 
-    // Highlighter function. Should return escaped html,
+    // Highlighter function. Should return escaped HTML,
     // or '' if input not changed
     highlight: function (/*str, , lang*/) { return ''; },
 
@@ -2586,7 +2585,7 @@ module.exports = {
     typographer: {
       options: {
         singleQuotes: '‘’', // set empty to disable
-        doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
+        doubleQuotes: '“”', // set '«»' for Russian, '„“' for German, empty to disable
         copyright:    true, // (c) (C) → ©
         trademark:    true, // (tm) (TM) → ™
         registered:   true, // (r) (R) → ®
@@ -2608,14 +2607,14 @@ module.exports = {
 
 module.exports = {
   options: {
-    html:         false,        // Enable html tags in source
+    html:         false,        // Enable HTML tags in source
     xhtmlOut:     false,        // Use '/' to close single tags (<br />)
     breaks:       false,        // Convert '\n' in paragraphs into <br>
     langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert url-like texts to links
+    linkify:      false,        // autoconvert URL-like texts to links
     typographer:  false,        // Enable smartypants and other sweet transforms
 
-    // Highlighter function. Should return escaped html,
+    // Highlighter function. Should return escaped HTML,
     // or '' if input not changed
     highlight: function (/*str, , lang*/) { return ''; },
 
@@ -2657,7 +2656,7 @@ module.exports = {
     typographer: {
       options: {
         singleQuotes: '‘’', // set empty to disable
-        doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
+        doubleQuotes: '“”', // set '«»' for Russian, '„“' for German, empty to disable
         copyright:    true, // (c) (C) → ©
         trademark:    true, // (tm) (TM) → ™
         registered:   true, // (r) (R) → ®
@@ -2679,14 +2678,14 @@ module.exports = {
 
 module.exports = {
   options: {
-    html:         false,        // Enable html tags in source
+    html:         false,        // Enable HTML tags in source
     xhtmlOut:     false,        // Use '/' to close single tags (<br />)
     breaks:       false,        // Convert '\n' in paragraphs into <br>
     langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert url-like texts to links
+    linkify:      false,        // autoconvert URL-like texts to links
     typographer:  false,        // Enable smartypants and other sweet transforms
 
-    // Highlighter function. Should return escaped html,
+    // Highlighter function. Should return escaped HTML,
     // or '' if input not changed
     highlight: function (/*str, , lang*/) { return ''; },
 
@@ -2702,7 +2701,7 @@ module.exports = {
     typographer: {
       options: {
         singleQuotes: '‘’', // set empty to disable
-        doubleQuotes: '“”', // set '«»' for russian, '„“' for deutch, empty to disable
+        doubleQuotes: '“”', // set '«»' for Russian, '„“' for German, empty to disable
         copyright:    true, // (c) (C) → ©
         trademark:    true, // (tm) (TM) → ™
         registered:   true, // (r) (R) → ®
@@ -2851,7 +2850,7 @@ var assign = require('./common/utils').assign;
 var Ruler  = require('./ruler');
 
 
-var rules = [
+var _rules = [
   require('./rules_text/linkify')
 ];
 
@@ -2863,8 +2862,8 @@ function Linkifier() {
 
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
-  for (var i = 0; i < rules.length; i++) {
-    this.ruler.after(rules[i]);
+  for (var i = 0; i < _rules.length; i++) {
+    this.ruler.after(_rules[i]);
   }
 }
 
@@ -3077,19 +3076,19 @@ var Ruler           = require('./ruler');
 var State           = require('./rules_block/state_block');
 
 
-var rules = [];
+var _rules = [];
 
 // `list` should be after `hr`, but before `heading`
-rules.push([ require('./rules_block/code') ]);
-rules.push([ require('./rules_block/fences'),     'paragraph', 'blockquote', 'list' ]);
-rules.push([ require('./rules_block/blockquote'), 'paragraph', 'blockquote', 'list' ]);
-rules.push([ require('./rules_block/hr'),         'paragraph', 'blockquote', 'list' ]);
-rules.push([ require('./rules_block/list'),       'paragraph', 'blockquote' ]);
-rules.push([ require('./rules_block/heading'),    'paragraph', 'blockquote' ]);
-rules.push([ require('./rules_block/lheading') ]);
-rules.push([ require('./rules_block/htmlblock'),  'paragraph', 'blockquote' ]);
-rules.push([ require('./rules_block/table'),      'paragraph' ]);
-rules.push([ require('./rules_block/paragraph') ]);
+_rules.push([ require('./rules_block/code') ]);
+_rules.push([ require('./rules_block/fences'),     'paragraph', 'blockquote', 'list' ]);
+_rules.push([ require('./rules_block/blockquote'), 'paragraph', 'blockquote', 'list' ]);
+_rules.push([ require('./rules_block/hr'),         'paragraph', 'blockquote', 'list' ]);
+_rules.push([ require('./rules_block/list'),       'paragraph', 'blockquote' ]);
+_rules.push([ require('./rules_block/heading'),    'paragraph', 'blockquote' ]);
+_rules.push([ require('./rules_block/lheading') ]);
+_rules.push([ require('./rules_block/htmlblock'),  'paragraph', 'blockquote' ]);
+_rules.push([ require('./rules_block/table'),      'paragraph' ]);
+_rules.push([ require('./rules_block/paragraph') ]);
 
 
 // Block Parser class
@@ -3102,8 +3101,8 @@ function ParserBlock() {
 
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
-  for (var i = 0; i < rules.length; i++) {
-    this.ruler.after(rules[i][0], rules[i].slice(1));
+  for (var i = 0; i < _rules.length; i++) {
+    this.ruler.after(_rules[i][0], _rules[i].slice(1));
   }
 }
 
@@ -3231,22 +3230,21 @@ var StateInline = require('./rules_inline/state_inline');
 ////////////////////////////////////////////////////////////////////////////////
 // Parser rules
 
-var rules = [];
+var _rules = [];
 
+_rules.push(require('./rules_inline/text'));
+_rules.push(require('./rules_inline/newline'));
+_rules.push(require('./rules_inline/escape'));
+_rules.push(require('./rules_inline/backticks'));
+_rules.push(require('./rules_inline/del'));
+_rules.push(require('./rules_inline/ins'));
+_rules.push(require('./rules_inline/mark'));
+_rules.push(require('./rules_inline/emphasis'));
+_rules.push(require('./rules_inline/links'));
+_rules.push(require('./rules_inline/autolink'));
+_rules.push(require('./rules_inline/htmltag'));
+_rules.push(require('./rules_inline/entity'));
 
-// Pure text
-rules.push(require('./rules_inline/text'));
-rules.push(require('./rules_inline/newline'));
-rules.push(require('./rules_inline/escape'));
-rules.push(require('./rules_inline/backticks'));
-rules.push(require('./rules_inline/del'));
-rules.push(require('./rules_inline/ins'));
-rules.push(require('./rules_inline/mark'));
-rules.push(require('./rules_inline/emphasis'));
-rules.push(require('./rules_inline/links'));
-rules.push(require('./rules_inline/autolink'));
-rules.push(require('./rules_inline/htmltag'));
-rules.push(require('./rules_inline/entity'));
 
 var BAD_PROTOCOLS = [ 'vbscript', 'javascript', 'file' ];
 
@@ -3272,7 +3270,7 @@ function ParserInline() {
 
   // Rule to skip pure text
   // - '{}$%@+=:' reserved for extentions
-  this.textMatch = /^[^\n\\`*_\[\]!&<{}$%@~+=:]+/;
+  this.textMatch = /[\n\\`*_\[\]!&<{}$%@~+=:]/;
 
   // By default CommonMark allows too much in links
   // If you need to restrict it - override this with your validator.
@@ -3280,8 +3278,8 @@ function ParserInline() {
 
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
-  for (var i = 0; i < rules.length; i++) {
-    this.ruler.after(rules[i]);
+  for (var i = 0; i < _rules.length; i++) {
+    this.ruler.after(_rules[i]);
   }
 }
 
@@ -3296,7 +3294,6 @@ ParserInline.prototype.rulesUpdate = function () {
 //
 ParserInline.prototype.skipToken = function (state) {
   var i, cached_pos, pos = state.pos,
-      rules = this._rules,
       len = this._rules.length;
 
   if ((cached_pos = state.cacheGet(pos)) > 0) {
@@ -3305,7 +3302,7 @@ ParserInline.prototype.skipToken = function (state) {
   }
 
   for (i = 0; i < len; i++) {
-    if (rules[i](state, true)) {
+    if (this._rules[i](state, true)) {
       state.cacheSet(pos, state.pos);
       return;
     }
@@ -3320,7 +3317,6 @@ ParserInline.prototype.skipToken = function (state) {
 //
 ParserInline.prototype.tokenize = function (state) {
   var ok, i,
-      rules = this._rules,
       len = this._rules.length,
       end = state.posMax;
 
@@ -3334,7 +3330,7 @@ ParserInline.prototype.tokenize = function (state) {
     // - return true
 
     for (i = 0; i < len; i++) {
-      ok = rules[i](state, false);
+      ok = this._rules[i](state, false);
       if (ok) { break; }
     }
 
@@ -3728,13 +3724,13 @@ Renderer.prototype.renderInline = function (tokens, options) {
 Renderer.prototype.render = function (tokens, options) {
   var i, len,
       result = '',
-      rules = this.rules;
+      _rules = this.rules;
 
   for (i = 0, len = tokens.length; i < len; i++) {
     if (tokens[i].type === 'inline') {
       result += this.renderInline(tokens[i].children, options);
     } else {
-      result += rules[tokens[i].type](tokens, i, options);
+      result += _rules[tokens[i].type](tokens, i, options);
     }
   }
 
@@ -3927,7 +3923,7 @@ Ruler.prototype.enable = function (list, strict) {
   list.forEach(function (name) {
     var idx = this.find(name);
 
-    if (idx < 0) { throw new Error('Rules namager: invalid rule name ' + name);}
+    if (idx < 0) { throw new Error('Rules manager: invalid rule name ' + name); }
     this.rules[idx].enabled = true;
 
   }, this);
@@ -3947,7 +3943,7 @@ Ruler.prototype.disable = function (list) {
   list.forEach(function (name) {
     var idx = this.find(name);
 
-    if (idx < 0) { throw new Error('Rules namager: invalid rule name ' + name);}
+    if (idx < 0) { throw new Error('Rules manager: invalid rule name ' + name); }
     this.rules[idx].enabled = false;
 
   }, this);
@@ -4815,11 +4811,6 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
 function StateBlock(src, parser, tokens, options, env) {
   var ch, s, start, pos, len, indent, indent_found;
 
-  // Prepare string to parse:
-  //
-  // - replace tabs with spaces
-  // - remove `\r` to simplify newlines check (???)
-
   this.src = src;
 
   // Shortcuts to simplify nested calls
@@ -4866,23 +4857,19 @@ function StateBlock(src, parser, tokens, options, env) {
         indent++;
         continue;
       } else {
-        this.tShift.push(indent);
         indent_found = true;
       }
     }
 
-    if (ch === 0x0A) {
+    if (ch === 0x0A || pos === len - 1) {
       this.bMarks.push(start);
       this.eMarks.push(pos);
+      this.tShift.push(indent);
+
       indent_found = false;
       indent = 0;
       start = pos + 1;
     }
-  }
-  if (ch !== 0x0A) {
-    this.bMarks.push(start);
-    this.eMarks.push(len);
-    if (!indent_found) { this.tShift.push(indent); }
   }
 
   // Push fake entry to simplify cache bounds checks
@@ -4970,15 +4957,6 @@ StateBlock.prototype.getLines = function getLines(begin, end, indent, keepLastLF
   return queue.join('');
 };
 
-// Create shadow clone of curent state with new input data
-StateBlock.prototype.clone = function clone(src) {
-  return new StateBlock(
-    src,
-    this.parser,
-    this.tokens,
-    this.options
-  );
-};
 
 module.exports = StateBlock;
 
@@ -5111,6 +5089,7 @@ module.exports = function table(state, startLine, endLine, silent) {
 },{}],28:[function(require,module,exports){
 // Process autolinks '<protocol:...>'
 
+'use strict';
 
 var url_schemas = require('../common/url_schemas');
 
@@ -5187,6 +5166,8 @@ module.exports = function autolink(state, silent) {
 
 },{"../common/url_schemas":4}],29:[function(require,module,exports){
 // Parse backticks
+
+'use strict';
 
 module.exports = function backticks(state, silent) {
   var start, max, marker, matchStart, matchEnd,
@@ -5513,6 +5494,8 @@ module.exports = function entity(state, silent) {
 
 },{"../common/entities":1,"../common/utils":5}],33:[function(require,module,exports){
 // Proceess escaped chars and hardbreaks
+
+'use strict';
 
 var ESCAPED = [];
 
@@ -5941,6 +5924,8 @@ module.exports = function mark(state, silent) {
 },{}],38:[function(require,module,exports){
 // Proceess '\n'
 
+'use strict';
+
 module.exports = function newline(state, silent) {
   var pmax, max, pos = state.pos;
 
@@ -6074,13 +6059,18 @@ module.exports = StateInline;
 // Skip text characters for text token, place those to pendibg buffer
 // and increment current pos
 
+'use strict';
+
 module.exports = function text(state, silent) {
-  var match = state.src.slice(state.pos).match(state.parser.textMatch);
+  var str = state.src.slice(state.pos),
+      next = str.search(state.parser.textMatch);
 
-  if (!match) { return false; }
+  if (next === 0) { return false; }
 
-  if (!silent) { state.pending += match[0]; }
-  state.pos += match[0].length;
+  if (next < 0) { next = str.length; }
+
+  if (!silent) { state.pending += str.slice(0, next); }
+  state.pos += next;
 
   return true;
 };
@@ -6095,6 +6085,8 @@ module.exports = function text(state, silent) {
 
 var Autolinker = require('autolinker');
 
+
+var LINK_SCAN_RE = /www|\:\/\//;
 
 var links = [];
 var autolinker = new Autolinker({
@@ -6129,10 +6121,9 @@ module.exports = function linkify(t, state) {
     // Skip content of markdown links
     if (token.type === 'link_close') {
       i--;
-      while (tokens[i].type !== 'link_open' && tokens[i].level !== token.level) {
+      while (tokens[i].level !== token.level && tokens[i].type !== 'link_open') {
         i--;
       }
-      i--;
       continue;
     }
 
@@ -6147,11 +6138,10 @@ module.exports = function linkify(t, state) {
     }
     if (htmlLinkLevel > 0) { continue; }
 
-    if (token.type === 'text' &&
-        (token.content.indexOf('://') ||
-         token.content.indexOf('www'))) {
+    if (token.type === 'text' && LINK_SCAN_RE.test(token.content)) {
+
       text = token.content;
-      links = [];
+      links.length = 0;
       autolinker.link(text);
 
       if (!links.length) { continue; }
@@ -6213,6 +6203,9 @@ module.exports = function linkify(t, state) {
 'use strict';
 
 
+var COPY_RE = /\((c|tm|r|p)\)/i;
+var RARE_RE = /\+-|\.\.|\?\?\?\?|!!!!|,,|--/;
+
 module.exports = function replace(t, state) {
   var i, token, text,
       tokens = state.tokens,
@@ -6223,7 +6216,7 @@ module.exports = function replace(t, state) {
     if (token.type === 'text') {
       text = token.content;
 
-      if (text.indexOf('(') >= 0) {
+      if (COPY_RE.test(text)) {
         if (options.copyright) {
           text = text.replace(/\(c\)/gi, '©');
         }
@@ -6238,27 +6231,26 @@ module.exports = function replace(t, state) {
         }
       }
 
-      if (options.plusminus && text.indexOf('+-') >= 0) {
-        text = text.replace(/\+-/g, '±');
-      }
-      if (options.ellipsis && text.indexOf('..') >= 0) {
-        // .., ..., ....... -> …
-        // but ?..... & !..... -> ?.. & !..
-        text = text.replace(/\.{2,}/g, '…').replace(/([?!])…/g, '$1..');
-      }
-      if (options.dupes &&
-          (text.indexOf('????') >= 0 ||
-           text.indexOf('!!!!') >= 0 ||
-           text.indexOf(',,') >= 0)) {
-        text = text.replace(/([?!]){4,}/g, '$1$1$1').replace(/,{2,}/g, ',');
-      }
-      if (options.dashes && text.indexOf('--') >= 0) {
-        text = text
-                // em-dash
-                .replace(/(^|[^-])---([^-]|$)/mg, '$1\u2014$2')
-                // en-dash
-                .replace(/(^|\s)--(\s|$)/mg, '$1\u2013$2')
-                .replace(/(^|[^-\s])--([^-\s]|$)/mg, '$1\u2013$2');
+      if (RARE_RE.test(text)) {
+        if (options.plusminus) {
+          text = text.replace(/\+-/g, '±');
+        }
+        if (options.ellipsis) {
+          // .., ..., ....... -> …
+          // but ?..... & !..... -> ?.. & !..
+          text = text.replace(/\.{2,}/g, '…').replace(/([?!])…/g, '$1..');
+        }
+        if (options.dupes) {
+          text = text.replace(/([?!]){4,}/g, '$1$1$1').replace(/,{2,}/g, ',');
+        }
+        if (options.dashes) {
+          text = text
+                  // em-dash
+                  .replace(/(^|[^-])---([^-]|$)/mg, '$1\u2014$2')
+                  // en-dash
+                  .replace(/(^|\s)--(\s|$)/mg, '$1\u2013$2')
+                  .replace(/(^|[^-\s])--([^-\s]|$)/mg, '$1\u2013$2');
+        }
       }
 
       token.content = text;
@@ -6272,34 +6264,38 @@ module.exports = function replace(t, state) {
 'use strict';
 
 
-var quoteReg = /['"]/g;
-var punctReg = /[-\s()\[\]]/;
-var apostrophe = '’';
+var QUOTE_TEST_RE = /['"]/;
+var QUOTE_RE = /['"]/g;
+var PUNCT_RE = /[-\s()\[\]]/;
+var APOSTROPHE = '’';
 
 // This function returns true if the character at `pos`
 // could be inside a word.
 function isLetter(str, pos) {
   if (pos < 0 || pos >= str.length) { return false; }
-  return !punctReg.test(str[pos]);
+  return !PUNCT_RE.test(str[pos]);
 }
 
 
-function addQuote(obj, tokenId, posId, str) {
-  if (!obj[tokenId]) { obj[tokenId] = {}; }
-  obj[tokenId][posId] = str;
+function replaceAt(str, index, ch) {
+  return str.substr(0, index) + ch + str.substr(index + 1);
 }
 
+var stack = [];
 
 module.exports = function smartquotes(typographer, state) {
   /*eslint max-depth:0*/
-  var i, token, text, t, pos, max, thisLevel, lastSpace, nextSpace, item, canOpen, canClose, j, isSingle, fn, chars,
+  var i, token, text, t, pos, max, thisLevel, lastSpace, nextSpace, item, canOpen, canClose, j, isSingle, chars,
       options = typographer.options,
-      replace = {},
-      tokens = state.tokens,
-      stack = [];
+      tokens = state.tokens;
+
+  stack.length = 0;
 
   for (i = 0; i < tokens.length; i++) {
     token = tokens[i];
+
+    if (token.type !== 'text' || QUOTE_TEST_RE.test(token.text)) { continue; }
+
     thisLevel = tokens[i].level;
 
     for (j = stack.length - 1; j >= 0; j--) {
@@ -6307,75 +6303,62 @@ module.exports = function smartquotes(typographer, state) {
     }
     stack.length = j + 1;
 
-    if (token.type === 'text') {
-      text = token.content;
-      pos = 0;
-      max = text.length;
+    text = token.content;
+    pos = 0;
+    max = text.length;
 
-      while (pos < max) {
-        quoteReg.lastIndex = pos;
-        t = quoteReg.exec(text);
-        if (!t) { break; }
+    /*eslint no-labels:0,block-scoped-var:0*/
+    OUTER:
+    while (pos < max) {
+      QUOTE_RE.lastIndex = pos;
+      t = QUOTE_RE.exec(text);
+      if (!t) { break; }
 
-        lastSpace = !isLetter(text, t.index - 1);
-        pos = t.index + t[0].length;
-        isSingle = t[0] === "'";
-        nextSpace = !isLetter(text, pos);
+      lastSpace = !isLetter(text, t.index - 1);
+      pos = t.index + 1;
+      isSingle = (t[0] === "'");
+      nextSpace = !isLetter(text, pos);
 
-        if (!nextSpace && !lastSpace) {
-          // middle word
-          if (isSingle) {
-            addQuote(replace, i, t.index, apostrophe);
-          }
-          continue;
+      if (!nextSpace && !lastSpace) {
+        // middle of word
+        if (isSingle) {
+          token.content = replaceAt(token.content, t.index, APOSTROPHE);
         }
+        continue;
+      }
 
-        canOpen = !nextSpace;
-        canClose = !lastSpace;
+      canOpen = !nextSpace;
+      canClose = !lastSpace;
 
-        if (canClose) {
-          // this could be a closing quote, rewind the stack to get a match
-          for (j = stack.length - 1; j >= 0; j--) {
+      if (canClose) {
+        // this could be a closing quote, rewind the stack to get a match
+        for (j = stack.length - 1; j >= 0; j--) {
+          item = stack[j];
+          if (stack[j].level < thisLevel) { break; }
+          if (item.single === isSingle && stack[j].level === thisLevel) {
             item = stack[j];
-            if (stack[j].level < thisLevel) { break; }
-            if (item.single === isSingle && stack[j].level === thisLevel) {
-              item = stack[j];
-              chars = isSingle ? options.singleQuotes : options.doubleQuotes;
-              if (chars) {
-                addQuote(replace, item.token, item.start, chars[0]);
-                addQuote(replace, i, t.index, chars[1]);
-              }
-              stack.length = j;
-              canOpen = false; // should be "continue OUTER;", but eslint refuses labels :(
-              break;
+            chars = isSingle ? options.singleQuotes : options.doubleQuotes;
+            if (chars) {
+              tokens[item.token].content = replaceAt(tokens[item.token].content, item.pos, chars[0]);
+              token.content = replaceAt(token.content, t.index, chars[1]);
             }
+            stack.length = j;
+            continue OUTER;
           }
-        }
-
-        if (canOpen) {
-          stack.push({
-            token: i,
-            start: t.index,
-            end: pos,
-            single: isSingle,
-            level: thisLevel
-          });
-        } else if (canClose && isSingle) {
-          addQuote(replace, i, t.index, apostrophe);
         }
       }
+
+      if (canOpen) {
+        stack.push({
+          token: i,
+          pos: t.index,
+          single: isSingle,
+          level: thisLevel
+        });
+      } else if (canClose && isSingle) {
+        token.content = replaceAt(token.content, t.index, APOSTROPHE);
+      }
     }
-  }
-
-  fn = function(str, pos) {
-    if (!replace[i][pos]) { return str; }
-    return replace[i][pos];
-  };
-
-  for (i = 0; i < tokens.length; i++) {
-    if (!replace[i]) { continue; }
-    quoteReg.lastIndex = 0;
-    tokens[i].content = tokens[i].content.replace(quoteReg, fn);
   }
 };
 
@@ -6393,7 +6376,7 @@ var assign   = require('./common/utils').assign;
 var Ruler    = require('./ruler');
 
 
-var rules = [
+var _rules = [
   require('./rules_text/replace'),
   require('./rules_text/smartquotes')
 ];
@@ -6406,8 +6389,8 @@ function Typographer() {
 
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
-  for (var i = 0; i < rules.length; i++) {
-    this.ruler.after(rules[i]);
+  for (var i = 0; i < _rules.length; i++) {
+    this.ruler.after(_rules[i]);
   }
 }
 
