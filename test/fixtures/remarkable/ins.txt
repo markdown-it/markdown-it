@@ -25,8 +25,8 @@ Inserts have the same priority as emphases:
 
 ++**test++**
 .
-<p>**<ins>test**</ins></p>
-<p>++<strong>test++</strong></p>
+<p><strong>++test</strong>++</p>
+<p><ins>**test</ins>**</p>
 .
 
 Inserts have the same priority as emphases with respect to links:

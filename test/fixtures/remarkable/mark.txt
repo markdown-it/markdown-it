@@ -25,8 +25,8 @@ Marks have the same priority as emphases:
 
 ==**test==**
 .
-<p>**<mark>test**</mark></p>
-<p>==<strong>test==</strong></p>
+<p><strong>==test</strong>==</p>
+<p><mark>**test</mark>**</p>
 .
 
 Marks have the same priority as emphases with respect to links:
