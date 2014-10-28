@@ -1,4 +1,4 @@
-1.2.1 / WIP
+1.2.1 / 2014-10-28
 ------------------
 
 - Fixed speed degradation when linkifier enabled.
