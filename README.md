@@ -27,13 +27,9 @@ npm install remarkable --save
 bower install remarkable --save
 ```
 
-**browser:**
+**browser (CDN):**
 
-The following CDN's host remarkable:
-
- - [jsDeliver](http://www.jsdelivr.com/#!remarkable "jsDelivr CDN")
-
-If you add remarkable to a CDN, please [let us know](https://github.com/jonschlinkert/remarkable/issues) or do PR to add it to the readme!
+- [jsDeliver CDN](http://www.jsdelivr.com/#!remarkable "jsDelivr CDN")
 
 
 ## Usage
