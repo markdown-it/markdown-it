@@ -67,7 +67,7 @@ var md = new Remarkable({
 
   // Highlighter function. Should return escaped HTML,
   // or '' if the source string is not changed
-  highlight: function (/*str, , lang*/) { return ''; }
+  highlight: function (/*str, lang*/) { return ''; }
 });
 
 console.log(md.render('# Remarkable rulezz!'));
