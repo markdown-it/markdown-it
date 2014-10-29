@@ -2,7 +2,7 @@
 .
 ~foo ~bar~ baz~
 .
-<p><sup>foo <sup>bar</sup> baz</sup></p>
+<p><sub>foo <sub>bar</sub> baz</sub></p>
 .
 
 .
