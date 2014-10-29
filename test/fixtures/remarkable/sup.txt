@@ -1,18 +1,42 @@
 
 .
-^foo ^bar^ baz^
+^test^
 .
-<p><sup>foo <sup>bar</sup> baz</sup></p>
-.
-
-.
-^foo ~bar~ baz^
-.
-<p><sup>foo <sub>bar</sub> baz</sup></p>
+<p><sup>test</sup></p>
 .
 
 .
-this ^ is ^ not ^ superscript
+^foo\^
 .
-<p>this ^ is ^ not ^ superscript</p>
+<p>^foo^</p>
+.
+
+.
+2^4 + 3^5
+.
+<p>2^4 + 3^5</p>
+.
+
+.
+^foo~bar^baz^bar~foo^
+.
+<p><sup>foo~bar</sup>baz<sup>bar~foo</sup></p>
+.
+
+.
+^\ foo\ ^
+.
+<p><sup> foo </sup></p>
+.
+
+.
+^foo\\\\\\\ bar^
+.
+<p><sup>foo\\\ bar</sup></p>
+.
+
+.
+^foo\\\\\\ bar^
+.
+<p>^foo\\\ bar^</p>
 .

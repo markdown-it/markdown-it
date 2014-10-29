@@ -4,20 +4,6 @@
 <p><del>Strikeout</del></p>
 .
 
-
-These are not strikeouts, you have to use exactly two "~~":
-.
-x ~~~foo~~~
-
-x ~~foo~~~
-
-x ~~~foo~~
-.
-<p>x ~~~foo~~~</p>
-<p>x ~~foo~~~</p>
-<p>x ~~~foo~~</p>
-.
-
 Strikeouts have the same priority as emphases:
 
 .
