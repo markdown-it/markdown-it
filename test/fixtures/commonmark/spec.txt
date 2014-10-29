@@ -2,8 +2,8 @@
 title: CommonMark Spec
 author:
 - John MacFarlane
-version: 2
-date: 2014-09-19
+version: 0.6
+date: 2014-10-26
 ...
 
 # Introduction
@@ -192,10 +192,10 @@ In the examples, the `→` character is used to represent tabs.
 # Preprocessing
 
 A [line](#line) <a id="line"></a>
-is a sequence of zero or more characters followed by a line
-ending (CR, LF, or CRLF) or by the end of
-file.
+is a sequence of zero or more [characters](#character) followed by a
+line ending (CR, LF, or CRLF) or by the end of file.
 
+A [character](#character)<a id="character"></a> is a unicode code point.
 This spec does not specify an encoding; it thinks of lines as composed
 of characters rather than bytes.  A conforming parser may be limited
 to a certain encoding.
@@ -377,16 +377,18 @@ Spaces are allowed at the end:
 <hr />
 .
 
-However, no other characters may occur at the end or the
-beginning:
+However, no other characters may occur in the line:
 
 .
 _ _ _ _ a
 
 a------
+
+---a---
 .
 <p>_ _ _ _ a</p>
 <p>a------</p>
+<p>---a---</p>
 .
 
 It is required that all of the non-space characters be the same.
@@ -426,8 +428,11 @@ bar
 <p>bar</p>
 .
 
-Note, however, that this is a setext header, not a paragraph followed
-by a horizontal rule:
+If a line of dashes that meets the above conditions for being a
+horizontal rule could also be interpreted as the underline of a [setext
+header](#setext-header), the interpretation as a
+[setext-header](#setext-header) takes precedence. Thus, for example,
+this is a setext header, not a paragraph followed by a horizontal rule:
 
 .
 Foo
@@ -474,11 +479,11 @@ consists of a string of characters, parsed as inline content, between an
 opening sequence of 1--6 unescaped `#` characters and an optional
 closing sequence of any number of `#` characters.  The opening sequence
 of `#` characters cannot be followed directly by a nonspace character.
-The closing `#` characters may be followed by spaces only.  The opening
-`#` character may be indented 0-3 spaces.  The raw contents of the
-header are stripped of leading and trailing spaces before being parsed
-as inline content.  The header level is equal to the number of `#`
-characters in the opening sequence.
+The optional closing sequence of `#`s must be preceded by a space and may be
+followed by spaces only.  The opening `#` character may be indented 0-3
+spaces.  The raw contents of the header are stripped of leading and
+trailing spaces before being parsed as inline content.  The header level
+is equal to the number of `#` characters in the opening sequence.
 
 Simple headers:
 
@@ -609,16 +614,24 @@ header:
 <h3>foo ### b</h3>
 .
 
+The closing sequence must be preceded by a space:
+
+.
+# foo#
+.
+<h1>foo#</h1>
+.
+
 Backslash-escaped `#` characters do not count as part
 of the closing sequence:
 
 .
 ### foo \###
-## foo \#\##
+## foo #\##
 # foo \#
 .
-<h3>foo #</h3>
-<h2>foo ##</h2>
+<h3>foo ###</h3>
+<h2>foo ###</h2>
 <h1>foo #</h1>
 .
 
@@ -662,7 +675,10 @@ ATX headers can be empty:
 A [setext header](#setext-header) <a id="setext-header"></a>
 consists of a line of text, containing at least one nonspace character,
 with no more than 3 spaces indentation, followed by a [setext header
-underline](#setext-header-underline).  A [setext header
+underline](#setext-header-underline).  The line of text must be
+one that, were it not followed by the setext header underline,
+would be interpreted as part of a paragraph:  it cannot be a code
+block, header, blockquote, horizontal rule, or list.  A [setext header
 underline](#setext-header-underline) <a id="setext-header-underline"></a>
 is a sequence of `=` characters or a sequence of `-` characters, with no
 more than 3 spaces indentation and any number of trailing
@@ -807,7 +823,8 @@ of dashes"/>
 <p>of dashes&quot;/&gt;</p>
 .
 
-The setext header underline cannot be a lazy line:
+The setext header underline cannot be a [lazy continuation
+line](#lazy-continuation-line) in a list item or block quote:
 
 .
 > Foo
@@ -816,6 +833,16 @@ The setext header underline cannot be a lazy line:
 <blockquote>
 <p>Foo</p>
 </blockquote>
+<hr />
+.
+
+.
+- Foo
+---
+.
+<ul>
+<li>Foo</li>
+</ul>
 <hr />
 .
 
@@ -863,6 +890,56 @@ Setext headers cannot be empty:
 <p>====</p>
 .
 
+Setext header text lines must not be interpretable as block
+constructs other than paragraphs.  So, the line of dashes
+in these examples gets interpreted as a horizontal rule:
+
+.
+---
+---
+.
+<hr />
+<hr />
+.
+
+.
+- foo
+-----
+.
+<ul>
+<li>foo</li>
+</ul>
+<hr />
+.
+
+.
+    foo
+---
+.
+<pre><code>foo
+</code></pre>
+<hr />
+.
+
+.
+> foo
+-----
+.
+<blockquote>
+<p>foo</p>
+</blockquote>
+<hr />
+.
+
+If you want a header with `> foo` as its literal text, you can
+use backslash escapes:
+
+.
+\> foo
+------
+.
+<h2>&gt; foo</h2>
+.
 
 ## Indented code blocks
 
@@ -1232,6 +1309,40 @@ aaa
 </code></pre>
 .
 
+Closing fences may be indented by 0-3 spaces, and their indentation
+need not match that of the opening fence:
+
+.
+```
+aaa
+  ```
+.
+<pre><code>aaa
+</code></pre>
+.
+
+.
+   ```
+aaa
+  ```
+.
+<pre><code>aaa
+</code></pre>
+.
+
+This is not a closing fence, because it is indented 4 spaces:
+
+.
+```
+aaa
+    ```
+.
+<pre><code>aaa
+    ```
+</code></pre>
+.
+
+
 Code fences (opening and closing) cannot contain internal spaces:
 
 .
@@ -1401,7 +1512,7 @@ okay.
          <foo><a>
 .
 
-Here we have two code blocks with a Markdown paragraph between them:
+Here we have two HTML blocks with a Markdown paragraph between them:
 
 .
 <DIV CLASS="foo">
@@ -1447,11 +1558,11 @@ A processing instruction:
 
 .
 <?php
-  echo 'foo'
+  echo '>';
 ?>
 .
 <?php
-  echo 'foo'
+  echo '>';
 ?>
 .
 
@@ -1946,8 +2057,8 @@ bbb
 .
 
 Final spaces are stripped before inline parsing, so a paragraph
-that ends with two or more spaces will not end with a hard line
-break:
+that ends with two or more spaces will not end with a [hard line
+break](#hard-line-break):
 
 .
 aaa     
@@ -2375,7 +2486,8 @@ An [ordered list marker](#ordered-list-marker) <a id="ordered-list-marker"></a>
 is a sequence of one of more digits (`0-9`), followed by either a
 `.` character or a `)` character.
 
-The following rules define [list items](#list-item):
+The following rules define [list items](#list-item):<a
+id="list-item"></a>
 
 1.  **Basic case.**  If a sequence of lines *Ls* constitute a sequence of
     blocks *Bs* starting with a non-space character and not separated
@@ -2826,9 +2938,11 @@ Four spaces indent gives a code block:
     some or all of the indentation from one or more lines in which the
     next non-space character after the indentation is
     [paragraph continuation text](#paragraph-continuation-text) is a
-    list item with the same contents and attributes.
+    list item with the same contents and attributes.<a
+    id="lazy-continuation-line"></a>
 
-Here is an example with lazy continuation lines:
+Here is an example with [lazy continuation
+lines](#lazy-continuation-line):
 
 .
   1.  A paragraph
@@ -3002,6 +3116,21 @@ A list item may be empty:
 .
 <ul>
 <li></li>
+</ul>
+.
+
+A list item can contain a header:
+
+.
+- # Foo
+- Bar
+  ---
+  baz
+.
+<ul>
+<li><h1>Foo</h1></li>
+<li><h2>Bar</h2>
+<p>baz</p></li>
 </ul>
 .
 
@@ -3210,12 +3339,12 @@ of an [ordered list](#ordered-list) is determined by the list number of
 its initial list item.  The numbers of subsequent list items are
 disregarded.
 
-A list is [loose](#loose) if it any of its constituent list items are
-separated by blank lines, or if any of its constituent list items
-directly contain two block-level elements with a blank line between
-them.  Otherwise a list is [tight](#tight).  (The difference in HTML output
-is that paragraphs in a loose with are wrapped in `<p>` tags, while
-paragraphs in a tight list are not.)
+A list is [loose](#loose)<a id="loose"></a> if it any of its constituent
+list items are separated by blank lines, or if any of its constituent
+list items directly contain two block-level elements with a blank line
+between them.  Otherwise a list is [tight](#tight).<a id="tight"></a>
+(The difference in HTML output is that paragraphs in a loose list are
+wrapped in `<p>` tags, while paragraphs in a tight list are not.)
 
 Changing the bullet or ordered list delimiter starts a new list:
 
@@ -3246,6 +3375,87 @@ Changing the bullet or ordered list delimiter starts a new list:
 <li>baz</li>
 </ol>
 .
+
+In CommonMark, a list can interrupt a paragraph. That is,
+no blank line is needed to separate a paragraph from a following
+list:
+
+.
+Foo
+- bar
+- baz
+.
+<p>Foo</p>
+<ul>
+<li>bar</li>
+<li>baz</li>
+</ul>
+.
+
+`Markdown.pl` does not allow this, through fear of triggering a list
+via a numeral in a hard-wrapped line:
+
+.
+The number of windows in my house is
+14.  The number of doors is 6.
+.
+<p>The number of windows in my house is</p>
+<ol start="14">
+<li>The number of doors is 6.</li>
+</ol>
+.
+
+Oddly, `Markdown.pl` *does* allow a blockquote to interrupt a paragraph,
+even though the same considerations might apply.  We think that the two
+cases should be treated the same.  Here are two reasons for allowing
+lists to interrupt paragraphs:
+
+First, it is natural and not uncommon for people to start lists without
+blank lines:
+
+    I need to buy
+    - new shoes
+    - a coat
+    - a plane ticket
+
+Second, we are attracted to a
+
+> [principle of uniformity](#principle-of-uniformity):<a
+> id="principle-of-uniformity"></a> if a span of text has a certain
+> meaning, it will continue to have the same meaning when put into a list
+> item.
+
+(Indeed, the spec for [list items](#list-item) presupposes this.)
+This principle implies that if
+
+      * I need to buy
+        - new shoes
+        - a coat
+        - a plane ticket
+
+is a list item containing a paragraph followed by a nested sublist,
+as all Markdown implementations agree it is (though the paragraph
+may be rendered without `<p>` tags, since the list is "tight"),
+then
+
+    I need to buy
+    - new shoes
+    - a coat
+    - a plane ticket
+
+by itself should be a paragraph followed by a nested sublist.
+
+Our adherence to the [principle of uniformity](#principle-of-uniformity)
+thus inclines us to think that there are two coherent packages:
+
+1.  Require blank lines before *all* lists and blockquotes,
+    including lists that occur as sublists inside other list items.
+
+2.  Require blank lines in none of these places.
+
+[reStructuredText](http://docutils.sourceforge.net/rst.html) takes
+the first approach, for which there is much to be said.  But the second
+seems more consistent with established practice with Markdown.
 
 There can be blank lines between items, but two blank lines end
 a list:
@@ -3463,8 +3673,8 @@ This is a tight list, because the blank lines are in a code block:
 .
 
 This is a tight list, because the blank line is between two
-paragraphs of a sublist.  So the inner list is loose while
-the other list is tight:
+paragraphs of a sublist.  So the sublist is loose while
+the outer list is tight:
 
 .
 - a
@@ -3650,7 +3860,8 @@ If a backslash is itself escaped, the following character is not:
 <p>\<em>emphasis</em></p>
 .
 
-A backslash at the end of the line is a hard line break:
+A backslash at the end of the line is a [hard line
+break](#hard-line-break):
 
 .
 foo\
@@ -4095,21 +4306,42 @@ for efficient parsing strategies that do not backtrack:
     (c) it is not followed by an ASCII alphanumeric character.
 
 9.  Emphasis begins with a delimiter that [can open
-    emphasis](#can-open-emphasis) and includes inlines parsed
-    sequentially until a delimiter that [can close
+    emphasis](#can-open-emphasis) and ends with a delimiter that [can close
     emphasis](#can-close-emphasis), and that uses the same
-    character (`_` or `*`) as the opening delimiter, is reached.
+    character (`_` or `*`) as the opening delimiter.  The inlines
+    between the open delimiter and the closing delimiter are the
+    contents of the emphasis inline.
 
 10. Strong emphasis begins with a delimiter that [can open strong
-    emphasis](#can-open-strong-emphasis) and includes inlines parsed
-    sequentially until a delimiter that [can close strong
-    emphasis](#can-close-strong-emphasis), and that uses the
-    same character (`_` or `*`) as the opening delimiter, is reached.
+    emphasis](#can-open-strong-emphasis) and ends with a delimiter that
+    [can close strong emphasis](#can-close-strong-emphasis), and that uses the
+    same character (`_` or `*`) as the opening delimiter.  The inlines
+    between the open delimiter and the closing delimiter are the
+    contents of the strong emphasis inline.
 
-11. In case of ambiguity, strong emphasis takes precedence.  Thus,
-    `**foo**` is `<strong>foo</strong>`, not `<em><em>foo</em></em>`,
-    and `***foo***` is `<strong><em>foo</em></strong>`, not
-    `<em><strong>foo</strong></em>` or `<em><em><em>foo</em></em></em>`.
+Where rules 1--10 above are compatible with multiple parsings,
+the following principles resolve ambiguity:
+
+11. An interpretation `<strong>...</strong>` is always preferred to
+    `<em><em>...</em></em>`.
+
+12. An interpretation `<strong><em>...</em></strong>` is always
+    preferred to `<em><strong>..</strong></em>`.
+
+13. Earlier closings are preferred to later closings.  Thus,
+    when two potential emphasis or strong emphasis spans overlap,
+    the first takes precedence: for example, `*foo _bar* baz_`
+    is parsed as `<em>foo _bar</em> baz_` rather than
+    `*foo <em>bar* baz</em>`.  For the same reason,
+    `**foo*bar**` is parsed as `<em><em>foo</em>bar</em>*`
+    rather than `<strong>foo*bar</strong>`.
+
+14. Inline code spans, links, images, and HTML tags group more tightly
+    than emphasis.  So, when there is a choice between an interpretation
+    that contains one of these elements and one that does not, the
+    former always wins.  Thus, for example, `*[foo*](bar)` is
+    parsed as `*<a href="bar">foo*</a>` rather than as
+    `<em>[foo</em>](bar)`.
 
 These rules can be illustrated through a series of examples.
 
@@ -4719,6 +4951,46 @@ More cases with mismatched delimiters:
 ***foo *bar*
 .
 <p>***foo <em>bar</em></p>
+.
+
+The following cases illustrate rule 13:
+
+.
+*foo _bar* baz_
+.
+<p><em>foo _bar</em> baz_</p>
+.
+
+.
+**foo bar* baz**
+.
+<p><em><em>foo bar</em> baz</em>*</p>
+.
+
+The following cases illustrate rule 14:
+
+.
+*[foo*](bar)
+.
+<p>*<a href="bar">foo*</a></p>
+.
+
+.
+*![foo*](bar)
+.
+<p>*<img src="bar" alt="foo*" /></p>
+.
+
+.
+*<img src="foo" title="*"/>
+.
+<p>*<img src="foo" title="*"/></p>
+.
+
+.
+*a`a*`
+.
+<p>*a<code>a*</code></p>
 .
 
 ## Links
@@ -5859,7 +6131,8 @@ Backslash escapes do not work in HTML attributes:
 ## Hard line breaks
 
 A line break (not in a code span or HTML tag) that is preceded
-by two or more spaces is parsed as a linebreak (rendered
+by two or more spaces is parsed as a [hard line
+break](#hard-line-break)<a id="hard-line-break"></a> (rendered
 in HTML as a `<br />` tag):
 
 .
@@ -6209,5 +6482,3 @@ an `emph`.
 
 The document can be rendered as HTML, or in any other format, given
 an appropriate renderer.
-
-
