@@ -1,3 +1,10 @@
+1.3.0 / 2014-10-29
+------------------
+
+- Fixed problem with minified & mangled browser version.
+- Changed ruler API.
+
+
 1.2.2 / 2014-10-29
 ------------------
 
