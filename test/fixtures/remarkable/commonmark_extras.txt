@@ -63,3 +63,17 @@ Issue #55:
 <p>![test]</p>
 <p>![test](foo bar)</p>
 .
+
+Should unescape only needed things in link destinations/titles:
+
+.
+[test](<\f\o\o\>\\>)
+.
+<p><a href="%5Cf%5Co%5Co%3E%5C">test</a></p>
+.
+
+.
+[test](foo "\\\"\b\a\r")
+.
+<p><a href="foo" title="\&quot;\b\a\r">test</a></p>
+.
