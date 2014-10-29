@@ -1,3 +1,13 @@
+1.2.2 / 2014-10-29
+------------------
+
+- Fixed regression from 1.2.1 for data without tailing `\n`.
+- Fixed blockquote line ranges.
+- Added subscript/superscript support.
+- Updated CommonMark spec and updated implementation.
+- Other minor changes.
+
+
 1.2.1 / 2014-10-28
 ------------------
 

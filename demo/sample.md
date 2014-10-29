@@ -56,6 +56,10 @@ _This is italic text_
 
 ~~Deleted text~~
 
+Superscript: 19^th^
+
+Subscript: H~2~O
+
 ++Inserted text++
 
 ==Marked text==

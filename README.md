@@ -46,8 +46,8 @@ console.log(md.render('# Remarkable rulezz!'));
 
 ### Options
 
-By default remarkable is configured to be similar to GFM, but with HTML disabled. This is easy to change
-if you prefer to use different settings.
+By default remarkable is configured to be similar to GFM, but with HTML disabled.
+This is easy to change if you prefer to use different settings.
 
 There are two ways to define options.
 
@@ -88,15 +88,16 @@ md.set({
 });
 ```
 
-**Note:** To achieve the best possible performance, don't modify a `Remarkable` instance on
-the fly. If you need multiple configurations it's best to create multiple instances and initialize
-each with a configuration that is ideal for that instance.
+**Note:** To achieve the best possible performance, don't modify a `Remarkable`
+instance on the fly. If you need multiple configurations it's best to create
+multiple instances and initialize each with a configuration that is ideal for
+that instance.
 
 
 ### Presets
 
-Remarkable offers some "presets" as a convenience to quickly enable/disable active syntax rules and options
-for common use cases. 
+Remarkable offers some "presets" as a convenience to quickly enable/disable
+active syntax rules and options for common use cases.
 
 #### commonmark
 
@@ -109,11 +110,18 @@ var md = new Remarkable('commonmark');
 
 #### full
 
-Enable everything with the `full` preset:
+Enable all available rules (but still with default options, if not set):
 
 ```js
 var Remarkable = require('remarkable');
 var md = new Remarkable('full');
+
+// Or with options:
+var md = new Remarkable('full', {
+  html: true,
+  linkify: true,
+  typographer: true
+});
 ```
 
 
@@ -149,15 +157,19 @@ var md = new Remarkable({
 Enabled by default:
 
 - [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
-- [\<del>](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM strikethrough) - `~~deleted text~~`
+- [\<del>](https://help.github.com/articles/github-flavored-markdown/#strikethrough)
+  (GFM strikethrough) - `~~deleted text~~`
 
 Disabled by default:
 
+- [\<sup](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `19^th^`
+- [\<sub>](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `H~2~0`
 - __\<ins>__ - `++inserted text++` (experimental)
 - __\<mark>__ - `==marked text==` (experimental)
 
-__*__ Experimental extentions can be changed later for something like [Critic Markup](http://criticmarkup.com/), but you will 
-still be able to use old-style rules via external plugins if you prefer.
+__*__ Experimental extentions can be changed later for something like
+[Critic Markup](http://criticmarkup.com/), but you will still be able to use
+old-style rules via external plugins if you prefer.
 
 
 ### Manage rules
