@@ -2,8 +2,8 @@
 title: CommonMark Spec
 author:
 - John MacFarlane
-version: 0.6
-date: 2014-10-26
+version: 0.7
+date: 2014-10-28
 ...
 
 # Introduction
@@ -4328,15 +4328,21 @@ the following principles resolve ambiguity:
 12. An interpretation `<strong><em>...</em></strong>` is always
     preferred to `<em><strong>..</strong></em>`.
 
-13. Earlier closings are preferred to later closings.  Thus,
-    when two potential emphasis or strong emphasis spans overlap,
-    the first takes precedence: for example, `*foo _bar* baz_`
-    is parsed as `<em>foo _bar</em> baz_` rather than
-    `*foo <em>bar* baz</em>`.  For the same reason,
+13. When two potential emphasis or strong emphasis spans overlap,
+    so that the second begins before the first ends and ends after
+    the first ends, the first is preferred. Thus, for example,
+    `*foo _bar* baz_` is parsed as `<em>foo _bar</em> baz_` rather
+    than `*foo <em>bar* baz</em>`.  For the same reason,
     `**foo*bar**` is parsed as `<em><em>foo</em>bar</em>*`
     rather than `<strong>foo*bar</strong>`.
 
-14. Inline code spans, links, images, and HTML tags group more tightly
+14. When there are two potential emphasis or strong emphasis spans
+    with the same closing delimiter, the shorter one (the one that
+    opens later) is preferred. Thus, for example,
+    `**foo **bar baz**` is parsed as `**foo <strong>bar baz</strong>`
+    rather than `<strong>foo **bar baz</strong>`.
+
+15. Inline code spans, links, images, and HTML tags group more tightly
     than emphasis.  So, when there is a choice between an interpretation
     that contains one of these elements and one that does not, the
     former always wins.  Thus, for example, `*[foo*](bar)` is
@@ -4968,6 +4974,20 @@ The following cases illustrate rule 13:
 .
 
 The following cases illustrate rule 14:
+
+.
+**foo **bar baz**
+.
+<p>**foo <strong>bar baz</strong></p>
+.
+
+.
+*foo *bar baz*
+.
+<p>*foo <em>bar baz</em></p>
+.
+
+The following cases illustrate rule 15:
 
 .
 *[foo*](bar)
