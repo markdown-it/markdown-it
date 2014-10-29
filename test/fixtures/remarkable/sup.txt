@@ -1,0 +1,18 @@
+
+.
+^foo ^bar^ baz^
+.
+<p><sup>foo <sup>bar</sup> baz</sup></p>
+.
+
+.
+^foo ~bar~ baz^
+.
+<p><sup>foo <sub>bar</sub> baz</sup></p>
+.
+
+.
+this ^ is ^ not ^ superscript
+.
+<p>this ^ is ^ not ^ superscript</p>
+.

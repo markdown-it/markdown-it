@@ -1,0 +1,12 @@
+
+.
+~foo ~bar~ baz~
+.
+<p><sup>foo <sup>bar</sup> baz</sup></p>
+.
+
+.
+this ~ is ~ not ~ subscript
+.
+<p>this ~ is ~ not ~ subscript</p>
+.
