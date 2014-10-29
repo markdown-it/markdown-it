@@ -1,4 +1,4 @@
-/*! remarkable 1.2.2 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! remarkable 1.3.0 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2845,7 +2845,7 @@ var Ruler  = require('./ruler');
 
 
 var _rules = [
-  require('./rules_text/linkify')
+  [ 'linkify', require('./rules_text/linkify') ]
 ];
 
 
@@ -2857,7 +2857,7 @@ function Linkifier() {
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
   for (var i = 0; i < _rules.length; i++) {
-    this.ruler.after(_rules[i]);
+    this.ruler.push(_rules[i][0], _rules[i][1]);
   }
 }
 
@@ -3071,19 +3071,18 @@ var Ruler           = require('./ruler');
 var State           = require('./rules_block/state_block');
 
 
-var _rules = [];
-
-// `list` should be after `hr`, but before `heading`
-_rules.push([ require('./rules_block/code') ]);
-_rules.push([ require('./rules_block/fences'),     'paragraph', 'blockquote', 'list' ]);
-_rules.push([ require('./rules_block/blockquote'), 'paragraph', 'blockquote', 'list' ]);
-_rules.push([ require('./rules_block/hr'),         'paragraph', 'blockquote', 'list' ]);
-_rules.push([ require('./rules_block/list'),       'paragraph', 'blockquote' ]);
-_rules.push([ require('./rules_block/heading'),    'paragraph', 'blockquote' ]);
-_rules.push([ require('./rules_block/lheading') ]);
-_rules.push([ require('./rules_block/htmlblock'),  'paragraph', 'blockquote' ]);
-_rules.push([ require('./rules_block/table'),      'paragraph' ]);
-_rules.push([ require('./rules_block/paragraph') ]);
+var _rules = [
+  [ 'code',       require('./rules_block/code') ],
+  [ 'fences',     require('./rules_block/fences'),     [ 'paragraph', 'blockquote', 'list' ] ],
+  [ 'blockquote', require('./rules_block/blockquote'), [ 'paragraph', 'blockquote', 'list' ] ],
+  [ 'hr',         require('./rules_block/hr'),         [ 'paragraph', 'blockquote', 'list' ] ],
+  [ 'list',       require('./rules_block/list'),       [ 'paragraph', 'blockquote' ] ],
+  [ 'heading',    require('./rules_block/heading'),    [ 'paragraph', 'blockquote' ] ],
+  [ 'lheading',   require('./rules_block/lheading') ],
+  [ 'htmlblock',  require('./rules_block/htmlblock'),  [ 'paragraph', 'blockquote' ] ],
+  [ 'table',      require('./rules_block/table'),      [ 'paragraph' ] ],
+  [ 'paragraph',  require('./rules_block/paragraph') ]
+];
 
 
 // Block Parser class
@@ -3097,7 +3096,7 @@ function ParserBlock() {
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
   for (var i = 0; i < _rules.length; i++) {
-    this.ruler.after(_rules[i][0], _rules[i].slice(1));
+    this.ruler.push(_rules[i][0], _rules[i][1], { alt: (_rules[i][2] || []).slice() });
   }
 }
 
@@ -3225,22 +3224,22 @@ var StateInline = require('./rules_inline/state_inline');
 ////////////////////////////////////////////////////////////////////////////////
 // Parser rules
 
-var _rules = [];
-
-_rules.push(require('./rules_inline/text'));
-_rules.push(require('./rules_inline/newline'));
-_rules.push(require('./rules_inline/escape'));
-_rules.push(require('./rules_inline/backticks'));
-_rules.push(require('./rules_inline/del'));
-_rules.push(require('./rules_inline/ins'));
-_rules.push(require('./rules_inline/mark'));
-_rules.push(require('./rules_inline/emphasis'));
-_rules.push(require('./rules_inline/sub'));
-_rules.push(require('./rules_inline/sup'));
-_rules.push(require('./rules_inline/links'));
-_rules.push(require('./rules_inline/autolink'));
-_rules.push(require('./rules_inline/htmltag'));
-_rules.push(require('./rules_inline/entity'));
+var _rules = [
+  [ 'text',       require('./rules_inline/text') ],
+  [ 'newline',    require('./rules_inline/newline') ],
+  [ 'escape',     require('./rules_inline/escape') ],
+  [ 'backticks',  require('./rules_inline/backticks') ],
+  [ 'del',        require('./rules_inline/del') ],
+  [ 'ins',        require('./rules_inline/ins') ],
+  [ 'mark',       require('./rules_inline/mark') ],
+  [ 'emphasis',   require('./rules_inline/emphasis') ],
+  [ 'sub',        require('./rules_inline/sub') ],
+  [ 'sup',        require('./rules_inline/sup') ],
+  [ 'links',      require('./rules_inline/links') ],
+  [ 'autolink',   require('./rules_inline/autolink') ],
+  [ 'htmltag',    require('./rules_inline/htmltag') ],
+  [ 'entity',     require('./rules_inline/entity') ]
+];
 
 
 var BAD_PROTOCOLS = [ 'vbscript', 'javascript', 'file' ];
@@ -3276,7 +3275,7 @@ function ParserInline() {
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
   for (var i = 0; i < _rules.length; i++) {
-    this.ruler.after(_rules[i]);
+    this.ruler.push(_rules[i][0], _rules[i][1]);
   }
 }
 
@@ -3755,20 +3754,6 @@ module.exports = Renderer;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// helpers
-
-function _class(obj) { return Object.prototype.toString.call(obj); }
-function isFunction(obj) { return _class(obj) === '[object Function]'; }
-
-function functionName(fn) {
-  var ret = fn.toString();
-  ret = ret.substr('function '.length);
-  ret = ret.substr(0, ret.indexOf('('));
-  return ret;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
 
 function Ruler(compileFn) {
   this.compile = compileFn; // callback to call after each change
@@ -3798,89 +3783,68 @@ Ruler.prototype.find = function (name) {
 };
 
 
-// Replace/delete parser function
+// Replace rule function
 //
-Ruler.prototype.at = function (name, fn, altNames) {
+Ruler.prototype.at = function (name, fn, options) {
   var index = this.find(name);
+  var opt = options || {};
 
-  if (index === -1) {
-    throw new Error('Parser rule not found: ' + name);
-  }
+  if (index === -1) { throw new Error('Parser rule not found: ' + name); }
 
-  if (isFunction(fn)) {
-    this.rules[index].fn = fn;
-    if (altNames) {
-      this.rules[index].alt = altNames;
-    }
-  } else {
-    this.rules = this.rules.slice(0, index).concat(this.rules.slice(index + 1));
-  }
+  this.rules[index].fn = fn;
+  this.rules[index].alt = opt.alt || [];
+  this.compile();
+};
+
+
+// Add rule to chain before one with given name.
+//
+Ruler.prototype.before = function (beforeName, ruleName, fn, options) {
+  var index = this.find(beforeName);
+  var opt = options || {};
+
+  if (index === -1) { throw new Error('Parser rule not found: ' + beforeName); }
+
+  this.rules.splice(index, 0, {
+    name: ruleName,
+    enabled: true,
+    fn: fn,
+    alt: opt.alt || []
+  });
 
   this.compile();
 };
 
 
-// Add function to parser chain before one with given name.
-// Or add to start, if name not defined
+// Add rule to chain after one with given name.
 //
-Ruler.prototype.before = function (name, fn, altNames) {
-  var index, rule;
+Ruler.prototype.after = function (afterName, ruleName, fn, options) {
+  var index = this.find(afterName);
+  var opt = options || {};
 
-  if (isFunction(name)) {
-    altNames = fn;
-    fn = name;
-    name = '';
-  }
+  if (index === -1) { throw new Error('Parser rule not found: ' + afterName); }
 
-  rule = {
-    name: functionName(fn),
+  this.rules.splice(index + 1, 0, {
+    name: ruleName,
     enabled: true,
     fn: fn,
-    alt: altNames || []
-  };
-
-  if (!name) {
-    this.rules.unshift(rule);
-  } else {
-    index = this.find(name);
-    if (index === -1) {
-      throw new Error('Parser rule not found: ' + name);
-    }
-    this.rules.splice(index, 0, rule);
-  }
+    alt: opt.alt || []
+  });
 
   this.compile();
 };
 
-
-// Add function to parser chain after one with given name.
-// Or add to end, if name not defined
+// Add rule to the end of chain.
 //
-Ruler.prototype.after = function (name, fn, altNames) {
-  var index, rule;
+Ruler.prototype.push = function (ruleName, fn, options) {
+  var opt = options || {};
 
-  if (isFunction(name)) {
-    altNames = fn;
-    fn = name;
-    name = '';
-  }
-
-  rule = {
-    name: functionName(fn),
+  this.rules.push({
+    name: ruleName,
     enabled: true,
     fn: fn,
-    alt: altNames || []
-  };
-
-  if (!name) {
-    this.rules.push(rule);
-  } else {
-    index = this.find(name);
-    if (index === -1) {
-      throw new Error('Parser rule not found: ' + name);
-    }
-    this.rules.splice(index + 1, 0, rule);
-  }
+    alt: opt.alt || []
+  });
 
   this.compile();
 };
@@ -6515,8 +6479,8 @@ var Ruler    = require('./ruler');
 
 
 var _rules = [
-  require('./rules_text/replace'),
-  require('./rules_text/smartquotes')
+  [ 'replace',      require('./rules_text/replace') ],
+  [ 'smartquotes',  require('./rules_text/smartquotes') ]
 ];
 
 
@@ -6528,7 +6492,7 @@ function Typographer() {
   this.ruler = new Ruler(this.rulesUpdate.bind(this));
 
   for (var i = 0; i < _rules.length; i++) {
-    this.ruler.after(_rules[i]);
+    this.ruler.push(_rules[i][0], _rules[i][1]);
   }
 }
 
