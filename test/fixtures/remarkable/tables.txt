@@ -110,3 +110,20 @@ Nested tables inside lists:
 </ul>
 <p>baz|baz</p>
 .
+
+Minimal one-column table test:
+
+.
+| foo
+|----
+| test2
+.
+<table>
+<thead>
+<tr><th>foo</th></tr>
+</thead>
+<tbody>
+<tr><td>test2</td></tr>
+</tbody>
+</table>
+.
