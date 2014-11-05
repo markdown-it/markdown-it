@@ -63,7 +63,13 @@ var md = new Remarkable({
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
   linkify:      false,        // Autoconvert URL-like text to links
-  typographer:  false,        // Enable smartypants and other sweet transforms
+
+  // Enable some language-neutral replacement + quotes beautification
+  typographer:  false,
+
+  // Double + single quotes replacement pairs, when typographer enabled,
+  // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+  quotes: '“”‘’',
 
   // Highlighter function. Should return escaped HTML,
   // or '' if the source string is not changed
@@ -195,21 +201,27 @@ provides coverage for the most common and universal use cases:
 
 ```js
 var Remarkable = require('remarkable');
-var md = new Remarkable({ typographer: true });
+var md = new Remarkable({
+  typographer: true,
+  quotes: '“”‘’'
+});
 
-// Actual default values
-md.typographer.set({
-  singleQuotes: '‘’', // set empty to disable
-  doubleQuotes: '“”', // set '«»' for Russian, '„“' for German, empty to disable
-  copyright:    true, // (c) (C) → ©
-  trademark:    true, // (tm) (TM) → ™
-  registered:   true, // (r) (R) → ®
-  plusminus:    true, // +- → ±
-  paragraph:    true, // (p) (P) -> §
-  ellipsis:     true, // ... → … (also ?.... → ?.., !.... → !..)
-  dupes:        true, // ???????? → ???, !!!!! → !!!, `,,` → `,`
-  dashes:       true  // -- → &ndash;, --- → &mdash;
-})
+// Disable rules at all:
+md.core.ruler.disable([ 'replacements', 'smartquotes' ]);
+
+// Actual default replacements:
+//
+// '' → ‘’
+// "" → “”. Set '«»' for Russian, '„“' for German, empty to disable
+// (c) (C) → ©
+// (tm) (TM) → ™
+// (r) (R) → ®
+// +- → ±
+// (p) (P) -> §
+// ... → … (also ?.... → ?.., !.... → !..)
+// ???????? → ???, !!!!! → !!!, `,,` → `,`
+// -- → &ndash;, --- → &mdash;
+//
 ```
 
 Of course, you can also add your own rules or replace the defaults with something
@@ -250,14 +262,12 @@ reconfigure anyone as you wish. Render also can be modified and extended. See
 source code to understand details. Pay attention to these properties:
 
 ```js
+Remarkable.core
+Remarkable.core.ruler
 Remarkable.block
 Remarkable.block.ruler
 Remarkable.inline
 Remarkable.inline.ruler
-Remarkable.typographer
-Remarkable.typographer.ruler
-Remarkable.linkifier
-Remarkable.linkifier.ruler
 Remarkable.renderer
 Remarkable.renderer.rules
 ```
