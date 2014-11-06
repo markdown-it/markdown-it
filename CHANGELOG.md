@@ -2,10 +2,12 @@
 ------------------
 
 - Added `core` chain, to better organize code and improve pluggability.
+- Added `renderInline()` and `parseInline()` methods.
 - Fixed problem with tables, having single column.
 - Changed internal api, related to Ruler use.
 - Removed typographer chain (rules moved to `core`)
 - Removed all typographer options. Quote chars defs moved to `options.quotes`.
+
 
 1.3.0 / 2014-10-29
 ------------------

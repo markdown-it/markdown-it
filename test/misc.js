@@ -8,14 +8,14 @@ var Remarkable = require('../');
 
 describe('Utils', function () {
 
-  it('utils.fromCodePoint', function () {
+  it('fromCodePoint', function () {
     var fromCodePoint = require('../lib/common/utils').fromCodePoint;
 
     assert.strictEqual(fromCodePoint(0x20), ' ');
     assert.strictEqual(fromCodePoint(0x1F601), '😁');
   });
 
-  it('utils.isValidEntityCode', function () {
+  it('isValidEntityCode', function () {
     var isValidEntityCode = require('../lib/common/utils').isValidEntityCode;
 
     assert.strictEqual(isValidEntityCode(0x20), true);
@@ -29,7 +29,7 @@ describe('Utils', function () {
     assert.strictEqual(isValidEntityCode(0x7F), false);
   });
 
-  it('utils.assign', function () {
+  it('assign', function () {
     var assign = require('../lib/common/utils').assign;
 
     assert.deepEqual(assign({ a: 1 }, null, { b: 2 }), { a: 1, b: 2 });
@@ -88,6 +88,12 @@ describe('Misc', function () {
     var md = new Remarkable();
 
     assert.strictEqual(md.render(''), '');
+  });
+
+  it('Should parse inlines only', function () {
+    var md = new Remarkable();
+
+    assert.strictEqual(md.renderInline('a *b* c'), 'a <em>b</em> c');
   });
 
 });
