@@ -43,14 +43,23 @@ describe('Utils', function () {
 
 describe('API', function () {
 
-  it('Constructor', function () {
+  it('constructor', function () {
     assert.throws(function () {
       var md = new Remarkable('bad preset');
       md.render('123');
     });
   });
 
-  it('Plugin', function () {
+  it('configure coverage', function () {
+    var md = new Remarkable();
+
+    // conditions coverage
+    md.configure({});
+
+    md.render('123');
+  });
+
+  it('plugin', function () {
     var succeeded = false;
 
     function plugin(self, opts) { if (opts === 'bar') { succeeded = true; } }
@@ -73,6 +82,12 @@ describe('Misc', function () {
 
     assert.strictEqual(md.render('123'), '<p>123</p>\n');
     assert.strictEqual(md.render('123\n'), '<p>123</p>\n');
+  });
+
+  it('Should quickly exit on empty string', function () {
+    var md = new Remarkable();
+
+    assert.strictEqual(md.render(''), '');
   });
 
 });

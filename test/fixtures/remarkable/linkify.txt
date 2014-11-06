@@ -44,3 +44,14 @@ www.example.org版权所有
 .
 <p><a href="http://www.example.org">www.example.org</a>版权所有</p>
 .
+
+
+emails
+.
+test@example.com
+
+mailto:test@example.com
+.
+<p><a href="mailto:test@example.com">test@example.com</a></p>
+<p><a href="mailto:test@example.com">mailto:test@example.com</a></p>
+.
