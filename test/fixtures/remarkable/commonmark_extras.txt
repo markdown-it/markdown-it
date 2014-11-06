@@ -64,6 +64,7 @@ Issue #55:
 <p>![test](foo bar)</p>
 .
 
+
 Should unescape only needed things in link destinations/titles:
 
 .
@@ -76,4 +77,22 @@ Should unescape only needed things in link destinations/titles:
 [test](foo "\\\"\b\a\r")
 .
 <p><a href="foo" title="\&quot;\b\a\r">test</a></p>
+.
+
+
+Not a closing tag
+
+.
+</ 123>
+.
+<p>&lt;/ 123&gt;</p>
+.
+
+
+Not a list item
+
+.
+1.list
+.
+<p>1.list</p>
 .
