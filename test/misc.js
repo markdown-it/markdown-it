@@ -51,12 +51,12 @@ describe('API', function () {
   });
 
   it('configure coverage', function () {
-    var md = new Remarkable();
+    var md = new Remarkable('full');
 
     // conditions coverage
     md.configure({});
 
-    md.render('123');
+    assert.strictEqual(md.render('123'), '<p>123</p>\n');
   });
 
   it('plugin', function () {
@@ -115,7 +115,6 @@ describe('API', function () {
     assert.strictEqual(md.render('![]()'), '<p><img src="" alt=""></p>\n');
     assert.strictEqual(md.render('a  \\\nb'), '<p>a  <br>\nb</p>\n');
   });
-
 });
 
 
@@ -135,7 +134,7 @@ describe('Misc', function () {
   });
 
   it('Should parse inlines only', function () {
-    var md = new Remarkable();
+    var md = new Remarkable('full');
 
     assert.strictEqual(md.renderInline('a *b* c'), 'a <em>b</em> c');
   });
