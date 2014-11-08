@@ -42,7 +42,7 @@ Should not allow some protocols in links and images
 .
 [xss link](&#34;&#62;&#60;script&#62;alert&#40;&#34;xss&#34;&#41;&#60;/script&#62;)
 .
-<p><a href="&amp;#34;&amp;#62;&amp;#60;script&amp;#62;alert&amp;#40;&amp;#34;xss&amp;#34;&amp;#41;&amp;#60;/script&amp;#62;">xss link</a></p>
+<p><a href="%22%3E%3Cscript%3Ealert(%22xss%22)%3C/script%3E">xss link</a></p>
 .
 
 

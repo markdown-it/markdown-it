@@ -96,3 +96,14 @@ Not a list item
 .
 <p>1.list</p>
 .
+
+
+Coverage. Direcctive can terminate paragraph.
+
+.
+a
+<?php
+.
+<p>a</p>
+<?php
+.

@@ -29,6 +29,18 @@ describe('Utils', function () {
     assert.strictEqual(isValidEntityCode(0x7F), false);
   });
 
+  it('replaceEntities', function () {
+    var replaceEntities = require('../lib/common/utils').replaceEntities;
+
+    assert.strictEqual(replaceEntities('&amp;'), '&');
+    assert.strictEqual(replaceEntities('&#32;'), ' ');
+    assert.strictEqual(replaceEntities('&#x20;'), ' ');
+    assert.strictEqual(replaceEntities('&amp;&amp;'), '&&');
+
+    assert.strictEqual(replaceEntities('&am;'), '&am;');
+    assert.strictEqual(replaceEntities('&#00;'), '&#00;');
+  });
+
   it('assign', function () {
     var assign = require('../lib/common/utils').assign;
 
