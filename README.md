@@ -170,6 +170,7 @@ Disabled by default:
 
 - [\<sup>](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `19^th^`
 - [\<sub>](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `H~2~0`
+- [abbreviations](https://michelf.ca/projects/php-markdown/extra/#abbr)
 - __\<ins>__ - `++inserted text++` (experimental)
 - __\<mark>__ - `==marked text==` (experimental)
 
