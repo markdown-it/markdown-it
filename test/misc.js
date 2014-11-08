@@ -92,6 +92,28 @@ describe('API', function () {
     assert.strictEqual(md.render('```\n&\n```'), '<pre><code>&amp;\n</code></pre>\n');
   });
 
+  it('force hardbreaks', function () {
+    var md = new Remarkable({ breaks: true });
+
+    assert.strictEqual(md.render('a\nb'), '<p>a<br>\nb</p>\n');
+  });
+
+  it('xhtmlOut enabled', function () {
+    var md = new Remarkable({ breaks: true, xhtmlOut: true });
+
+    assert.strictEqual(md.render('---'), '<hr />\n');
+    assert.strictEqual(md.render('![]()'), '<p><img src="" alt="" /></p>\n');
+    assert.strictEqual(md.render('a\nb'), '<p>a<br />\nb</p>\n');
+  });
+
+  it('xhtmlOut disabled', function () {
+    var md = new Remarkable();
+
+    assert.strictEqual(md.render('---'), '<hr>\n');
+    assert.strictEqual(md.render('![]()'), '<p><img src="" alt=""></p>\n');
+    assert.strictEqual(md.render('a  \\\nb'), '<p>a  <br>\nb</p>\n');
+  });
+
 });
 
 
