@@ -96,14 +96,16 @@ describe('API', function () {
     var md = new Remarkable({ breaks: true });
 
     assert.strictEqual(md.render('a\nb'), '<p>a<br>\nb</p>\n');
+    md.set({ xhtmlOut: true })
+    assert.strictEqual(md.render('a\nb'), '<p>a<br />\nb</p>\n');
   });
 
   it('xhtmlOut enabled', function () {
-    var md = new Remarkable({ breaks: true, xhtmlOut: true });
+    var md = new Remarkable({ xhtmlOut: true });
 
     assert.strictEqual(md.render('---'), '<hr />\n');
     assert.strictEqual(md.render('![]()'), '<p><img src="" alt="" /></p>\n');
-    assert.strictEqual(md.render('a\nb'), '<p>a<br />\nb</p>\n');
+    assert.strictEqual(md.render('a  \\\nb'), '<p>a  <br />\nb</p>\n');
   });
 
   it('xhtmlOut disabled', function () {
