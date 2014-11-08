@@ -72,6 +72,26 @@ describe('API', function () {
     assert.strictEqual(succeeded, true);
   });
 
+  it('highlight', function () {
+    var md = new Remarkable({
+      highlight: function (str) {
+        return '==' + str + '==';
+      }
+    });
+
+    assert.strictEqual(md.render('```\nhl\n```'), '<pre><code>==hl\n==</code></pre>\n');
+  });
+
+  it('highlight escape by default', function () {
+    var md = new Remarkable({
+      highlight: function () {
+        return '';
+      }
+    });
+
+    assert.strictEqual(md.render('```\n&\n```'), '<pre><code>&amp;\n</code></pre>\n');
+  });
+
 });
 
 
