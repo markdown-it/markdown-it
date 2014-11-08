@@ -96,7 +96,7 @@ describe('API', function () {
     var md = new Remarkable({ breaks: true });
 
     assert.strictEqual(md.render('a\nb'), '<p>a<br>\nb</p>\n');
-    md.set({ xhtmlOut: true })
+    md.set({ xhtmlOut: true });
     assert.strictEqual(md.render('a\nb'), '<p>a<br />\nb</p>\n');
   });
 
