@@ -127,6 +127,7 @@ describe('API', function () {
     assert.strictEqual(md.render('![]()'), '<p><img src="" alt=""></p>\n');
     assert.strictEqual(md.render('a  \\\nb'), '<p>a  <br>\nb</p>\n');
   });
+
 });
 
 
@@ -149,6 +150,17 @@ describe('Misc', function () {
     var md = new Remarkable('full');
 
     assert.strictEqual(md.renderInline('a *b* c'), 'a <em>b</em> c');
+  });
+
+  it('Renderer should have pluggable inline and block rules', function () {
+    var md = new Remarkable();
+
+    md.renderer.rules.em_open = function () { return '<it>'; };
+    md.renderer.rules.em_close = function () { return '</it>'; };
+    md.renderer.rules.paragraph_open = function () { return '<par>'; };
+    md.renderer.rules.paragraph_close = function () { return '</par>'; };
+
+    assert.strictEqual(md.render('*b*'), '<par><it>b</it></par>');
   });
 
 });
