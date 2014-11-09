@@ -5,6 +5,7 @@
 - Added `renderInline()` and `parseInline()` methods.
 - Added abbreviations support.
 - Fixed problem with tables, having single column.
+- Fixed rendered rules rewrite for inline tags.
 - Changed internal api (ruler, inline, block classes).
 - Removed typographer chain (rules moved to `core`).
 - Removed all typographer options. Quote chars defs moved to `options.quotes`.
