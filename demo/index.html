@@ -38,7 +38,13 @@ var md = new Remarkable('full', {
   breaks:       false,        // Convert '\n' in paragraphs into &lt;br&gt;
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
   linkify:      true,         // autoconvert URL-like texts to links
-  typographer:  true,         // Enable smartypants and other sweet transforms
+
+  // Enable some language-neutral replacements + quotes beautification
+  typographer:  false,
+
+  // Double + single quotes replacement pairs, when typographer enabled,
+  // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+  quotes: '“”‘’',
 
   // Highlighter function. Should return escaped HTML,
   // or '' if input not changed
