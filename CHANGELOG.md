@@ -1,4 +1,4 @@
-1.4.0 / WIP
+1.4.0 / 2014-11-09
 ------------------
 
 - Added `core` chain, to better organize code and improve pluggability.
