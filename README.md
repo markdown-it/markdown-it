@@ -12,6 +12,7 @@ __[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
   [syntax extensions](#syntax-extensions) + sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
 - [High speed](#benchmark)!
+- [Plugins by community](https://www.npmjs.org/browse/keyword/remarkable-plugin).
 
 
 ## Install
