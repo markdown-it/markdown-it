@@ -1,3 +1,11 @@
+1.4.1 / 2014-11-13
+------------------
+
+- Moved links decode/encode from renderer to parser.
+- Added missed validator call for scoped urls in links.
+- Handle exceptions in `decoreURI` (regression).
+
+
 1.4.0 / 2014-11-09
 ------------------
 
