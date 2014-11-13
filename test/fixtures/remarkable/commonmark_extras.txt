@@ -107,3 +107,19 @@ a
 <p>a</p>
 <?php
 .
+
+Normalize link destination, but not text inside it:
+
+.
+<http://example.com/α%CE%B2γ%CE%B4>
+.
+<p><a href="http://example.com/%CE%B1%CE%B2%CE%B3%CE%B4">http://example.com/α%CE%B2γ%CE%B4</a></p>
+.
+
+Autolinks do not allow escaping:
+
+.
+<http://example.com/\[\>
+.
+<p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
+.
