@@ -123,3 +123,12 @@ Autolinks do not allow escaping:
 .
 <p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
 .
+
+
+Should not throw exception on mailformed URI
+
+.
+[foo](<&#x25;test>)
+.
+<p><a href="%25test">foo</a></p>
+.
