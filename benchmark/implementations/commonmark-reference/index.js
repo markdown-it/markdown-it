@@ -1,6 +1,6 @@
 'use strict'
 
-var commonmark = require('./stmd');
+var commonmark = require('commonmark');
 var parser = new commonmark.DocParser();
 var renderer = new commonmark.HtmlRenderer();
 

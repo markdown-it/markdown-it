@@ -31,10 +31,12 @@
     "autoprefixer-stylus": "^0.3.0",
     "benchmark": "^1.0.0",
     "browserify": "*",
+    "commonmark": "0.12.0",
     "eslint": "0.9.1",
     "eslint-plugin-nodeca": "^1.0.0",
     "istanbul": "*",
     "jade": "^1.6.0",
+    "marked": "0.3.2",
     "stylus": "^0.49.1",
     "mocha": "*",
     "uglify-js": "*"
