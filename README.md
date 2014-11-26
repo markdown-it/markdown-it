@@ -172,6 +172,7 @@ Disabled by default:
 - [\<sup>](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `19^th^`
 - [\<sub>](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `H~2~0`
 - [abbreviations](https://michelf.ca/projects/php-markdown/extra/#abbr)
+- [footnotes](http://johnmacfarlane.net/pandoc/README.html#footnotes)
 - __\<ins>__ - `++inserted text++` (experimental)
 - __\<mark>__ - `==marked text==` (experimental)
 
@@ -193,6 +194,25 @@ md = new Remarkable('full', {
   linkify: true,
   typographer: true,
 });
+
+//
+// Manually enable rules, disabled by default:
+//
+var md = new Remarkable();
+md.block.ruler.core([
+  'abbr'
+]);
+md.block.ruler.enable([
+  'footnote',
+  'deflist'
+]);
+md.block.ruler.enable([
+  'footnote_inline',
+  'ins',
+  'mark',
+  'sub',
+  'sup'
+]);
 ```
 
 
