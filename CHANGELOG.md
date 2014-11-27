@@ -1,3 +1,10 @@
+1.4.2 / WIP
+------------------
+
+- Added footnotes support.
+- Added definitions lists support.
+
+
 1.4.1 / 2014-11-13
 ------------------
 

@@ -168,3 +168,25 @@ Like links, Images also have a footnote style syntax
 With a reference later in the document defining the URL location:
 
 [id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
+
+
+# Abbreviations
+
+This is HTML abbreviation example. It converts "HTML",
+but keep intact partial entries like "xxxHTMLyyy" and so on.
+
+*[HTML]: Hyper Text Markup Language
+
+
+# Footnotes
+
+Footnote 1 link [^1].
+
+Footnote 2 link [^2]. One more time [^2].
+
+Inline footnote definition ^[Text of inline footnote].
+
+[^1]: footnote text.
+[^2]: footnote **can have markup**.
+
+    and multiple paragraphs.
