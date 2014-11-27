@@ -23,8 +23,7 @@
   },
   "dependencies": {
     "argparse": "~ 0.1.15",
-    "autolinker": "~ 0.15.0",
-    "coveralls": "^2.11.2"
+    "autolinker": "~ 0.15.0"
   },
   "devDependencies": {
     "ansi": "^0.3.0",
@@ -32,6 +31,7 @@
     "benchmark": "^1.0.0",
     "browserify": "*",
     "commonmark": "0.12.0",
+    "coveralls": "^2.11.2",
     "eslint": "0.9.1",
     "eslint-plugin-nodeca": "^1.0.0",
     "istanbul": "*",
