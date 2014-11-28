@@ -3,6 +3,7 @@
 
 - Added footnotes support.
 - Added definitions lists support.
+- Exposed `./common/utils` to simplify custom renderer write.
 
 
 1.4.1 / 2014-11-13
