@@ -170,7 +170,7 @@ With a reference later in the document defining the URL location:
 [id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
 
 
-# Abbreviations
+## Abbreviations
 
 This is HTML abbreviation example. It converts "HTML",
 but keep intact partial entries like "xxxHTMLyyy" and so on.
@@ -178,7 +178,7 @@ but keep intact partial entries like "xxxHTMLyyy" and so on.
 *[HTML]: Hyper Text Markup Language
 
 
-# Footnotes
+## Footnotes
 
 Footnote 1 link [^1].
 
