@@ -4,6 +4,7 @@
 
 var assert     = require('assert');
 var Remarkable = require('../');
+var utils      = require('../').utils;
 
 
 describe('Utils', function () {
@@ -178,6 +179,26 @@ describe('Links validation', function () {
     assert.strictEqual(md.render('<foo@example.com>'), '<p>&lt;foo@example.com&gt;</p>\n');
     assert.strictEqual(md.render('<http://example.com>'), '<p>&lt;http://example.com&gt;</p>\n');
     assert.strictEqual(md.render('[test](http://example.com)'), '<p>[test](http://example.com)</p>\n');
+  });
+
+});
+
+
+describe('Custom fences', function () {
+
+  it('should render differently overriden rule', function () {
+    var md = new Remarkable();
+
+    md.renderer.rules.fence_custom.foo = function (tokens, idx, options, env, self) {
+      return '<div class="foo">' +
+             utils.escapeHtml(tokens[idx].content) +
+             '</div>' + self.getBreak(tokens, idx);
+    };
+
+    var text = '```foo bar\n' +
+               '123&45\n' +
+               '```';
+    assert.strictEqual(md.render(text), '<div class="foo">123&amp;45\n</div>\n');
   });
 
 });

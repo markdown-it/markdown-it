@@ -3,7 +3,9 @@
 
 - Added footnotes support.
 - Added definitions lists support.
-- Exposed `./common/utils` to simplify custom renderer write.
+- Added `fence_custom` renderer extension to easy override
+  named fenced blocks (useful for diagrams and so on).
+- Exposed `./common/utils` to simplify custom renderers.
 
 
 1.4.1 / 2014-11-13
