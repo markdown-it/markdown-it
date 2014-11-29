@@ -118,7 +118,7 @@
         // copy config to defaults, but only if key exists
         // and value has the same type
         _.forOwn(opts, function (val, key) {
-          if (!defaults.hasOwnProperty(key)) { return; }
+          if (!_.has(defaults, key)) { return; }
 
           // Legacy, for old links
           if (key === '_src') {
