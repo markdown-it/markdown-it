@@ -158,7 +158,6 @@ Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 ## Images
 
 ![Minion](https://octodex.github.com/images/minion.png)
-
 ![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
 
 Like links, Images also have a footnote style syntax
@@ -170,23 +169,26 @@ With a reference later in the document defining the URL location:
 [id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
 
 
-## Abbreviations
-
-This is HTML abbreviation example. It converts "HTML",
-but keep intact partial entries like "xxxHTMLyyy" and so on.
-
-*[HTML]: Hyper Text Markup Language
-
-
 ## Footnotes
 
-Footnote 1 link [^1].
+Footnote 1 link[^first].
 
-Footnote 2 link [^2]. One more time [^2].
+Footnote 2 link[^second].
 
-Inline footnote definition ^[Text of inline footnote].
+Inline footnote^[Text of inline footnote] definition.
 
-[^1]: footnote text.
-[^2]: footnote **can have markup**.
+Duplicated footnote reference[^second].
+
+[^first]: Footnote **can have markup**
 
     and multiple paragraphs.
+
+[^second]: Footnote text.
+
+## Abbreviations
+
+This is HTML abbreviation example.
+
+It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
+
+*[HTML]: Hyper Text Markup Language
