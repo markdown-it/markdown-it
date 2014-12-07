@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var mdHtml, mdSrc, permalink;
+  var mdHtml, mdSrc, permalink, scrollMap;
 
   var defaults = {
     html:         false,        // Enable HTML tags in source
@@ -63,6 +63,24 @@
     mdHtml.renderer.rules.table_open = function () {
       return '<table class="table table-striped">\n';
     };
+
+    mdHtml.renderer.rules.paragraph_open = function (tokens, idx) {
+      var line;
+      if (tokens[idx].lines && tokens[idx].level === 0) {
+        line = tokens[idx].lines[0];
+        return '<p class="line" data-line="' + line + '">';
+      }
+      return '<p>';
+    };
+
+    mdHtml.renderer.rules.heading_open = function (tokens, idx) {
+      var line;
+      if (tokens[idx].lines && tokens[idx].level === 0) {
+        line = tokens[idx].lines[0];
+        return '<h' + tokens[idx].hLevel + ' class="line" data-line="' + line + '">';
+      }
+      return '<h' + tokens[idx].hLevel + '>';
+    };
   }
 
   function updateResult() {
@@ -70,6 +88,7 @@
 
     $('.result-html').html(mdHtml.render(source));
     $('.result-src-content').html(window.hljs.highlight('html', mdSrc.render(source)).value);
+    scrollMap = null;
 
     var dump = JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2);
     $('.result-debug-content').html(window.hljs.highlight('json', dump).value);
@@ -89,6 +108,88 @@
     }
   }
 
+  function recomputeScroll() {
+    var i, offset, nonEmptyList, pos, a, b, lineHeightMap, linesCount,
+        acc, sourceLikeDiv, textarea = $('.source');
+
+    sourceLikeDiv = $('<div />').css({
+      position: 'absolute',
+      visibility: 'hidden',
+      height: 'auto',
+      width: textarea[0].clientWidth,
+      'font-size': textarea.css('font-size'),
+      'font-family': textarea.css('font-family'),
+      'line-height': textarea.css('line-height'),
+      'white-space': textarea.css('white-space')
+    }).appendTo('body');
+
+    offset = $('.result-html').scrollTop() - $('.result-html').offset().top;
+    scrollMap = [];
+    nonEmptyList = [];
+    lineHeightMap = [];
+
+    acc = 0;
+    textarea.val().split('\n').forEach(function(str) {
+      var h, lh;
+
+      lineHeightMap.push(acc);
+
+      if (str.length === 0) {
+        acc++;
+        return;
+      }
+
+      sourceLikeDiv.text(str);
+      h = parseFloat(sourceLikeDiv.css('height'));
+      lh = parseFloat(sourceLikeDiv.css('line-height'));
+      acc += Math.round(h / lh);
+    });
+    sourceLikeDiv.remove();
+    lineHeightMap.push(acc);
+    linesCount = acc;
+
+    for (i = 0; i < linesCount; i++) { scrollMap.push(-1); }
+
+    nonEmptyList.push(0);
+    scrollMap[0] = 0;
+
+    $('.line').each(function(n, el) {
+      var $el = $(el), t = $el.data('line');
+      if (t === '') { return; }
+      t = lineHeightMap[t];
+      if (t !== 0) { nonEmptyList.push(t); }
+      scrollMap[t] = Math.round($el.offset().top + offset);
+    });
+
+    nonEmptyList.push(linesCount);
+    scrollMap[linesCount] = $('.result-html')[0].scrollHeight;
+
+    pos = 0;
+    for (i = 1; i < linesCount; i++) {
+      if (scrollMap[i] !== -1) {
+        pos++;
+        continue;
+      }
+
+      a = nonEmptyList[pos];
+      b = nonEmptyList[pos + 1];
+      scrollMap[i] = Math.round((scrollMap[b] * (i - a) + scrollMap[a] * (b - i)) / (b - a));
+    }
+
+    return scrollMap;
+  }
+
+  function syncScroll() {
+    var textarea   = $('.source'),
+        lineHeight = parseFloat(textarea.css('line-height')),
+        lineNo;
+
+    lineNo = Math.floor(textarea.scrollTop() / lineHeight);
+    if (!scrollMap) { recomputeScroll(); }
+    $('.result-html').stop(true).animate({
+      scrollTop: scrollMap[lineNo]
+    }, 100, 'linear');
+  }
 
   $(function() {
     // highlight snippet
@@ -180,6 +281,7 @@
 
     // Setup listeners
     $('.source').on('keyup paste cut mouseup', updateResult);
+    $('.source').on('scroll', _.debounce(syncScroll, 50, { maxWait: 50 }));
 
     $('.source-clear').on('click', function (event) {
       $('.source').val('');
