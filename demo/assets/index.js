@@ -64,6 +64,13 @@
       return '<table class="table table-striped">\n';
     };
 
+    //
+    // Inject line numbers for sync scroll. Notes:
+    //
+    // - We track only headings and paragraphs on first level. That's enougth.
+    // - Footnotes content causes jumps. Level limit filter it automatically.
+    //
+
     mdHtml.renderer.rules.paragraph_open = function (tokens, idx) {
       var line;
       if (tokens[idx].lines && tokens[idx].level === 0) {
@@ -84,14 +91,24 @@
   }
 
   function updateResult() {
-    var source = $('.source').val();
+    var source = $('.source').val(),
+        dump;
 
-    $('.result-html').html(mdHtml.render(source));
-    $('.result-src-content').html(window.hljs.highlight('html', mdSrc.render(source)).value);
+    // Update only active view to avoid slowdowns
+    // (debug & src view with highlighting are a bit slow)
+    if (defaults._view === 'src') {
+      $('.result-src-content').html(window.hljs.highlight('html', mdSrc.render(source)).value);
+
+    } else if (defaults._view === 'debug') {
+      dump = JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2);
+      $('.result-debug-content').html(window.hljs.highlight('json', dump).value);
+
+    } else { /*defaults._view === 'html'*/
+      $('.result-html').html(mdHtml.render(source));
+    }
+
+    // reset lines mapping cache on content update
     scrollMap = null;
-
-    var dump = JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2);
-    $('.result-debug-content').html(window.hljs.highlight('json', dump).value);
 
     try {
       if (source) {
@@ -108,7 +125,10 @@
     }
   }
 
-  function recomputeScroll() {
+  // Build offsets for each line (lines can be wrapped)
+  // That's a bit dirty to process each line everytime, but ok for demo.
+  // Optimizations are required only for big texts.
+  function buildScrollMap() {
     var i, offset, nonEmptyList, pos, a, b, lineHeightMap, linesCount,
         acc, sourceLikeDiv, textarea = $('.source');
 
@@ -185,7 +205,7 @@
         lineNo;
 
     lineNo = Math.floor(textarea.scrollTop() / lineHeight);
-    if (!scrollMap) { recomputeScroll(); }
+    if (!scrollMap) { buildScrollMap(); }
     $('.result-html').stop(true).animate({
       scrollTop: scrollMap[lineNo]
     }, 100, 'linear');
@@ -280,7 +300,7 @@
     permalink = document.getElementById('permalink');
 
     // Setup listeners
-    $('.source').on('keyup paste cut mouseup', updateResult);
+    $('.source').on('keyup paste cut mouseup', _.debounce(updateResult, 300, { maxWait: 500 }));
     $('.source').on('scroll', _.debounce(syncScroll, 50, { maxWait: 50 }));
 
     $('.source-clear').on('click', function (event) {
@@ -297,6 +317,11 @@
         updateResult();
         event.preventDefault();
       }
+    });
+
+    // Need to recalculate line positions on window resize
+    $(window).on('resize', function () {
+      scrollMap = null;
     });
 
     updateResult();
