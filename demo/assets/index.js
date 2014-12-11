@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var mdHtml, mdSrc, permalink, scrollMap, escapeHtml;
+  var mdHtml, mdSrc, permalink, scrollMap;
 
   var defaults = {
     html:         false,        // Enable HTML tags in source
@@ -90,19 +90,28 @@
     };
   }
 
+  function setHighlightedlContent(selector, content, lang) {
+    if (window.hljs) {
+      $(selector).html(window.hljs.highlight(lang, content).value);
+    } else {
+      $(selector).text(content);
+    }
+  }
+
   function updateResult() {
-    var source = $('.source').val(),
-        out;
+    var source = $('.source').val();
 
     // Update only active view to avoid slowdowns
     // (debug & src view with highlighting are a bit slow)
     if (defaults._view === 'src') {
-      out = mdSrc.render(source);
-      $('.result-src-content').html(window.hljs ? window.hljs.highlight('html', out).value : escapeHtml(out));
+      setHighlightedlContent('.result-src-content', mdSrc.render(source), 'html');
 
     } else if (defaults._view === 'debug') {
-      out = JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2);
-      $('.result-debug-content').html(window.hljs ? window.hljs.highlight('json', out).value : escapeHtml(out));
+      setHighlightedlContent(
+        '.result-debug-content',
+        JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2),
+        'json'
+      );
 
     } else { /*defaults._view === 'html'*/
       $('.result-html').html(mdHtml.render(source));
@@ -131,7 +140,8 @@
   // Optimizations are required only for big texts.
   function buildScrollMap() {
     var i, offset, nonEmptyList, pos, a, b, lineHeightMap, linesCount,
-        acc, sourceLikeDiv, textarea = $('.source');
+        acc, sourceLikeDiv, textarea = $('.source'),
+        _scrollMap;
 
     sourceLikeDiv = $('<div />').css({
       position: 'absolute',
@@ -145,7 +155,7 @@
     }).appendTo('body');
 
     offset = $('.result-html').scrollTop() - $('.result-html').offset().top;
-    scrollMap = [];
+    _scrollMap = [];
     nonEmptyList = [];
     lineHeightMap = [];
 
@@ -169,52 +179,54 @@
     lineHeightMap.push(acc);
     linesCount = acc;
 
-    for (i = 0; i < linesCount; i++) { scrollMap.push(-1); }
+    for (i = 0; i < linesCount; i++) { _scrollMap.push(-1); }
 
     nonEmptyList.push(0);
-    scrollMap[0] = 0;
+    _scrollMap[0] = 0;
 
     $('.line').each(function(n, el) {
       var $el = $(el), t = $el.data('line');
       if (t === '') { return; }
       t = lineHeightMap[t];
       if (t !== 0) { nonEmptyList.push(t); }
-      scrollMap[t] = Math.round($el.offset().top + offset);
+      _scrollMap[t] = Math.round($el.offset().top + offset);
     });
 
     nonEmptyList.push(linesCount);
-    scrollMap[linesCount] = $('.result-html')[0].scrollHeight;
+    _scrollMap[linesCount] = $('.result-html')[0].scrollHeight;
 
     pos = 0;
     for (i = 1; i < linesCount; i++) {
-      if (scrollMap[i] !== -1) {
+      if (_scrollMap[i] !== -1) {
         pos++;
         continue;
       }
 
       a = nonEmptyList[pos];
       b = nonEmptyList[pos + 1];
-      scrollMap[i] = Math.round((scrollMap[b] * (i - a) + scrollMap[a] * (b - i)) / (b - a));
+      _scrollMap[i] = Math.round((_scrollMap[b] * (i - a) + _scrollMap[a] * (b - i)) / (b - a));
     }
 
-    return scrollMap;
+    return _scrollMap;
   }
 
   function syncScroll() {
     var textarea   = $('.source'),
         lineHeight = parseFloat(textarea.css('line-height')),
-        lineNo;
+        lineNo, posTo;
 
     lineNo = Math.floor(textarea.scrollTop() / lineHeight);
-    if (!scrollMap) { buildScrollMap(); }
+    if (!scrollMap) { scrollMap = buildScrollMap(); }
+    posTo = scrollMap[lineNo];
     $('.result-html').stop(true).animate({
-      scrollTop: scrollMap[lineNo]
+      scrollTop: posTo
     }, 100, 'linear');
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Init on page load
+  //
   $(function() {
-    escapeHtml = window.Remarkable.utils.escapeHtml;
-
     // highlight snippet
     if (window.hljs) {
       $('pre.code-sample code').each(function(i, block) {
