@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var mdHtml, mdSrc, permalink, scrollMap;
+  var mdHtml, mdSrc, permalink, scrollMap, escapeHtml;
 
   var defaults = {
     html:         false,        // Enable HTML tags in source
@@ -18,7 +18,7 @@
   };
 
   defaults.highlight = function (str, lang) {
-    if (!defaults._highlight) { return ''; }
+    if (!defaults._highlight || !window.hljs) { return ''; }
 
     var hljs = window.hljs;
     if (lang && hljs.getLanguage(lang)) {
@@ -92,16 +92,17 @@
 
   function updateResult() {
     var source = $('.source').val(),
-        dump;
+        out;
 
     // Update only active view to avoid slowdowns
     // (debug & src view with highlighting are a bit slow)
     if (defaults._view === 'src') {
-      $('.result-src-content').html(window.hljs.highlight('html', mdSrc.render(source)).value);
+      out = mdSrc.render(source);
+      $('.result-src-content').html(window.hljs ? window.hljs.highlight('html', out).value : escapeHtml(out));
 
     } else if (defaults._view === 'debug') {
-      dump = JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2);
-      $('.result-debug-content').html(window.hljs.highlight('json', dump).value);
+      out = JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2);
+      $('.result-debug-content').html(window.hljs ? window.hljs.highlight('json', out).value : escapeHtml(out));
 
     } else { /*defaults._view === 'html'*/
       $('.result-html').html(mdHtml.render(source));
@@ -212,10 +213,14 @@
   }
 
   $(function() {
+    escapeHtml = window.Remarkable.utils.escapeHtml;
+
     // highlight snippet
-    $('pre.code-sample code').each(function(i, block) {
-      window.hljs.highlightBlock(block);
-    });
+    if (window.hljs) {
+      $('pre.code-sample code').each(function(i, block) {
+        window.hljs.highlightBlock(block);
+      });
+    }
 
     // Restore content if opened by permalink
     if (location.hash && /^(#md=|#md64=)/.test(location.hash)) {

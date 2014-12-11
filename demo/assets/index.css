@@ -127,3 +127,19 @@ body {
   padding: 4px 50px 2px;
   text-align: center;
 }
+.form-inline .radio,
+.form-inline .checkbox {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+.form-inline .form-group {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+.form-inline .form-control {
+  display: inline-block;
+  vertical-align: middle;
+  width: auto;
+}
