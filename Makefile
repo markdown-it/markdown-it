@@ -60,7 +60,7 @@ browserify:
 	rm -rf ./dist
 	mkdir dist
 	# Browserify
-	( echo -n "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" ; \
+	( printf "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" ; \
 		browserify -r ./ -s Remarkable \
 		) > dist/remarkable.js
 	# Minify
