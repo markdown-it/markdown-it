@@ -4504,9 +4504,9 @@ module.exports = function footnote(state, startLine, endLine, silent) {
   pos++;
 
   if (!state.env.footnotes) { state.env.footnotes = {}; }
-  if (!state.env.footnotes.refs) { state.env.footnotes.refs = Object.create(null); }
+  if (!state.env.footnotes.refs) { state.env.footnotes.refs = {}; }
   label = state.src.slice(start + 2, pos - 2);
-  state.env.footnotes.refs[label] = -1;
+  state.env.footnotes.refs[':' + label] = -1;
 
   state.tokens.push({
     type: 'footnote_reference_open',
@@ -5444,7 +5444,9 @@ function parseAbbr(str, parserInline, options, env) {
   title = str.slice(labelEnd + 2, pos).trim();
   if (title.length === 0) { return -1; }
   if (!env.abbreviations) { env.abbreviations = {}; }
-  env.abbreviations[label] = env.abbreviations[label] || title;
+  if (env.abbreviations[':' + label] === undefined) {
+    env.abbreviations[':' + label] = title;
+  }
 
   return pos;
 }
@@ -5501,7 +5503,9 @@ module.exports = function abbr2(state) {
   if (!state.env.abbreviations) { return; }
   if (!state.env.abbrRegExp) {
     regText = '(^|[' + PUNCT_CHARS.split('').map(regEscape).join('') + '])'
-            + '(' + Object.keys(state.env.abbreviations).sort(function (a, b) {
+            + '(' + Object.keys(state.env.abbreviations).map(function (x) {
+                      return x.substr(1);
+                    }).sort(function (a, b) {
                       return b.length - a.length;
                     }).map(regEscape).join('|') + ')'
             + '($|[' + PUNCT_CHARS.split('').map(regEscape).join('') + '])';
@@ -5535,7 +5539,7 @@ module.exports = function abbr2(state) {
 
         nodes.push({
           type: 'abbr_open',
-          title: state.env.abbreviations[m[2]],
+          title: state.env.abbreviations[':' + m[2]],
           level: level++
         });
         nodes.push({
@@ -5593,7 +5597,7 @@ module.exports = function footnote_block(state) {
   var i, l, j, t, lastParagraph, list, tokens, current, currentLabel,
       level = 0,
       insideRef = false,
-      refTokens = Object.create(null);
+      refTokens = {};
 
   if (!state.env.footnotes) { return; }
 
@@ -5606,7 +5610,7 @@ module.exports = function footnote_block(state) {
     }
     if (tok.type === 'footnote_reference_close') {
       insideRef = false;
-      refTokens[currentLabel] = current;
+      refTokens[':' + currentLabel] = current;
       return false;
     }
     if (insideRef) { current.push(tok); }
@@ -5646,7 +5650,7 @@ module.exports = function footnote_block(state) {
         level: --level
       });
     } else if (list[i].label) {
-      tokens = refTokens[list[i].label];
+      tokens = refTokens[':' + list[i].label];
     }
 
     state.tokens = state.tokens.concat(tokens);
@@ -5920,7 +5924,9 @@ function parseReference(str, parser, options, env) {
   if (pos < max && state.src.charCodeAt(pos) !== 0x0A) { return -1; }
 
   label = normalizeReference(str.slice(1, labelEnd));
-  env.references[label] = env.references[label] || { title: title, href: href };
+  if (env.references[':' + label] === undefined) {
+    env.references[':' + label] = { title: title, href: href };
+  }
 
   return pos;
 }
@@ -6693,17 +6699,17 @@ module.exports = function footnote_ref(state, silent) {
   pos++;
 
   label = state.src.slice(start + 2, pos - 1);
-  if (state.env.footnotes.refs[label] === undefined) { return false; }
+  if (state.env.footnotes.refs[':' + label] === undefined) { return false; }
 
   if (!silent) {
     if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
 
-    if (state.env.footnotes.refs[label] < 0) {
+    if (state.env.footnotes.refs[':' + label] < 0) {
       footnoteId = state.env.footnotes.list.length;
       state.env.footnotes.list[footnoteId] = { label: label, count: 0 };
-      state.env.footnotes.refs[label] = footnoteId;
+      state.env.footnotes.refs[':' + label] = footnoteId;
     } else {
-      footnoteId = state.env.footnotes.refs[label];
+      footnoteId = state.env.footnotes.refs[':' + label];
     }
 
     footnoteSubId = state.env.footnotes.list[footnoteId].count;
@@ -6982,7 +6988,7 @@ module.exports = function links(state, silent) {
     // (collapsed reference link and shortcut reference link respectively)
     if (!label) { label = state.src.slice(labelStart, labelEnd); }
 
-    ref = state.env.references[normalizeReference(label)];
+    ref = state.env.references[':' + normalizeReference(label)];
     if (!ref) {
       state.pos = oldPos;
       return false;
