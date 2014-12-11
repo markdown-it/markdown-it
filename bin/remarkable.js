@@ -47,16 +47,16 @@ function readFile(filename, encoding, callback) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-readFile(options.file, 'utf8', function (error, input) {
+readFile(options.file, 'utf8', function (err, input) {
   var output, md;
 
-  if (error) {
-    if (error.code === 'ENOENT') {
+  if (err) {
+    if (err.code === 'ENOENT') {
       console.error('File not found: ' + options.file);
       process.exit(2);
     }
 
-    console.error(error.stack || error.message || String(error));
+    console.error(err.stack || err.message || String(err));
 
     process.exit(1);
   }
@@ -71,8 +71,8 @@ readFile(options.file, 'utf8', function (error, input) {
   try {
     output = md.render(input);
 
-  } catch (error) {
-    console.error(error.stack || error.message || String(error));
+  } catch (e) {
+    console.error(e.stack || e.message || String(e));
 
     process.exit(1);
   }
