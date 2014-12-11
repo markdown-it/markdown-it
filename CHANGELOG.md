@@ -6,6 +6,7 @@
 - Fixed errors on refs/attrs/footnoted with special names like `__proto__`.
 - Renamed Ruler() private properties, to show those should not be accessed
   directly.
+- Fixed Makefile OSX compatibility.
 
 
 1.4.2 / 2014-11-29
