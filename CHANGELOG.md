@@ -1,3 +1,13 @@
+1.5.0 / WIP
+------------------
+
+- Added Demo sync scroll, to show how lines mapping can be used.
+- Improved IE8 support. Now you need only es5-shim, without es5-sham.
+- Fixed errors on refs/attrs/footnoted with special names like `__proto__`.
+- Renamed Ruler() private properties, to show those should not be accessed
+  directly.
+
+
 1.4.2 / 2014-11-29
 ------------------
 
