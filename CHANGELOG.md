@@ -1,4 +1,4 @@
-1.5.0 / WIP
+1.5.0 / 2014-12-12
 ------------------
 
 - Added Demo sync scroll, to show how lines mapping can be used.
