@@ -1,4 +1,4 @@
-/*! remarkable 1.4.2 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! remarkable 1.5.0 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2784,7 +2784,10 @@ module.exports = function normalizeLink(url) {
 'use strict';
 
 module.exports = function normalizeReference(str) {
-  return str.trim().replace(/\s+/g, ' ').toLowerCase();
+  // use .toUpperCase() instead of .toLowerCase()
+  // here to avoid a conflict with Object.prototype
+  // members (most notably, `__proto__`)
+  return str.trim().replace(/\s+/g, ' ').toUpperCase();
 };
 
 },{}],11:[function(require,module,exports){
@@ -3816,22 +3819,25 @@ function Ruler() {
   //   alt: [ name2, name3 ]
   // }
   //
-  this.rules = [];
+  this.__rules__ = [];
 
   // Cached rule chains.
   //
   // First level - chain name, '' for default.
   // Second level - diginal anchor for fast filtering by charcodes.
   //
-  this.cache = null;
+  this.__cache__ = null;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper methods, should not be used directly
 
 
 // Find rule index by name
 //
-Ruler.prototype.find = function (name) {
-  for (var i = 0; i < this.rules.length; i++) {
-    if (this.rules[i].name === name) {
+Ruler.prototype.__find__ = function (name) {
+  for (var i = 0; i < this.__rules__.length; i++) {
+    if (this.__rules__[i].name === name) {
       return i;
     }
   }
@@ -3839,55 +3845,91 @@ Ruler.prototype.find = function (name) {
 };
 
 
+// Build rules lookup cache
+//
+Ruler.prototype.__compile__ = function () {
+  var self = this;
+  var chains = [ '' ];
+
+  // collect unique names
+  self.__rules__.forEach(function (rule) {
+    if (!rule.enabled) { return; }
+
+    rule.alt.forEach(function (altName) {
+      if (chains.indexOf(altName) < 0) {
+        chains.push(altName);
+      }
+    });
+  });
+
+  self.__cache__ = {};
+
+  chains.forEach(function (chain) {
+    self.__cache__[chain] = [];
+    self.__rules__.forEach(function (rule) {
+      if (!rule.enabled) { return; }
+
+      if (chain && rule.alt.indexOf(chain) < 0) { return; }
+
+      self.__cache__[chain].push(rule.fn);
+    });
+  });
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Public methods
+
+
 // Replace rule function
 //
 Ruler.prototype.at = function (name, fn, options) {
-  var index = this.find(name);
+  var index = this.__find__(name);
   var opt = options || {};
 
   if (index === -1) { throw new Error('Parser rule not found: ' + name); }
 
-  this.rules[index].fn = fn;
-  this.rules[index].alt = opt.alt || [];
-  this.cache = null;
+  this.__rules__[index].fn = fn;
+  this.__rules__[index].alt = opt.alt || [];
+  this.__cache__ = null;
 };
 
 
 // Add rule to chain before one with given name.
 //
 Ruler.prototype.before = function (beforeName, ruleName, fn, options) {
-  var index = this.find(beforeName);
+  var index = this.__find__(beforeName);
   var opt = options || {};
 
   if (index === -1) { throw new Error('Parser rule not found: ' + beforeName); }
 
-  this.rules.splice(index, 0, {
+  this.__rules__.splice(index, 0, {
     name: ruleName,
     enabled: true,
     fn: fn,
     alt: opt.alt || []
   });
 
-  this.cache = null;
+  this.__cache__ = null;
 };
 
 
 // Add rule to chain after one with given name.
 //
 Ruler.prototype.after = function (afterName, ruleName, fn, options) {
-  var index = this.find(afterName);
+  var index = this.__find__(afterName);
   var opt = options || {};
 
   if (index === -1) { throw new Error('Parser rule not found: ' + afterName); }
 
-  this.rules.splice(index + 1, 0, {
+  this.__rules__.splice(index + 1, 0, {
     name: ruleName,
     enabled: true,
     fn: fn,
     alt: opt.alt || []
   });
 
-  this.cache = null;
+  this.__cache__ = null;
 };
 
 // Add rule to the end of chain.
@@ -3895,14 +3937,14 @@ Ruler.prototype.after = function (afterName, ruleName, fn, options) {
 Ruler.prototype.push = function (ruleName, fn, options) {
   var opt = options || {};
 
-  this.rules.push({
+  this.__rules__.push({
     name: ruleName,
     enabled: true,
     fn: fn,
     alt: opt.alt || []
   });
 
-  this.cache = null;
+  this.__cache__ = null;
 };
 
 
@@ -3916,21 +3958,21 @@ Ruler.prototype.enable = function (list, strict) {
 
   // In strict mode disable all existing rules first
   if (strict) {
-    this.rules.forEach(function (rule) {
+    this.__rules__.forEach(function (rule) {
       rule.enabled = false;
     });
   }
 
   // Search by name and enable
   list.forEach(function (name) {
-    var idx = this.find(name);
+    var idx = this.__find__(name);
 
     if (idx < 0) { throw new Error('Rules manager: invalid rule name ' + name); }
-    this.rules[idx].enabled = true;
+    this.__rules__[idx].enabled = true;
 
   }, this);
 
-  this.cache = null;
+  this.__cache__ = null;
 };
 
 
@@ -3943,57 +3985,25 @@ Ruler.prototype.disable = function (list) {
 
   // Search by name and disable
   list.forEach(function (name) {
-    var idx = this.find(name);
+    var idx = this.__find__(name);
 
     if (idx < 0) { throw new Error('Rules manager: invalid rule name ' + name); }
-    this.rules[idx].enabled = false;
+    this.__rules__[idx].enabled = false;
 
   }, this);
 
-  this.cache = null;
-};
-
-
-// Build rules lookup cache
-//
-Ruler.prototype.compile = function () {
-  var self = this;
-  var chains = [ '' ];
-
-  // collect unique names
-  self.rules.forEach(function (rule) {
-    if (!rule.enabled) { return; }
-
-    rule.alt.forEach(function (altName) {
-      if (chains.indexOf(altName) < 0) {
-        chains.push(altName);
-      }
-    });
-  });
-
-  self.cache = {};
-
-  chains.forEach(function (chain) {
-    self.cache[chain] = [];
-    self.rules.forEach(function (rule) {
-      if (!rule.enabled) { return; }
-
-      if (chain && rule.alt.indexOf(chain) < 0) { return; }
-
-      self.cache[chain].push(rule.fn);
-    });
-  });
+  this.__cache__ = null;
 };
 
 
 // Get rules list as array of functions.
 //
 Ruler.prototype.getRules = function (chainName) {
-  if (this.cache === null) {
-    this.compile();
+  if (this.__cache__ === null) {
+    this.__compile__();
   }
 
-  return this.cache[chainName];
+  return this.__cache__[chainName];
 };
 
 module.exports = Ruler;
@@ -4573,8 +4583,8 @@ module.exports = function heading(state, startLine, endLine, silent) {
 
   // Let's cut tails like '    ###  ' from the end of string
 
-  max = state.skipCharsBack(max, 0x20/* space */, pos);
-  tmp = state.skipCharsBack(max, 0x23/* # */, pos);
+  max = state.skipCharsBack(max, 0x20, pos); // space
+  tmp = state.skipCharsBack(max, 0x23, pos); // #
   if (tmp > pos && state.src.charCodeAt(tmp - 1) === 0x20/* space */) {
     max = tmp;
   }
@@ -4966,8 +4976,6 @@ module.exports = function list(state, startLine, endLine, silent) {
       lines: itemLines = [ startLine, 0 ],
       level: state.level++
     });
-
-    //nextLine++;
 
     oldIndent = state.blkIndent;
     oldTight = state.tight;
@@ -5444,7 +5452,8 @@ function parseAbbr(str, parserInline, options, env) {
   title = str.slice(labelEnd + 2, pos).trim();
   if (title.length === 0) { return -1; }
   if (!env.abbreviations) { env.abbreviations = {}; }
-  if (env.abbreviations[':' + label] === undefined) {
+  // prepend ':' to avoid conflict with Object.prototype members
+  if (typeof env.abbreviations[':' + label] === 'undefined') {
     env.abbreviations[':' + label] = title;
   }
 
@@ -5610,6 +5619,7 @@ module.exports = function footnote_block(state) {
     }
     if (tok.type === 'footnote_reference_close') {
       insideRef = false;
+      // prepend ':' to avoid conflict with Object.prototype members
       refTokens[':' + currentLabel] = current;
       return false;
     }
@@ -5924,8 +5934,8 @@ function parseReference(str, parser, options, env) {
   if (pos < max && state.src.charCodeAt(pos) !== 0x0A) { return -1; }
 
   label = normalizeReference(str.slice(1, labelEnd));
-  if (env.references[':' + label] === undefined) {
-    env.references[':' + label] = { title: title, href: href };
+  if (typeof env.references[label] === 'undefined') {
+    env.references[label] = { title: title, href: href };
   }
 
   return pos;
@@ -6255,7 +6265,7 @@ module.exports = function backticks(state, silent) {
         state.push({
           type: 'code',
           content: state.src.slice(pos, matchStart)
-                              .replace(/[ \n]+/g,' ')
+                              .replace(/[ \n]+/g, ' ')
                               .trim(),
           block: false,
           level: state.level
@@ -6324,7 +6334,7 @@ module.exports = function del(state, silent) {
             stack++;
           } // else {
             //  // standalone ' ~~ ' indented with spaces
-            //}
+            // }
           if (stack <= 0) {
             found = true;
             break;
@@ -6699,7 +6709,7 @@ module.exports = function footnote_ref(state, silent) {
   pos++;
 
   label = state.src.slice(start + 2, pos - 1);
-  if (state.env.footnotes.refs[':' + label] === undefined) { return false; }
+  if (typeof state.env.footnotes.refs[':' + label] === 'undefined') { return false; }
 
   if (!silent) {
     if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
@@ -6832,7 +6842,7 @@ module.exports = function ins(state, silent) {
             stack++;
           } // else {
             //  // standalone ' ++ ' indented with spaces
-            //}
+            // }
           if (stack <= 0) {
             found = true;
             break;
@@ -6988,7 +6998,7 @@ module.exports = function links(state, silent) {
     // (collapsed reference link and shortcut reference link respectively)
     if (!label) { label = state.src.slice(labelStart, labelEnd); }
 
-    ref = state.env.references[':' + normalizeReference(label)];
+    ref = state.env.references[normalizeReference(label)];
     if (!ref) {
       state.pos = oldPos;
       return false;
@@ -7085,7 +7095,7 @@ module.exports = function del(state, silent) {
             stack++;
           } // else {
             //  // standalone ' == ' indented with spaces
-            //}
+            // }
           if (stack <= 0) {
             found = true;
             break;
