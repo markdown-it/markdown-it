@@ -12,5 +12,5 @@ var Remarked = require('../');
 describe('CommonMark', function () {
   var md = new Remarked('commonmark');
 
-  utils.addSpecTests(path.join(__dirname, 'fixtures/commonmark/good.txt'), md);
+  utils.addTests(path.join(__dirname, 'fixtures/commonmark/good.txt'), md);
 });

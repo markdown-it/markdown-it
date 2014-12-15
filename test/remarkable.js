@@ -17,5 +17,5 @@ describe('remarkable', function () {
     linkify: true
   });
 
-  utils.addSpecTests(path.join(__dirname, 'fixtures/remarkable'), md);
+  utils.addTests(path.join(__dirname, 'fixtures/remarkable'), md);
 });
