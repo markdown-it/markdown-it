@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Remarkable demo
+    title markdown-it demo
     meta(charset='UTF-8')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
     meta(name='viewport' content='width=device-width, initial-scale=1')
@@ -17,7 +17,7 @@ html
     script(src='https://cdn.jsdelivr.net/highlight.js/8.4.0/highlight.min.js')
     link(rel='stylesheet' href='https://cdn.jsdelivr.net/highlight.js/8.4.0/styles/solarized_light.min.css')
 
-    script(src='../dist/remarkable.js')
+    script(src='../dist/markdown-it.js')
 
     link(rel='stylesheet' href='./assets/index.css')
     script(src='./assets/index.js')
@@ -43,7 +43,9 @@ html
   body
     .container
       - var s = self.self.demo;
-      h1 Remarkable demo
+      h1 markdown-it
+        |  
+        small demo
 
       p: a(data-toggle='collapse' href='#code-sample') code sample
       pre.collapse.code-sample(id='code-sample')
@@ -104,4 +106,4 @@ html
             code.result-debug-content.full-height
 
     .gh-ribbon
-      a(href='https://github.com/jonschlinkert/remarkable' target='_blank') Fork me on GitHub
+      a(href='https://github.com/markdown-it/markdown-it' target='_blank') Fork me on GitHub

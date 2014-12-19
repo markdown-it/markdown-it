@@ -1,7 +1,6 @@
-var Remarkable = require('remarkable');
 var hljs       = require('highlight.js') // https://highlightjs.org/
 
-var md = new Remarkable('full', {
+var md = require('markdown-it')('full', {
   html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
@@ -32,5 +31,5 @@ var md = new Remarkable('full', {
   }
 });
 
-console.log(md.render('# Remarkable rulezz!'));
-// => <h1>Remarkable rulezz!</h1>
+console.log(md.render('# markdown-it rulezz!'));
+// => <h1>markdown-it rulezz!</h1>

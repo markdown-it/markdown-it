@@ -4,9 +4,8 @@
 
 var fs = require('fs');
 var path = require('path');
-var Remarkable = require('../');
 
-var md = new Remarkable({
+var md = require('../')({
   html: true,
   linkify: false,
   typographer: false

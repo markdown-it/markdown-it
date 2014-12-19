@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Remarkable demo</title>
+    <title>markdown-it demo</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.2.0/css/bootstrap.css">
     <script src="https://cdn.jsdelivr.net/highlight.js/8.4.0/highlight.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/8.4.0/styles/solarized_light.min.css">
-    <script src="../dist/remarkable.js"></script>
+    <script src="../dist/markdown-it.js"></script>
     <link rel="stylesheet" href="./assets/index.css">
     <script src="./assets/index.js"></script>
     <!-- Ancient IE support - load shiv & kill broken highlighter--><!--[if lt IE 9]>
@@ -35,12 +35,14 @@
   </head>
   <body>
     <div class="container">
-      <h1>Remarkable demo</h1>
+      <h1>
+        markdown-it
+         <small>demo</small>
+      </h1>
       <p><a data-toggle="collapse" href="#code-sample">code sample</a></p>
-      <pre id="code-sample" class="collapse code-sample"><code class="js">var Remarkable = require('remarkable');
-var hljs       = require('highlight.js') // https://highlightjs.org/
+      <pre id="code-sample" class="collapse code-sample"><code class="js">var hljs       = require('highlight.js') // https://highlightjs.org/
 
-var md = new Remarkable('full', {
+var md = require('markdown-it')('full', {
   html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (&lt;br /&gt;)
   breaks:       false,        // Convert '\n' in paragraphs into &lt;br&gt;
@@ -71,8 +73,8 @@ var md = new Remarkable('full', {
   }
 });
 
-console.log(md.render('# Remarkable rulezz!'));
-// =&gt; &lt;h1&gt;Remarkable rulezz!&lt;/h1&gt;
+console.log(md.render('# markdown-it rulezz!'));
+// =&gt; &lt;h1&gt;markdown-it rulezz!&lt;/h1&gt;
 </code></pre>
       <div class="form-inline demo-options">
         <div class="checkbox not-strict">
@@ -158,7 +160,7 @@ test.. test... test..... test?..... test!....
 
 !!!!!! ???? ,,
 
-Remarkable -- awesome
+markdown-it -- awesome
 
 &quot;Smartypants, double quotes&quot;
 
@@ -349,6 +351,6 @@ It converts &quot;HTML&quot;, but keep intact partial entries like &quot;xxxHTML
         </section>
       </div>
     </div>
-    <div class="gh-ribbon"><a href="https://github.com/jonschlinkert/remarkable" target="_blank">Fork me on GitHub</a></div>
+    <div class="gh-ribbon"><a href="https://github.com/markdown-it/markdown-it" target="_blank">Fork me on GitHub</a></div>
   </body>
 </html>

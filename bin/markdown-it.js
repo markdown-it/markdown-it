@@ -7,12 +7,11 @@
 var fs = require('fs');
 var argparse = require('argparse');
 
-var Remarkable = require('..');
 
 ////////////////////////////////////////////////////////////////////////////////
 
 var cli = new argparse.ArgumentParser({
-  prog: 'remarkable',
+  prog: 'markdown-it.js',
   version: require('../package.json').version,
   addHelp: true
 });
@@ -61,7 +60,7 @@ readFile(options.file, 'utf8', function (err, input) {
     process.exit(1);
   }
 
-  md = new Remarkable('full', {
+  md = require('..')('full', {
     html: true,
     xhtmlOut: true,
     typographer: true,

@@ -1,19 +1,19 @@
 {
-  "name": "remarkable",
-  "version": "1.5.0",
-  "description": "Markdown parser, done right.",
+  "name": "markdown-it",
+  "version": "2.0.0",
+  "description": "Markdown parser with plugins",
   "keywords": [
     "markdown",
     "parser",
     "commonmark"
   ],
-  "homepage": "https://github.com/jonschlinkert/remarkable",
+  "homepage": "https://github.com/markdown-it/markdown-it",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jonschlinkert/remarkable.git"
+    "url": "git://github.com/markdown-it/markdown-it.git"
   },
   "bugs": {
-    "url": "https://github.com/jonschlinkert/remarkable/issues"
+    "url": "https://github.com/markdown-it/markdown-it/issues"
   },
   "license": "MIT",
   "main": "index.js",
@@ -26,12 +26,12 @@
   },
   "devDependencies": {
     "ansi": "^0.3.0",
-    "autoprefixer-stylus": "^0.3.0",
+    "autoprefixer-stylus": "^0.4.0",
     "benchmark": "^1.0.0",
     "browserify": "*",
     "commonmark": "0.12.0",
     "coveralls": "^2.11.2",
-    "eslint": "0.10.1",
+    "eslint": "0.10.2",
     "eslint-plugin-nodeca": "^1.0.0",
     "istanbul": "*",
     "jade": "^1.6.0",

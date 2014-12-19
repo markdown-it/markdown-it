@@ -3,7 +3,7 @@
 
 
 var assert     = require('assert');
-var Remarkable = require('../');
+var markdownit = require('../');
 var utils      = require('../').utils;
 
 
@@ -58,13 +58,13 @@ describe('API', function () {
 
   it('constructor', function () {
     assert.throws(function () {
-      var md = new Remarkable('bad preset');
+      var md = markdownit('bad preset');
       md.render('123');
     });
   });
 
   it('configure coverage', function () {
-    var md = new Remarkable('full');
+    var md = markdownit('full');
 
     // conditions coverage
     md.configure({});
@@ -77,7 +77,7 @@ describe('API', function () {
 
     function plugin(self, opts) { if (opts === 'bar') { succeeded = true; } }
 
-    var md = new Remarkable();
+    var md = markdownit();
 
     md.use(plugin, 'foo');
     assert.strictEqual(succeeded, false);
@@ -86,7 +86,7 @@ describe('API', function () {
   });
 
   it('highlight', function () {
-    var md = new Remarkable({
+    var md = markdownit({
       highlight: function (str) {
         return '==' + str + '==';
       }
@@ -96,7 +96,7 @@ describe('API', function () {
   });
 
   it('highlight escape by default', function () {
-    var md = new Remarkable({
+    var md = markdownit({
       highlight: function () {
         return '';
       }
@@ -106,7 +106,7 @@ describe('API', function () {
   });
 
   it('force hardbreaks', function () {
-    var md = new Remarkable({ breaks: true });
+    var md = markdownit({ breaks: true });
 
     assert.strictEqual(md.render('a\nb'), '<p>a<br>\nb</p>\n');
     md.set({ xhtmlOut: true });
@@ -114,7 +114,7 @@ describe('API', function () {
   });
 
   it('xhtmlOut enabled', function () {
-    var md = new Remarkable({ xhtmlOut: true });
+    var md = markdownit({ xhtmlOut: true });
 
     assert.strictEqual(md.render('---'), '<hr />\n');
     assert.strictEqual(md.render('![]()'), '<p><img src="" alt="" /></p>\n');
@@ -122,7 +122,7 @@ describe('API', function () {
   });
 
   it('xhtmlOut disabled', function () {
-    var md = new Remarkable();
+    var md = markdownit();
 
     assert.strictEqual(md.render('---'), '<hr>\n');
     assert.strictEqual(md.render('![]()'), '<p><img src="" alt=""></p>\n');
@@ -135,26 +135,26 @@ describe('API', function () {
 describe('Misc', function () {
 
   it('Should correctly parse strings without tailing \\n', function () {
-    var md = new Remarkable();
+    var md = markdownit();
 
     assert.strictEqual(md.render('123'), '<p>123</p>\n');
     assert.strictEqual(md.render('123\n'), '<p>123</p>\n');
   });
 
   it('Should quickly exit on empty string', function () {
-    var md = new Remarkable();
+    var md = markdownit();
 
     assert.strictEqual(md.render(''), '');
   });
 
   it('Should parse inlines only', function () {
-    var md = new Remarkable('full');
+    var md = markdownit('full');
 
     assert.strictEqual(md.renderInline('a *b* c'), 'a <em>b</em> c');
   });
 
   it('Renderer should have pluggable inline and block rules', function () {
-    var md = new Remarkable();
+    var md = markdownit();
 
     md.renderer.rules.em_open = function () { return '<it>'; };
     md.renderer.rules.em_close = function () { return '</it>'; };
@@ -170,7 +170,7 @@ describe('Misc', function () {
 describe('Links validation', function () {
 
   it('Override validator, disable everything', function () {
-    var md = new Remarkable({ linkify: true });
+    var md = markdownit({ linkify: true });
 
     md.inline.validateLink = function () { return false; };
 
@@ -187,7 +187,7 @@ describe('Links validation', function () {
 describe('Custom fences', function () {
 
   it('should render differently overriden rule', function () {
-    var md = new Remarkable();
+    var md = markdownit();
 
     md.renderer.rules.fence_custom.foo = function (tokens, idx, options, env, self) {
       return '<div class="foo">' +

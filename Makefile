@@ -9,7 +9,7 @@ REMOTE_NAME ?= origin
 REMOTE_REPO ?= $(shell git config --get remote.${REMOTE_NAME}.url)
 
 CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut -b -6) master)
-GITHUB_PROJ := https://github.com//jonschlinkert/${NPM_PACKAGE}
+GITHUB_PROJ := https://github.com//markdown-it/${NPM_PACKAGE}
 
 
 demo: lint
@@ -61,12 +61,12 @@ browserify:
 	mkdir dist
 	# Browserify
 	( printf "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" ; \
-		browserify -r ./ -s Remarkable \
-		) > dist/remarkable.js
+		browserify -r ./ -s markdownit \
+		) > dist/markdown-it.js
 	# Minify
-	uglifyjs dist/remarkable.js -c -m \
+	uglifyjs dist/markdown-it.js -c -m \
 		--preamble "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" \
-		> dist/remarkable.min.js
+		> dist/markdown-it.min.js
 
 todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true

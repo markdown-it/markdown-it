@@ -1,7 +1,6 @@
 'use strict'
 
-var Remarkable = require('../../../');
-var md = new Remarkable('commonmark');
+var md = require('../../../')('commonmark');
 
 exports.run = function(data) {
   return md.render(data);

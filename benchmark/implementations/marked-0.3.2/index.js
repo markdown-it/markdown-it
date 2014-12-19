@@ -1,6 +1,6 @@
 'use strict'
 
-var marked = new require('marked');
+var marked = require('marked');
 
 exports.run = function(data) {
   return marked(data);

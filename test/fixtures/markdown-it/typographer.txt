@@ -63,22 +63,22 @@ dupes
 
 dashes
 .
----remarkable --- super---
+---markdownit --- super---
 
-remarkable---awesome
+markdownit---awesome
 
 abc ----
 .
-<p>—remarkable — super—</p>
-<p>remarkable—awesome</p>
+<p>—markdownit — super—</p>
+<p>markdownit—awesome</p>
 <p>abc ----</p>
 .
 .
---remarkable -- super--
+--markdownit -- super--
 
-remarkable--awesome
+markdownit--awesome
 .
-<p>–remarkable – super–</p>
-<p>remarkable–awesome</p>
+<p>–markdownit – super–</p>
+<p>markdownit–awesome</p>
 .
 

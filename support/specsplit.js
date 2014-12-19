@@ -11,8 +11,6 @@ var fs        = require('fs');
 var util      = require('util');
 var argparse  = require('argparse');
 
-var Remarkable = require('..');
-
 
 var cli = new argparse.ArgumentParser({
   prog: 'specsplit',
@@ -57,7 +55,7 @@ function readFile(filename, encoding, callback) {
 
 readFile(options.spec, 'utf8', function (error, input) {
   var good = [], bad = [],
-      markdown = new Remarkable('commonmark');
+      markdown = require('..')('commonmark');
 
   if (error) {
     if (error.code === 'ENOENT') {

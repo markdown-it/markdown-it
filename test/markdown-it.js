@@ -6,16 +6,15 @@ var path = require('path');
 
 
 var utils = require('./utils');
-var Remarkable = require('../');
 
 
-describe('remarkable', function () {
-  var md = new Remarkable('full', {
+describe('markdownit', function () {
+  var md = require('../')('full', {
     html: true,
     langPrefix: '',
     typographer: true,
     linkify: true
   });
 
-  utils.addTests(path.join(__dirname, 'fixtures/remarkable'), md);
+  utils.addTests(path.join(__dirname, 'fixtures/markdown-it'), md);
 });

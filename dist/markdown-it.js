@@ -1,4 +1,4 @@
-/*! remarkable 1.5.0 https://github.com//jonschlinkert/remarkable @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Remarkable=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 2.0.0 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2642,7 +2642,7 @@ module.exports = {
 };
 
 },{}],7:[function(require,module,exports){
-// Remarkable default options
+// markdown-it default options
 
 'use strict';
 
@@ -2722,7 +2722,7 @@ module.exports = {
 };
 
 },{}],8:[function(require,module,exports){
-// Remarkable default options
+// markdown-it `full` options
 
 'use strict';
 
@@ -3005,7 +3005,11 @@ function StateCore(self, src, env) {
 
 // Main class
 //
-function Remarkable(presetName, options) {
+function MarkdownIt(presetName, options) {
+  if (!(this instanceof MarkdownIt)) {
+    return new MarkdownIt(presetName, options);
+  }
+
   if (!options) {
     if (!isString(presetName)) {
       options = presetName || {};
@@ -3028,17 +3032,17 @@ function Remarkable(presetName, options) {
 
 // Set options, if you did not passed those to constructor
 //
-Remarkable.prototype.set = function (options) {
+MarkdownIt.prototype.set = function (options) {
   assign(this.options, options);
 };
 
 
 // Batch loader for components rules states & options
 //
-Remarkable.prototype.configure = function (presets) {
+MarkdownIt.prototype.configure = function (presets) {
   var self = this;
 
-  if (!presets) { throw new Error('Wrong `remarkable` preset, check name/content'); }
+  if (!presets) { throw new Error('Wrong `markdown-it` preset, check name/content'); }
 
   if (presets.options) { self.set(presets.options); }
 
@@ -3054,13 +3058,13 @@ Remarkable.prototype.configure = function (presets) {
 
 // Sugar for curried plugins init:
 //
-// var md = new Remarkable();
+// var md = new MarkdownIt();
 //
 // md.use(plugin1)
 //   .use(plugin2, opts)
 //   .use(plugin3);
 //
-Remarkable.prototype.use = function (plugin, opts) {
+MarkdownIt.prototype.use = function (plugin, opts) {
   plugin(this, opts);
   return this;
 };
@@ -3069,7 +3073,7 @@ Remarkable.prototype.use = function (plugin, opts) {
 // Parse input string, returns tokens array. Modify `env` with
 // definitions data.
 //
-Remarkable.prototype.parse = function (src, env) {
+MarkdownIt.prototype.parse = function (src, env) {
   var state = new StateCore(this, src, env);
 
   this.core.process(state);
@@ -3079,7 +3083,7 @@ Remarkable.prototype.parse = function (src, env) {
 
 // Main method that does all magic :)
 //
-Remarkable.prototype.render = function (src, env) {
+MarkdownIt.prototype.render = function (src, env) {
   env = env || {};
 
   return this.renderer.render(this.parse(src, env), this.options, env);
@@ -3088,7 +3092,7 @@ Remarkable.prototype.render = function (src, env) {
 
 // Parse content as single string
 //
-Remarkable.prototype.parseInline = function (src, env) {
+MarkdownIt.prototype.parseInline = function (src, env) {
   var state = new StateCore(this, src, env);
 
   state.inlineMode = true;
@@ -3099,14 +3103,14 @@ Remarkable.prototype.parseInline = function (src, env) {
 
 // Render single string, without wrapping it to paragraphs
 //
-Remarkable.prototype.renderInline = function (src, env) {
+MarkdownIt.prototype.renderInline = function (src, env) {
   env = env || {};
 
   return this.renderer.render(this.parseInline(src, env), this.options, env);
 };
 
 
-module.exports = Remarkable;
+module.exports = MarkdownIt;
 
 // Expose helpers, useful for custom renderer functions
 module.exports.utils = require('./common/utils');

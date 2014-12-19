@@ -52,11 +52,11 @@
 
   function mdInit() {
     if (defaults._strict) {
-      mdHtml = new window.Remarkable('commonmark');
-      mdSrc = new window.Remarkable('commonmark');
+      mdHtml = window.markdownit('commonmark');
+      mdSrc = window.markdownit('commonmark');
     } else {
-      mdHtml = new window.Remarkable('full', defaults);
-      mdSrc = new window.Remarkable('full', defaults);
+      mdHtml = window.markdownit('full', defaults);
+      mdSrc = window.markdownit('full', defaults);
     }
 
     // Beautify output of parser for html content

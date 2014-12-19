@@ -1,53 +1,58 @@
-# remarkable
+# markdown-it
 
-[![Build Status](https://travis-ci.org/jonschlinkert/remarkable.svg?branch=master)](https://travis-ci.org/jonschlinkert/remarkable)
-[![NPM version](https://img.shields.io/npm/v/remarkable.svg)](https://www.npmjs.org/package/remarkable)
-[![Coverage Status](https://img.shields.io/coveralls/jonschlinkert/remarkable.svg)](https://coveralls.io/r/jonschlinkert/remarkable?branch=dev)
+[![Build Status](https://travis-ci.org/markdown-it/markdown-it.svg?branch=master)](https://travis-ci.org/markdown-it/markdown-it)
+[![NPM version](https://img.shields.io/npm/v/markdown-it.svg)](https://www.npmjs.org/package/markdown-it)
+[![Coverage Status](https://img.shields.io/coveralls/markdown-it/markdown-it.svg)](https://coveralls.io/r/markdown-it/markdown-it?branch=dev)
 
 > Markdown parser done right. Fast and easy to extend.
 
-__[Live demo](http://jonschlinkert.github.io/remarkable/demo/)__
+__[Live demo](http://markdown-it.github.io/markdown-it/demo/)__
 
 - Supports the [CommonMark](http://commonmark.org/) spec +
   [syntax extensions](#syntax-extensions) + sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
 - [High speed](#benchmark)!
-- [Community plugins](https://www.npmjs.org/browse/keyword/remarkable-plugin) on npm.
+- [Community plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin) on npm.
 
 
 ## Install
 
-**node.js:**
+**node.js** & **bower**:
 
 ```bash
-npm install remarkable --save
-```
-
-**bower:**
-
-```bash
-bower install remarkable --save
+npm install markdown-it --save
+bower install markdown-it --save
 ```
 
 **browser (CDN):**
 
-- [jsDeliver CDN](http://www.jsdelivr.com/#!remarkable "jsDelivr CDN")
+- [jsDeliver CDN](http://www.jsdelivr.com/#!markdown-it "jsDelivr CDN")
 
 
 ## Usage
 
 ```js
-var Remarkable = require('remarkable');
-var md = new Remarkable();
+// Sugar notation
+var md = require('markdown-it')();
+// Or honestly as class:
+//
+// var MarkdownIt = require('markdown-it');
+// var md = new MarkdownIt();
 
-console.log(md.render('# Remarkable rulezz!'));
-// => <h1>Remarkable rulezz!</h1>
+console.log(md.render('# markdown-it rulezz!'));
+// => <h1>markdown-it rulezz!</h1>
+```
+
+In browser, when loaded global (without require.js):
+
+```js
+var md = window.markdownit();
 ```
 
 
 ### Options
 
-By default remarkable is configured to be similar to GFM, but with HTML disabled.
+By default markdown-it is configured to be similar to GFM, but with HTML disabled.
 This is easy to change if you prefer to use different settings.
 
 There are two ways to define options.
@@ -58,7 +63,7 @@ Define options in the constructor:
 
 ```js
 // Actual default values
-var md = new Remarkable({
+var md = require('markdown-it')({
   html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
@@ -77,8 +82,8 @@ var md = new Remarkable({
   highlight: function (/*str, lang*/) { return ''; }
 });
 
-console.log(md.render('# Remarkable rulezz!'));
-// => <h1>Remarkable rulezz!</h1>
+console.log(md.render('# markdown-it rulezz!'));
+// => <h1>markdown-it rulezz!</h1>
 ```
 
 #### .set
@@ -86,8 +91,7 @@ console.log(md.render('# Remarkable rulezz!'));
 Or define options via the `.set()` method:
 
 ```js
-var Remarkable = require('remarkable');
-var md = new Remarkable();
+var md = require('markdown-it')();
 
 md.set({
   html: true,
@@ -95,7 +99,7 @@ md.set({
 });
 ```
 
-**Note:** To achieve the best possible performance, don't modify a `Remarkable`
+**Note:** To achieve the best possible performance, don't modify a `markdown-it`
 instance on the fly. If you need multiple configurations it's best to create
 multiple instances and initialize each with a configuration that is ideal for
 that instance.
@@ -103,7 +107,7 @@ that instance.
 
 ### Presets
 
-Remarkable offers some "presets" as a convenience to quickly enable/disable
+`markdown-it` offers some "presets" as a convenience to quickly enable/disable
 active syntax rules and options for common use cases.
 
 #### commonmark
@@ -111,8 +115,7 @@ active syntax rules and options for common use cases.
 Enable strict [CommonMark](http://commonmark.org/) mode with the `commonmark` preset:
 
 ```js
-var Remarkable = require('remarkable');
-var md = new Remarkable('commonmark');
+var md = require('markdown-it')('commonmark');
 ```
 
 #### full
@@ -120,11 +123,10 @@ var md = new Remarkable('commonmark');
 Enable all available rules (but still with default options, if not set):
 
 ```js
-var Remarkable = require('remarkable');
-var md = new Remarkable('full');
+var md = require('markdown-it')('full');
 
 // Or with options:
-var md = new Remarkable('full', {
+var md = require('markdown-it')('full', {
   html: true,
   linkify: true,
   typographer: true
@@ -137,11 +139,10 @@ var md = new Remarkable('full', {
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
 ```js
-var Remarkable = require('remarkable');
 var hljs       = require('highlight.js') // https://highlightjs.org/
 
 // Actual default values
-var md = new Remarkable({
+var md = require('markdown-it')({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -184,12 +185,12 @@ old-style rules via external plugins if you prefer.
 ### Manage rules
 
 ```js
-var md = new Remarkable();
+var md = require('markdown-it')();
 md.inline.ruler.enable([ 'ins', 'mark' ]);
 md.block.ruler.disable([ 'table' ]);
 
 // Enable everything
-md = new Remarkable('full', {
+md = require('markdown-it')('full', {
   html: true,
   linkify: true,
   typographer: true,
@@ -198,7 +199,7 @@ md = new Remarkable('full', {
 //
 // Manually enable rules, disabled by default:
 //
-var md = new Remarkable();
+var md = require('markdown-it')();
 md.block.ruler.core([
   'abbr'
 ]);
@@ -218,12 +219,11 @@ md.block.ruler.enable([
 
 ### Typographer
 
-Although full-weight typographical replacements are language specific, `remarkable`
+Although full-weight typographical replacements are language specific, `markdown-it`
 provides coverage for the most common and universal use cases:
 
 ```js
-var Remarkable = require('remarkable');
-var md = new Remarkable({
+var md = require('markdown-it')({
   typographer: true,
   quotes: '“”‘’'
 });
@@ -255,7 +255,7 @@ more advanced or specific to your language.
 Easily load plugins with the `.use()` method:
 
 ```js
-var md = new Remarkable();
+var md = require('markdown-it')();
 
 md.use(plugin1)
   .use(plugin2, opts)
@@ -284,14 +284,14 @@ reconfigure anyone as you wish. Render also can be modified and extended. See
 source code to understand details. Pay attention to these properties:
 
 ```js
-Remarkable.core
-Remarkable.core.ruler
-Remarkable.block
-Remarkable.block.ruler
-Remarkable.inline
-Remarkable.inline.ruler
-Remarkable.renderer
-Remarkable.renderer.rules
+MarkdownIt.core
+MarkdownIt.core.ruler
+MarkdownIt.block
+MarkdownIt.block.ruler
+MarkdownIt.inline
+MarkdownIt.inline.ruler
+MarkdownIt.renderer
+MarkdownIt.renderer.rules
 ```
 
 ## Benchmark
@@ -310,17 +310,16 @@ Sample: spec.txt (110610 bytes)
  > marked-0.3.2 x 22.92 ops/sec ±0.79% (41 runs sampled)
 ```
 
-As you can see, `remarkabe` doesn't pay with speed for it's flexibility. Because
-it's written in monomorphyc style and use JIT inline caches effectively.
+As you can see, `markdown-it` doesn't pay with speed for it's flexibility.
+Because it's written in monomorphyc style and use JIT inline caches effectively.
 
 
 ## Authors
 
-- Jon Schlinkert [github/jonschlinkert](https://github.com/jonschlinkert)
 - Alex Kocharin [github/rlidwka](https://github.com/rlidwka)
 - Vitaly Puzrin [github/puzrin](https://github.com/puzrin)
 
 
 ## License
 
-[MIT](https://github.com/jonschlinkert/remarkable/blob/master/LICENSE)
+[MIT](https://github.com/markdown-it/markdown-it/blob/master/LICENSE)

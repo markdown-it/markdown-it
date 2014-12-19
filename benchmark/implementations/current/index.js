@@ -1,7 +1,6 @@
 'use strict'
 
-var Remarkable = require('../../../');
-var md = new Remarkable({
+var md = require('../../../')({
   html: true,
   linkify: true,
   typographer: true
