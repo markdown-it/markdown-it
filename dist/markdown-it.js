@@ -2570,198 +2570,6 @@ exports.replaceEntities   = replaceEntities;
 exports.escapeHtml        = escapeHtml;
 
 },{"./entities":1}],6:[function(require,module,exports){
-// Commonmark default options
-
-'use strict';
-
-
-module.exports = {
-  options: {
-    html:         true,         // Enable HTML tags in source
-    xhtmlOut:     true,         // Use '/' to close single tags (<br />)
-    breaks:       false,        // Convert '\n' in paragraphs into <br>
-    langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert URL-like texts to links
-
-    // Enable some language-neutral replacements + quotes beautification
-    typographer:  false,
-
-    // Double + single quotes replacement pairs, when typographer enabled,
-    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
-    quotes: '“”‘’',
-
-    // Highlighter function. Should return escaped HTML,
-    // or '' if input not changed
-    //
-    // function (/*str, lang*/) { return ''; }
-    //
-    highlight: null,
-
-    maxNesting:   20            // Internal protection, recursion limit
-  },
-
-  components: {
-
-    core: {
-      rules: [
-        'block',
-        'inline',
-        'references',
-        'abbr2'
-      ]
-    },
-
-    block: {
-      rules: [
-        'blockquote',
-        'code',
-        'fences',
-        'heading',
-        'hr',
-        'htmlblock',
-        'lheading',
-        'list',
-        'paragraph'
-      ]
-    },
-
-    inline: {
-      rules: [
-        'autolink',
-        'backticks',
-        'emphasis',
-        'entity',
-        'escape',
-        'htmltag',
-        'links',
-        'newline',
-        'text'
-      ]
-    }
-  }
-};
-
-},{}],7:[function(require,module,exports){
-// markdown-it default options
-
-'use strict';
-
-
-module.exports = {
-  options: {
-    html:         false,        // Enable HTML tags in source
-    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
-    breaks:       false,        // Convert '\n' in paragraphs into <br>
-    langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert URL-like texts to links
-
-    // Enable some language-neutral replacements + quotes beautification
-    typographer:  false,
-
-    // Double + single quotes replacement pairs, when typographer enabled,
-    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
-    quotes: '“”‘’',
-
-    // Highlighter function. Should return escaped HTML,
-    // or '' if input not changed
-    //
-    // function (/*str, lang*/) { return ''; }
-    //
-    highlight: null,
-
-    maxNesting:   20            // Internal protection, recursion limit
-  },
-
-  components: {
-
-    core: {
-      rules: [
-        'block',
-        'inline',
-        'references',
-        'replacements',
-        'linkify',
-        'smartquotes',
-        'references',
-        'abbr2',
-        'footnote_tail'
-      ]
-    },
-
-    block: {
-      rules: [
-        'blockquote',
-        'code',
-        'fences',
-        'heading',
-        'hr',
-        'htmlblock',
-        'lheading',
-        'list',
-        'paragraph',
-        'table'
-      ]
-    },
-
-    inline: {
-      rules: [
-        'autolink',
-        'backticks',
-        'del',
-        'emphasis',
-        'entity',
-        'escape',
-        'footnote_ref',
-        'htmltag',
-        'links',
-        'newline',
-        'text'
-      ]
-    }
-  }
-};
-
-},{}],8:[function(require,module,exports){
-// markdown-it `full` options
-
-'use strict';
-
-
-module.exports = {
-  options: {
-    html:         false,        // Enable HTML tags in source
-    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
-    breaks:       false,        // Convert '\n' in paragraphs into <br>
-    langPrefix:   'language-',  // CSS language prefix for fenced blocks
-    linkify:      false,        // autoconvert URL-like texts to links
-
-    // Enable some language-neutral replacements + quotes beautification
-    typographer:  false,
-
-    // Double + single quotes replacement pairs, when typographer enabled,
-    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
-    quotes: '“”‘’',
-
-    // Highlighter function. Should return escaped HTML,
-    // or '' if input not changed
-    //
-    // function (/*str, lang*/) { return ''; }
-    //
-    highlight: null,
-
-    maxNesting:   20            // Internal protection, recursion limit
-  },
-
-  components: {
-
-    // Don't restrict core/block/inline rules
-    core: {},
-    block: {},
-    inline: {}
-  }
-};
-
-},{}],9:[function(require,module,exports){
 'use strict';
 
 
@@ -2780,7 +2588,7 @@ module.exports = function normalizeLink(url) {
   return encodeURI(normalized);
 };
 
-},{"../common/utils":5}],10:[function(require,module,exports){
+},{"../common/utils":5}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = function normalizeReference(str) {
@@ -2790,7 +2598,7 @@ module.exports = function normalizeReference(str) {
   return str.trim().replace(/\s+/g, ' ').toUpperCase();
 };
 
-},{}],11:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // Parse link destination
 //
 // on success it returns a string and updates state.pos;
@@ -2871,7 +2679,7 @@ module.exports = function parseLinkDestination(state, pos) {
   return true;
 };
 
-},{"../common/utils":5,"./normalize_link":9}],12:[function(require,module,exports){
+},{"../common/utils":5,"./normalize_link":6}],9:[function(require,module,exports){
 // Parse link label
 //
 // this function assumes that first character ("[") already matches;
@@ -2926,7 +2734,7 @@ module.exports = function parseLinkLabel(state, start) {
   return labelEnd;
 };
 
-},{}],13:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Parse link title
 //
 // on success it returns a string and updates state.pos;
@@ -2969,7 +2777,7 @@ module.exports = function parseLinkTitle(state, pos) {
   return false;
 };
 
-},{"../common/utils":5}],14:[function(require,module,exports){
+},{"../common/utils":5}],11:[function(require,module,exports){
 // Main perser class
 
 'use strict';
@@ -2984,9 +2792,9 @@ var ParserInline = require('./parser_inline');
 var Ruler        = require('./ruler');
 
 var config = {
-  'default': require('./configs/default'),
-  full: require('./configs/full'),
-  commonmark: require('./configs/commonmark')
+  'default': require('./presets/default'),
+  full: require('./presets/full'),
+  commonmark: require('./presets/commonmark')
 };
 
 
@@ -3115,7 +2923,7 @@ module.exports = MarkdownIt;
 // Expose helpers, useful for custom renderer functions
 module.exports.utils = require('./common/utils');
 
-},{"./common/utils":5,"./configs/commonmark":6,"./configs/default":7,"./configs/full":8,"./parser_block":15,"./parser_core":16,"./parser_inline":17,"./renderer":18,"./ruler":19}],15:[function(require,module,exports){
+},{"./common/utils":5,"./parser_block":12,"./parser_core":13,"./parser_inline":14,"./presets/commonmark":15,"./presets/default":16,"./presets/full":17,"./renderer":18,"./ruler":19}],12:[function(require,module,exports){
 // Block parser
 
 
@@ -3248,7 +3056,7 @@ ParserBlock.prototype.parse = function (src, options, env, outTokens) {
 
 module.exports = ParserBlock;
 
-},{"./ruler":19,"./rules_block/blockquote":20,"./rules_block/code":21,"./rules_block/deflist":22,"./rules_block/fences":23,"./rules_block/footnote":24,"./rules_block/heading":25,"./rules_block/hr":26,"./rules_block/htmlblock":27,"./rules_block/lheading":28,"./rules_block/list":29,"./rules_block/paragraph":30,"./rules_block/state_block":31,"./rules_block/table":32}],16:[function(require,module,exports){
+},{"./ruler":19,"./rules_block/blockquote":20,"./rules_block/code":21,"./rules_block/deflist":22,"./rules_block/fences":23,"./rules_block/footnote":24,"./rules_block/heading":25,"./rules_block/hr":26,"./rules_block/htmlblock":27,"./rules_block/lheading":28,"./rules_block/list":29,"./rules_block/paragraph":30,"./rules_block/state_block":31,"./rules_block/table":32}],13:[function(require,module,exports){
 // Class of top level (`core`)  rules
 //
 'use strict';
@@ -3294,7 +3102,7 @@ Core.prototype.process = function (state) {
 
 module.exports = Core;
 
-},{"./ruler":19,"./rules_core/abbr":33,"./rules_core/abbr2":34,"./rules_core/block":35,"./rules_core/footnote_tail":36,"./rules_core/inline":37,"./rules_core/linkify":38,"./rules_core/references":39,"./rules_core/replacements":40,"./rules_core/smartquotes":41}],17:[function(require,module,exports){
+},{"./ruler":19,"./rules_core/abbr":33,"./rules_core/abbr2":34,"./rules_core/block":35,"./rules_core/footnote_tail":36,"./rules_core/inline":37,"./rules_core/linkify":38,"./rules_core/references":39,"./rules_core/replacements":40,"./rules_core/smartquotes":41}],14:[function(require,module,exports){
 // Inline parser
 
 'use strict';
@@ -3428,7 +3236,199 @@ ParserInline.prototype.parse = function (str, options, env, outTokens) {
 
 module.exports = ParserInline;
 
-},{"./common/utils":5,"./ruler":19,"./rules_inline/autolink":42,"./rules_inline/backticks":43,"./rules_inline/del":44,"./rules_inline/emphasis":45,"./rules_inline/entity":46,"./rules_inline/escape":47,"./rules_inline/footnote_inline":48,"./rules_inline/footnote_ref":49,"./rules_inline/htmltag":50,"./rules_inline/ins":51,"./rules_inline/links":52,"./rules_inline/mark":53,"./rules_inline/newline":54,"./rules_inline/state_inline":55,"./rules_inline/sub":56,"./rules_inline/sup":57,"./rules_inline/text":58}],18:[function(require,module,exports){
+},{"./common/utils":5,"./ruler":19,"./rules_inline/autolink":42,"./rules_inline/backticks":43,"./rules_inline/del":44,"./rules_inline/emphasis":45,"./rules_inline/entity":46,"./rules_inline/escape":47,"./rules_inline/footnote_inline":48,"./rules_inline/footnote_ref":49,"./rules_inline/htmltag":50,"./rules_inline/ins":51,"./rules_inline/links":52,"./rules_inline/mark":53,"./rules_inline/newline":54,"./rules_inline/state_inline":55,"./rules_inline/sub":56,"./rules_inline/sup":57,"./rules_inline/text":58}],15:[function(require,module,exports){
+// Commonmark default options
+
+'use strict';
+
+
+module.exports = {
+  options: {
+    html:         true,         // Enable HTML tags in source
+    xhtmlOut:     true,         // Use '/' to close single tags (<br />)
+    breaks:       false,        // Convert '\n' in paragraphs into <br>
+    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+    linkify:      false,        // autoconvert URL-like texts to links
+
+    // Enable some language-neutral replacements + quotes beautification
+    typographer:  false,
+
+    // Double + single quotes replacement pairs, when typographer enabled,
+    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+    quotes: '“”‘’',
+
+    // Highlighter function. Should return escaped HTML,
+    // or '' if input not changed
+    //
+    // function (/*str, lang*/) { return ''; }
+    //
+    highlight: null,
+
+    maxNesting:   20            // Internal protection, recursion limit
+  },
+
+  components: {
+
+    core: {
+      rules: [
+        'block',
+        'inline',
+        'references',
+        'abbr2'
+      ]
+    },
+
+    block: {
+      rules: [
+        'blockquote',
+        'code',
+        'fences',
+        'heading',
+        'hr',
+        'htmlblock',
+        'lheading',
+        'list',
+        'paragraph'
+      ]
+    },
+
+    inline: {
+      rules: [
+        'autolink',
+        'backticks',
+        'emphasis',
+        'entity',
+        'escape',
+        'htmltag',
+        'links',
+        'newline',
+        'text'
+      ]
+    }
+  }
+};
+
+},{}],16:[function(require,module,exports){
+// markdown-it default options
+
+'use strict';
+
+
+module.exports = {
+  options: {
+    html:         false,        // Enable HTML tags in source
+    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
+    breaks:       false,        // Convert '\n' in paragraphs into <br>
+    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+    linkify:      false,        // autoconvert URL-like texts to links
+
+    // Enable some language-neutral replacements + quotes beautification
+    typographer:  false,
+
+    // Double + single quotes replacement pairs, when typographer enabled,
+    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+    quotes: '“”‘’',
+
+    // Highlighter function. Should return escaped HTML,
+    // or '' if input not changed
+    //
+    // function (/*str, lang*/) { return ''; }
+    //
+    highlight: null,
+
+    maxNesting:   20            // Internal protection, recursion limit
+  },
+
+  components: {
+
+    core: {
+      rules: [
+        'block',
+        'inline',
+        'references',
+        'replacements',
+        'linkify',
+        'smartquotes',
+        'references',
+        'abbr2',
+        'footnote_tail'
+      ]
+    },
+
+    block: {
+      rules: [
+        'blockquote',
+        'code',
+        'fences',
+        'heading',
+        'hr',
+        'htmlblock',
+        'lheading',
+        'list',
+        'paragraph',
+        'table'
+      ]
+    },
+
+    inline: {
+      rules: [
+        'autolink',
+        'backticks',
+        'del',
+        'emphasis',
+        'entity',
+        'escape',
+        'footnote_ref',
+        'htmltag',
+        'links',
+        'newline',
+        'text'
+      ]
+    }
+  }
+};
+
+},{}],17:[function(require,module,exports){
+// markdown-it `full` options
+
+'use strict';
+
+
+module.exports = {
+  options: {
+    html:         false,        // Enable HTML tags in source
+    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
+    breaks:       false,        // Convert '\n' in paragraphs into <br>
+    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+    linkify:      false,        // autoconvert URL-like texts to links
+
+    // Enable some language-neutral replacements + quotes beautification
+    typographer:  false,
+
+    // Double + single quotes replacement pairs, when typographer enabled,
+    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+    quotes: '“”‘’',
+
+    // Highlighter function. Should return escaped HTML,
+    // or '' if input not changed
+    //
+    // function (/*str, lang*/) { return ''; }
+    //
+    highlight: null,
+
+    maxNesting:   20            // Internal protection, recursion limit
+  },
+
+  components: {
+
+    // Don't restrict core/block/inline rules
+    core: {},
+    block: {},
+    inline: {}
+  }
+};
+
+},{}],18:[function(require,module,exports){
 'use strict';
 
 
@@ -5493,7 +5493,7 @@ module.exports = function abbr(state) {
   }
 };
 
-},{"../helpers/parse_link_label":12,"../rules_inline/state_inline":55}],34:[function(require,module,exports){
+},{"../helpers/parse_link_label":9,"../rules_inline/state_inline":55}],34:[function(require,module,exports){
 // Enclose abbreviations in <abbr> tags
 //
 'use strict';
@@ -5977,7 +5977,7 @@ module.exports = function references(state) {
   }
 };
 
-},{"../helpers/normalize_reference":10,"../helpers/parse_link_destination":11,"../helpers/parse_link_label":12,"../helpers/parse_link_title":13,"../rules_inline/state_inline":55}],40:[function(require,module,exports){
+},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_label":9,"../helpers/parse_link_title":10,"../rules_inline/state_inline":55}],40:[function(require,module,exports){
 // Simple typographyc replacements
 //
 'use strict';
@@ -6237,7 +6237,7 @@ module.exports = function autolink(state, silent) {
   return false;
 };
 
-},{"../common/url_schemas":4,"../helpers/normalize_link":9}],43:[function(require,module,exports){
+},{"../common/url_schemas":4,"../helpers/normalize_link":6}],43:[function(require,module,exports){
 // Parse backticks
 
 'use strict';
@@ -6678,7 +6678,7 @@ module.exports = function footnote_inline(state, silent) {
   return true;
 };
 
-},{"../helpers/parse_link_label":12}],49:[function(require,module,exports){
+},{"../helpers/parse_link_label":9}],49:[function(require,module,exports){
 // Process footnote references ([^...])
 
 'use strict';
@@ -7046,7 +7046,7 @@ module.exports = function links(state, silent) {
   return true;
 };
 
-},{"../helpers/normalize_reference":10,"../helpers/parse_link_destination":11,"../helpers/parse_link_label":12,"../helpers/parse_link_title":13}],53:[function(require,module,exports){
+},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_label":9,"../helpers/parse_link_title":10}],53:[function(require,module,exports){
 // Process ==highlighted text==
 
 'use strict';
@@ -9444,5 +9444,5 @@ module.exports = function text(state, silent) {
 
 module.exports = require('./lib/');
 
-},{"./lib/":14}]},{},[])("/")
+},{"./lib/":11}]},{},[])("/")
 });
