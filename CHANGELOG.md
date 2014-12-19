@@ -3,6 +3,7 @@
 
 - New project name & home! Now it's `markdown-it`,
 - Sugar for constructor call - `new` is not mandatory now.
+- Renamed presets folder (configs -> presets).
 
 
 1.5.0 / 2014-12-12
