@@ -1,8 +1,8 @@
 # markdown-it
 
 [![Build Status](https://travis-ci.org/markdown-it/markdown-it.svg?branch=master)](https://travis-ci.org/markdown-it/markdown-it)
-[![NPM version](https://img.shields.io/npm/v/markdown-it.svg)](https://www.npmjs.org/package/markdown-it)
-[![Coverage Status](https://img.shields.io/coveralls/markdown-it/markdown-it.svg)](https://coveralls.io/r/markdown-it/markdown-it?branch=dev)
+[![NPM version](https://img.shields.io/npm/v/markdown-it.svg?style=flat)](https://www.npmjs.org/package/markdown-it)
+[![Coverage Status](https://img.shields.io/coveralls/markdown-it/markdown-it/master.svg?style=flat)](https://coveralls.io/r/markdown-it/markdown-it?branch=dev)
 
 > Markdown parser done right. Fast and easy to extend.
 
