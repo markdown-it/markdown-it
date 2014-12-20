@@ -4,10 +4,10 @@
 var path = require('path');
 
 
-var utils = require('./utils');
+var generate = require('markdown-it-testgen');
 
 
-describe('markdownit', function () {
+describe('markdown-it', function () {
   var md = require('../')('full', {
     html: true,
     langPrefix: '',
@@ -15,5 +15,5 @@ describe('markdownit', function () {
     linkify: true
   });
 
-  utils.addTests(path.join(__dirname, 'fixtures/markdown-it'), md);
+  generate(path.join(__dirname, 'fixtures/markdown-it'), md);
 });
