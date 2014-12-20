@@ -18,6 +18,19 @@ demo: lint
 	stylus -u autoprefixer-stylus demo/assets/index.styl
 	rm -rf demo/sample.json
 
+gh-pages: browserify demo
+	rm -rf ./demo-web
+	cp -r ./demo ./demo-web
+	cp ./dist/markdown-it.js ./demo-web
+	sed -i "s|../dist|.|" ./demo-web/index.html
+	cd ./demo-web \
+		&& git init . \
+		&& git add . \
+		&& git commit -m "Auto-generate demo" \
+		&& git remote add origin git@github.com:markdown-it/markdown-it.github.io.git \
+		&& git push --force origin master
+	rm -rf ./demo-web
+
 lint:
 	eslint --reset ./
 
@@ -32,13 +45,6 @@ coverage:
 
 test-ci: lint
 	istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
-
-gh-pages:
-	if [ "git branch --list gh-pages" ]; then \
-		git branch -D gh-pages ; \
-		fi
-	git branch gh-pages
-	git push origin gh-pages -f
 
 publish:
 	@if test 0 -ne `git status --porcelain | wc -l` ; then \
