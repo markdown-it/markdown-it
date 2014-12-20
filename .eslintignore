@@ -1,6 +1,5 @@
-benchmark/implementations/
 coverage/
 demo/sample.js
 demo-web/
 dist/
-node_modules/
+node_modules

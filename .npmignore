@@ -1,8 +1,8 @@
 benchmark/
 coverage/
 demo/
+docs/
 support/
 test/
 .*
 Makefile
-

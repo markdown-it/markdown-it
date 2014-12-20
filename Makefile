@@ -34,7 +34,7 @@ gh-pages: browserify demo
 	rm -rf ./demo-web
 
 lint:
-	eslint --reset ./
+	eslint --reset .
 
 test: lint
 	NODE_ENV=test mocha -R spec

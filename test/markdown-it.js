@@ -1,4 +1,3 @@
-/*global describe*/
 'use strict';
 
 

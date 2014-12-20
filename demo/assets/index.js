@@ -1,6 +1,9 @@
 (function () {
   'use strict';
 
+  /*eslint-env browser*/
+  /*global $, _*/
+
   var mdHtml, mdSrc, permalink, scrollMap;
 
   var defaults = {

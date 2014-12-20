@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var md = require('../../../')({
   html: true,
@@ -8,4 +8,4 @@ var md = require('../../../')({
 
 exports.run = function(data) {
   return md.render(data);
-}
+};

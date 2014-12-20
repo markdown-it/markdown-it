@@ -16,6 +16,7 @@
     "bower_components",
     "coverage",
     "demo",
+    "docs",
     "lib",
     "node_modules",
     "support",
