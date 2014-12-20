@@ -5,7 +5,8 @@
   "keywords": [
     "markdown",
     "parser",
-    "commonmark"
+    "commonmark",
+    "markdown-it"
   ],
   "homepage": "https://github.com/markdown-it/markdown-it",
   "repository": {
