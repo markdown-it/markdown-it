@@ -1,12 +1,12 @@
 # markdown-it
 
-[![Build Status](https://travis-ci.org/markdown-it/markdown-it.svg?branch=master)](https://travis-ci.org/markdown-it/markdown-it)
+[![Build Status](https://img.shields.io/travis/markdown-it/markdown-it/master.svg?style=flat)](https://travis-ci.org/markdown-it/markdown-it)
 [![NPM version](https://img.shields.io/npm/v/markdown-it.svg?style=flat)](https://www.npmjs.org/package/markdown-it)
 [![Coverage Status](https://img.shields.io/coveralls/markdown-it/markdown-it/master.svg?style=flat)](https://coveralls.io/r/markdown-it/markdown-it?branch=dev)
 
 > Markdown parser done right. Fast and easy to extend.
 
-__[Live demo](http://markdown-it.github.io/markdown-it/demo/)__
+__[Live demo](https://markdown-it.github.io)__
 
 - Supports the [CommonMark](http://commonmark.org/) spec +
   [syntax extensions](#syntax-extensions) + sugar (URL autolinking, typographer).
@@ -32,21 +32,19 @@ bower install markdown-it --save
 ## Usage
 
 ```js
-// Sugar notation
-var md = require('markdown-it')();
-// Or honestly as class:
-//
-// var MarkdownIt = require('markdown-it');
-// var md = new MarkdownIt();
-
+// node.js, standard way:
+var MarkdownIt = require('markdown-it'),
+    md = new MarkdownIt();
 console.log(md.render('# markdown-it rulezz!'));
-// => <h1>markdown-it rulezz!</h1>
-```
 
-In browser, when loaded global (without require.js):
+// node.js, the same, but with sugar:
+var md = require('markdown-it')();
+console.log(md.render('# markdown-it rulezz!'));
 
-```js
+// browser without AMD, added to "window" on script load
+// Note, there are no dash.
 var md = window.markdownit();
+console.log(md.render('# markdown-it rulezz!'));
 ```
 
 
@@ -57,7 +55,9 @@ This is easy to change if you prefer to use different settings.
 
 There are two ways to define options.
 
-#### constructor
+#### constructor(preset, options)
+
+- __preset__ (String): "full"|"commonmark"|Optional.
 
 Define options in the constructor:
 
