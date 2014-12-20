@@ -128,6 +128,38 @@ describe('API', function () {
     assert.strictEqual(md.render('a  \\\nb'), '<p>a  <br>\nb</p>\n');
   });
 
+  it('bulk enable/disable rules in different chains', function () {
+    var md = markdownit();
+
+    var was = {
+      core: md.core.ruler.getRules('').length,
+      block: md.block.ruler.getRules('').length,
+      inline: md.inline.ruler.getRules('').length
+    };
+
+    // Disable 2 rule in each chain & compare result
+    md.disable([ 'block', 'inline', 'code', 'fences', 'emphasis', 'entity' ]);
+
+    var now = {
+      core: md.core.ruler.getRules('').length + 2,
+      block: md.block.ruler.getRules('').length + 2,
+      inline: md.inline.ruler.getRules('').length + 2
+    };
+
+    assert.deepEqual(was, now);
+
+    // Enable the same rules back
+    md.enable([ 'block', 'inline', 'code', 'fences', 'emphasis', 'entity' ]);
+
+    var back = {
+      core: md.core.ruler.getRules('').length,
+      block: md.block.ruler.getRules('').length,
+      inline: md.inline.ruler.getRules('').length
+    };
+
+    assert.deepEqual(was, back);
+  });
+
 });
 
 
