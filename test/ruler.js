@@ -87,7 +87,7 @@ describe('Ruler', function () {
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {});
 
-    ruler.enable('test', true);
+    ruler.enableOnly('test');
     rules = ruler.getRules('');
     assert.strictEqual(rules.length, 1);
   });
@@ -128,6 +128,23 @@ describe('Ruler', function () {
     });
     assert.throws(function () {
       ruler.disable('invalid name');
+    });
+  });
+
+
+  it('should not fail on invalid rule name in silent mode', function () {
+    var ruler = new Ruler();
+
+    ruler.push('test', function foo() {});
+
+    assert.doesNotThrow(function () {
+      ruler.enable('invalid name', true);
+    });
+    assert.doesNotThrow(function () {
+      ruler.enableOnly('invalid name', true);
+    });
+    assert.doesNotThrow(function () {
+      ruler.disable('invalid name', true);
     });
   });
 
