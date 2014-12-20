@@ -23,6 +23,8 @@ gh-pages: browserify demo
 	cp -r ./demo ./demo-web
 	cp ./dist/markdown-it.js ./demo-web
 	sed -i "s|../dist|.|" ./demo-web/index.html
+	cp ./support/demo_readme.md ./demo-web/README.md
+	touch ./demo-web/.nojekyll
 	cd ./demo-web \
 		&& git init . \
 		&& git add . \
