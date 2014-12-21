@@ -1,8 +1,9 @@
-2.1.0 / WIP
+2.1.0 / 2014-12-21
 ------------------
 
 - Separated method to enable rules by whitelist (enableOnly).
-- Shortcuts for bulk enable/disable rules.
+- Changed second param of enable/disable ruler methods.
+- Shortcuts in main class for bulk enable/disable rules.
 - ASCII-friendly browserified files.
 - Separate package for spec tests.
 
