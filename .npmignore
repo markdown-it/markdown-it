@@ -4,5 +4,6 @@ demo/
 docs/
 support/
 test/
-.*
 Makefile
+.*
+*.log

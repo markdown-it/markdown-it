@@ -12,7 +12,7 @@ __[Live demo](https://markdown-it.github.io)__
   [syntax extensions](#syntax-extensions) + sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
 - [High speed](#benchmark)!
-- [Community plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin) on npm.
+- Community written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [utilities](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
 
 ## Install
