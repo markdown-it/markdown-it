@@ -1,4 +1,4 @@
-/*! markdown-it 2.0.0 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 2.1.1 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2560,6 +2560,11 @@ function escapeHtml(str) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+function arrayReplaceAt(src, pos, newElements) {
+  return [].concat(src.slice(0, pos), newElements, src.slice(pos + 1));
+}
+
+
 exports.assign            = assign;
 exports.isString          = isString;
 exports.has               = has;
@@ -2568,6 +2573,7 @@ exports.isValidEntityCode = isValidEntityCode;
 exports.fromCodePoint     = fromCodePoint;
 exports.replaceEntities   = replaceEntities;
 exports.escapeHtml        = escapeHtml;
+exports.arrayReplaceAt    = arrayReplaceAt;
 
 },{"./entities":1}],6:[function(require,module,exports){
 'use strict';
@@ -2783,6 +2789,7 @@ module.exports = function parseLinkTitle(state, pos) {
 'use strict';
 
 
+var utils        = require('./common/utils');
 var assign       = require('./common/utils').assign;
 var isString     = require('./common/utils').isString;
 var Renderer     = require('./renderer');
@@ -2831,6 +2838,9 @@ function MarkdownIt(presetName, options) {
   this.renderer = new Renderer();
   this.ruler    = new Ruler();
 
+  // Expose utils for easy acces from plugins
+  this.utils    = utils;
+
   this.options  = {};
   this.configure(config[presetName]);
 
@@ -2857,10 +2867,28 @@ MarkdownIt.prototype.configure = function (presets) {
   if (presets.components) {
     Object.keys(presets.components).forEach(function (name) {
       if (presets.components[name].rules) {
-        self[name].ruler.enable(presets.components[name].rules, true);
+        self[name].ruler.enableOnly(presets.components[name].rules);
       }
     });
   }
+};
+
+
+// Sugar to enable rules by names in all chains at once
+//
+MarkdownIt.prototype.enable = function (list) {
+  [ 'core', 'block', 'inline' ].forEach(function (chain) {
+    this[chain].ruler.enable(list, true);
+  }, this);
+};
+
+
+// Sugar to disable rules by names in all chains at once
+//
+MarkdownIt.prototype.disable = function (list) {
+  [ 'core', 'block', 'inline' ].forEach(function (chain) {
+    this[chain].ruler.disable(list, true);
+  }, this);
 };
 
 
@@ -2889,6 +2917,7 @@ MarkdownIt.prototype.parse = function (src, env) {
   return state.tokens;
 };
 
+
 // Main method that does all magic :)
 //
 MarkdownIt.prototype.render = function (src, env) {
@@ -2908,6 +2937,7 @@ MarkdownIt.prototype.parseInline = function (src, env) {
 
   return state.tokens;
 };
+
 
 // Render single string, without wrapping it to paragraphs
 //
@@ -3255,7 +3285,7 @@ module.exports = {
 
     // Double + single quotes replacement pairs, when typographer enabled,
     // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
-    quotes: '“”‘’',
+    quotes: '\u201c\u201d\u2018\u2019' /* “”‘’ */,
 
     // Highlighter function. Should return escaped HTML,
     // or '' if input not changed
@@ -3327,7 +3357,7 @@ module.exports = {
 
     // Double + single quotes replacement pairs, when typographer enabled,
     // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
-    quotes: '“”‘’',
+    quotes: '\u201c\u201d\u2018\u2019' /* “”‘’ */,
 
     // Highlighter function. Should return escaped HTML,
     // or '' if input not changed
@@ -3407,7 +3437,7 @@ module.exports = {
 
     // Double + single quotes replacement pairs, when typographer enabled,
     // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
-    quotes: '“”‘’',
+    quotes: '\u201c\u201d\u2018\u2019' /* “”‘’ */,
 
     // Highlighter function. Should return escaped HTML,
     // or '' if input not changed
@@ -3738,7 +3768,7 @@ rules.footnote_anchor = function (tokens, idx) {
   if (tokens[idx].subId > 0) {
     id += ':' + tokens[idx].subId;
   }
-  return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
+  return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
 };
 
 
@@ -3952,37 +3982,40 @@ Ruler.prototype.push = function (ruleName, fn, options) {
 };
 
 
-// Enable list of rules by names. If `strict` is true, then all non listed
-// rules will be disabled.
+// Enable rules by names.
 //
-Ruler.prototype.enable = function (list, strict) {
-  if (!Array.isArray(list)) {
-    list = [ list ];
-  }
-
-  // In strict mode disable all existing rules first
-  if (strict) {
-    this.__rules__.forEach(function (rule) {
-      rule.enabled = false;
-    });
-  }
+Ruler.prototype.enable = function (list, ignoreInvalid) {
+  if (!Array.isArray(list)) { list = [ list ]; }
 
   // Search by name and enable
   list.forEach(function (name) {
     var idx = this.__find__(name);
 
-    if (idx < 0) { throw new Error('Rules manager: invalid rule name ' + name); }
+    if (idx < 0) {
+      if (ignoreInvalid) { return; }
+      throw new Error('Rules manager: invalid rule name ' + name);
+    }
     this.__rules__[idx].enabled = true;
-
   }, this);
 
   this.__cache__ = null;
 };
 
 
-// Disable list of rules by names.
+// Enable rules by whitelisted names (others will be disables).
 //
-Ruler.prototype.disable = function (list) {
+Ruler.prototype.enableOnly = function (list, ignoreInvalid) {
+  if (!Array.isArray(list)) { list = [ list ]; }
+
+  this.__rules__.forEach(function (rule) { rule.enabled = false; });
+
+  this.enable(list, ignoreInvalid);
+};
+
+
+// Disable rules by names.
+//
+Ruler.prototype.disable = function (list, ignoreInvalid) {
   if (!Array.isArray(list)) {
     list = [ list ];
   }
@@ -3991,9 +4024,11 @@ Ruler.prototype.disable = function (list) {
   list.forEach(function (name) {
     var idx = this.__find__(name);
 
-    if (idx < 0) { throw new Error('Rules manager: invalid rule name ' + name); }
+    if (idx < 0) {
+      if (ignoreInvalid) { return; }
+      throw new Error('Rules manager: invalid rule name ' + name);
+    }
     this.__rules__[idx].enabled = false;
-
   }, this);
 
   this.__cache__ = null;
@@ -5499,6 +5534,9 @@ module.exports = function abbr(state) {
 'use strict';
 
 
+var arrayReplaceAt = require('../common/utils').arrayReplaceAt;
+
+
 var PUNCT_CHARS = ' \n()[]\'".,!?-';
 
 
@@ -5578,12 +5616,12 @@ module.exports = function abbr2(state) {
       }
 
       // replace current node
-      blockTokens[j].children = tokens = [].concat(tokens.slice(0, i), nodes, tokens.slice(i + 1));
+      blockTokens[j].children = tokens = arrayReplaceAt(tokens, i, nodes);
     }
   }
 };
 
-},{}],35:[function(require,module,exports){
+},{"../common/utils":5}],35:[function(require,module,exports){
 'use strict';
 
 module.exports = function block(state) {
@@ -5722,7 +5760,8 @@ module.exports = function inline(state) {
 'use strict';
 
 
-var Autolinker = require('autolinker');
+var Autolinker     = require('autolinker');
+var arrayReplaceAt = require('../common/utils').arrayReplaceAt;
 
 
 var LINK_SCAN_RE = /www|@|\:\/\//;
@@ -5871,13 +5910,13 @@ module.exports = function linkify(state) {
         }
 
         // replace current node
-        blockTokens[j].children = tokens = [].concat(tokens.slice(0, i), nodes, tokens.slice(i + 1));
+        blockTokens[j].children = tokens = arrayReplaceAt(tokens, i, nodes);
       }
     }
   }
 };
 
-},{"autolinker":59}],39:[function(require,module,exports){
+},{"../common/utils":5,"autolinker":59}],39:[function(require,module,exports){
 'use strict';
 
 
@@ -6051,7 +6090,7 @@ module.exports = function replace(state) {
 var QUOTE_TEST_RE = /['"]/;
 var QUOTE_RE = /['"]/g;
 var PUNCT_RE = /[-\s()\[\]]/;
-var APOSTROPHE = '’';
+var APOSTROPHE = '\u2019'; /* ’ */
 
 // This function returns true if the character at `pos`
 // could be inside a word.
