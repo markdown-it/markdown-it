@@ -1,7 +1,7 @@
 {
   "name": "markdown-it",
-  "version": "2.1.0",
-  "description": "Markdown parser with plugins",
+  "version": "2.1.1",
+  "description": "Markdown-it - modern pluggable markdown parser.",
   "keywords": [
     "markdown",
     "parser",

@@ -1,3 +1,10 @@
+2.1.1 / 2014-12-22
+------------------
+
+- Refreshed browser builds, missed in prev release.
+- Minor changes.
+
+
 2.1.0 / 2014-12-21
 ------------------
 
