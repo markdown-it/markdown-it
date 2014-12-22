@@ -1,3 +1,10 @@
+2.x.x / WIP
+------------------
+
+- Exposed helpers into parser instances (for plugins).
+- Removed utils from global export - been in instances seems enougth.
+
+
 2.1.1 / 2014-12-22
 ------------------
 

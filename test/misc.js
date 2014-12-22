@@ -3,7 +3,6 @@
 
 var assert     = require('assert');
 var markdownit = require('../');
-var utils      = require('../').utils;
 
 
 describe('Utils', function () {
@@ -222,7 +221,7 @@ describe('Custom fences', function () {
 
     md.renderer.rules.fence_custom.foo = function (tokens, idx, options, env, self) {
       return '<div class="foo">' +
-             utils.escapeHtml(tokens[idx].content) +
+             md.utils.escapeHtml(tokens[idx].content) +
              '</div>' + self.getBreak(tokens, idx);
     };
 
