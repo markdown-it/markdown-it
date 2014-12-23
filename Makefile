@@ -26,6 +26,8 @@ demo: lint browserify
 	cp ./dist/markdown-it.js ./demo/
 	cp ./support/demo_template/index.js ./demo/
 	cp ./support/demo_template/README.md ./demo/
+	mkdir ./demo/plugins
+	cp ./node_modules/markdown-it-emoji/dist/* ./demo/plugins
 
 gh-pages: demo
 	touch ./demo/.nojekyll

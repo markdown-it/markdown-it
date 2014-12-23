@@ -58,8 +58,10 @@
       mdHtml = window.markdownit('commonmark');
       mdSrc = window.markdownit('commonmark');
     } else {
-      mdHtml = window.markdownit('full', defaults);
-      mdSrc = window.markdownit('full', defaults);
+      mdHtml = window.markdownit('full', defaults)
+                  .use(window.markdownitEmoji);
+      mdSrc = window.markdownit('full', defaults)
+                  .use(window.markdownitEmoji);
     }
 
     // Beautify output of parser for html content

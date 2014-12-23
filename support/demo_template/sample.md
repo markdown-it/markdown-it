@@ -35,13 +35,9 @@ Enable typographer option to see result.
 
 test.. test... test..... test?..... test!....
 
-!!!!!! ???? ,,
+!!!!!! ???? ,,  -- ---
 
-markdown-it -- awesome
-
-"Smartypants, double quotes"
-
-'Smartypants, single quotes'
+"Smartypants, double quotes" and 'single quotes'
 
 
 ## Emphasis
@@ -167,6 +163,15 @@ Like links, Images also have a footnote style syntax
 With a reference later in the document defining the URL location:
 
 [id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
+
+
+# Emojies (via [plugin](https://github.com/markdown-it/markdown-it-emoji))
+
+> Classic markup: :wink: :crush: :cry: :tear: :laughing: :yum:
+>
+> Shortcuts (emoticons): :-) :-( 8-) ;)
+
+see [how to change output](https://github.com/markdown-it/markdown-it-emoji#change-output) with twemoji.
 
 
 ## Footnotes
