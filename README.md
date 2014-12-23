@@ -32,7 +32,7 @@ bower install markdown-it --save
 ## Usage
 
 ```js
-// node.js, standard way:
+// node.js, "classic" way:
 var MarkdownIt = require('markdown-it'),
     md = new MarkdownIt();
 console.log(md.render('# markdown-it rulezz!'));
@@ -48,26 +48,53 @@ console.log(md.render('# markdown-it rulezz!'));
 ```
 
 
-### Options
+### Configuring
 
-By default markdown-it is configured to be similar to GFM, but with HTML disabled.
-This is easy to change if you prefer to use different settings.
+By default `markdown-it` is configured to be similar to GFM, but with HTML disabled.
+This is easy to change if you prefer different settings.
 
-There are two ways to define options.
+Usually, you will define everything via constructor.
 
 #### constructor(preset, options)
 
-- __preset__ (String): "full"|"commonmark"|Optional.
+##### preset (String) - `"full"`|`"commonmark"`, optional.
 
-Define options in the constructor:
+`markdown-it` offers some presets as a convenience to quickly enable/disable
+active syntax rules and options for common use cases.
+
+- ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/commonmark.js) - enable strict [CommonMark](http://commonmark.org/) mode.
+- ["full"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/full.js) -
+  all rules enabled, but still without html, typographer & autolinker.
+- [default](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.js) -
+  when no preset name given.
+
+
+```js
+// commonmark mode:
+var md = require('markdown-it')('commonmark');
+
+// default mode:
+var md = require('markdown-it')();
+
+// enable everything:
+var md = require('markdown-it')('full', {
+  html: true,
+  linkify: true,
+  typographer: true
+});
+```
+
+##### options
 
 ```js
 // Actual default values
 var md = require('markdown-it')({
   html:         false,        // Enable HTML tags in source
-  xhtmlOut:     false,        // Use '/' to close single tags (<br />)
+  xhtmlOut:     false,        // Use '/' to close single tags (<br />).
+                              // This is only for full CommonMark compatibility.
   breaks:       false,        // Convert '\n' in paragraphs into <br>
-  langPrefix:   'language-',  // CSS language prefix for fenced blocks
+  langPrefix:   'language-',  // CSS language prefix for fenced blocks. Can be
+                              // useful for external highlighters.
   linkify:      false,        // Autoconvert URL-like text to links
 
   // Enable some language-neutral replacement + quotes beautification
@@ -78,59 +105,37 @@ var md = require('markdown-it')({
   quotes: '“”‘’',
 
   // Highlighter function. Should return escaped HTML,
-  // or '' if the source string is not changed
+  // or '' if the source string is not changed and should be escaped externaly.
   highlight: function (/*str, lang*/) { return ''; }
 });
-
-console.log(md.render('# markdown-it rulezz!'));
-// => <h1>markdown-it rulezz!</h1>
 ```
 
-#### .set
 
-Or define options via the `.set()` method:
+#### .set({ keys: values })
+
+Probably, you will never need it. But you can change options after
+constructor call.
 
 ```js
 var md = require('markdown-it')();
-
-md.set({
-  html: true,
-  breaks: true
-});
+            .set({ html: true, breaks: true })
+            .set({ typographer, true });
 ```
 
 **Note:** To achieve the best possible performance, don't modify a `markdown-it`
 instance on the fly. If you need multiple configurations it's best to create
-multiple instances and initialize each with a configuration that is ideal for
-that instance.
+multiple instances and initialize each with separate config.
 
 
-### Presets
+#### .use(plugin, options)
 
-`markdown-it` offers some "presets" as a convenience to quickly enable/disable
-active syntax rules and options for common use cases.
-
-#### commonmark
-
-Enable strict [CommonMark](http://commonmark.org/) mode with the `commonmark` preset:
+Sugar to activate plugins.
 
 ```js
-var md = require('markdown-it')('commonmark');
-```
-
-#### full
-
-Enable all available rules (but still with default options, if not set):
-
-```js
-var md = require('markdown-it')('full');
-
-// Or with options:
-var md = require('markdown-it')('full', {
-  html: true,
-  linkify: true,
-  typographer: true
-});
+var md = require('markdown-it')()
+            .use(plugin1)
+            .use(plugin2, opts)
+            .use(plugin3);
 ```
 
 
@@ -139,7 +144,7 @@ var md = require('markdown-it')('full', {
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
 ```js
-var hljs       = require('highlight.js') // https://highlightjs.org/
+var hljs = require('highlight.js') // https://highlightjs.org/
 
 // Actual default values
 var md = require('markdown-it')({
@@ -186,8 +191,9 @@ old-style rules via external plugins if you prefer.
 
 ```js
 var md = require('markdown-it')();
-md.inline.ruler.enable([ 'ins', 'mark' ]);
-md.block.ruler.disable([ 'table' ]);
+
+// Activate/deactivate rules
+md.enable([ 'ins', 'mark' ]).disable([ 'table' ]);
 
 // Enable everything
 md = require('markdown-it')('full', {
@@ -196,18 +202,15 @@ md = require('markdown-it')('full', {
   typographer: true,
 });
 
-//
 // Manually enable rules, disabled by default:
-//
 var md = require('markdown-it')();
-md.block.ruler.core([
-  'abbr'
-]);
-md.block.ruler.enable([
+md.enable([
+  /* core */
+  'abbr',
+  /* block */
   'footnote',
-  'deflist'
-]);
-md.block.ruler.enable([
+  'deflist',
+  /* inline */
   'footnote_inline',
   'ins',
   'mark',
@@ -250,50 +253,6 @@ Of course, you can also add your own rules or replace the defaults with somethin
 more advanced or specific to your language.
 
 
-### Plugins
-
-Easily load plugins with the `.use()` method:
-
-```js
-var md = require('markdown-it')();
-
-md.use(plugin1)
-  .use(plugin2, opts)
-  .use(plugin3);
-```
-
-
-## References / Thanks
-
-Big thanks to [John MacFarlane](https://github.com/jgm) for his work on the
-CommonMark spec and reference implementations. His work saved us a lot of time
-during this project's development.
-
-**Related Links:**
-
-1. https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
-   also contains latest spec & online demo.
-2. http://talk.commonmark.org - CommonMark forum, good place to collaborate
-   developers' efforts.
-
-
-## Development / Modification
-
-Parser consists of several responsibilities chains, filled with rules. You can
-reconfigure anyone as you wish. Render also can be modified and extended. See
-source code to understand details. Pay attention to these properties:
-
-```js
-MarkdownIt.core
-MarkdownIt.core.ruler
-MarkdownIt.block
-MarkdownIt.block.ruler
-MarkdownIt.inline
-MarkdownIt.inline.ruler
-MarkdownIt.renderer
-MarkdownIt.renderer.rules
-```
-
 ## Benchmark
 
 Here is result of CommonMark spec parse at Core i5 2.4 GHz (i5-4258U):
@@ -319,6 +278,19 @@ Because it's written in monomorphyc style and use JIT inline caches effectively.
 - Alex Kocharin [github/rlidwka](https://github.com/rlidwka)
 - Vitaly Puzrin [github/puzrin](https://github.com/puzrin)
 
+
+## References / Thanks
+
+Big thanks to [John MacFarlane](https://github.com/jgm) for his work on the
+CommonMark spec and reference implementations. His work saved us a lot of time
+during this project's development.
+
+**Related Links:**
+
+1. https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
+   also contains latest spec & online demo.
+2. http://talk.commonmark.org - CommonMark forum, good place to collaborate
+   developers' efforts.
 
 ## License
 
