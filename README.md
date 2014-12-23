@@ -8,10 +8,9 @@
 
 __[Live demo](https://markdown-it.github.io)__
 
-- Supports the [CommonMark](http://commonmark.org/) spec +
-  [syntax extensions](#syntax-extensions) + sugar (URL autolinking, typographer).
+- Supports the CommonMark spec + syntax extensions + sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
-- [High speed](#benchmark)!
+- High speed!
 - Community written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [utilities](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
 __Table of content__
