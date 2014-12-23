@@ -1,8 +1,9 @@
-2.x.x / WIP
+2.1.1 / 2014-12-23
 ------------------
 
 - Exposed helpers into parser instances (for plugins).
 - Removed utils from global export - been in instances seems enougth.
+- Refactored demo & added markdown-it-emoji to it.
 
 
 2.1.1 / 2014-12-22

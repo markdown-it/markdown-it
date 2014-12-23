@@ -70,7 +70,6 @@
     };
     // Replace emoji codes with images
     mdHtml.renderer.rules.emoji = function(token, idx) {
-      console.log(token[idx].name);
       return window.twemoji.parse(token[idx].to);
     };
 
