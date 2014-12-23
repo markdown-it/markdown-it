@@ -12,7 +12,7 @@ CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut -b -6) master)
 GITHUB_PROJ := https://github.com//markdown-it/${NPM_PACKAGE}
 
 
-demo: lint browserify
+demo: lint
 	rm -rf ./demo
 	mkdir ./demo
 	./support/demodata.js > ./support/demo_template/sample.json
@@ -23,7 +23,8 @@ demo: lint browserify
 		< ./support/demo_template/index.styl \
 		> ./demo/index.css
 	rm -rf ./support/demo_template/sample.json
-	cp ./dist/markdown-it.js ./demo/
+	browserify ./ -s markdownit > ./demo/markdown-it.js
+	#cp ./dist/markdown-it.js ./demo/
 	cp ./support/demo_template/index.js ./demo/
 	cp ./support/demo_template/README.md ./demo/
 	mkdir ./demo/plugins
@@ -75,7 +76,7 @@ browserify:
 	mkdir dist
 	# Browserify
 	( printf "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" ; \
-		browserify -r ./ -s markdownit \
+		browserify ./ -s markdownit \
 		) > dist/markdown-it.js
 	# Minify
 	uglifyjs dist/markdown-it.js -b beautify=false,ascii-only=true -c -m \
