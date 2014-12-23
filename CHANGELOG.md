@@ -1,4 +1,10 @@
-2.1.1 / 2014-12-23
+2.1.3 / WIP
+------------------
+
+- Added curring to `set`/`configure`/`enable`/`disable` methods.
+
+
+2.1.2 / 2014-12-23
 ------------------
 
 - Exposed helpers into parser instances (for plugins).

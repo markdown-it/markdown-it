@@ -85,13 +85,13 @@ active syntax rules and options for common use cases.
 
 
 ```js
-// commonmark mode:
+// commonmark mode
 var md = require('markdown-it')('commonmark');
 
-// default mode:
+// default mode
 var md = require('markdown-it')();
 
-// enable everything:
+// enable everything
 var md = require('markdown-it')('full', {
   html: true,
   linkify: true,
@@ -132,7 +132,7 @@ Probably, you will never need it. But you can change options after
 constructor call.
 
 ```js
-var md = require('markdown-it')();
+var md = require('markdown-it')()
             .set({ html: true, breaks: true })
             .set({ typographer, true });
 ```
@@ -239,7 +239,7 @@ old-style rules via external plugins if you prefer.
 
 ```js
 // Activate/deactivate rules
-var md = require('markdown-it')();
+var md = require('markdown-it')()
             .enable([ 'ins', 'mark' ])
             .disable([ 'table' ]);
 
@@ -251,7 +251,7 @@ md = require('markdown-it')('full', {
 });
 
 // Manually enable rules, disabled by default:
-var md = require('markdown-it')();
+var md = require('markdown-it')()
             .enable([
               /* core */
               'abbr',
