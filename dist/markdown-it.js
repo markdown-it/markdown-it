@@ -1,4 +1,4 @@
-/*! markdown-it 2.1.1 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 2.1.2 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2469,6 +2469,12 @@ function assign(obj /*from1, from2, from3, ...*/) {
   return obj;
 }
 
+// Remove element from array and put another array at those position.
+// Useful for some operations with tokens
+function arrayReplaceAt(src, pos, newElements) {
+  return [].concat(src.slice(0, pos), newElements, src.slice(pos + 1));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 var UNESCAPE_MD_RE = /\\([\\!"#$%&'()*+,.\/:;<=>?@[\]^_`{|}~-])/g;
@@ -2560,8 +2566,18 @@ function escapeHtml(str) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function arrayReplaceAt(src, pos, newElements) {
-  return [].concat(src.slice(0, pos), newElements, src.slice(pos + 1));
+// Incoming link can be partially encoded. Convert possible combinations to
+// unified form.
+function normalizeLink(url) {
+  var normalized = replaceEntities(url);
+
+  // We don't care much about result of mailformed URIs,
+  // but shoud not throw exception.
+  try {
+    normalized = decodeURI(normalized);
+  } catch (__) {}
+
+  return encodeURI(normalized);
 }
 
 
@@ -2574,29 +2590,23 @@ exports.fromCodePoint     = fromCodePoint;
 exports.replaceEntities   = replaceEntities;
 exports.escapeHtml        = escapeHtml;
 exports.arrayReplaceAt    = arrayReplaceAt;
+exports.normalizeLink     = normalizeLink;
 
 },{"./entities":1}],6:[function(require,module,exports){
+// Just a shortcut for bulk export
 'use strict';
 
 
-var replaceEntities = require('../common/utils').replaceEntities;
+exports.parseLinkLabel       = require('./parse_link_label');
+exports.parseLinkDestination = require('./parse_link_destination');
+exports.parseLinkTitle       = require('./parse_link_title');
 
-
-module.exports = function normalizeLink(url) {
-  var normalized = replaceEntities(url);
-
-  // We don't care much about result of mailformed URIs,
-  // but shoud not throw exception.
-  try {
-    normalized = decodeURI(normalized);
-  } catch (__) {}
-
-  return encodeURI(normalized);
-};
-
-},{"../common/utils":5}],7:[function(require,module,exports){
+},{"./parse_link_destination":8,"./parse_link_label":9,"./parse_link_title":10}],7:[function(require,module,exports){
 'use strict';
 
+
+// Hepler to [reference labels]. No better place for this code :)
+// It's only for refs/links and should not be exported anywhere.
 module.exports = function normalizeReference(str) {
   // use .toUpperCase() instead of .toLowerCase()
   // here to avoid a conflict with Object.prototype
@@ -2613,7 +2623,7 @@ module.exports = function normalizeReference(str) {
 'use strict';
 
 
-var normalizeLink = require('./normalize_link');
+var normalizeLink = require('../common/utils').normalizeLink;
 var unescapeMd    = require('../common/utils').unescapeMd;
 
 
@@ -2685,7 +2695,7 @@ module.exports = function parseLinkDestination(state, pos) {
   return true;
 };
 
-},{"../common/utils":5,"./normalize_link":6}],9:[function(require,module,exports){
+},{"../common/utils":5}],9:[function(require,module,exports){
 // Parse link label
 //
 // this function assumes that first character ("[") already matches;
@@ -2790,6 +2800,7 @@ module.exports = function parseLinkTitle(state, pos) {
 
 
 var utils        = require('./common/utils');
+var helpers      = require('./helpers');
 var assign       = require('./common/utils').assign;
 var isString     = require('./common/utils').isString;
 var Renderer     = require('./renderer');
@@ -2838,8 +2849,9 @@ function MarkdownIt(presetName, options) {
   this.renderer = new Renderer();
   this.ruler    = new Ruler();
 
-  // Expose utils for easy acces from plugins
+  // Expose utils & helpers for easy acces from plugins
   this.utils    = utils;
+  this.helpers  = helpers;
 
   this.options  = {};
   this.configure(config[presetName]);
@@ -2950,10 +2962,7 @@ MarkdownIt.prototype.renderInline = function (src, env) {
 
 module.exports = MarkdownIt;
 
-// Expose helpers, useful for custom renderer functions
-module.exports.utils = require('./common/utils');
-
-},{"./common/utils":5,"./parser_block":12,"./parser_core":13,"./parser_inline":14,"./presets/commonmark":15,"./presets/default":16,"./presets/full":17,"./renderer":18,"./ruler":19}],12:[function(require,module,exports){
+},{"./common/utils":5,"./helpers":6,"./parser_block":12,"./parser_core":13,"./parser_inline":14,"./presets/commonmark":15,"./presets/default":16,"./presets/full":17,"./renderer":18,"./ruler":19}],12:[function(require,module,exports){
 // Block parser
 
 
@@ -6202,7 +6211,7 @@ module.exports = function smartquotes(state) {
 'use strict';
 
 var url_schemas   = require('../common/url_schemas');
-var normalizeLink = require('../helpers/normalize_link');
+var normalizeLink = require('../common/utils').normalizeLink;
 
 
 /*eslint max-len:0*/
@@ -6276,7 +6285,7 @@ module.exports = function autolink(state, silent) {
   return false;
 };
 
-},{"../common/url_schemas":4,"../helpers/normalize_link":6}],43:[function(require,module,exports){
+},{"../common/url_schemas":4,"../common/utils":5}],43:[function(require,module,exports){
 // Parse backticks
 
 'use strict';
