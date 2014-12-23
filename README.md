@@ -14,6 +14,22 @@ __[Live demo](https://markdown-it.github.io)__
 - [High speed](#benchmark)!
 - Community written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [utilities](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
+__Table of content__
+
+- [Install](#)
+- [Usage](#)
+  - [Configuring](#)
+    - [constructor(preset, options)](#)
+    - [.set({ keys: values })](#)
+    - [.use(plugin, options)](#)
+  - [Syntax highlighting](#)
+  - [Syntax extensions](#)
+  - [Manage rules](#)
+  - [Typographer](#)
+- [Benchmark](#)
+- [Authors](#)
+- [References / Thanks](#)
+- [License](#)
 
 ## Install
 
