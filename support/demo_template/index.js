@@ -68,6 +68,11 @@
     mdHtml.renderer.rules.table_open = function () {
       return '<table class="table table-striped">\n';
     };
+    // Replace emoji codes with images
+    mdHtml.renderer.rules.emoji = function(token, idx) {
+      console.log(token[idx].name);
+      return window.twemoji.parse(token[idx].to);
+    };
 
     //
     // Inject line numbers for sync scroll. Notes:
