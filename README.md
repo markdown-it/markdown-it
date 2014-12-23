@@ -16,20 +16,20 @@ __[Live demo](https://markdown-it.github.io)__
 
 __Table of content__
 
-- [Install](#)
-- [Usage](#)
-  - [Configuring](#)
-    - [constructor(preset, options)](#)
-    - [.set({ keys: values })](#)
-    - [.use(plugin, options)](#)
-  - [Syntax highlighting](#)
-  - [Syntax extensions](#)
-  - [Manage rules](#)
-  - [Typographer](#)
-- [Benchmark](#)
-- [Authors](#)
-- [References / Thanks](#)
-- [License](#)
+- [Install](#install)
+- [Usage](#usage)
+  - [Configuring](#configuring)
+    - [constructor(preset, options)](#constructorpreset-options)
+    - [.set({ keys: values })](#set-keys-values-)
+    - [.use(plugin, options)](#useplugin-options)
+  - [Syntax highlighting](#syntax-highlighting)
+  - [Syntax extensions](#syntax-extensions)
+  - [Manage rules](#manage-rules)
+  - [Typographer](#typographer)
+- [Benchmark](#benchmark)
+- [Authors](#authors)
+- [References / Thanks](#references--thanks)
+- [License](#license)
 
 ## Install
 
