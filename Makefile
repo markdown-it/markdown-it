@@ -12,26 +12,30 @@ CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut -b -6) master)
 GITHUB_PROJ := https://github.com//markdown-it/${NPM_PACKAGE}
 
 
-demo: lint
-	./support/demodata.js > demo/sample.json
-	jade demo/index.jade -P --obj demo/sample.json
-	stylus -u autoprefixer-stylus demo/assets/index.styl
-	rm -rf demo/sample.json
+demo: lint browserify
+	rm -rf ./demo
+	mkdir ./demo
+	./support/demodata.js > ./support/demo_template/sample.json
+	jade ./support/demo_template/index.jade --pretty \
+		--obj ./support/demo_template/sample.json \
+		--out ./demo
+	stylus -u autoprefixer-stylus \
+		< ./support/demo_template/index.styl \
+		> ./demo/index.css
+	rm -rf ./support/demo_template/sample.json
+	cp ./dist/markdown-it.js ./demo/
+	cp ./support/demo_template/index.js ./demo/
+	cp ./support/demo_template/README.md ./demo/
 
-gh-pages: browserify demo
-	rm -rf ./demo-web
-	cp -r ./demo ./demo-web
-	cp ./dist/markdown-it.js ./demo-web
-	sed -i "s|../dist|.|" ./demo-web/index.html
-	cp ./support/demo_readme.md ./demo-web/README.md
-	touch ./demo-web/.nojekyll
-	cd ./demo-web \
+gh-pages: demo
+	touch ./demo/.nojekyll
+	cd ./demo \
 		&& git init . \
 		&& git add . \
 		&& git commit -m "Auto-generate demo" \
 		&& git remote add origin git@github.com:markdown-it/markdown-it.github.io.git \
 		&& git push --force origin master
-	rm -rf ./demo-web
+	rm -rf ./demo
 
 lint:
 	eslint --reset .

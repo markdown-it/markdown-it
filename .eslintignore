@@ -1,5 +1,5 @@
 coverage/
-demo/sample.js
-demo-web/
+demo/
 dist/
 node_modules
+support/demo_template/sample.js
