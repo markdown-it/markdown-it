@@ -1,5 +1,707 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 468
+
+.
+- Foo
+- * * *
+.
+<ul>
+<li>Foo</li>
+<li>
+<hr />
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>Foo</li>
+<li><hr /></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2530
+
+.
+1.  A paragraph
+    with two lines.
+
+        indented code
+
+    > A block quote.
+.
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2573
+
+.
+- one
+
+  two
+.
+<ul>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>one</p>
+<p>two</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2598
+
+.
+ -    one
+
+      two
+.
+<ul>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>one</p>
+<p>two</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2619
+
+.
+   > > 1.  one
+>>
+>>     two
+.
+<blockquote>
+<blockquote>
+<ol>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ol>
+</blockquote>
+</blockquote>
+.
+
+error:
+
+<blockquote>
+<blockquote>
+<ol>
+<li><p>one</p>
+<p>two</p></li>
+</ol>
+</blockquote>
+</blockquote>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2664
+
+.
+- foo
+
+  bar
+
+- foo
+
+
+  bar
+
+- ```
+  foo
+
+
+  bar
+  ```
+.
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+<li>
+<p>foo</p>
+</li>
+</ul>
+<p>bar</p>
+<ul>
+<li>
+<pre><code>foo
+
+
+bar
+</code></pre>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>foo</p>
+<p>bar</p></li>
+<li><p>foo</p></li>
+</ul>
+<p>bar</p>
+<ul>
+<li><pre><code>foo
+
+
+bar
+</code></pre></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2704
+
+.
+1.  foo
+
+    ```
+    bar
+    ```
+
+    baz
+
+    > bam
+.
+<ol>
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+<p>baz</p>
+<blockquote>
+<p>bam</p>
+</blockquote>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><p>foo</p>
+<pre><code>bar
+</code></pre>
+<p>baz</p>
+<blockquote>
+<p>bam</p>
+</blockquote></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2744
+
+.
+- foo
+
+      bar
+.
+<ul>
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>foo</p>
+<pre><code>bar
+</code></pre></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2760
+
+.
+  10.  foo
+
+           bar
+.
+<ol start="10">
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ol>
+.
+
+error:
+
+<ol start="10">
+<li><p>foo</p>
+<pre><code>bar
+</code></pre></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2792
+
+.
+1.     indented code
+
+   paragraph
+
+       more code
+.
+<ol>
+<li>
+<pre><code>indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><pre><code>indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2813
+
+.
+1.      indented code
+
+   paragraph
+
+       more code
+.
+<ol>
+<li>
+<pre><code> indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><pre><code> indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2863
+
+.
+-  foo
+
+   bar
+.
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>foo</p>
+<p>bar</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2885
+
+.
+ 1.  A paragraph
+     with two lines.
+
+         indented code
+
+     > A block quote.
+.
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2908
+
+.
+  1.  A paragraph
+      with two lines.
+
+          indented code
+
+      > A block quote.
+.
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2931
+
+.
+   1.  A paragraph
+       with two lines.
+
+           indented code
+
+       > A block quote.
+.
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2984
+
+.
+  1.  A paragraph
+with two lines.
+
+          indented code
+
+      > A block quote.
+.
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3019
+
+.
+> 1. > Blockquote
+continued here.
+.
+<blockquote>
+<ol>
+<li>
+<blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+.
+
+error:
+
+<blockquote>
+<ol>
+<li><blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote></li>
+</ol>
+</blockquote>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3035
+
+.
+> 1. > Blockquote
+> continued here.
+.
+<blockquote>
+<ol>
+<li>
+<blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+.
+
+error:
+
+<blockquote>
+<ol>
+<li><blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote></li>
+</ol>
+</blockquote>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3061
+
+.
+- foo
+  - bar
+    - baz
+.
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>baz</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>baz</li>
+</ul></li>
+</ul></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3095
+
+.
+10) foo
+    - bar
+.
+<ol start="10">
+<li>foo
+<ul>
+<li>bar</li>
+</ul>
+</li>
+</ol>
+.
+
+error:
+
+<ol start="10">
+<li>foo
+<ul>
+<li>bar</li>
+</ul></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 3124
+
+.
+- - foo
+.
+<ul>
+<li>
+<ul>
+<li>foo</li>
+</ul>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><ul>
+<li>foo</li>
+</ul></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3136
+
+.
+1. - 2. foo
+.
+<ol>
+<li>
+<ul>
+<li>
+<ol start="2">
+<li>foo</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+.
+
+error:
+
+<ol>
+<li><ul>
+<li><ol start="2">
+<li>foo</li>
+</ol></li>
+</ul></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3176
 
 .
 - # Foo
@@ -8,9 +710,12 @@ src line: 3124
   baz
 .
 <ul>
-<li><h1>Foo</h1></li>
-<li><h2>Bar</h2>
-<p>baz</p></li>
+<li>
+<h1>Foo</h1>
+</li>
+<li>
+<h2>Bar</h2>
+baz</li>
 </ul>
 .
 
@@ -25,14 +730,759 @@ baz</li>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5603
+src line: 3524
+
+.
+- foo
+
+- bar
+
+
+- baz
+.
+<ul>
+<li>
+<p>foo</p>
+</li>
+<li>
+<p>bar</p>
+</li>
+</ul>
+<ul>
+<li>baz</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>foo</p></li>
+<li><p>bar</p></li>
+</ul>
+<ul>
+<li>baz</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3567
+
+.
+- foo
+  - bar
+    - baz
+
+
+      bim
+.
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>baz</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>  bim
+</code></pre>
+.
+
+error:
+
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>baz</li>
+</ul></li>
+</ul></li>
+</ul>
+<pre><code>  bim
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3613
+
+.
+-   foo
+
+    notcode
+
+-   foo
+
+
+    code
+.
+<ul>
+<li>
+<p>foo</p>
+<p>notcode</p>
+</li>
+<li>
+<p>foo</p>
+</li>
+</ul>
+<pre><code>code
+</code></pre>
+.
+
+error:
+
+<ul>
+<li><p>foo</p>
+<p>notcode</p></li>
+<li><p>foo</p></li>
+</ul>
+<pre><code>code
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3664
+
+.
+- a
+- b
+
+- c
+.
+<ul>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>c</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>a</p></li>
+<li><p>b</p></li>
+<li><p>c</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3685
+
+.
+* a
+*
+
+* c
+.
+<ul>
+<li>
+<p>a</p>
+</li>
+<li></li>
+<li>
+<p>c</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>a</p></li>
+<li></li>
+<li><p>c</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3706
+
+.
+- a
+- b
+
+  c
+- d
+.
+<ul>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+<p>c</p>
+</li>
+<li>
+<p>d</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>a</p></li>
+<li><p>b</p>
+<p>c</p></li>
+<li><p>d</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3727
+
+.
+- a
+- b
+
+  [ref]: /url
+- d
+.
+<ul>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>d</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>a</p></li>
+<li><p>b</p></li>
+<li><p>d</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3749
+
+.
+- a
+- ```
+  b
+
+
+  ```
+- c
+.
+<ul>
+<li>a</li>
+<li>
+<pre><code>b
+
+
+</code></pre>
+</li>
+<li>c</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>a</li>
+<li><pre><code>b
+
+
+</code></pre></li>
+<li>c</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3774
+
+.
+- a
+  - b
+
+    c
+- d
+.
+<ul>
+<li>a
+<ul>
+<li>
+<p>b</p>
+<p>c</p>
+</li>
+</ul>
+</li>
+<li>d</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>a
+<ul>
+<li><p>b</p>
+<p>c</p></li>
+</ul></li>
+<li>d</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3797
+
+.
+* a
+  > b
+  >
+* c
+.
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote>
+</li>
+<li>c</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote></li>
+<li>c</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3816
+
+.
+- a
+  > b
+  ```
+  c
+  ```
+- d
+.
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote>
+<pre><code>c
+</code></pre>
+</li>
+<li>d</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote>
+<pre><code>c
+</code></pre></li>
+<li>d</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3846
+
+.
+- a
+  - b
+.
+<ul>
+<li>a
+<ul>
+<li>b</li>
+</ul>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>a
+<ul>
+<li>b</li>
+</ul></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3861
+
+.
+* foo
+  * bar
+
+  baz
+.
+<ul>
+<li>
+<p>foo</p>
+<ul>
+<li>bar</li>
+</ul>
+<p>baz</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>foo</p>
+<ul>
+<li>bar</li>
+</ul>
+<p>baz</p></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3878
+
+.
+- a
+  - b
+  - c
+
+- d
+  - e
+  - f
+.
+<ul>
+<li>
+<p>a</p>
+<ul>
+<li>b</li>
+<li>c</li>
+</ul>
+</li>
+<li>
+<p>d</p>
+<ul>
+<li>e</li>
+<li>f</li>
+</ul>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li><p>a</p>
+<ul>
+<li>b</li>
+<li>c</li>
+</ul></li>
+<li><p>d</p>
+<ul>
+<li>e</li>
+<li>f</li>
+</ul></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4463
+
+.
+* a *
+.
+<p>* a *</p>
+.
+
+error:
+
+<ul>
+<li>a *</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4844
+
+.
+____foo__ bar__
+.
+<p><strong><strong>foo</strong> bar</strong></p>
+.
+
+error:
+
+<p>____foo__ bar__</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4850
+
+.
+**foo **bar****
+.
+<p><strong>foo <strong>bar</strong></strong></p>
+.
+
+error:
+
+<p>**foo **bar****</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4977
+
+.
+****foo*
+.
+<p>***<em>foo</em></p>
+.
+
+error:
+
+<p>****foo*</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4989
+
+.
+*foo****
+.
+<p><em>foo</em>***</p>
+.
+
+error:
+
+<p>*foo****</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5056
+
+.
+____foo_
+.
+<p>___<em>foo</em></p>
+.
+
+error:
+
+<p>____foo_</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5068
+
+.
+_foo____
+.
+<p><em>foo</em>___</p>
+.
+
+error:
+
+<p>_foo____</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5104
+
+.
+****foo****
+.
+<p><strong><strong>foo</strong></strong></p>
+.
+
+error:
+
+<p>****foo****</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5110
+
+.
+____foo____
+.
+<p><strong><strong>foo</strong></strong></p>
+.
+
+error:
+
+<p>____foo____</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5120
+
+.
+******foo******
+.
+<p><strong><strong><strong>foo</strong></strong></strong></p>
+.
+
+error:
+
+<p>******foo******</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5134
+
+.
+_____foo_____
+.
+<p><strong><strong><em>foo</em></strong></strong></p>
+.
+
+error:
+
+<p>_____foo_____</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5521
+
+.
+[foo [bar](/uri)](/uri)
+.
+<p>[foo <a href="/uri">bar</a>](/uri)</p>
+.
+
+error:
+
+<p><a href="/uri">foo <a href="/uri">bar</a></a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5527
+
+.
+[foo *[bar [baz](/uri)](/uri)*](/uri)
+.
+<p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
+.
+
+error:
+
+<p><a href="/uri">foo <em><a href="/uri">bar <a href="/uri">baz</a></a></em></a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5648
+
+.
+[foo [bar](/uri)][ref]
+
+[ref]: /uri
+.
+<p>[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
+.
+
+error:
+
+<p><a href="/uri">foo <a href="/uri">bar</a></a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5656
+
+.
+[foo *bar [baz][ref]*][ref]
+
+[ref]: /uri
+.
+<p>[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
+.
+
+error:
+
+<p><a href="/uri">foo <em>bar [baz][ref]</em></a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5803
+
+.
+[foo][ref[bar]]
+
+[ref[bar]]: /uri
+.
+<p>[foo][ref[bar]]</p>
+<p>[ref[bar]]: /uri</p>
+.
+
+error:
+
+<p><a href="/uri">foo</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5812
+
+.
+[[[foo]]]
+
+[[[foo]]]: /url
+.
+<p>[[[foo]]]</p>
+<p>[[[foo]]]: /url</p>
+.
+
+error:
+
+<p><a href="/url">[[foo]]</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5923
+
+.
+[foo] bar
+
+[foo]: /url
+.
+<p><a href="/url">foo</a> bar</p>
+.
+
+error:
+
+<p><a href="/url">foo</a>bar</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6028
 
 .
 ![foo *bar*]
 
 [foo *bar*]: train.jpg "train & tracks"
 .
-<p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
+<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 .
 
 error:
@@ -41,14 +1491,42 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5611
+src line: 6036
+
+.
+![foo ![bar](/url)](/url2)
+.
+<p><img src="/url2" alt="foo bar" /></p>
+.
+
+error:
+
+<p><img src="/url2" alt="foo ![bar](/url)" /></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6042
+
+.
+![foo [bar](/url)](/url2)
+.
+<p><img src="/url2" alt="foo bar" /></p>
+.
+
+error:
+
+<p><img src="/url2" alt="foo [bar](/url)" /></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6055
 
 .
 ![foo *bar*][]
 
 [foo *bar*]: train.jpg "train & tracks"
 .
-<p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
+<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 .
 
 error:
@@ -57,14 +1535,14 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5619
+src line: 6063
 
 .
 ![foo *bar*][foobar]
 
 [FOOBAR]: train.jpg "train & tracks"
 .
-<p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
+<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 .
 
 error:
@@ -73,14 +1551,14 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5679
+src line: 6123
 
 .
 ![*foo* bar][]
 
 [*foo* bar]: /url "title"
 .
-<p><img src="/url" alt="&lt;em&gt;foo&lt;/em&gt; bar" title="title" /></p>
+<p><img src="/url" alt="foo bar" title="title" /></p>
 .
 
 error:
@@ -89,18 +1567,35 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5719
+src line: 6163
 
 .
 ![*foo* bar]
 
 [*foo* bar]: /url "title"
 .
-<p><img src="/url" alt="&lt;em&gt;foo&lt;/em&gt; bar" title="title" /></p>
+<p><img src="/url" alt="foo bar" title="title" /></p>
 .
 
 error:
 
 <p><img src="/url" alt="*foo* bar" title="title" /></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6173
+
+.
+![[foo]]
+
+[[foo]]: /url "title"
+.
+<p>![[foo]]</p>
+<p>[[foo]]: /url &quot;title&quot;</p>
+.
+
+error:
+
+<p><img src="/url" alt="[foo]" title="title" /></p>
 
 
