@@ -23,9 +23,9 @@ __Table of content__
     - [.set({ keys: values })](#set-keys-values-)
     - [.use(plugin, options)](#useplugin-options)
   - [Syntax highlighting](#syntax-highlighting)
+  - [Typographer](#typographer)
   - [Syntax extensions](#syntax-extensions)
   - [Manage rules](#manage-rules)
-  - [Typographer](#typographer)
 - [Benchmark](#benchmark)
 - [Authors](#authors)
 - [References / Thanks](#references--thanks)
@@ -73,7 +73,7 @@ Usually, you will define everything via constructor.
 
 #### constructor(preset, options)
 
-##### preset (String) - `"full"`|`"commonmark"`, optional.
+__preset__ (String) - `"full"`|`"commonmark"`, optional.
 
 `markdown-it` offers some presets as a convenience to quickly enable/disable
 active syntax rules and options for common use cases.
@@ -100,7 +100,7 @@ var md = require('markdown-it')('full', {
 });
 ```
 
-##### options
+__options__
 
 ```js
 // Actual default values
@@ -181,6 +181,39 @@ var md = require('markdown-it')({
 ```
 
 
+### Typographer
+
+Although full-weight typographical replacements are language specific, `markdown-it`
+provides coverage for the most common and universal use cases:
+
+```js
+var md = require('markdown-it')({
+  typographer: true,
+  quotes: '“”‘’'
+});
+
+// Disable rules at all:
+md.disable([ 'replacements', 'smartquotes' ]);
+
+// Actual default replacements:
+//
+// '' → ‘’
+// "" → “”. Set '«»' for Russian, '„“' for German, empty to disable
+// (c) (C) → ©
+// (tm) (TM) → ™
+// (r) (R) → ®
+// +- → ±
+// (p) (P) -> §
+// ... → … (also ?.... → ?.., !.... → !..)
+// ???????? → ???, !!!!! → !!!, `,,` → `,`
+// -- → &ndash;, --- → &mdash;
+//
+```
+
+Of course, you can also add your own rules or replace the defaults with something
+more advanced or specific to your language.
+
+
 ### Syntax extensions
 
 Enabled by default:
@@ -206,10 +239,10 @@ old-style rules via external plugins if you prefer.
 ### Manage rules
 
 ```js
-var md = require('markdown-it')();
-
 // Activate/deactivate rules
-md.enable([ 'ins', 'mark' ]).disable([ 'table' ]);
+var md = require('markdown-it')();
+            .enable([ 'ins', 'mark' ])
+            .disable([ 'table' ]);
 
 // Enable everything
 md = require('markdown-it')('full', {
@@ -220,53 +253,20 @@ md = require('markdown-it')('full', {
 
 // Manually enable rules, disabled by default:
 var md = require('markdown-it')();
-md.enable([
-  /* core */
-  'abbr',
-  /* block */
-  'footnote',
-  'deflist',
-  /* inline */
-  'footnote_inline',
-  'ins',
-  'mark',
-  'sub',
-  'sup'
-]);
+            .enable([
+              /* core */
+              'abbr',
+              /* block */
+              'footnote',
+              'deflist',
+              /* inline */
+              'footnote_inline',
+              'ins',
+              'mark',
+              'sub',
+              'sup'
+            ]);
 ```
-
-
-### Typographer
-
-Although full-weight typographical replacements are language specific, `markdown-it`
-provides coverage for the most common and universal use cases:
-
-```js
-var md = require('markdown-it')({
-  typographer: true,
-  quotes: '“”‘’'
-});
-
-// Disable rules at all:
-md.core.ruler.disable([ 'replacements', 'smartquotes' ]);
-
-// Actual default replacements:
-//
-// '' → ‘’
-// "" → “”. Set '«»' for Russian, '„“' for German, empty to disable
-// (c) (C) → ©
-// (tm) (TM) → ™
-// (r) (R) → ®
-// +- → ±
-// (p) (P) -> §
-// ... → … (also ?.... → ?.., !.... → !..)
-// ???????? → ???, !!!!! → !!!, `,,` → `,`
-// -- → &ndash;, --- → &mdash;
-//
-```
-
-Of course, you can also add your own rules or replace the defaults with something
-more advanced or specific to your language.
 
 
 ## Benchmark
@@ -303,10 +303,10 @@ during this project's development.
 
 **Related Links:**
 
-1. https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
-   also contains latest spec & online demo.
-2. http://talk.commonmark.org - CommonMark forum, good place to collaborate
-   developers' efforts.
+- https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
+  also contains latest spec & online demo.
+- http://talk.commonmark.org - CommonMark forum, good place to collaborate
+  developers' efforts.
 
 ## License
 
