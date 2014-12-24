@@ -98,7 +98,8 @@ Nested tables inside lists:
    baz|baz
 .
 <ul>
-<li><table>
+<li>
+<table>
 <thead>
 <tr><th>foo</th><th>foo</th></tr>
 </thead>

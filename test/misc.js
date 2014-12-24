@@ -219,10 +219,10 @@ describe('Custom fences', function () {
   it('should render differently overriden rule', function () {
     var md = markdownit();
 
-    md.renderer.rules.fence_custom.foo = function (tokens, idx, options, env, self) {
+    md.renderer.rules.fence_custom.foo = function (tokens, idx /*, options, env */) {
       return '<div class="foo">' +
              md.utils.escapeHtml(tokens[idx].content) +
-             '</div>' + self.getBreak(tokens, idx);
+             '</div>\n';
     };
 
     var text = '```foo bar\n' +
