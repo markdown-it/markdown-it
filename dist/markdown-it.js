@@ -1,4 +1,4 @@
-/*! markdown-it 2.1.2 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 2.1.3 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2864,6 +2864,7 @@ function MarkdownIt(presetName, options) {
 //
 MarkdownIt.prototype.set = function (options) {
   assign(this.options, options);
+  return this;
 };
 
 
@@ -2883,6 +2884,7 @@ MarkdownIt.prototype.configure = function (presets) {
       }
     });
   }
+  return this;
 };
 
 
@@ -2892,6 +2894,7 @@ MarkdownIt.prototype.enable = function (list) {
   [ 'core', 'block', 'inline' ].forEach(function (chain) {
     this[chain].ruler.enable(list, true);
   }, this);
+  return this;
 };
 
 
@@ -2901,6 +2904,7 @@ MarkdownIt.prototype.disable = function (list) {
   [ 'core', 'block', 'inline' ].forEach(function (chain) {
     this[chain].ruler.disable(list, true);
   }, this);
+  return this;
 };
 
 
@@ -9486,11 +9490,11 @@ module.exports = function text(state, silent) {
 
 }));
 
-},{}],"/":[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 'use strict';
 
 
 module.exports = require('./lib/');
 
-},{"./lib/":11}]},{},[])("/")
+},{"./lib/":11}]},{},[60])(60)
 });
