@@ -1,7 +1,9 @@
-2.1.3 / WIP
+2.1.3 / 2014-12-24
 ------------------
 
 - Added curring to `set`/`configure`/`enable`/`disable` methods.
+- Demo rework - now can include plugins.
+- Docs update.
 
 
 2.1.2 / 2014-12-23

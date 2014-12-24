@@ -11,7 +11,7 @@ __[Live demo](https://markdown-it.github.io)__
 - Supports the CommonMark spec + syntax extensions + sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
 - High speed!
-- Community written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [utilities](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
+- Community written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [other packages](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
 __Table of content__
 
