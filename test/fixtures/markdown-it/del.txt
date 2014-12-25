@@ -4,6 +4,30 @@
 <p><del>Strikeout</del></p>
 .
 
+.
+x ~~~~foo~~ bar~~
+.
+<p>x <del><del>foo</del> bar</del></p>
+.
+
+.
+x ~~foo ~~bar~~~~
+.
+<p>x <del>foo <del>bar</del></del></p>
+.
+
+.
+x ~~~~foo~~~~
+.
+<p>x <del><del>foo</del></del></p>
+.
+
+.
+x ~~~foo~~~
+.
+<p>x <del><sub>foo</sub></del></p>
+.
+
 Strikeouts have the same priority as emphases:
 
 .

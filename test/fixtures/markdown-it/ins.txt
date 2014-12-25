@@ -5,17 +5,28 @@
 .
 
 
-These are not inserts, you have to use exactly two "++":
+.
+x ++++foo++ bar++
+.
+<p>x <ins><ins>foo</ins> bar</ins></p>
+.
+
+.
+x ++foo ++bar++++
+.
+<p>x <ins>foo <ins>bar</ins></ins></p>
+.
+
+.
+x ++++foo++++
+.
+<p>x <ins><ins>foo</ins></ins></p>
+.
+
 .
 x +++foo+++
-
-x ++foo+++
-
-x +++foo++
 .
-<p>x +++foo+++</p>
-<p>x ++foo+++</p>
-<p>x +++foo++</p>
+<p>x <ins>+foo+</ins></p>
 .
 
 Inserts have the same priority as emphases:

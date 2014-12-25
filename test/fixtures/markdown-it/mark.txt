@@ -4,18 +4,28 @@
 <p><mark>Mark</mark></p>
 .
 
+.
+x ====foo== bar==
+.
+<p>x <mark><mark>foo</mark> bar</mark></p>
+.
 
-These are not marks, you have to use exactly two "==":
+.
+x ==foo ==bar====
+.
+<p>x <mark>foo <mark>bar</mark></mark></p>
+.
+
+.
+x ====foo====
+.
+<p>x <mark><mark>foo</mark></mark></p>
+.
+
 .
 x ===foo===
-
-x ==foo===
-
-x ===foo==
 .
-<p>x ===foo===</p>
-<p>x ==foo===</p>
-<p>x ===foo==</p>
+<p>x <mark>=foo=</mark></p>
 .
 
 Marks have the same priority as emphases:
