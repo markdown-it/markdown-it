@@ -75,40 +75,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5803
-
-.
-[foo][ref[bar]]
-
-[ref[bar]]: /uri
-.
-<p>[foo][ref[bar]]</p>
-<p>[ref[bar]]: /uri</p>
-.
-
-error:
-
-<p><a href="/uri">foo</a></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5812
-
-.
-[[[foo]]]
-
-[[[foo]]]: /url
-.
-<p>[[[foo]]]</p>
-<p>[[[foo]]]: /url</p>
-.
-
-error:
-
-<p><a href="/url">[[foo]]</a></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5923
 
 .
@@ -230,22 +196,5 @@ src line: 6163
 error:
 
 <p><img src="/url" alt="*foo* bar" title="title" /></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 6173
-
-.
-![[foo]]
-
-[[foo]]: /url "title"
-.
-<p>![[foo]]</p>
-<p>[[foo]]: /url &quot;title&quot;</p>
-.
-
-error:
-
-<p><img src="/url" alt="[foo]" title="title" /></p>
 
 

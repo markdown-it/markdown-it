@@ -26,19 +26,10 @@ foo
 They can contain arbitrary markup (see pandoc implementation):
 
 .
-*[`]:`]: foo
+*[`\]:`]: foo
 \`]:\`
 .
 <p><abbr title="foo">`]:`</abbr></p>
-.
-
-Can contain matched brackets:
-
-.
-*[[abbr]]: foo
-[abbr]
-.
-<p><abbr title="foo">[abbr]</abbr></p>
 .
 
 No empty abbreviations:

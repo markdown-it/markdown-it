@@ -8,15 +8,6 @@ Regression tests for link backtracking optimizations:
 <p>[[some unrelated text <a href="foo">link</a></p>
 .
 
-.
-[[some unrelated text [[link]]
-
-[[link]]: foo
-.
-<p>[[some unrelated text <a href="foo">[link]</a></p>
-.
-
-
 
 This is not a valid emphasis, because \n considered a whitespace:
 
