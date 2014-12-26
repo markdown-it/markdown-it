@@ -164,6 +164,12 @@ describe('API', function () {
 
 describe('Misc', function () {
 
+  it('Should strip (or replace) NULL characters', function () {
+    var md = markdownit();
+
+    assert.strictEqual(md.render('foo\u0000bar'), '<p>foobar</p>\n');
+  });
+
   it('Should correctly parse strings without tailing \\n', function () {
     var md = markdownit();
 
