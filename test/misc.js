@@ -200,7 +200,7 @@ describe('Misc', function () {
     assert.strictEqual(md.render('*b*'), '<par><it>b</it></par>');
   });
 
-  it('zero preset should disable everything', function () {
+  it('Zero preset should disable everything', function () {
     var md = markdownit('zero');
 
     assert.strictEqual(md.render('___foo___'), '<p>___foo___</p>\n');
@@ -210,6 +210,12 @@ describe('Misc', function () {
 
     assert.strictEqual(md.render('___foo___'), '<p><strong><em>foo</em></strong></p>\n');
     assert.strictEqual(md.renderInline('___foo___'), '<strong><em>foo</em></strong>');
+  });
+
+  it('Should correctly check block termination rules ahen those are disabled (#13)', function () {
+    var md = markdownit('zero');
+
+    assert.strictEqual(md.render('foo\nbar'), '<p>foo\nbar</p>\n');
   });
 
 });
