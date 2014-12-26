@@ -200,6 +200,18 @@ describe('Misc', function () {
     assert.strictEqual(md.render('*b*'), '<par><it>b</it></par>');
   });
 
+  it('zero preset should disable everything', function () {
+    var md = markdownit('zero');
+
+    assert.strictEqual(md.render('___foo___'), '<p>___foo___</p>\n');
+    assert.strictEqual(md.renderInline('___foo___'), '___foo___');
+
+    md.enable('emphasis');
+
+    assert.strictEqual(md.render('___foo___'), '<p><strong><em>foo</em></strong></p>\n');
+    assert.strictEqual(md.renderInline('___foo___'), '<strong><em>foo</em></strong>');
+  });
+
 });
 
 
