@@ -1,3 +1,11 @@
+2.x.x / WIP
+------------------
+
+- Updated CM spec conformance to v0.13 (partially).
+- Added 'zero' preset.
+- Fixed block termination check when rules are disabled.
+
+
 2.1.3 / 2014-12-24
 ------------------
 
