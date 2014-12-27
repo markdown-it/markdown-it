@@ -2,7 +2,7 @@
 # Common nodeca config
 ################################################################################
 
---index         "./README.md"
+--index         "./support/api_header.md"
 --package       "./package.json"
 --gh-ribbon     "{package.homepage}"
 --output        "apidoc"

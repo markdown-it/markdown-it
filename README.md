@@ -50,23 +50,23 @@ bower install markdown-it --save
 // node.js, "classic" way:
 var MarkdownIt = require('markdown-it'),
     md = new MarkdownIt();
-console.log(md.render('# markdown-it rulezz!'));
+var result = md.render('# markdown-it rulezz!');
 
 // node.js, the same, but with sugar:
 var md = require('markdown-it')();
-console.log(md.render('# markdown-it rulezz!'));
+var result = md.render('# markdown-it rulezz!');
 
 // browser without AMD, added to "window" on script load
 // Note, there are no dash.
 var md = window.markdownit();
-console.log(md.render('# markdown-it rulezz!'));
+var result = md.render('# markdown-it rulezz!');
 ```
 
 Single line rendering, without paragraph wrap:
 
 ```js
 var md = require('markdown-it')();
-console.log(md.renderInline('__markdown-it__ rulezz!'));
+var result = md.renderInline('__markdown-it__ rulezz!');
 ```
 
 ### Configuring
