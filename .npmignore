@@ -2,6 +2,7 @@ benchmark/
 coverage/
 demo/
 docs/
+apidoc/
 support/
 test/
 Makefile

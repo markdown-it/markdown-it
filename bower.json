@@ -17,6 +17,7 @@
     "coverage",
     "demo",
     "docs",
+    "apidoc",
     "lib",
     "node_modules",
     "support",

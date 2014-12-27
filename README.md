@@ -62,7 +62,7 @@ var md = window.markdownit();
 console.log(md.render('# markdown-it rulezz!'));
 ```
 
-Single lines rendering, without paragraph wrap:
+Single line rendering, without paragraph wrap:
 
 ```js
 var md = require('markdown-it')();
@@ -88,7 +88,7 @@ active syntax rules and options for common use cases.
   all rules enabled, but still without html, typographer & autolinker.
 - [default](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.js) -
   when no preset name given.
-- [zero](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.js) -
+- ["zero"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.js) -
   all rules disabled (useful to quickly setup your config via `.enable()`).
 
 

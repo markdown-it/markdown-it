@@ -1,0 +1,25 @@
+#
+# Common nodeca config
+################################################################################
+
+--index         "./README.md"
+--package       "./package.json"
+--gh-ribbon     "{package.homepage}"
+--output        "apidoc"
+--render        "html"
+--link-format   "{package.homepage}/blob/master/{file}#L{line}"
+--broken-links  "show"
+
+
+#
+# Paths with sources
+################################################################################
+
+lib
+
+
+#
+# Project specific configuration
+################################################################################
+
+--show-all

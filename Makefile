@@ -44,7 +44,7 @@ lint:
 	eslint --reset .
 
 test: lint
-	NODE_ENV=test mocha -R spec
+	mocha -R spec
 	echo "CommonMark stat:\n"
 	./support/specsplit.js test/fixtures/commonmark/spec.txt
 
@@ -54,6 +54,15 @@ coverage:
 
 test-ci: lint
 	istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+
+apidoc:
+	@if test ! `which ndoc` ; then \
+		echo "You need 'ndoc' installed in order to generate docs." >&2 ; \
+		echo "  $ npm install -g ndoc" >&2 ; \
+		exit 128 ; \
+		fi
+	rm -rf ./apidoc
+	ndoc --link-format "{package.homepage}/blob/${CURR_HEAD}/{file}#L{line}"
 
 publish:
 	@if test 0 -ne `git status --porcelain | wc -l` ; then \
@@ -87,5 +96,5 @@ todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
 
-.PHONY: publish lint test gh-pages todo demo coverage
+.PHONY: publish lint test gh-pages todo demo coverage apidoc
 .SILENT: help lint test todo
