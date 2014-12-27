@@ -72,7 +72,7 @@ gh-doc: doc
 		&& git commit -m "Auto-generate API doc" \
 		&& git remote add remote git@github.com:markdown-it/markdown-it.git \
 		&& git push --force remote +master:gh-pages
-	rm -rf ./demo
+	rm -rf ./apidoc
 
 publish:
 	@if test 0 -ne `git status --porcelain | wc -l` ; then \
@@ -106,5 +106,5 @@ todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
 
-.PHONY: publish lint test gh-pages todo demo coverage apidoc
+.PHONY: publish lint test gh-pages todo demo coverage doc
 .SILENT: help lint test todo

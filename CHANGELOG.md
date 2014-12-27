@@ -2,6 +2,7 @@
 ------------------
 
 - Updated CM spec conformance to v0.13 (partially).
+- API docs.
 - Added 'zero' preset.
 - Fixed block termination check when rules are disabled.
 
