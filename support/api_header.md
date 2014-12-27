@@ -1,4 +1,11 @@
+<!-- styles hack until ndoc updated -->
+<style>
+header .name_prefix { font-weight: normal; }
+</style>
+
 # markdown-it API
+
+### Simple use
 
 In most cases you will use `markdown-it` in very simple way:
 
@@ -11,7 +18,9 @@ var result = md.render(your_markdown_string);
 var resultInline = md.renderInline(your_markdown_inline_string);
 ```
 
-Advanced usage consist of this steps:
+### Advanced use
+
+Advanced use consist of this steps:
 
 1. Create instance with desired preset & options.
 2. Add plugins.
@@ -19,8 +28,10 @@ Advanced usage consist of this steps:
 4. Rewrite renderer functions.
 5. Use result to call `.render()` or `.renderInline()` method.
 
+Of cause, you can skip not needed steps, or change sequense.
 
-Example 1. Minimalistic mode with bold, italic and line breaks:
+
+__Example 1.__ Minimalistic mode with bold, italic and line breaks:
 
 ```javascript
 var md = require('markdown-it')('zero', { breaks: true })
@@ -29,7 +40,8 @@ var md = require('markdown-it')('zero', { breaks: true })
 var result = md.renderInline(...);
 ```
 
-Example 2. Load plugin and disable tables:
+
+__Example 2.__ Load plugin and disable tables:
 
 ```javascript
 var md = require('markdown-it')()
@@ -39,7 +51,8 @@ var md = require('markdown-it')()
 var result = md.render(...);
 ```
 
-Example 3. Replace `<strong>` with `<b>` in rendered result:
+
+__Example 3.__ Replace `<strong>` with `<b>` in rendered result:
 
 ```javascript
 var md = require('markdown-it')();
@@ -49,5 +62,6 @@ md.renderer.rules.strong_close = function () { return '</b>'; };
 
 var result = md.renderInline(...);
 ```
+
 
 See classes doc for all available features and more examples.
