@@ -58,19 +58,3 @@ error:
 <p><a href="/uri">foo <em>bar [baz][ref]</em></a></p>
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5915
-
-.
-[foo] bar
-
-[foo]: /url
-.
-<p><a href="/url">foo</a> bar</p>
-.
-
-error:
-
-<p><a href="/url">foo</a>bar</p>
-
-
