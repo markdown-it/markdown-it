@@ -16,15 +16,9 @@ __[Live demo](https://markdown-it.github.io)__
 __Table of content__
 
 - [Install](#install)
-- [Usage](#usage)
-  - [Configuring](#configuring)
-    - [constructor(preset, options)](#constructorpreset-options)
-    - [.set({ keys: values })](#set-keys-values-)
-    - [.use(plugin, options)](#useplugin-options)
-  - [Syntax highlighting](#syntax-highlighting)
-  - [Typographer](#typographer)
-  - [Syntax extensions](#syntax-extensions)
-  - [Manage rules](#manage-rules)
+- [Usage examples](#usage-examples)
+- [API](#api)
+- [Syntax extensions](#syntax-extensions)
 - [Benchmark](#benchmark)
 - [Authors](#authors)
 - [References / Thanks](#references--thanks)
@@ -44,7 +38,13 @@ bower install markdown-it --save
 - [jsDeliver CDN](http://www.jsdelivr.com/#!markdown-it "jsDelivr CDN")
 
 
-## Usage
+## Usage examples
+
+See __[API documentation](https://markdown-it.github.io/markdown-it/)__ for more
+info and examples.
+
+
+### Simple
 
 ```js
 // node.js, "classic" way:
@@ -69,29 +69,11 @@ var md = require('markdown-it')();
 var result = md.renderInline('__markdown-it__ rulezz!');
 ```
 
-### Configuring
 
-By default `markdown-it` is configured to be similar to GFM, but with HTML disabled.
-This is easy to change if you prefer different settings.
+### Init with presets and options
 
-Usually, you will define everything via constructor.
-
-#### constructor(preset, options)
-
-__preset__ (String) - `"full"`|`"commonmark"`, optional.
-
-`markdown-it` offers some presets as a convenience to quickly enable/disable
-active syntax rules and options for common use cases.
-
-- ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/commonmark.js) - enable strict [CommonMark](http://commonmark.org/) mode.
-- ["full"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/full.js) -
-  all rules enabled, but still without html, typographer & autolinker.
-- [default](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.js) -
-  when no preset name given.
-- ["zero"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.js) -
-  all rules disabled (useful to quickly setup your config via `.enable()`).
-
-
+(*) preset define combination of active rules and options. Can be
+`"full"`|`"commonmark"`|`"zero"` or `"default"` if skipped.
 
 ```js
 // commonmark mode
@@ -106,12 +88,8 @@ var md = require('markdown-it')('full', {
   linkify: true,
   typographer: true
 });
-```
 
-__options__
-
-```js
-// Actual default values
+// full options list (defaults)
 var md = require('markdown-it')({
   html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />).
@@ -134,26 +112,7 @@ var md = require('markdown-it')({
 });
 ```
 
-
-#### .set({ keys: values })
-
-Probably, you will never need it. But you can change options after
-constructor call.
-
-```js
-var md = require('markdown-it')()
-            .set({ html: true, breaks: true })
-            .set({ typographer, true });
-```
-
-**Note:** To achieve the best possible performance, don't modify a `markdown-it`
-instance on the fly. If you need multiple configurations, it's best to create
-multiple instances and initialize each with separate config.
-
-
-#### .use(plugin, options)
-
-Sugar to activate plugins.
+### Plugins load
 
 ```js
 var md = require('markdown-it')()
@@ -176,12 +135,12 @@ var md = require('markdown-it')({
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(lang, str).value;
-      } catch (err) {}
+      } catch (__) {}
     }
 
     try {
       return hljs.highlightAuto(str).value;
-    } catch (err) {}
+    } catch (__) {}
 
     return ''; // use external default escaping
   }
@@ -189,40 +148,12 @@ var md = require('markdown-it')({
 ```
 
 
-### Typographer
+## API
 
-Although full-weight typographical replacements are language specific, `markdown-it`
-provides coverage for the most common and universal use cases:
-
-```js
-var md = require('markdown-it')({
-  typographer: true,
-  quotes: '“”‘’'
-});
-
-// Disable rules at all:
-md.disable([ 'replacements', 'smartquotes' ]);
-
-// Actual default replacements:
-//
-// '' → ‘’
-// "" → “”. Set '«»' for Russian, '„“' for German, empty to disable
-// (c) (C) → ©
-// (tm) (TM) → ™
-// (r) (R) → ®
-// +- → ±
-// (p) (P) -> §
-// ... → … (also ?.... → ?.., !.... → !..)
-// ???????? → ???, !!!!! → !!!, `,,` → `,`
-// -- → &ndash;, --- → &mdash;
-//
-```
-
-Of course, you can also add your own rules or replace the defaults with something
-more advanced or specific to your language.
+[API documentation](https://markdown-it.github.io/markdown-it/)
 
 
-### Syntax extensions
+## Syntax extensions
 
 Enabled by default:
 

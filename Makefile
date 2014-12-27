@@ -30,7 +30,7 @@ demo: lint
 	mkdir ./demo/plugins
 	cp ./node_modules/markdown-it-emoji/dist/* ./demo/plugins
 
-gh-pages: demo
+gh-demo: demo
 	touch ./demo/.nojekyll
 	cd ./demo \
 		&& git init . \
@@ -55,7 +55,7 @@ coverage:
 test-ci: lint
 	istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
-apidoc:
+doc:
 	@if test ! `which ndoc` ; then \
 		echo "You need 'ndoc' installed in order to generate docs." >&2 ; \
 		echo "  $ npm install -g ndoc" >&2 ; \
@@ -63,6 +63,16 @@ apidoc:
 		fi
 	rm -rf ./apidoc
 	ndoc --link-format "{package.homepage}/blob/${CURR_HEAD}/{file}#L{line}"
+
+gh-doc: doc
+	touch ./apidoc/.nojekyll
+	cd ./apidoc \
+		&& git init . \
+		&& git add . \
+		&& git commit -m "Auto-generate API doc" \
+		&& git remote add remote git@github.com:markdown-it/markdown-it.git \
+		&& git push --force remote +master:gh-pages
+	rm -rf ./demo
 
 publish:
 	@if test 0 -ne `git status --porcelain | wc -l` ; then \
