@@ -11,7 +11,7 @@ __[Live demo](https://markdown-it.github.io)__
 - Supports the CommonMark spec + syntax extensions + sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
 - High speed!
-- Community written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [other packages](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
+- Community-written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [other packages](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
 __Table of content__
 
@@ -147,7 +147,7 @@ var md = require('markdown-it')()
 ```
 
 **Note:** To achieve the best possible performance, don't modify a `markdown-it`
-instance on the fly. If you need multiple configurations it's best to create
+instance on the fly. If you need multiple configurations, it's best to create
 multiple instances and initialize each with separate config.
 
 
@@ -294,7 +294,7 @@ Sample: spec.txt (110610 bytes)
 ```
 
 As you can see, `markdown-it` doesn't pay with speed for it's flexibility.
-Because it's written in monomorphyc style and use JIT inline caches effectively.
+Because it's written in monomorphyc style and uses JIT inline caches effectively.
 
 
 ## Authors
