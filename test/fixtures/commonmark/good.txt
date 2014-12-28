@@ -4833,6 +4833,24 @@ src line: 5505
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5513
+
+.
+[foo [bar](/uri)](/uri)
+.
+<p>[foo <a href="/uri">bar</a>](/uri)</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5519
+
+.
+[foo *[bar [baz](/uri)](/uri)*](/uri)
+.
+<p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5528
 
 .
@@ -4930,6 +4948,28 @@ src line: 5630
 [ref]: /uri
 .
 <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5640
+
+.
+[foo [bar](/uri)][ref]
+
+[ref]: /uri
+.
+<p>[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 5648
+
+.
+[foo *bar [baz][ref]*][ref]
+
+[ref]: /uri
+.
+<p>[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
