@@ -1,4 +1,4 @@
-/*! markdown-it 2.1.3 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 2.2.0 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2703,14 +2703,11 @@ module.exports = function parseLinkDestination(state, pos) {
 //
 'use strict';
 
-module.exports = function parseLinkLabel(state, start) {
-  var level, found, marker,
+module.exports = function parseLinkLabel(state, start, disableNested) {
+  var level, found, marker, prevPos,
       labelEnd = -1,
       max = state.posMax,
-      oldPos = state.pos,
-      oldFlag = state.isInLabel;
-
-  if (state.isInLabel) { return -1; }
+      oldPos = state.pos;
 
   if (state.labelUnmatchedScopes) {
     state.labelUnmatchedScopes--;
@@ -2718,14 +2715,11 @@ module.exports = function parseLinkLabel(state, start) {
   }
 
   state.pos = start + 1;
-  state.isInLabel = true;
   level = 1;
 
   while (state.pos < max) {
     marker = state.src.charCodeAt(state.pos);
-    if (marker === 0x5B /* [ */) {
-      level++;
-    } else if (marker === 0x5D /* ] */) {
+    if (marker === 0x5D /* ] */) {
       level--;
       if (level === 0) {
         found = true;
@@ -2733,7 +2727,17 @@ module.exports = function parseLinkLabel(state, start) {
       }
     }
 
+    prevPos = state.pos;
     state.parser.skipToken(state);
+    if (marker === 0x5B /* [ */) {
+      if (prevPos === state.pos - 1) {
+        // increase level if we find text `[`, which is not a part of any token
+        level++;
+      } else if (disableNested) {
+        state.pos = oldPos;
+        return -1;
+      }
+    }
   }
 
   if (found) {
@@ -2745,7 +2749,6 @@ module.exports = function parseLinkLabel(state, start) {
 
   // restore old state
   state.pos = oldPos;
-  state.isInLabel = oldFlag;
 
   return labelEnd;
 };
@@ -2801,16 +2804,14 @@ module.exports = function parseLinkTitle(state, pos) {
 
 var utils        = require('./common/utils');
 var helpers      = require('./helpers');
-var assign       = require('./common/utils').assign;
-var isString     = require('./common/utils').isString;
 var Renderer     = require('./renderer');
 var ParserCore   = require('./parser_core');
 var ParserBlock  = require('./parser_block');
 var ParserInline = require('./parser_inline');
-var Ruler        = require('./ruler');
 
 var config = {
   'default': require('./presets/default'),
+  zero: require('./presets/zero'),
   full: require('./presets/full'),
   commonmark: require('./presets/commonmark')
 };
@@ -2829,29 +2830,200 @@ function StateCore(self, src, env) {
   this.typographer = self.typographer;
 }
 
-// Main class
-//
+/**
+ * class MarkdownIt
+ *
+ * Main parser/renderer class.
+ *
+ * ##### Usage
+ *
+ * ```javascript
+ * // node.js, "classic" way:
+ * var MarkdownIt = require('markdown-it'),
+ *     md = new MarkdownIt();
+ * var result = md.render('# markdown-it rulezz!');
+ *
+ * // node.js, the same, but with sugar:
+ * var md = require('markdown-it')();
+ * var result = md.render('# markdown-it rulezz!');
+ *
+ * // browser without AMD, added to "window" on script load
+ * // Note, there are no dash.
+ * var md = window.markdownit();
+ * var result = md.render('# markdown-it rulezz!');
+ * ```
+ *
+ * Single line rendering, without paragraph wrap:
+ *
+ * ```javascript
+ * var md = require('markdown-it')();
+ * var result = md.renderInline('__markdown-it__ rulezz!');
+ * ```
+ **/
+
+/**
+ * new MarkdownIt([presetName, options])
+ * - presetName (String): optional, `commonmark` / `full` / `zero`
+ * - options (Object)
+ *
+ * Creates parser instanse with given config. Can be called without `new`.
+ *
+ * ##### presetName
+ *
+ * MarkdownIt provides named presets as a convenience to quickly
+ * enable/disable active syntax rules and options for common use cases.
+ *
+ * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/commonmark.js) -
+ *   configures parser to strict [CommonMark](http://commonmark.org/) mode.
+ * - ["full"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/full.js) -
+ *   enables all available rules, but still without html, typographer & autolinker.
+ * - [default](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.js) -
+ *   similar to GFM, used when no preset name given.
+ * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.js) -
+ *   all rules disabled. Useful to quickly setup your config via `.enable()`.
+ *   For example, when you need only `bold` and `italic` markup and nothing else.
+ *
+ * ##### options:
+ *
+ * - __html__ - `false`. Set `true` to enable HTML tags in source. Be careful!
+ *   That's not safe! You may need external sanitizer to protect output from XSS.
+ *   It's better to extend features via plugins, instead of enabling HTML.
+ * - __xhtmlOut__ - `false`. Set `true` to add '/' when closing single tags
+ *   (`<br />`). This is needed only for full CommonMark compatibility. In real
+ *   world you will need HTML output.
+ * - __breaks__ - `false`. Set `true` to convert `\n` in paragraphs into `<br>`.
+ * - __langPrefix__ - `language-`. CSS language class prefix for fenced blocks.
+ *   Can be useful for external highlighters.
+ * - __linkify__ - `false`. Set `true` to autoconvert URL-like text to links.
+ * - __typographer__  - `false`. Set `true` to enable [some language-neutral
+ *   replacement](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js) +
+ *   quotes beautification (smartquotes).
+ * - __quotes__ - `“”‘’`, string. Double + single quotes replacement pairs, when
+ *   typographer enabled and smartquotes on. Set doubles to '«»' for Russian,
+ *   '„“' for German.
+ * - __highlight__ - `null`. Highlighter function for fenced code blocks.
+ *   Highlighter `function (str, lang)` should return escaped HTML. It can also
+ *   return empty string if the source was not changed and should be escaped externaly.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * // commonmark mode
+ * var md = require('markdown-it')('commonmark');
+ *
+ * // default mode
+ * var md = require('markdown-it')();
+ *
+ * // enable everything
+ * var md = require('markdown-it')('full', {
+ *   html: true,
+ *   linkify: true,
+ *   typographer: true
+ * });
+ * ```
+ *
+ * ##### Syntax highlighting
+ *
+ * ```js
+ * var hljs = require('highlight.js') // https://highlightjs.org/
+ *
+ * var md = require('markdown-it')({
+ *   highlight: function (str, lang) {
+ *     if (lang && hljs.getLanguage(lang)) {
+ *       try {
+ *         return hljs.highlight(lang, str).value;
+ *       } catch (__) {}
+ *     }
+ *
+ *     try {
+ *       return hljs.highlightAuto(str).value;
+ *     } catch (__) {}
+ *
+ *     return ''; // use external default escaping
+ *   }
+ * });
+ * ```
+ **/
 function MarkdownIt(presetName, options) {
   if (!(this instanceof MarkdownIt)) {
     return new MarkdownIt(presetName, options);
   }
 
   if (!options) {
-    if (!isString(presetName)) {
+    if (!utils.isString(presetName)) {
       options = presetName || {};
       presetName = 'default';
     }
   }
 
-  this.inline   = new ParserInline();
-  this.block    = new ParserBlock();
-  this.core     = new ParserCore();
+  /**
+   * MarkdownIt#inline -> ParserInline
+   *
+   * Instance of [[ParserInline]]. You may need it to add new rules when
+   * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
+   * [[MarkdownIt.enable]].
+   **/
+  this.inline = new ParserInline();
+
+  /**
+   * MarkdownIt#block -> ParserBlock
+   *
+   * Instance of [[ParserBlock]]. You may need it to add new rules when
+   * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
+   * [[MarkdownIt.enable]].
+   **/
+  this.block = new ParserBlock();
+
+  /**
+   * MarkdownIt#core -> Core
+   *
+   * Instance of [[Core]] chain executor. You may need it to add new rules when
+   * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
+   * [[MarkdownIt.enable]].
+   **/
+  this.core = new ParserCore();
+
+  /**
+   * MarkdownIt#renderer -> Renderer
+   *
+   * Instance of [[Renderer]]. Use it to modify output look. Or to add rendering
+   * rules for new token types, generated by plugins.
+   *
+   * ##### Example
+   *
+   * ```javascript
+   * var md = require('markdown-it')();
+   *
+   * function myToken(tokens, idx, options, env, self) {
+   *   //...
+   *   return result;
+   * };
+   *
+   * md.renderer.rules['my_token'] = myToken
+   * ```
+   *
+   * See [[Renderer]] docs and [source code](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js).
+   **/
   this.renderer = new Renderer();
-  this.ruler    = new Ruler();
 
   // Expose utils & helpers for easy acces from plugins
+
+  /**
+   * MarkdownIt#utils -> utils
+   *
+   * Assorted utility functions, useful to write plugins. See details
+   * [here](https://github.com/markdown-it/markdown-it/blob/master/lib/common/utils.js).
+   **/
   this.utils    = utils;
+
+  /**
+   * MarkdownIt#helpers -> helpers
+   *
+   * Link components parser functions, useful to write plugins. See details
+   * [here](https://github.com/markdown-it/markdown-it/blob/master/lib/helpers).
+   **/
   this.helpers  = helpers;
+
 
   this.options  = {};
   this.configure(config[presetName]);
@@ -2860,16 +3032,38 @@ function MarkdownIt(presetName, options) {
 }
 
 
-// Set options, if you did not passed those to constructor
-//
+/** chainable
+ * MarkdownIt.set(options)
+ *
+ * Set parser options (in the same format as in constructor). Probably, you
+ * will never need it, but you can change options after constructor call.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * var md = require('markdown-it')()
+ *             .set({ html: true, breaks: true })
+ *             .set({ typographer, true });
+ * ```
+ *
+ * __Note:__ To achieve the best possible performance, don't modify a
+ * `markdown-it` instance options on the fly. If you need multiple configurations
+ * it's best to create multiple instances and initialize each with separate
+ * config.
+ **/
 MarkdownIt.prototype.set = function (options) {
-  assign(this.options, options);
+  utils.assign(this.options, options);
   return this;
 };
 
 
-// Batch loader for components rules states & options
-//
+/** chainable, internal
+ * MarkdownIt.configure(presets)
+ *
+ * Batch load of all options and compenent settings. This is internal method,
+ * and you probably will not need it. But if you with - see available presets
+ * and data structure [here](https://github.com/markdown-it/markdown-it/tree/master/lib/presets)
+ **/
 MarkdownIt.prototype.configure = function (presets) {
   var self = this;
 
@@ -2888,8 +3082,21 @@ MarkdownIt.prototype.configure = function (presets) {
 };
 
 
-// Sugar to enable rules by names in all chains at once
-//
+/** chainable
+ * MarkdownIt.enable(list)
+ * - list (String|Array): rule name or list of rule names to enable
+ *
+ * Enable list or rules. It will automatically find appropriate components,
+ * containing rules with given names.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * var md = require('markdown-it')()
+ *             .enable(['sub', 'sup'])
+ *             .disable('smartquotes');
+ * ```
+ **/
 MarkdownIt.prototype.enable = function (list) {
   [ 'core', 'block', 'inline' ].forEach(function (chain) {
     this[chain].ruler.enable(list, true);
@@ -2898,8 +3105,12 @@ MarkdownIt.prototype.enable = function (list) {
 };
 
 
-// Sugar to disable rules by names in all chains at once
-//
+/** chainable
+ * MarkdownIt.disable(list)
+ * - list (String|Array): rule name or list of rule names to disable.
+ *
+ * The same as [[MarkdownIt.enable]], but turn specified rules off.
+ **/
 MarkdownIt.prototype.disable = function (list) {
   [ 'core', 'block', 'inline' ].forEach(function (chain) {
     this[chain].ruler.disable(list, true);
@@ -2908,23 +3119,37 @@ MarkdownIt.prototype.disable = function (list) {
 };
 
 
-// Sugar for curried plugins init:
-//
-// var md = new MarkdownIt();
-//
-// md.use(plugin1)
-//   .use(plugin2, opts)
-//   .use(plugin3);
-//
-MarkdownIt.prototype.use = function (plugin, opts) {
-  plugin(this, opts);
+/** chainable
+ * MarkdownIt.use(plugin, options)
+ *
+ * Load specified plugin with given options into current parser instance.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * var md = require('markdown-it')()
+ *             .use(require('makkdown-it-emoji'));
+ * ```
+ **/
+MarkdownIt.prototype.use = function (plugin, options) {
+  plugin(this, options);
   return this;
 };
 
 
-// Parse input string, returns tokens array. Modify `env` with
-// definitions data.
-//
+/** internal
+ * MarkdownIt.parse(src, env) -> Array
+ * - src (String): source string
+ * - env (Object): enviroment variables
+ *
+ * Parse input string and returns list of block tokens (special token type
+ * "inline" will contain list of inline tokens). You should not call this
+ * method directly, until you write custom renderer (for example, to produce
+ * AST).
+ *
+ * `env` is modified with additional info. For example, with references data.
+ * Also `env` can be used to pass external info to plugins.
+ **/
 MarkdownIt.prototype.parse = function (src, env) {
   var state = new StateCore(this, src, env);
 
@@ -2934,8 +3159,16 @@ MarkdownIt.prototype.parse = function (src, env) {
 };
 
 
-// Main method that does all magic :)
-//
+/**
+ * MarkdownIt.render(src [, env]) -> String
+ * - src (String): source string
+ * - env (Object): optional, enviroment variables
+ *
+ * Render markdown string into html. It does all magic for you :).
+ *
+ * `env` is `{}` by default. It's not used now directly, but you can pass
+ *  with it any additional data to plugins.
+ **/
 MarkdownIt.prototype.render = function (src, env) {
   env = env || {};
 
@@ -2943,8 +3176,15 @@ MarkdownIt.prototype.render = function (src, env) {
 };
 
 
-// Parse content as single string
-//
+/** internal
+ * MarkdownIt.parseInline(src, env) -> Array
+ * - src (String): source string
+ * - env (Object): enviroment variables
+ *
+ * The same as [[MarkdownIt.parse]] but skip all block rules. It returns the
+ * block tokens list with th single `inline` element, containing parsed inline
+ * tokens in `children` property.
+ **/
 MarkdownIt.prototype.parseInline = function (src, env) {
   var state = new StateCore(this, src, env);
 
@@ -2955,8 +3195,14 @@ MarkdownIt.prototype.parseInline = function (src, env) {
 };
 
 
-// Render single string, without wrapping it to paragraphs
-//
+/**
+ * MarkdownIt.renderInline(src [, env]) -> String
+ * - src (String): source string
+ * - env (Object): optional, enviroment variables
+ *
+ * Similar to [[MarkdownIt.render]] but for single paragraph content. Result
+ * will NOT be wrapped into `<p>` tags.
+ **/
 MarkdownIt.prototype.renderInline = function (src, env) {
   env = env || {};
 
@@ -2966,10 +3212,12 @@ MarkdownIt.prototype.renderInline = function (src, env) {
 
 module.exports = MarkdownIt;
 
-},{"./common/utils":5,"./helpers":6,"./parser_block":12,"./parser_core":13,"./parser_inline":14,"./presets/commonmark":15,"./presets/default":16,"./presets/full":17,"./renderer":18,"./ruler":19}],12:[function(require,module,exports){
-// Block parser
-
-
+},{"./common/utils":5,"./helpers":6,"./parser_block":12,"./parser_core":13,"./parser_inline":14,"./presets/commonmark":15,"./presets/default":16,"./presets/full":17,"./presets/zero":18,"./renderer":19}],12:[function(require,module,exports){
+/** internal
+ * class ParserBlock
+ *
+ * Block-level tokenizer.
+ **/
 'use strict';
 
 
@@ -2993,9 +3241,15 @@ var _rules = [
 ];
 
 
-// Block Parser class
-//
+/**
+ * new ParserBlock()
+ **/
 function ParserBlock() {
+  /**
+   * ParserBlock#ruler -> Ruler
+   *
+   * [[Ruler]] instance. Keep configuration of block rules.
+   **/
   this.ruler = new Ruler();
 
   for (var i = 0; i < _rules.length; i++) {
@@ -3058,7 +3312,13 @@ ParserBlock.prototype.tokenize = function (state, startLine, endLine) {
 var TABS_SCAN_RE = /[\n\t]/g;
 var NEWLINES_RE  = /\r[\n\u0085]|[\u2424\u2028\u0085]/g;
 var SPACES_RE    = /\u00a0/g;
+var NULL_RE      = /\u0000/g;
 
+/**
+ * ParserBlock.parse(str, options, env, outTokens)
+ *
+ * Process input string and push block tokens into `outTokens`
+ **/
 ParserBlock.prototype.parse = function (src, options, env, outTokens) {
   var state, lineStart = 0, lastTabPos = 0;
 
@@ -3069,6 +3329,9 @@ ParserBlock.prototype.parse = function (src, options, env, outTokens) {
 
   // Normalize newlines
   src = src.replace(NEWLINES_RE, '\n');
+
+  // Strin NULL characters
+  src = src.replace(NULL_RE, '');
 
   // Replace tabs with proper number of spaces (1..4)
   if (src.indexOf('\t') >= 0) {
@@ -3099,9 +3362,13 @@ ParserBlock.prototype.parse = function (src, options, env, outTokens) {
 
 module.exports = ParserBlock;
 
-},{"./ruler":19,"./rules_block/blockquote":20,"./rules_block/code":21,"./rules_block/deflist":22,"./rules_block/fences":23,"./rules_block/footnote":24,"./rules_block/heading":25,"./rules_block/hr":26,"./rules_block/htmlblock":27,"./rules_block/lheading":28,"./rules_block/list":29,"./rules_block/paragraph":30,"./rules_block/state_block":31,"./rules_block/table":32}],13:[function(require,module,exports){
-// Class of top level (`core`)  rules
-//
+},{"./ruler":20,"./rules_block/blockquote":21,"./rules_block/code":22,"./rules_block/deflist":23,"./rules_block/fences":24,"./rules_block/footnote":25,"./rules_block/heading":26,"./rules_block/hr":27,"./rules_block/htmlblock":28,"./rules_block/lheading":29,"./rules_block/list":30,"./rules_block/paragraph":31,"./rules_block/state_block":32,"./rules_block/table":33}],13:[function(require,module,exports){
+/** internal
+ * class Core
+ *
+ * Top-level rules executor. Glues block/inline parsers and does intermediate
+ * transformations.
+ **/
 'use strict';
 
 
@@ -3121,9 +3388,15 @@ var _rules = [
 ];
 
 
+/**
+ * new Core()
+ **/
 function Core() {
-  this.options = {};
-
+  /**
+   * Core#ruler -> Ruler
+   *
+   * [[Ruler]] instance. Keep configuration of core rules.
+   **/
   this.ruler = new Ruler();
 
   for (var i = 0; i < _rules.length; i++) {
@@ -3132,6 +3405,11 @@ function Core() {
 }
 
 
+/**
+ * Core.process(state)
+ *
+ * Executes core chain rules.
+ **/
 Core.prototype.process = function (state) {
   var i, l, rules;
 
@@ -3145,9 +3423,12 @@ Core.prototype.process = function (state) {
 
 module.exports = Core;
 
-},{"./ruler":19,"./rules_core/abbr":33,"./rules_core/abbr2":34,"./rules_core/block":35,"./rules_core/footnote_tail":36,"./rules_core/inline":37,"./rules_core/linkify":38,"./rules_core/references":39,"./rules_core/replacements":40,"./rules_core/smartquotes":41}],14:[function(require,module,exports){
-// Inline parser
-
+},{"./ruler":20,"./rules_core/abbr":34,"./rules_core/abbr2":35,"./rules_core/block":36,"./rules_core/footnote_tail":37,"./rules_core/inline":38,"./rules_core/linkify":39,"./rules_core/references":40,"./rules_core/replacements":41,"./rules_core/smartquotes":42}],14:[function(require,module,exports){
+/** internal
+ * class ParserInline
+ *
+ * Tokenizes paragraph content.
+ **/
 'use strict';
 
 
@@ -3192,13 +3473,31 @@ function validateLink(url) {
   return true;
 }
 
-// Inline Parser class
-//
+
+/**
+ * new ParserInline()
+ **/
 function ParserInline() {
-  // By default CommonMark allows too much in links
-  // If you need to restrict it - override this with your validator.
+  /**
+   * ParserInline#validateLink(url) -> Boolean
+   *
+   * Link validation function. CommonMark allows too much in links. By default
+   * we disable `javascript:` and `vbscript:` schemas. You can change this
+   * behaviour.
+   *
+   * ```javascript
+   * var md = require('markdown-it')();
+   * // enable everything
+   * md.inline.validateLink = function () { return true; }
+   * ```
+   **/
   this.validateLink = validateLink;
 
+  /**
+   * ParserInline#ruler -> Ruler
+   *
+   * [[Ruler]] instance. Keep configuration of inline rules.
+   **/
   this.ruler = new Ruler();
 
   for (var i = 0; i < _rules.length; i++) {
@@ -3268,8 +3567,11 @@ ParserInline.prototype.tokenize = function (state) {
 };
 
 
-// Parse input string.
-//
+/**
+ * ParserInline.parse(str, options, env, outTokens)
+ *
+ * Process input string and push inline tokens into `outTokens`
+ **/
 ParserInline.prototype.parse = function (str, options, env, outTokens) {
   var state = new StateInline(str, this, options, env, outTokens);
 
@@ -3279,7 +3581,7 @@ ParserInline.prototype.parse = function (str, options, env, outTokens) {
 
 module.exports = ParserInline;
 
-},{"./common/utils":5,"./ruler":19,"./rules_inline/autolink":42,"./rules_inline/backticks":43,"./rules_inline/del":44,"./rules_inline/emphasis":45,"./rules_inline/entity":46,"./rules_inline/escape":47,"./rules_inline/footnote_inline":48,"./rules_inline/footnote_ref":49,"./rules_inline/htmltag":50,"./rules_inline/ins":51,"./rules_inline/links":52,"./rules_inline/mark":53,"./rules_inline/newline":54,"./rules_inline/state_inline":55,"./rules_inline/sub":56,"./rules_inline/sup":57,"./rules_inline/text":58}],15:[function(require,module,exports){
+},{"./common/utils":5,"./ruler":20,"./rules_inline/autolink":43,"./rules_inline/backticks":44,"./rules_inline/del":45,"./rules_inline/emphasis":46,"./rules_inline/entity":47,"./rules_inline/escape":48,"./rules_inline/footnote_inline":49,"./rules_inline/footnote_ref":50,"./rules_inline/htmltag":51,"./rules_inline/ins":52,"./rules_inline/links":53,"./rules_inline/mark":54,"./rules_inline/newline":55,"./rules_inline/state_inline":56,"./rules_inline/sub":57,"./rules_inline/sup":58,"./rules_inline/text":59}],15:[function(require,module,exports){
 // Commonmark default options
 
 'use strict';
@@ -3472,6 +3774,68 @@ module.exports = {
 };
 
 },{}],18:[function(require,module,exports){
+// "Zero" preset, with nothing enabled. Useful for manual configuring of simple
+// modes. For example, to parse bold/italic only.
+
+'use strict';
+
+
+module.exports = {
+  options: {
+    html:         false,        // Enable HTML tags in source
+    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
+    breaks:       false,        // Convert '\n' in paragraphs into <br>
+    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+    linkify:      false,        // autoconvert URL-like texts to links
+
+    // Enable some language-neutral replacements + quotes beautification
+    typographer:  false,
+
+    // Double + single quotes replacement pairs, when typographer enabled,
+    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+    quotes: '\u201c\u201d\u2018\u2019' /* “”‘’ */,
+
+    // Highlighter function. Should return escaped HTML,
+    // or '' if input not changed
+    //
+    // function (/*str, lang*/) { return ''; }
+    //
+    highlight: null,
+
+    maxNesting:   20            // Internal protection, recursion limit
+  },
+
+  components: {
+
+    core: {
+      rules: [
+        'block',
+        'inline'
+      ]
+    },
+
+    block: {
+      rules: [
+        'paragraph'
+      ]
+    },
+
+    inline: {
+      rules: [
+        'text'
+      ]
+    }
+  }
+};
+
+},{}],19:[function(require,module,exports){
+/**
+ * class Renderer
+ *
+ * Generates HTML from parsed token stream. Each instance has independent
+ * copy of rules. Those can be rewritten with ease. Also, you can add new
+ * rules if you create plugin and adds new token types.
+ **/
 'use strict';
 
 
@@ -3483,31 +3847,6 @@ var escapeHtml      = require('./common/utils').escapeHtml;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Helpers
-
-function nextToken(tokens, idx) {
-  if (++idx >= tokens.length - 2) { return idx; }
-  if ((tokens[idx].type === 'paragraph_open' && tokens[idx].tight) &&
-      (tokens[idx + 1].type === 'inline' && tokens[idx + 1].content.length === 0) &&
-      (tokens[idx + 2].type === 'paragraph_close' && tokens[idx + 2].tight)) {
-    return nextToken(tokens, idx + 2);
-  }
-  return idx;
-}
-
-
-// check if we need to hide '\n' before next token
-function getBreak(tokens, idx) {
-  idx = nextToken(tokens, idx);
-  if (idx < tokens.length &&
-      tokens[idx].type === 'list_item_close') {
-    return '';
-  }
-
-  return '\n';
-}
-
-////////////////////////////////////////////////////////////////////////////////
 
 var rules = {};
 
@@ -3516,14 +3855,14 @@ var rules = {};
 rules.blockquote_open = function (/* tokens, idx, options, env */) {
   return '<blockquote>\n';
 };
-rules.blockquote_close = function (tokens, idx /*, options, env */) {
-  return '</blockquote>' + getBreak(tokens, idx);
+rules.blockquote_close = function (/* tokens, idx, options, env */) {
+  return '</blockquote>\n';
 };
 
 
 rules.code = function (tokens, idx /*, options, env */) {
   if (tokens[idx].block) {
-    return '<pre><code>' + escapeHtml(tokens[idx].content) + '</code></pre>' + getBreak(tokens, idx);
+    return '<pre><code>' + escapeHtml(tokens[idx].content) + '</code></pre>\n';
   }
 
   return '<code>' + escapeHtml(tokens[idx].content) + '</code>';
@@ -3565,7 +3904,7 @@ rules.fence = function (tokens, idx, options, env, self) {
 
   return  '<pre><code' + langClass + '>'
         + highlighted
-        + '</code></pre>' + getBreak(tokens, idx);
+        + '</code></pre>\n';
 };
 
 rules.fence_custom = {};
@@ -3579,30 +3918,35 @@ rules.heading_close = function (tokens, idx /*, options, env */) {
 
 
 rules.hr = function (tokens, idx, options /*, env */) {
-  return (options.xhtmlOut ? '<hr />' : '<hr>') + getBreak(tokens, idx);
+  return (options.xhtmlOut ? '<hr />\n' : '<hr>\n');
 };
 
 
 rules.bullet_list_open = function (/* tokens, idx, options, env */) {
   return '<ul>\n';
 };
-rules.bullet_list_close = function (tokens, idx /*, options, env */) {
-  return '</ul>' + getBreak(tokens, idx);
+rules.bullet_list_close = function (/* tokens, idx, options, env */) {
+  return '</ul>\n';
 };
-rules.list_item_open = function (/* tokens, idx, options, env */) {
-  return '<li>';
+rules.list_item_open = function (tokens, idx /*, options, env */) {
+  var next = tokens[idx + 1];
+  if ((next.type === 'list_item_close') ||
+      (next.type === 'paragraph_open' && next.tight)) {
+    return '<li>';
+  }
+  return '<li>\n';
 };
 rules.list_item_close = function (/* tokens, idx, options, env */) {
   return '</li>\n';
 };
 rules.ordered_list_open = function (tokens, idx /*, options, env */) {
-  var token = tokens[idx];
-  return '<ol'
-    + (token.order > 1 ? ' start="' + token.order + '"' : '')
-    + '>\n';
+  if (tokens[idx].order > 1) {
+    return '<ol start="' + tokens[idx].order + '">\n';
+  }
+  return '<ol>\n';
 };
-rules.ordered_list_close = function (tokens, idx /*, options, env */) {
-  return '</ol>' + getBreak(tokens, idx);
+rules.ordered_list_close = function (/* tokens, idx, options, env */) {
+  return '</ol>\n';
 };
 
 
@@ -3610,8 +3954,21 @@ rules.paragraph_open = function (tokens, idx /*, options, env */) {
   return tokens[idx].tight ? '' : '<p>';
 };
 rules.paragraph_close = function (tokens, idx /*, options, env */) {
-  var addBreak = !(tokens[idx].tight && idx && tokens[idx - 1].type === 'inline' && !tokens[idx - 1].content);
-  return (tokens[idx].tight ? '' : '</p>') + (addBreak ? getBreak(tokens, idx) : '');
+  // We have 2 cases of "hidden" paragraphs
+  //
+  // 1. In tight lists
+  // 2. When content was stripped (reference definition, for example)
+  //
+  if (tokens[idx].tight === true) {
+    if (!tokens[idx - 1].content) {
+      return '';
+    }
+    if (tokens[idx + 1].type === 'list_item_close') {
+      return '';
+    }
+    return '\n';
+  }
+  return '</p>\n';
 };
 
 
@@ -3624,10 +3981,10 @@ rules.link_close = function (/* tokens, idx, options, env */) {
 };
 
 
-rules.image = function (tokens, idx, options /*, env */) {
+rules.image = function (tokens, idx, options, env, self) {
   var src = ' src="' + escapeHtml(tokens[idx].src) + '"';
   var title = tokens[idx].title ? (' title="' + escapeHtml(replaceEntities(tokens[idx].title)) + '"') : '';
-  var alt = ' alt="' + (tokens[idx].alt ? escapeHtml(replaceEntities(tokens[idx].alt)) : '') + '"';
+  var alt = ' alt="' + self.renderInlineAsText(tokens[idx].tokens, options, env) + '"';
   var suffix = options.xhtmlOut ? ' /' : '';
   return '<img' + src + alt + title + suffix + '>';
 };
@@ -3658,19 +4015,19 @@ rules.tr_close = function (/* tokens, idx, options, env */) {
   return '</tr>\n';
 };
 rules.th_open = function (tokens, idx /*, options, env */) {
-  var token = tokens[idx];
-  return '<th'
-    + (token.align ? ' style="text-align:' + token.align + '"' : '')
-    + '>';
+  if (tokens[idx].align) {
+    return '<th style="text-align:' + tokens[idx].align + '">';
+  }
+  return '<th>';
 };
 rules.th_close = function (/* tokens, idx, options, env */) {
   return '</th>';
 };
 rules.td_open = function (tokens, idx /*, options, env */) {
-  var token = tokens[idx];
-  return '<td'
-    + (token.align ? ' style="text-align:' + token.align + '"' : '')
-    + '>';
+  if (tokens[idx].align) {
+    return '<td style="text-align:' + tokens[idx].align + '">';
+  }
+  return '<td>';
 };
 rules.td_close = function (/* tokens, idx, options, env */) {
   return '</td>';
@@ -3805,15 +4162,53 @@ rules.dd_close = function() {
 };
 
 
-// Renderer class
+/**
+ * new Renderer()
+ *
+ * Creates new [[Renderer]] instance and fill [[Renderer#rules]] with defaults.
+ **/
 function Renderer() {
-  // Clone rules object to allow local modifications
+
+  /**
+   * Renderer#rules -> Object
+   *
+   * Contains render rules for tokens. Can be updated and extended.
+   *
+   * ##### Example
+   *
+   * ```javascript
+   * var md = require('markdown-it')();
+   *
+   * md.renderer.rules.strong_open  = function () { return '<b>'; };
+   * md.renderer.rules.strong_close = function () { return '</b>'; };
+   *
+   * var result = md.renderInline(...);
+   * ```
+   *
+   * Each rule is called as independed static function with fixed signature:
+   *
+   * ```javascript
+   * function my_token_render(tokens, idx, options, env, self) {
+   *   // ...
+   *   return renderedHTML;
+   * }
+   * ```
+   *
+   * See [source code](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
+   * for more details and examples.
+   **/
   this.rules = assign({}, rules);
-  // exported helper, for custom rules only
-  this.getBreak = getBreak;
 }
 
 
+/**
+ * Renderer.renderInline(tokens, options, env) -> String
+ * - tokens (Array): list on block tokens to renter
+ * - options (Object): params of parser instance
+ * - env (Object): additional data from parsed input (references, for example)
+ *
+ * The same as [[Renderer.render]], but for single token of `inline` type.
+ **/
 Renderer.prototype.renderInline = function (tokens, options, env) {
   var result = '',
       _rules = this.rules;
@@ -3826,6 +4221,41 @@ Renderer.prototype.renderInline = function (tokens, options, env) {
 };
 
 
+/** internal
+ * Renderer.renderInlineAsText(tokens, options, env) -> String
+ * - tokens (Array): list on block tokens to renter
+ * - options (Object): params of parser instance
+ * - env (Object): additional data from parsed input (references, for example)
+ *
+ * Special kludge for image `alt` attributes to conform CommonMark spec.
+ * Don't try to use it! Spec requires to show `alt` content with stripped markup,
+ * instead of simple escaping.
+ **/
+Renderer.prototype.renderInlineAsText = function (tokens, options, env) {
+  var result = '',
+      _rules = this.rules;
+
+  for (var i = 0, len = tokens.length; i < len; i++) {
+    if (tokens[i].type === 'text') {
+      result += _rules.text(tokens, i, options, env, this);
+    } else if (tokens[i].type === 'image') {
+      result += this.renderInlineAsText(tokens[i].tokens, options, env);
+    }
+  }
+
+  return result;
+};
+
+
+/**
+ * Renderer.render(tokens, options, env) -> String
+ * - tokens (Array): list on block tokens to renter
+ * - options (Object): params of parser instance
+ * - env (Object): additional data from parsed input (references, for example)
+ *
+ * Takes token stream and generates HTML. Probably, you will never need to call
+ * this method directly.
+ **/
 Renderer.prototype.render = function (tokens, options, env) {
   var i, len,
       result = '',
@@ -3844,18 +4274,30 @@ Renderer.prototype.render = function (tokens, options, env) {
 
 module.exports = Renderer;
 
-},{"./common/utils":5}],19:[function(require,module,exports){
-// Ruler is helper class to build responsibility chains from parse rules.
-// It allows:
-//
-// - easy stack rules chains
-// - getting main chain and named chains content (as arrays of functions)
-//
+},{"./common/utils":5}],20:[function(require,module,exports){
+/**
+ * class Ruler
+ *
+ * Helper class, used by [[MarkdownIt#core]], [[MarkdownIt#block]] and
+ * [[MarkdownIt#inline]] to manage sequences of functions (rules):
+ *
+ * - keep rules in defined order
+ * - assign the name to each rule
+ * - enable/disable rules
+ * - add/replace rules
+ * - allow assign rules to additional named chains (in the same)
+ * - cacheing lists of active rules
+ *
+ * You will not need use this class directly until write plugins. For simple
+ * rules control use [[MarkdownIt.disable]], [[MarkdownIt.enable]] and
+ * [[MarkdownIt.use]].
+ **/
 'use strict';
 
 
-////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * new Ruler()
+ **/
 function Ruler() {
   // List of added rules. Each element is:
   //
@@ -3924,12 +4366,31 @@ Ruler.prototype.__compile__ = function () {
 };
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Public methods
-
-
-// Replace rule function
-//
+/**
+ * Ruler.at(name, fn [, options])
+ * - name (String): rule name to replace.
+ * - fn (Function): new rule function.
+ * - options (Object): new rule options (not mandatory).
+ *
+ * Replace rule by name with new function & options. Throws error if name not
+ * found.
+ *
+ * ##### Options:
+ *
+ * - __alt__ - array with names of "alternate" chains.
+ *
+ * ##### Example
+ *
+ * Replace existing typorgapher replacement rule with new one:
+ *
+ * ```javascript
+ * var md = require('markdown-it')();
+ *
+ * md.core.ruler.at('replacements', function replace(state) {
+ *   //...
+ * });
+ * ```
+ **/
 Ruler.prototype.at = function (name, fn, options) {
   var index = this.__find__(name);
   var opt = options || {};
@@ -3942,8 +4403,30 @@ Ruler.prototype.at = function (name, fn, options) {
 };
 
 
-// Add rule to chain before one with given name.
-//
+/**
+ * Ruler.before(beforeName, ruleName, fn [, options])
+ * - beforeName (String): new rule will be added before this one.
+ * - ruleName (String): name of added rule.
+ * - fn (Function): rule function.
+ * - options (Object): rule options (not mandatory).
+ *
+ * Add new rule to chain before one with given name. See also
+ * [[Ruler.after]], [[Ruler.push]].
+ *
+ * ##### Options:
+ *
+ * - __alt__ - array with names of "alternate" chains.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * var md = require('markdown-it')();
+ *
+ * md.block.ruler.before('paragraph', 'my_rule', function replace(state) {
+ *   //...
+ * });
+ * ```
+ **/
 Ruler.prototype.before = function (beforeName, ruleName, fn, options) {
   var index = this.__find__(beforeName);
   var opt = options || {};
@@ -3961,8 +4444,30 @@ Ruler.prototype.before = function (beforeName, ruleName, fn, options) {
 };
 
 
-// Add rule to chain after one with given name.
-//
+/**
+ * Ruler.after(afterName, ruleName, fn [, options])
+ * - afterName (String): new rule will be added after this one.
+ * - ruleName (String): name of added rule.
+ * - fn (Function): rule function.
+ * - options (Object): rule options (not mandatory).
+ *
+ * Add new rule to chain after one with given name. See also
+ * [[Ruler.before]], [[Ruler.push]].
+ *
+ * ##### Options:
+ *
+ * - __alt__ - array with names of "alternate" chains.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * var md = require('markdown-it')();
+ *
+ * md.inline.ruler.after('text', 'my_rule', function replace(state) {
+ *   //...
+ * });
+ * ```
+ **/
 Ruler.prototype.after = function (afterName, ruleName, fn, options) {
   var index = this.__find__(afterName);
   var opt = options || {};
@@ -3979,8 +4484,29 @@ Ruler.prototype.after = function (afterName, ruleName, fn, options) {
   this.__cache__ = null;
 };
 
-// Add rule to the end of chain.
-//
+/**
+ * Ruler.push(ruleName, fn [, options])
+ * - ruleName (String): name of added rule.
+ * - fn (Function): rule function.
+ * - options (Object): rule options (not mandatory).
+ *
+ * Push new rule to the end of chain. See also
+ * [[Ruler.before]], [[Ruler.after]].
+ *
+ * ##### Options:
+ *
+ * - __alt__ - array with names of "alternate" chains.
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * var md = require('markdown-it')();
+ *
+ * md.core.ruler.push('emphasis', 'my_rule', function replace(state) {
+ *   //...
+ * });
+ * ```
+ **/
 Ruler.prototype.push = function (ruleName, fn, options) {
   var opt = options || {};
 
@@ -3995,8 +4521,16 @@ Ruler.prototype.push = function (ruleName, fn, options) {
 };
 
 
-// Enable rules by names.
-//
+/**
+ * Ruler.enable(list [, ignoreInvalid])
+ * - list (String|Array): list of rule names to enable.
+ * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
+ *
+ * Enable rules with given names. If any rule name not found - throw Error.
+ * Errors can be disabled by second param.
+ *
+ * See also [[Ruler.disable]], [[Ruler.enableOnly]].
+ **/
 Ruler.prototype.enable = function (list, ignoreInvalid) {
   if (!Array.isArray(list)) { list = [ list ]; }
 
@@ -4015,8 +4549,16 @@ Ruler.prototype.enable = function (list, ignoreInvalid) {
 };
 
 
-// Enable rules by whitelisted names (others will be disables).
-//
+/**
+ * Ruler.enableOnly(list [, ignoreInvalid])
+ * - list (String|Array): list of rule names to enable (whitelist).
+ * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
+ *
+ * Enable rules with given names, and disable everything else. If any rule name
+ * not found - throw Error. Errors can be disabled by second param.
+ *
+ * See also [[Ruler.disable]], [[Ruler.enable]].
+ **/
 Ruler.prototype.enableOnly = function (list, ignoreInvalid) {
   if (!Array.isArray(list)) { list = [ list ]; }
 
@@ -4026,8 +4568,16 @@ Ruler.prototype.enableOnly = function (list, ignoreInvalid) {
 };
 
 
-// Disable rules by names.
-//
+/**
+ * Ruler.disable(list [, ignoreInvalid])
+ * - list (String|Array): list of rule names to disable.
+ * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
+ *
+ * Disable rules with given names. If any rule name not found - throw Error.
+ * Errors can be disabled by second param.
+ *
+ * See also [[Ruler.enable]], [[Ruler.enableOnly]].
+ **/
 Ruler.prototype.disable = function (list, ignoreInvalid) {
   if (!Array.isArray(list)) {
     list = [ list ];
@@ -4048,19 +4598,27 @@ Ruler.prototype.disable = function (list, ignoreInvalid) {
 };
 
 
-// Get rules list as array of functions.
-//
+/**
+ * Ruler.getRules(chainName) -> Array
+ *
+ * Return array of active functions (rules) for given chain name. It analyzes
+ * rules configuration, compiles caches if not exists and returns result.
+ *
+ * Default chain name is `''` (empty string). It can't be skipped. That's
+ * done intentionally, to keep signature monomorphic for high speed.
+ **/
 Ruler.prototype.getRules = function (chainName) {
   if (this.__cache__ === null) {
     this.__compile__();
   }
 
-  return this.__cache__[chainName];
+  // Chain can be empty, if rules disabled. But we still have to return Array.
+  return this.__cache__[chainName] || [];
 };
 
 module.exports = Ruler;
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // Block quotes
 
 'use strict';
@@ -4195,7 +4753,7 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // Code block (4 spaces padded)
 
 'use strict';
@@ -4233,7 +4791,7 @@ module.exports = function code(state, startLine, endLine/*, silent*/) {
   return true;
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // Definition lists
 
 'use strict';
@@ -4442,7 +5000,7 @@ module.exports = function deflist(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // fences (``` lang, ~~~ lang)
 
 'use strict';
@@ -4535,7 +5093,7 @@ module.exports = function fences(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 // Process footnote reference list
 
 'use strict';
@@ -4604,7 +5162,7 @@ module.exports = function footnote(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 // heading (#, ##, ...)
 
 'use strict';
@@ -4664,7 +5222,7 @@ module.exports = function heading(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 // Horizontal rule
 
 'use strict';
@@ -4711,7 +5269,7 @@ module.exports = function hr(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 // HTML block
 
 'use strict';
@@ -4787,7 +5345,7 @@ module.exports = function htmlblock(state, startLine, endLine, silent) {
   return true;
 };
 
-},{"../common/html_blocks":2}],28:[function(require,module,exports){
+},{"../common/html_blocks":2}],29:[function(require,module,exports){
 // lheading (---, ===)
 
 'use strict';
@@ -4844,7 +5402,7 @@ module.exports = function lheading(state, startLine, endLine/*, silent*/) {
   return true;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // Lists
 
 'use strict';
@@ -5112,7 +5670,7 @@ module.exports = function list(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 // Paragraph
 
 'use strict';
@@ -5173,7 +5731,7 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
   return true;
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // Parser state class
 
 'use strict';
@@ -5333,7 +5891,7 @@ StateBlock.prototype.getLines = function getLines(begin, end, indent, keepLastLF
 
 module.exports = StateBlock;
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // GFM table, non-standard
 
 'use strict';
@@ -5469,38 +6027,43 @@ module.exports = function table(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // Parse abbreviation definitions, i.e. `*[abbr]: description`
 //
 
 'use strict';
 
 
-var StateInline    = require('../rules_inline/state_inline');
-var parseLinkLabel = require('../helpers/parse_link_label');
-
-
 function parseAbbr(str, parserInline, options, env) {
-  var state, labelEnd, pos, max, label, title;
+  var pos, label, title, ch,
+      max = str.length,
+      labelEnd = -1;
 
   if (str.charCodeAt(0) !== 0x2A/* * */) { return -1; }
   if (str.charCodeAt(1) !== 0x5B/* [ */) { return -1; }
 
   if (str.indexOf(']:') === -1) { return -1; }
 
-  state = new StateInline(str, parserInline, options, env, []);
-  labelEnd = parseLinkLabel(state, 1);
+  for (pos = 2; pos < max; pos++) {
+    ch = str.charCodeAt(pos);
+    if (ch === 0x5B /* [ */) {
+      return -1;
+    } else if (ch === 0x5D /* ] */) {
+      labelEnd = pos;
+      break;
+    } else if (ch === 0x5C /* \ */) {
+      pos++;
+    }
+  }
 
   if (labelEnd < 0 || str.charCodeAt(labelEnd + 1) !== 0x3A/* : */) { return -1; }
 
-  max = state.posMax;
-
   // abbr title is always one line, so looking for ending "\n" here
   for (pos = labelEnd + 2; pos < max; pos++) {
-    if (state.src.charCodeAt(pos) === 0x0A) { break; }
+    if (str.charCodeAt(pos) === 0x0A) { break; }
   }
 
-  label = str.slice(2, labelEnd);
+  label = str.slice(2, labelEnd).replace(/\\(.)/g, '$1');
   title = str.slice(labelEnd + 2, pos).trim();
   if (title.length === 0) { return -1; }
   if (!env.abbreviations) { env.abbreviations = {}; }
@@ -5541,7 +6104,7 @@ module.exports = function abbr(state) {
   }
 };
 
-},{"../helpers/parse_link_label":9,"../rules_inline/state_inline":55}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // Enclose abbreviations in <abbr> tags
 //
 'use strict';
@@ -5634,7 +6197,7 @@ module.exports = function abbr2(state) {
   }
 };
 
-},{"../common/utils":5}],35:[function(require,module,exports){
+},{"../common/utils":5}],36:[function(require,module,exports){
 'use strict';
 
 module.exports = function block(state) {
@@ -5653,7 +6216,7 @@ module.exports = function block(state) {
   }
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 
@@ -5750,7 +6313,7 @@ module.exports = function footnote_block(state) {
   });
 };
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 module.exports = function inline(state) {
@@ -5765,7 +6328,7 @@ module.exports = function inline(state) {
   }
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // Replace link-like texts with link nodes.
 //
 // Currently restricted by `inline.validateLink()` to http/https/ftp
@@ -5929,30 +6492,40 @@ module.exports = function linkify(state) {
   }
 };
 
-},{"../common/utils":5,"autolinker":59}],39:[function(require,module,exports){
+},{"../common/utils":5,"autolinker":60}],40:[function(require,module,exports){
 'use strict';
 
 
 var StateInline          = require('../rules_inline/state_inline');
-var parseLinkLabel       = require('../helpers/parse_link_label');
 var parseLinkDestination = require('../helpers/parse_link_destination');
 var parseLinkTitle       = require('../helpers/parse_link_title');
 var normalizeReference   = require('../helpers/normalize_reference');
 
 
 function parseReference(str, parser, options, env) {
-  var state, labelEnd, pos, max, code, start, href, title, label;
+  var state, pos, code, start, href, title, label, ch, max,
+      labelEnd = -1;
 
   if (str.charCodeAt(0) !== 0x5B/* [ */) { return -1; }
 
   if (str.indexOf(']:') === -1) { return -1; }
 
   state = new StateInline(str, parser, options, env, []);
-  labelEnd = parseLinkLabel(state, 0);
+  max = state.posMax;
+
+  for (pos = 1; pos < max; pos++) {
+    ch = str.charCodeAt(pos);
+    if (ch === 0x5B /* [ */) {
+      return -1;
+    } else if (ch === 0x5D /* ] */) {
+      labelEnd = pos;
+      break;
+    } else if (ch === 0x5C /* \ */) {
+      pos++;
+    }
+  }
 
   if (labelEnd < 0 || str.charCodeAt(labelEnd + 1) !== 0x3A/* : */) { return -1; }
-
-  max = state.posMax;
 
   // [label]:   destination   'title'
   //         ^^^ skip optional whitespace here
@@ -6029,8 +6602,19 @@ module.exports = function references(state) {
   }
 };
 
-},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_label":9,"../helpers/parse_link_title":10,"../rules_inline/state_inline":55}],40:[function(require,module,exports){
+},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_title":10,"../rules_inline/state_inline":56}],41:[function(require,module,exports){
 // Simple typographyc replacements
+//
+// '' → ‘’
+// "" → “”. Set '«»' for Russian, '„“' for German, empty to disable
+// (c) (C) → ©
+// (tm) (TM) → ™
+// (r) (R) → ®
+// +- → ±
+// (p) (P) -> §
+// ... → … (also ?.... → ?.., !.... → !..)
+// ???????? → ???, !!!!! → !!!, `,,` → `,`
+// -- → &ndash;, --- → &mdash;
 //
 'use strict';
 
@@ -6094,7 +6678,7 @@ module.exports = function replace(state) {
   }
 };
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 // Convert straight quotation marks to typographic ones
 //
 'use strict';
@@ -6209,7 +6793,7 @@ module.exports = function smartquotes(state) {
   }
 };
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // Process autolinks '<protocol:...>'
 
 'use strict';
@@ -6289,7 +6873,7 @@ module.exports = function autolink(state, silent) {
   return false;
 };
 
-},{"../common/url_schemas":4,"../common/utils":5}],43:[function(require,module,exports){
+},{"../common/url_schemas":4,"../common/utils":5}],44:[function(require,module,exports){
 // Parse backticks
 
 'use strict';
@@ -6337,66 +6921,84 @@ module.exports = function backticks(state, silent) {
   return true;
 };
 
-},{}],44:[function(require,module,exports){
-// Process ~~deleted text~~
-
+},{}],45:[function(require,module,exports){
 'use strict';
 
-module.exports = function del(state, silent) {
-  var found,
-      pos,
-      stack,
-      max = state.posMax,
-      start = state.pos,
-      lastChar,
-      nextChar;
 
-  if (state.src.charCodeAt(start) !== 0x7E/* ~ */) { return false; }
-  if (silent) { return false; } // don't run any pairs in validation mode
-  if (start + 4 >= max) { return false; }
-  if (state.src.charCodeAt(start + 1) !== 0x7E/* ~ */) { return false; }
-  if (state.level >= state.options.maxNesting) { return false; }
+// parse sequence of markers,
+// "start" should point at a valid marker
+function scanDelims(state, start) {
+  var pos = start, lastChar, nextChar, count,
+      can_open = true,
+      can_close = true,
+      max = state.posMax,
+      marker = state.src.charCodeAt(start);
 
   lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
-  nextChar = state.src.charCodeAt(start + 2);
 
-  if (lastChar === 0x7E/* ~ */) { return false; }
-  if (nextChar === 0x7E/* ~ */) { return false; }
-  if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
+  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
+  if (pos >= max) { can_open = false; }
+  count = pos - start;
 
-  pos = start + 2;
-  while (pos < max && state.src.charCodeAt(pos) === 0x7E/* ~ */) { pos++; }
-  if (pos > start + 3) {
-    // sequence of 4+ markers taking as literal, same as in a emphasis
-    state.pos += pos - start;
-    if (!silent) { state.pending += state.src.slice(start, pos); }
+  nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
+
+  // check whitespace conditions
+  if (nextChar === 0x20 || nextChar === 0x0A) { can_open = false; }
+  if (lastChar === 0x20 || lastChar === 0x0A) { can_close = false; }
+
+  return {
+    can_open: can_open,
+    can_close: can_close,
+    delims: count
+  };
+}
+
+module.exports = function(state, silent) {
+  var startCount,
+      count,
+      tagCount,
+      found,
+      stack,
+      res,
+      max = state.posMax,
+      start = state.pos,
+      marker = state.src.charCodeAt(start);
+
+  if (marker !== 0x7E/* ~ */) { return false; }
+  if (silent) { return false; } // don't run any pairs in validation mode
+
+  res = scanDelims(state, start);
+  startCount = res.delims;
+  if (!res.can_open) {
+    state.pos += startCount;
+    if (!silent) { state.pending += state.src.slice(start, state.pos); }
     return true;
   }
 
-  state.pos = start + 2;
-  stack = 1;
+  if (state.level >= state.options.maxNesting) { return false; }
+  stack = Math.floor(startCount / 2);
+  if (stack <= 0) { return false; }
+  state.pos = start + startCount;
 
-  while (state.pos + 1 < max) {
-    if (state.src.charCodeAt(state.pos) === 0x7E/* ~ */) {
-      if (state.src.charCodeAt(state.pos + 1) === 0x7E/* ~ */) {
-        lastChar = state.src.charCodeAt(state.pos - 1);
-        nextChar = state.pos + 2 < max ? state.src.charCodeAt(state.pos + 2) : -1;
-        if (nextChar !== 0x7E/* ~ */ && lastChar !== 0x7E/* ~ */) {
-          if (lastChar !== 0x20 && lastChar !== 0x0A) {
-            // closing '~~'
-            stack--;
-          } else if (nextChar !== 0x20 && nextChar !== 0x0A) {
-            // opening '~~'
-            stack++;
-          } // else {
-            //  // standalone ' ~~ ' indented with spaces
-            // }
-          if (stack <= 0) {
-            found = true;
-            break;
-          }
+  while (state.pos < max) {
+    if (state.src.charCodeAt(state.pos) === marker) {
+      res = scanDelims(state, state.pos);
+      count = res.delims;
+      tagCount = Math.floor(count / 2);
+      if (res.can_close) {
+        if (tagCount >= stack) {
+          state.pos += count - 2;
+          found = true;
+          break;
         }
+        stack -= tagCount;
+        state.pos += count;
+        continue;
       }
+
+      if (res.can_open) { stack += tagCount; }
+      state.pos += count;
+      continue;
     }
 
     state.parser.skipToken(state);
@@ -6423,7 +7025,7 @@ module.exports = function del(state, silent) {
   return true;
 };
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 // Process *this* and _that_
 
 'use strict';
@@ -6450,21 +7052,16 @@ function scanDelims(state, start) {
   if (pos >= max) { can_open = false; }
   count = pos - start;
 
-  if (count >= 4) {
-    // sequence of four or more unescaped markers can't start/end an emphasis
-    can_open = can_close = false;
-  } else {
-    nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
+  nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
 
-    // check whitespace conditions
-    if (nextChar === 0x20 || nextChar === 0x0A) { can_open = false; }
-    if (lastChar === 0x20 || lastChar === 0x0A) { can_close = false; }
+  // check whitespace conditions
+  if (nextChar === 0x20 || nextChar === 0x0A) { can_open = false; }
+  if (lastChar === 0x20 || lastChar === 0x0A) { can_close = false; }
 
-    if (marker === 0x5F /* _ */) {
-      // check if we aren't inside the word
-      if (isAlphaNum(lastChar)) { can_open = false; }
-      if (isAlphaNum(nextChar)) { can_close = false; }
-    }
+  if (marker === 0x5F /* _ */) {
+    // check if we aren't inside the word
+    if (isAlphaNum(lastChar)) { can_open = false; }
+    if (isAlphaNum(nextChar)) { can_close = false; }
   }
 
   return {
@@ -6552,19 +7149,17 @@ module.exports = function emphasis(state, silent) {
   state.pos = start + startCount;
 
   if (!silent) {
-    if (startCount === 2 || startCount === 3) {
+    // we have `startCount` starting and ending markers,
+    // now trying to serialize them into tokens
+    for (count = startCount; count > 1; count -= 2) {
       state.push({ type: 'strong_open', level: state.level++ });
     }
-    if (startCount === 1 || startCount === 3) {
-      state.push({ type: 'em_open', level: state.level++ });
-    }
+    if (count % 2) { state.push({ type: 'em_open', level: state.level++ }); }
 
     state.parser.tokenize(state);
 
-    if (startCount === 1 || startCount === 3) {
-      state.push({ type: 'em_close', level: --state.level });
-    }
-    if (startCount === 2 || startCount === 3) {
+    if (count % 2) { state.push({ type: 'em_close', level: --state.level }); }
+    for (count = startCount; count > 1; count -= 2) {
       state.push({ type: 'strong_close', level: --state.level });
     }
   }
@@ -6574,7 +7169,7 @@ module.exports = function emphasis(state, silent) {
   return true;
 };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 // Process html entity - &#123;, &#xAF;, &quot;, ...
 
 'use strict';
@@ -6624,7 +7219,7 @@ module.exports = function entity(state, silent) {
   return true;
 };
 
-},{"../common/entities":1,"../common/utils":5}],47:[function(require,module,exports){
+},{"../common/entities":1,"../common/utils":5}],48:[function(require,module,exports){
 // Proceess escaped chars and hardbreaks
 
 'use strict';
@@ -6675,7 +7270,7 @@ module.exports = function escape(state, silent) {
   return true;
 };
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 // Process inline footnotes (^[...])
 
 'use strict';
@@ -6718,11 +7313,9 @@ module.exports = function footnote_inline(state, silent) {
       id: footnoteId,
       level: state.level
     });
-    state.linkLevel++;
     oldLength = state.tokens.length;
     state.parser.tokenize(state);
     state.env.footnotes.list[footnoteId] = { tokens: state.tokens.splice(oldLength) };
-    state.linkLevel--;
   }
 
   state.pos = labelEnd + 1;
@@ -6730,7 +7323,7 @@ module.exports = function footnote_inline(state, silent) {
   return true;
 };
 
-},{"../helpers/parse_link_label":9}],49:[function(require,module,exports){
+},{"../helpers/parse_link_label":9}],50:[function(require,module,exports){
 // Process footnote references ([^...])
 
 'use strict';
@@ -6794,7 +7387,7 @@ module.exports = function footnote_ref(state, silent) {
   return true;
 };
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 // Process html tags
 
 'use strict';
@@ -6845,66 +7438,84 @@ module.exports = function htmltag(state, silent) {
   return true;
 };
 
-},{"../common/html_re":3}],51:[function(require,module,exports){
-// Process ++inserted text++
-
+},{"../common/html_re":3}],52:[function(require,module,exports){
 'use strict';
 
-module.exports = function ins(state, silent) {
-  var found,
-      pos,
-      stack,
-      max = state.posMax,
-      start = state.pos,
-      lastChar,
-      nextChar;
 
-  if (state.src.charCodeAt(start) !== 0x2B/* + */) { return false; }
-  if (silent) { return false; } // don't run any pairs in validation mode
-  if (start + 4 >= max) { return false; }
-  if (state.src.charCodeAt(start + 1) !== 0x2B/* + */) { return false; }
-  if (state.level >= state.options.maxNesting) { return false; }
+// parse sequence of markers,
+// "start" should point at a valid marker
+function scanDelims(state, start) {
+  var pos = start, lastChar, nextChar, count,
+      can_open = true,
+      can_close = true,
+      max = state.posMax,
+      marker = state.src.charCodeAt(start);
 
   lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
-  nextChar = state.src.charCodeAt(start + 2);
 
-  if (lastChar === 0x2B/* + */) { return false; }
-  if (nextChar === 0x2B/* + */) { return false; }
-  if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
+  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
+  if (pos >= max) { can_open = false; }
+  count = pos - start;
 
-  pos = start + 2;
-  while (pos < max && state.src.charCodeAt(pos) === 0x2B/* + */) { pos++; }
-  if (pos !== start + 2) {
-    // sequence of 3+ markers taking as literal, same as in a emphasis
-    state.pos += pos - start;
-    if (!silent) { state.pending += state.src.slice(start, pos); }
+  nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
+
+  // check whitespace conditions
+  if (nextChar === 0x20 || nextChar === 0x0A) { can_open = false; }
+  if (lastChar === 0x20 || lastChar === 0x0A) { can_close = false; }
+
+  return {
+    can_open: can_open,
+    can_close: can_close,
+    delims: count
+  };
+}
+
+module.exports = function(state, silent) {
+  var startCount,
+      count,
+      tagCount,
+      found,
+      stack,
+      res,
+      max = state.posMax,
+      start = state.pos,
+      marker = state.src.charCodeAt(start);
+
+  if (marker !== 0x2B/* + */) { return false; }
+  if (silent) { return false; } // don't run any pairs in validation mode
+
+  res = scanDelims(state, start);
+  startCount = res.delims;
+  if (!res.can_open) {
+    state.pos += startCount;
+    if (!silent) { state.pending += state.src.slice(start, state.pos); }
     return true;
   }
 
-  state.pos = start + 2;
-  stack = 1;
+  if (state.level >= state.options.maxNesting) { return false; }
+  stack = Math.floor(startCount / 2);
+  if (stack <= 0) { return false; }
+  state.pos = start + startCount;
 
-  while (state.pos + 1 < max) {
-    if (state.src.charCodeAt(state.pos) === 0x2B/* + */) {
-      if (state.src.charCodeAt(state.pos + 1) === 0x2B/* + */) {
-        lastChar = state.src.charCodeAt(state.pos - 1);
-        nextChar = state.pos + 2 < max ? state.src.charCodeAt(state.pos + 2) : -1;
-        if (nextChar !== 0x2B/* + */ && lastChar !== 0x2B/* + */) {
-          if (lastChar !== 0x20 && lastChar !== 0x0A) {
-            // closing '++'
-            stack--;
-          } else if (nextChar !== 0x20 && nextChar !== 0x0A) {
-            // opening '++'
-            stack++;
-          } // else {
-            //  // standalone ' ++ ' indented with spaces
-            // }
-          if (stack <= 0) {
-            found = true;
-            break;
-          }
+  while (state.pos < max) {
+    if (state.src.charCodeAt(state.pos) === marker) {
+      res = scanDelims(state, state.pos);
+      count = res.delims;
+      tagCount = Math.floor(count / 2);
+      if (res.can_close) {
+        if (tagCount >= stack) {
+          state.pos += count - 2;
+          found = true;
+          break;
         }
+        stack -= tagCount;
+        state.pos += count;
+        continue;
       }
+
+      if (res.can_open) { stack += tagCount; }
+      state.pos += count;
+      continue;
     }
 
     state.parser.skipToken(state);
@@ -6931,7 +7542,7 @@ module.exports = function ins(state, silent) {
   return true;
 };
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 // Process [links](<to> "stuff")
 
 'use strict';
@@ -6940,17 +7551,19 @@ var parseLinkLabel       = require('../helpers/parse_link_label');
 var parseLinkDestination = require('../helpers/parse_link_destination');
 var parseLinkTitle       = require('../helpers/parse_link_title');
 var normalizeReference   = require('../helpers/normalize_reference');
+var StateInline          = require('../rules_inline/state_inline');
 
 
 module.exports = function links(state, silent) {
-  var labelStart,
-      labelEnd,
-      label,
+  var code,
       href,
-      title,
+      label,
+      labelEnd,
+      labelStart,
       pos,
       ref,
-      code,
+      title,
+      tokens,
       isImage = false,
       oldPos = state.pos,
       max = state.posMax,
@@ -6966,7 +7579,7 @@ module.exports = function links(state, silent) {
   if (state.level >= state.options.maxNesting) { return false; }
 
   labelStart = start + 1;
-  labelEnd = parseLinkLabel(state, start);
+  labelEnd = parseLinkLabel(state, start, !isImage);
 
   // parser failed to find ']', so it's not a valid link
   if (labelEnd < 0) { return false; }
@@ -7029,9 +7642,7 @@ module.exports = function links(state, silent) {
     //
     // Link reference
     //
-
-    // do not allow nested reference links
-    if (state.linkLevel > 0) { return false; }
+    if (typeof state.env.references === 'undefined') { return false; }
 
     // [foo]  [bar]
     //      ^^ optional whitespace (can include newlines)
@@ -7046,8 +7657,10 @@ module.exports = function links(state, silent) {
       if (pos >= 0) {
         label = state.src.slice(start, pos++);
       } else {
-        pos = start - 1;
+        pos = labelEnd + 1;
       }
+    } else {
+      pos = labelEnd + 1;
     }
 
     // covers label === '' and label === undefined
@@ -7072,11 +7685,20 @@ module.exports = function links(state, silent) {
     state.posMax = labelEnd;
 
     if (isImage) {
+      var newState = new StateInline(
+        state.src.slice(labelStart, labelEnd),
+        state.parser,
+        state.options,
+        state.env,
+        tokens = []
+      );
+      newState.parser.tokenize(newState);
+
       state.push({
         type: 'image',
         src: href,
         title: title,
-        alt: state.src.substr(labelStart, labelEnd - labelStart),
+        tokens: tokens,
         level: state.level
       });
     } else {
@@ -7086,9 +7708,7 @@ module.exports = function links(state, silent) {
         title: title,
         level: state.level++
       });
-      state.linkLevel++;
       state.parser.tokenize(state);
-      state.linkLevel--;
       state.push({ type: 'link_close', level: --state.level });
     }
   }
@@ -7098,66 +7718,84 @@ module.exports = function links(state, silent) {
   return true;
 };
 
-},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_label":9,"../helpers/parse_link_title":10}],53:[function(require,module,exports){
-// Process ==highlighted text==
-
+},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_label":9,"../helpers/parse_link_title":10,"../rules_inline/state_inline":56}],54:[function(require,module,exports){
 'use strict';
 
-module.exports = function del(state, silent) {
-  var found,
-      pos,
-      stack,
-      max = state.posMax,
-      start = state.pos,
-      lastChar,
-      nextChar;
 
-  if (state.src.charCodeAt(start) !== 0x3D/* = */) { return false; }
-  if (silent) { return false; } // don't run any pairs in validation mode
-  if (start + 4 >= max) { return false; }
-  if (state.src.charCodeAt(start + 1) !== 0x3D/* = */) { return false; }
-  if (state.level >= state.options.maxNesting) { return false; }
+// parse sequence of markers,
+// "start" should point at a valid marker
+function scanDelims(state, start) {
+  var pos = start, lastChar, nextChar, count,
+      can_open = true,
+      can_close = true,
+      max = state.posMax,
+      marker = state.src.charCodeAt(start);
 
   lastChar = start > 0 ? state.src.charCodeAt(start - 1) : -1;
-  nextChar = state.src.charCodeAt(start + 2);
 
-  if (lastChar === 0x3D/* = */) { return false; }
-  if (nextChar === 0x3D/* = */) { return false; }
-  if (nextChar === 0x20 || nextChar === 0x0A) { return false; }
+  while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
+  if (pos >= max) { can_open = false; }
+  count = pos - start;
 
-  pos = start + 2;
-  while (pos < max && state.src.charCodeAt(pos) === 0x3D/* = */) { pos++; }
-  if (pos !== start + 2) {
-    // sequence of 3+ markers taking as literal, same as in a emphasis
-    state.pos += pos - start;
-    if (!silent) { state.pending += state.src.slice(start, pos); }
+  nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
+
+  // check whitespace conditions
+  if (nextChar === 0x20 || nextChar === 0x0A) { can_open = false; }
+  if (lastChar === 0x20 || lastChar === 0x0A) { can_close = false; }
+
+  return {
+    can_open: can_open,
+    can_close: can_close,
+    delims: count
+  };
+}
+
+module.exports = function(state, silent) {
+  var startCount,
+      count,
+      tagCount,
+      found,
+      stack,
+      res,
+      max = state.posMax,
+      start = state.pos,
+      marker = state.src.charCodeAt(start);
+
+  if (marker !== 0x3D/* = */) { return false; }
+  if (silent) { return false; } // don't run any pairs in validation mode
+
+  res = scanDelims(state, start);
+  startCount = res.delims;
+  if (!res.can_open) {
+    state.pos += startCount;
+    if (!silent) { state.pending += state.src.slice(start, state.pos); }
     return true;
   }
 
-  state.pos = start + 2;
-  stack = 1;
+  if (state.level >= state.options.maxNesting) { return false; }
+  stack = Math.floor(startCount / 2);
+  if (stack <= 0) { return false; }
+  state.pos = start + startCount;
 
-  while (state.pos + 1 < max) {
-    if (state.src.charCodeAt(state.pos) === 0x3D/* = */) {
-      if (state.src.charCodeAt(state.pos + 1) === 0x3D/* = */) {
-        lastChar = state.src.charCodeAt(state.pos - 1);
-        nextChar = state.pos + 2 < max ? state.src.charCodeAt(state.pos + 2) : -1;
-        if (nextChar !== 0x3D/* = */ && lastChar !== 0x3D/* = */) {
-          if (lastChar !== 0x20 && lastChar !== 0x0A) {
-            // closing '=='
-            stack--;
-          } else if (nextChar !== 0x20 && nextChar !== 0x0A) {
-            // opening '=='
-            stack++;
-          } // else {
-            //  // standalone ' == ' indented with spaces
-            // }
-          if (stack <= 0) {
-            found = true;
-            break;
-          }
+  while (state.pos < max) {
+    if (state.src.charCodeAt(state.pos) === marker) {
+      res = scanDelims(state, state.pos);
+      count = res.delims;
+      tagCount = Math.floor(count / 2);
+      if (res.can_close) {
+        if (tagCount >= stack) {
+          state.pos += count - 2;
+          found = true;
+          break;
         }
+        stack -= tagCount;
+        state.pos += count;
+        continue;
       }
+
+      if (res.can_open) { stack += tagCount; }
+      state.pos += count;
+      continue;
     }
 
     state.parser.skipToken(state);
@@ -7184,7 +7822,7 @@ module.exports = function del(state, silent) {
   return true;
 };
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 // Proceess '\n'
 
 'use strict';
@@ -7234,7 +7872,7 @@ module.exports = function newline(state, silent) {
   return true;
 };
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 // Inline parser state
 
 'use strict';
@@ -7256,13 +7894,6 @@ function StateInline(src, parserInline, options, env, outTokens) {
                           // optimization of pairs parse (emphasis, strikes).
 
   // Link parser state vars
-
-  this.isInLabel = false; // Set true when seek link label - we should disable
-                          // "paired" rules (emphasis, strikes) to not skip
-                          // tailing `]`
-
-  this.linkLevel = 0;     // Increment for each nesting link. Used to prevent
-                          // nesting in definitions
 
   this.linkContent = '';  // Temporary storage for link url
 
@@ -7318,7 +7949,7 @@ StateInline.prototype.cacheGet = function (key) {
 
 module.exports = StateInline;
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 // Process ~subscript~
 
 'use strict';
@@ -7378,7 +8009,7 @@ module.exports = function sub(state, silent) {
   return true;
 };
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 // Process ^superscript^
 
 'use strict';
@@ -7438,7 +8069,7 @@ module.exports = function sup(state, silent) {
   return true;
 };
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 // Skip text characters for text token, place those to pending buffer
 // and increment current pos
 
@@ -7493,7 +8124,7 @@ module.exports = function text(state, silent) {
   return true;
 };
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -9490,11 +10121,11 @@ module.exports = function text(state, silent) {
 
 }));
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 
 module.exports = require('./lib/');
 
-},{"./lib/":11}]},{},[60])(60)
+},{"./lib/":11}]},{},[61])(61)
 });
