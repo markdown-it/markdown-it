@@ -1,10 +1,11 @@
-2.x.x / WIP
+2.2.0 / 2014-12-28
 ------------------
 
-- Updated CM spec conformance to v0.13 (partially).
+- Updated CM spec conformance to v0.13.
 - API docs.
 - Added 'zero' preset.
-- Fixed block termination check when rules are disabled.
+- Fixed several crashes, when some basic rules are disabled
+  (block termination check, references check).
 
 
 2.1.3 / 2014-12-24
