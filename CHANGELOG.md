@@ -1,3 +1,11 @@
+2.2.1 / 2014-12-29
+------------------
+
+- Added development info.
+- Fixed line breaks in definitions lists.
+- .use() now pass any number of params to plugins.
+
+
 2.2.0 / 2014-12-28
 ------------------
 
