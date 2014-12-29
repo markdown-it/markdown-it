@@ -1,4 +1,4 @@
-/*! markdown-it 2.2.0 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 2.2.1 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -3131,8 +3131,9 @@ MarkdownIt.prototype.disable = function (list) {
  *             .use(require('makkdown-it-emoji'));
  * ```
  **/
-MarkdownIt.prototype.use = function (plugin, options) {
-  plugin(this, options);
+MarkdownIt.prototype.use = function (plugin /*, options, ... */) {
+  var args = [ this ].concat(Array.prototype.slice.call(arguments, 1));
+  plugin.apply(plugin, args);
   return this;
 };
 
@@ -3963,7 +3964,7 @@ rules.paragraph_close = function (tokens, idx /*, options, env */) {
     if (!tokens[idx - 1].content) {
       return '';
     }
-    if (tokens[idx + 1].type === 'list_item_close') {
+    if (tokens[idx + 1].type.slice(-5) === 'close') {
       return '';
     }
     return '\n';
@@ -3974,7 +3975,8 @@ rules.paragraph_close = function (tokens, idx /*, options, env */) {
 
 rules.link_open = function (tokens, idx /*, options, env */) {
   var title = tokens[idx].title ? (' title="' + escapeHtml(replaceEntities(tokens[idx].title)) + '"') : '';
-  return '<a href="' + escapeHtml(tokens[idx].href) + '"' + title + '>';
+  var target = tokens[idx].target ? (' target="' + escapeHtml(tokens[idx].target) + '"') : '';
+  return '<a href="' + escapeHtml(tokens[idx].href) + '"' + title + target + '>';
 };
 rules.link_close = function (/* tokens, idx, options, env */) {
   return '</a>';
@@ -6463,6 +6465,7 @@ module.exports = function linkify(state) {
           nodes.push({
             type: 'link_open',
             href: links[ln].url,
+            target: '',
             title: '',
             level: level++
           });
@@ -6829,6 +6832,7 @@ module.exports = function autolink(state, silent) {
       state.push({
         type: 'link_open',
         href: fullUrl,
+        target: '',
         level: state.level
       });
       state.push({
@@ -6856,6 +6860,7 @@ module.exports = function autolink(state, silent) {
       state.push({
         type: 'link_open',
         href: fullUrl,
+        target: '',
         level: state.level
       });
       state.push({
@@ -7705,6 +7710,7 @@ module.exports = function links(state, silent) {
       state.push({
         type: 'link_open',
         href: href,
+        target: '',
         title: title,
         level: state.level++
       });
