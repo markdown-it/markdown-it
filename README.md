@@ -40,8 +40,12 @@ bower install markdown-it --save
 
 ## Usage examples
 
-See __[API documentation](https://markdown-it.github.io/markdown-it/)__ for more
-info and examples.
+See also:
+
+- __[API documentation](https://markdown-it.github.io/markdown-it/)__ - for more
+  info and examples.
+- [Development info](https://github.com/markdown-it/markdown-it/tree/master/docs) -
+  for plugins writers.
 
 
 ### Simple
@@ -151,6 +155,9 @@ var md = require('markdown-it')({
 ## API
 
 [API documentation](https://markdown-it.github.io/markdown-it/)
+
+If you are going to write plugins - take a look at
+[Development info](https://github.com/markdown-it/markdown-it/tree/master/docs).
 
 
 ## Syntax extensions

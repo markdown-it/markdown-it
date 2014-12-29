@@ -9,14 +9,15 @@ Prior to continue, make sure you've readed:
 
 ## General considerations for plugins.
 
-1. Try to understand, where your plugin rule sould be located
+1. Try to understand, where your plugin rule sould be located.
   - Will it conflict with existing markup (by priority)?
     - If yes - you need to write inline or block rule.
     - If no - you can morth tokens in core chain.
   - Remember, that tokens morphing in core is always more simple than writing
-    block / inline rules. However, block / inline rules are usually faster
+    block / inline rules (if you don't copy existing one). However,
+    block & inline rules are usually faster.
   - Sometime it's enougth to modify renderer only (for example, to add
-    header IDs or target=_blank for the links)
+    header IDs or `target="_blank"` for the links).
 2. Search existing [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
    or [rules](https://github.com/markdown-it/markdown-it/tree/master/lib),
    doing something similar. It can me more simple to modify existing code,
@@ -39,6 +40,7 @@ To simplify search:
 
 ## FAQ
 
+
 #### I need async rule, how to do it?
 
 Sorry. You can't do it directly. All complex parsers are sync by nature. But you
@@ -47,4 +49,18 @@ can use workarounds:
 1. On parse phase, replace content by random number and store it in `env`.
 2. Do async processing over collected data.
 3. Render content and replace those random numbers with text
-   (or replace first, then render)
+   (or replace first, then render).
+
+Or you can render html, then parse is to DOM (or
+[cheerio](https://github.com/cheeriojs/cheerio) AST) and apply transformations
+in more convenient way.
+
+
+#### How to replace part of text token with link?
+
+Righ sequence is to split text to several tokens and add link tokens between.
+Result will be: `text` + `link_open` + `text` + `link_close` + `text`.
+
+See implementations of [linkify](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/linkify.js) & [emoji](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/replace.js) - those do similar things.
+
+__Note.__ Don't try to replace text with html markup! That's not secure.

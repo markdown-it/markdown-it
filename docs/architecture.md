@@ -2,8 +2,8 @@
 
 ## Data flow
 
-Parse process is unified as much as possible. Input data is piped via nestesd
-chains of rules. There are 3 "main" chains (core / block / inline):
+Input data is piped via nestesd chains of rules. There are 3 nested chains -
+`core`, `block` & `inline`:
 
 ```
 core
@@ -44,41 +44,43 @@ data and protect code from clutter.
 ## Token stream
 
 Instead of traditional AST we use more low-level data representation - tokens.
-Difference is very simple.
+Difference is simple:
 
-- tokens are sequence (Array)
-- opening and closing tags are separate tokens
-- there are special token object, "inline containers", having nested token
-  sequences with inline markup (bold, italic, text)
+- Tokens are sequence (Array).
+- Opening and closing tags are separate tokens.
+- There are special token object, "inline containers", having nested token
+  sequences with inline markup (bold, italic, text, ...).
 
-Each token has 2 mandatory fields:
+Each token has common fields:
 
 - __type__ - token name.
-- __level__ - nesting level, useful to seek matched pair.
+- __level__ - nesting level, useful to seek closeing pair.
 - __lines__ - [begin, end], for block tokens only. Range of input lines,
-  compiled to this token
+  compiled to this token.
 
 Inline container (`type === "inline"`) has additional properties:
 
 - __content__ - raw text, unparsed inline content.
 - __children__ - token stream for parsed content.
 
-See [renderer source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
-for available tokens and those properties. Currently there are no special
-requirements on tokens naming and additional fields.
-
 In total, token stream is:
 
-- Array of paired or single "block" tokens, on top level:
-  - open/close for headers, lists, blockquotes paragraphs
+- On the top level - array of paired or single "block" tokens:
+  - open/close for headers, lists, blockquotes, paragraphs, ...
   - codes, fenced blocks, horisontal rules, html blocks, inlines containers
-- Inline containers have "substream" Array with inline tags:
+- Each inline containers have `.children` property with token stream for inline content:
   - open/close for strong, em, link, code, ...
   - text, line breaks
 
 Why not AST? Because it's not needed for our tasks. We follow KISS principle.
-If you whish - you can call parser withour renderer and convert token stream
+If you whish - you can call parser without renderer and convert token stream
 to AST.
+
+Where to search more details about tokens:
+
+- [Renderer source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
+- [Live demo](https://markdown-it.github.io/) - type your text ant click `debug` tab.
+
 
 ## Parse process
 
