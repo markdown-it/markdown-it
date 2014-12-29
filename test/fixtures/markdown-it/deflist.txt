@@ -58,13 +58,10 @@ Term 2
 .
 <dl>
 <dt>Term 1</dt>
-<dd>Definition 1
-</dd>
+<dd>Definition 1</dd>
 <dt>Term 2</dt>
-<dd>Definition 2a
-</dd>
-<dd>Definition 2b
-</dd>
+<dd>Definition 2a</dd>
+<dd>Definition 2b</dd>
 </dl>
 .
 
@@ -79,8 +76,7 @@ Term 2
 .
 <dl>
 <dt>Term 1</dt>
-<dd>paragraph
-</dd>
+<dd>paragraph</dd>
 <dt>Term 2</dt>
 <dd><pre><code>code block
 </code></pre>
@@ -129,16 +125,13 @@ test
 <dt>foo</dt>
 <dd><dl>
 <dt>bar</dt>
-<dd>baz
-</dd>
+<dd>baz</dd>
 </dl>
 </dd>
-<dd>bar
-</dd>
+<dd>bar</dd>
 </dl>
 </dd>
-<dd>foo
-</dd>
+<dd>foo</dd>
 </dl>
 .
 
