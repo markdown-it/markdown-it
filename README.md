@@ -2,7 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis/markdown-it/markdown-it/master.svg?style=flat)](https://travis-ci.org/markdown-it/markdown-it)
 [![NPM version](https://img.shields.io/npm/v/markdown-it.svg?style=flat)](https://www.npmjs.org/package/markdown-it)
-[![Coverage Status](https://img.shields.io/coveralls/markdown-it/markdown-it/master.svg?style=flat)](https://coveralls.io/r/markdown-it/markdown-it?branch=dev)
+[![Coverage Status](https://img.shields.io/coveralls/markdown-it/markdown-it/master.svg?style=flat)](https://coveralls.io/r/markdown-it/markdown-it)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/markdown-it/markdown-it)
 
 > Markdown parser done right. Fast and easy to extend.
 
