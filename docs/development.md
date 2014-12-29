@@ -1,0 +1,50 @@
+# Development recommendations
+
+Prior to continue, make sure you've readed:
+
+1. [README](https://github.com/markdown-it/markdown-it#markdown-it)
+2. [API documentation](https://markdown-it.github.io/markdown-it/)
+3. [Architecture description](architecture.md)
+
+
+## General considerations for plugins.
+
+1. Try to understand, where your plugin rule sould be located
+  - Will it conflict with existing markup (by priority)?
+    - If yes - you need to write inline or block rule.
+    - If no - you can morth tokens in core chain.
+  - Remember, that tokens morphing in core is always more simple than writing
+    block / inline rules. However, block / inline rules are usually faster
+  - Sometime it's enougth to modify renderer only (for example, to add
+    header IDs or target=_blank for the links)
+2. Search existing [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
+   or [rules](https://github.com/markdown-it/markdown-it/tree/master/lib),
+   doing something similar. It can me more simple to modify existing code,
+   instead of writing from scratch.
+3. If you did all steps above, but still has questions - ask in
+   [tracker](https://github.com/markdown-it/markdown-it/issues). But, please:
+   - Be specific. Generic questions like "how to do plugins" and
+     "how to learn programming" are not accepted.
+   - Don't ask us to break [CommonMark](http://commonmark.org/) specification.
+     Such things should be discussed first on [CommonMark forum](http://talk.commonmark.org/).
+
+
+## Notes for NPM packages
+
+To simplify search:
+
+- add to `package.json` keyswords `markdown-it` and `markdown-it-plugin` for plugins
+- add keyword `markdown-it` for any other related packages.
+
+
+## FAQ
+
+#### I need async rule, how to do it?
+
+Sorry. You can't do it directly. All complex parsers are sync by nature. But you
+can use workarounds:
+
+1. On parse phase, replace content by random number and store it in `env`.
+2. Do async processing over collected data.
+3. Render content and replace those random numbers with text
+   (or replace first, then render)
