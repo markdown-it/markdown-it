@@ -18,7 +18,8 @@ Prior to continue, make sure you've readed:
     block & inline rules are usually faster.
   - Sometime it's enougth to modify renderer only (for example, to add
     header IDs or `target="_blank"` for the links).
-2. Search existing [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
+2. Search existing
+   [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
    or [rules](https://github.com/markdown-it/markdown-it/tree/master/lib),
    doing something similar. It can me more simple to modify existing code,
    instead of writing from scratch.
@@ -61,6 +62,24 @@ in more convenient way.
 Righ sequence is to split text to several tokens and add link tokens between.
 Result will be: `text` + `link_open` + `text` + `link_close` + `text`.
 
-See implementations of [linkify](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/linkify.js) & [emoji](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/replace.js) - those do similar things.
+See implementations of [linkify](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/linkify.js) & [emoji](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/replace.js) - those do text token splits.
 
 __Note.__ Don't try to replace text with html markup! That's not secure.
+
+
+#### Why my inline rule is not executed?
+
+Inline parser skips porsion of texts for the best speed. It stops only on [small set of chars](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_inline/text.js), which can be tokens. We did not made this list extendable, also for performance reasons.
+
+If you are absolutely sure, that something important is missed there - create a
+ticket and we will add new charcodes.
+
+
+#### Why do you reject to accept some useful things?
+
+We do markdown parser. It should keep "markdown spirit". Other things should
+be kept separate (in plugins, for example). We have no clear criteria, sorry.
+Probably, you will find useful to read [CommonMark forum](http://talk.commonmark.org/) to understand us better.
+
+Of cause, if you find architecture of this parser interesting for another type
+of markup - you are welcome to reuse it in another project.

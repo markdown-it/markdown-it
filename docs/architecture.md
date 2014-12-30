@@ -82,6 +82,26 @@ Where to search more details about tokens:
 - [Live demo](https://markdown-it.github.io/) - type your text ant click `debug` tab.
 
 
+## Rules
+
+Rules are functions, doing "magick" with parser `state` objects. Each rule is
+registered in one of chain with unique name.
+
+Rules are managed by names via [Ruler](https://markdown-it.github.io/markdown-it/#Ruler) instances and `enable` / `disable` methods in [MarkdownIt](https://markdown-it.github.io/markdown-it/#MarkdownIt).
+
+You can note, that some rules have "validation mode" - in this mode rule does not
+modify token stream, and only search end of token. It's one of important design principle - token stream is "write only" on block & inline parse stages.
+
+Parser is designed to keep rules independent. You can safely disable any, or
+add new one. There are no universal recipes how to create new rules - design of
+distributed state machines with good data isolation is tricky business. But you
+can investigate existing rules & plugins to see possible approaches.
+
+Also, in complex cases you can try to ask for help in tracker. Condition is very
+simple - it should be clear from your ticket, that you studied docs, sources,
+and tryed to do something yourself. We never reject with help to real developpers.
+
+
 ## Parse process
 
 This was mentioned in [Data flow](#data-flow), but let's repeat sequence again:
