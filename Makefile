@@ -106,5 +106,5 @@ todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
 
-.PHONY: publish lint test gh-pages todo demo coverage doc
+.PHONY: publish lint test todo demo coverage doc
 .SILENT: help lint test todo
