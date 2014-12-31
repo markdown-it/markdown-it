@@ -123,10 +123,10 @@ For example, let's replace images with vimeo links to player's iframe:
 ```js
 var md = require('markdown-it')();
 
-var defaultRender = md.renderer.image,
+var defaultRender = md.renderer.rules.image,
     vimeoRE       = /^https?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
 
-md.renderer.image = function (tokens, idx, options, env, self) {
+md.renderer.rules.image = function (tokens, idx, options, env, self) {
   var id;
 
   if (vimeoRE.test(tokens[idx].href)) {
