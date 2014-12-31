@@ -236,23 +236,3 @@ describe('Links validation', function () {
   });
 
 });
-
-
-describe('Custom fences', function () {
-
-  it('should render differently overriden rule', function () {
-    var md = markdownit();
-
-    md.renderer.rules.fence_custom.foo = function (tokens, idx /*, options, env */) {
-      return '<div class="foo">' +
-             md.utils.escapeHtml(tokens[idx].content) +
-             '</div>\n';
-    };
-
-    var text = '```foo bar\n' +
-               '123&45\n' +
-               '```';
-    assert.strictEqual(md.render(text), '<div class="foo">123&amp;45\n</div>\n');
-  });
-
-});
