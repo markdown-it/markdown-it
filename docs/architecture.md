@@ -102,7 +102,50 @@ simple - it should be clear from your ticket, that you studied docs, sources,
 and tryed to do something yourself. We never reject with help to real developpers.
 
 
-## Parse process
+## Renderer
+
+After token stream is generated, it's passed to [renderer](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js).
+It just plays all tokens, passing each to rule with the same name as token type.
+
+Randerer rules are located in `md.renderer.rules[name]` and are simple functions
+with the same signature:
+
+```js
+function (tokens, idx, options, env, self) {
+  //...
+  return htmlResult;
+}
+```
+
+In many cases that allows easy output change even without parser intrusion.
+For example, let's replace images with vimeo links to player's iframe:
+
+```js
+var md = require('markdown-it')();
+
+var defaultRender = md.renderer.image,
+    vimeoRE       = /^https?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
+
+md.renderer.image = function (tokens, idx, options, env, self) {
+  var id;
+
+  if (vimeoRE.test(tokens[idx].href)) {
+
+    id = tokens[idx].href.match(vimeoRE)[2];
+
+    return '<div class="embed-responsive embed-responsive-16by9">\n' +
+           '  <iframe class="embed-responsive-item" src="//player.vimeo.com/video/' + id + '"></iframe>\n' +
+           '</div>\n';
+  }
+
+  return defaultRender(tokens, idx, options, env, self);
+});
+```
+
+You also can write your own renderer to generate AST for example.
+
+
+## Summary
 
 This was mentioned in [Data flow](#data-flow), but let's repeat sequence again:
 
@@ -116,3 +159,5 @@ of each chain can be seen on the top of
 [parser_block.js](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_block.js) and
 [parser_inline.js](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_inline.js)
 files.
+
+Also you can change output directly in [renderer](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js) for many simple cases.
