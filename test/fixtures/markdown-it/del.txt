@@ -22,11 +22,12 @@ x ~~~~foo~~~~
 <p>x <del><del>foo</del></del></p>
 .
 
-.
-x ~~~foo~~~
-.
-<p>x <del><sub>foo</sub></del></p>
-.
+# Disabled since we moved subsripts to plugins
+#.
+#x ~~~foo~~~
+#.
+#<p>x <del><sub>foo</sub></del></p>
+#.
 
 Strikeouts have the same priority as emphases:
 
