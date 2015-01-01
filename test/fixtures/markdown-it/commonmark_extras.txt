@@ -1,5 +1,4 @@
 Regression tests for link backtracking optimizations:
-
 .
 [[some unrelated text [link]
 
@@ -10,7 +9,6 @@ Regression tests for link backtracking optimizations:
 
 
 This is not a valid emphasis, because \n considered a whitespace:
-
 .
 **test
 **
@@ -33,7 +31,6 @@ test
 
 
 Link label has priority over emphasis (not covered by commonmark tests):
-
 .
 [**link]()**
 
@@ -45,7 +42,6 @@ Link label has priority over emphasis (not covered by commonmark tests):
 
 
 Issue #55:
-
 .
 ![test]
 
@@ -57,7 +53,6 @@ Issue #55:
 
 
 Should unescape only needed things in link destinations/titles:
-
 .
 [test](<\f\o\o\>\\>)
 .
@@ -72,7 +67,6 @@ Should unescape only needed things in link destinations/titles:
 
 
 Not a closing tag
-
 .
 </ 123>
 .
@@ -81,7 +75,6 @@ Not a closing tag
 
 
 Not a list item
-
 .
 1.list
 .
@@ -89,26 +82,15 @@ Not a list item
 .
 
 
-Coverage. Direcctive can terminate paragraph.
-
-.
-a
-<?php
-.
-<p>a</p>
-<?php
-.
-
 Normalize link destination, but not text inside it:
-
 .
 <http://example.com/α%CE%B2γ%CE%B4>
 .
 <p><a href="http://example.com/%CE%B1%CE%B2%CE%B3%CE%B4">http://example.com/α%CE%B2γ%CE%B4</a></p>
 .
 
-Autolinks do not allow escaping:
 
+Autolinks do not allow escaping:
 .
 <http://example.com/\[\>
 .
@@ -117,9 +99,56 @@ Autolinks do not allow escaping:
 
 
 Should not throw exception on mailformed URI
-
 .
 [foo](<&#x25;test>)
 .
 <p><a href="%25test">foo</a></p>
+.
+
+
+Coverage. Directive can terminate paragraph.
+.
+a
+<?php
+.
+<p>a</p>
+<?php
+.
+
+
+Coverage. Nested email autolink (silent mode)
+.
+*<foo@bar.com>*
+.
+<p><em><a href="mailto:foo@bar.com">foo@bar.com</a></em></p>
+.
+
+
+Coverage. Unpaired nested backtick (silent mode)
+.
+*`foo*
+.
+<p><em>`foo</em></p>
+.
+
+
+Coverage. Entities.
+.
+*&*
+
+*&#x20;*
+
+*&amp;*
+.
+<p><em>&amp;</em></p>
+<p><em> </em></p>
+<p><em>&amp;</em></p>
+.
+
+
+Coverage. Escape.
+.
+*\a*
+.
+<p><em>\a</em></p>
 .
