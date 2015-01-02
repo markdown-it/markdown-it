@@ -11,18 +11,6 @@ is maintained by the W3C.
 is maintained by the <abbr title="World Wide Web Consortium">W3C</abbr>.</p>
 .
 
-They can be multiline (see pandoc implementation). Not sure about newlines, but we should at least skip those definitions:
-
-.
-*[
-foo
-bar
-]: desc
-foo
-.
-<p>foo</p>
-.
-
 They can contain arbitrary markup (see pandoc implementation):
 
 .
