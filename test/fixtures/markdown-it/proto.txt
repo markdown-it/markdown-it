@@ -23,14 +23,6 @@
 .
 
 .
-*[__proto__]: blah
-
-__proto__ \_\_proto\_\_
-.
-<p><strong>proto</strong> <abbr title="blah">__proto__</abbr></p>
-.
-
-.
 [hasOwnProperty]
 
 [hasOwnProperty]: blah
@@ -51,12 +43,4 @@ __proto__ \_\_proto\_\_
 </li>
 </ol>
 </section>
-.
-
-.
-*[hasOwnProperty]: blah
-
-hasOwnProperty
-.
-<p><abbr title="blah">hasOwnProperty</abbr></p>
 .
