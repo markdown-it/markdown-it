@@ -55,6 +55,21 @@ JS HTTP is a collection of low-level javascript HTTP-related modules
 <p><abbr title="is awesome">JS HTTP</abbr> is a collection of low-level javascript <abbr title="hyper text blah blah">HTTP</abbr>-related modules</p>
 .
 
+Mixing up abbreviations and references:
+
+.
+*[foo]: 123
+[bar]: 456
+*[baz]: 789
+[quux]: 012
+and a paragraph continuation
+
+foo [bar] baz [quux]
+.
+<p>and a paragraph continuation</p>
+<p><abbr title="123">foo</abbr> <a href="456">bar</a> <abbr title="789">baz</abbr> <a href="012">quux</a></p>
+.
+
 Don't match the middle of the string:
 
 .

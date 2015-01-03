@@ -106,6 +106,25 @@ Should not throw exception on mailformed URI
 .
 
 
+Multiline title in definitions:
+
+.
+[foo]: test '
+1
+2
+3
+'
+
+[foo]
+.
+<p><a href="test" title="
+1
+2
+3
+">foo</a></p>
+.
+
+
 Coverage. Directive can terminate paragraph.
 .
 a
