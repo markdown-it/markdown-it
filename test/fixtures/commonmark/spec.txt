@@ -2,8 +2,9 @@
 title: CommonMark Spec
 author:
 - John MacFarlane
-version: 0.13
-date: 2014-12-10
+version: 0.15
+date: 2014-12-31
+license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
 ...
 
 # Introduction
@@ -128,14 +129,22 @@ questions it does not answer:
       - and it can screw things up`
     ```
 
-11. Can list items include headers?  (`Markdown.pl` does not allow this,
-    but headers can occur in blockquotes.)
+11. Can list items include section headers?  (`Markdown.pl` does not
+    allow this, but does allow blockquotes to include headers.)
 
     ``` markdown
     - # Heading
     ```
 
-12. Can link references be defined inside block quotes or list items?
+12. Can list items be empty?
+
+    ``` markdown
+    * a
+    *
+    * b
+    ```
+
+13. Can link references be defined inside block quotes or list items?
 
     ``` markdown
     > Blockquote [foo].
@@ -143,7 +152,7 @@ questions it does not answer:
     > [foo]: /url
     ```
 
-13. If there are multiple definitions for the same reference, which takes
+14. If there are multiple definitions for the same reference, which takes
     precedence?
 
     ``` markdown
@@ -189,16 +198,60 @@ Markdown, which can then be converted into other formats.
 
 In the examples, the `→` character is used to represent tabs.
 
-# Preprocessing
+# Preliminaries
+
+## Characters and lines
+
+The input is a sequence of zero or more [lines](#line).
 
 A [line](@line)
 is a sequence of zero or more [characters](#character) followed by a
-line ending (CR, LF, or CRLF) or by the end of file.
+[line ending](#line-ending) or by the end of file.
 
 A [character](@character) is a unicode code point.
 This spec does not specify an encoding; it thinks of lines as composed
 of characters rather than bytes.  A conforming parser may be limited
 to a certain encoding.
+
+A [line ending](@line-ending) is, depending on the platform, a
+newline (`U+000A`), carriage return (`U+000D`), or
+carriage return + newline.
+
+For security reasons, a conforming parser must strip or replace the
+Unicode character `U+0000`.
+
+A line containing no characters, or a line containing only spaces
+(`U+0020`) or tabs (`U+0009`), is called a [blank line](@blank-line).
+
+The following definitions of character classes will be used in this spec:
+
+A [whitespace character](@whitespace-character) is a space
+(`U+0020`), tab (`U+0009`), carriage return (`U+000D`), or
+newline (`U+000A`).
+
+[Whitespace](@whitespace) is a sequence of one or more [whitespace
+characters](#whitespace-character).
+
+A [unicode whitespace character](@unicode-whitespace-character) is
+any code point in the unicode `Zs` class, or a tab (`U+0009`),
+carriage return (`U+000D`), newline (`U+000A`), or form feed
+(`U+000C`).
+
+[Unicode whitespace](@unicode-whitespace) is a sequence of one
+or more [unicode whitespace characters](#unicode-whitespace-character).
+
+A [non-space character](@non-space-character) is anything but `U+0020`.
+
+An [ASCII punctuation character](@ascii-punctuation-character)
+is `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`,
+`*`, `+`, `,`, `-`, `.`, `/`, `:`, `;`, `<`, `=`, `>`, `?`, `@`,
+`[`, `\`, `]`, `^`, `_`, `` ` ``, `{`, `|`, `}`, or `~`.
+
+A [punctuation character](@punctuation-character) is an [ASCII
+punctuation character](#ascii-punctuation-character) or anything in
+the unicode classes `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
+
+## Tab expansion
 
 Tabs in lines are expanded to spaces, with a tab stop of 4 characters:
 
@@ -217,14 +270,6 @@ Tabs in lines are expanded to spaces, with a tab stop of 4 characters:
 ὐ   a
 </code></pre>
 .
-
-Line endings are replaced by newline characters (LF).
-
-A line containing no characters, or a line containing only spaces (after
-tab expansion), is called a [blank line](@blank-line).
-
-For security reasons, a conforming parser must strip or replace the
-Unicode character `U+0000`.
 
 # Blocks and inlines
 
@@ -394,7 +439,8 @@ a------
 <p>---a---</p>
 .
 
-It is required that all of the non-space characters be the same.
+It is required that all of the
+[non-space characters](#non-space-character) be the same.
 So, this is not a horizontal rule:
 
 .
@@ -683,13 +729,19 @@ with no more than 3 spaces indentation, followed by a [setext header
 underline](#setext-header-underline).  The line of text must be
 one that, were it not followed by the setext header underline,
 would be interpreted as part of a paragraph:  it cannot be a code
-block, header, blockquote, horizontal rule, or list.  A [setext header
-underline](@setext-header-underline)
-is a sequence of `=` characters or a sequence of `-` characters, with no
-more than 3 spaces indentation and any number of trailing
-spaces.  The header is a level 1 header if `=` characters are used, and
-a level 2 header if `-` characters are used.  The contents of the header
-are the result of parsing the first line as Markdown inline content.
+block, header, blockquote, horizontal rule, or list.
+
+A [setext header underline](@setext-header-underline) is a sequence of
+`=` characters or a sequence of `-` characters, with no more than 3
+spaces indentation and any number of trailing spaces.  If a line
+containing a single `-` can be interpreted as an
+empty [list item](#list-items), it should be interpreted this way
+and not as a [setext header underline](#setext-header-underline).
+
+The header is a level 1 header if `=` characters are used in the
+[setext header underline](#setext-header-underline), and a level 2
+header if `-` characters are used.  The contents of the header are the
+result of parsing the first line as Markdown inline content.
 
 In general, a setext header need not be preceded or followed by a
 blank line.  However, it cannot interrupt a paragraph, so when a
@@ -948,17 +1000,18 @@ use backslash escapes:
 
 ## Indented code blocks
 
-An [indented code block](@indented-code-block)
-is composed of one or more
+An [indented code block](@indented-code-block) is composed of one or more
 [indented chunks](#indented-chunk) separated by blank lines.
-An [indented chunk](@indented-chunk)
-is a sequence of non-blank lines, each indented four or more
-spaces.  An indented code block cannot interrupt a paragraph, so
-if it occurs before or after a paragraph, there must be an
-intervening blank line.  The contents of the code block are
-the literal contents of the lines, including trailing newlines,
-minus four spaces of indentation. An indented code block has no
-attributes.
+An [indented chunk](@indented-chunk) is a sequence of non-blank lines,
+each indented four or more spaces. The contents of the code block are
+the literal contents of the lines, including trailing
+[line endings](#line-ending), minus four spaces of indentation.
+An indented code block has no attributes.
+
+An indented code block cannot interrupt a paragraph, so there must be
+a blank line between a paragraph and a following indented code block.
+(A blank line is not needed, however, between a code block and a following
+paragraph.)
 
 .
     a simple
@@ -1749,19 +1802,19 @@ So there is no important loss of expressive power with the new rule.
 ## Link reference definitions
 
 A [link reference definition](@link-reference-definition)
-consists of a [link
-label](#link-label), indented up to three spaces, followed
-by a colon (`:`), optional blank space (including up to one
-newline), a [link destination](#link-destination), optional
-blank space (including up to one newline), and an optional [link
+consists of a [link label](#link-label), indented up to three spaces, followed
+by a colon (`:`), optional [whitespace](#whitespace) (including up to one
+[line ending](#line-ending)), a [link destination](#link-destination),
+optional [whitespace](#whitespace) (including up to one
+[line ending](#line-ending)), and an optional [link
 title](#link-title), which if it is present must be separated
-from the [link destination](#link-destination) by whitespace.
-No further non-space characters may occur on the line.
+from the [link destination](#link-destination) by [whitespace](#whitespace).
+No further [non-space characters](#non-space-character) may occur on the line.
 
 A [link reference-definition](#link-reference-definition)
 does not correspond to a structural element of a document.  Instead, it
 defines a label which can be used in [reference links](#reference-link)
-and reference-style [images](#image) elsewhere in the document.  [Link
+and reference-style [images](#images) elsewhere in the document.  [Link
 reference definitions] can come either before or after the links that use
 them.
 
@@ -1873,7 +1926,7 @@ It contributes nothing to the document.
 .
 
 This is not a link reference definition, because there are
-non-space characters after the title:
+[non-space characters](#non-space-character) after the title:
 
 .
 [foo]: /url "title" ok
@@ -1937,8 +1990,8 @@ and horizontal rules, and it need not be followed by a blank line.
 </blockquote>
 .
 
-Several [link references](#link-reference) can occur one after another,
-without intervening blank lines.
+Several [link references definitions](#link-reference-definition)
+can occur one after another, without intervening blank lines.
 
 .
 [foo]: /foo-url "foo"
@@ -2132,7 +2185,8 @@ The following rules define [block quotes](@block-quote):
 2.  **Laziness.**  If a string of lines *Ls* constitute a [block
     quote](#block-quote) with contents *Bs*, then the result of deleting
     the initial [block quote marker](#block-quote-marker) from one or
-    more lines in which the next non-space character after the [block
+    more lines in which the next
+    [non-space character](#non-space-character) after the [block
     quote marker](#block-quote-marker) is [paragraph continuation
     text](#paragraph-continuation-text) is a block quote with *Bs* as
     its content.
@@ -2493,7 +2547,8 @@ is a sequence of one of more digits (`0-9`), followed by either a
 The following rules define [list items](@list-item):
 
 1.  **Basic case.**  If a sequence of lines *Ls* constitute a sequence of
-    blocks *Bs* starting with a non-space character and not separated
+    blocks *Bs* starting with a [non-space character](#non-space-character)
+    and not separated
     from each other by more than one blank line, and *M* is a list
     marker *M* of width *W* followed by 0 < *N* < 5 spaces, then the result
     of prepending *M* and the following spaces to the first line of
@@ -2676,6 +2731,15 @@ two blanks are contained in a [fenced code block](#fenced-code-block).
 
   bar
   ```
+
+- baz
+
+  + ```
+    foo
+
+
+    bar
+    ```
 .
 <ul>
 <li>
@@ -2694,6 +2758,18 @@ two blanks are contained in a [fenced code block](#fenced-code-block).
 
 bar
 </code></pre>
+</li>
+<li>
+<p>baz</p>
+<ul>
+<li>
+<pre><code>foo
+
+
+bar
+</code></pre>
+</li>
+</ul>
 </li>
 </ul>
 .
@@ -2872,9 +2948,65 @@ the above case:
 </ul>
 .
 
+3. **Empty list item.**  A [list marker](#list-marker) followed by a
+line containing only [whitespace](#whitespace) is a list item with
+no contents.
 
-3.  **Indentation.**  If a sequence of lines *Ls* constitutes a list item
-    according to rule #1 or #2, then the result of indenting each line
+Here is an empty bullet list item:
+
+.
+- foo
+-
+- bar
+.
+<ul>
+<li>foo</li>
+<li></li>
+<li>bar</li>
+</ul>
+.
+
+It does not matter whether there are spaces following the
+[list marker](#list-marker):
+
+.
+- foo
+-   
+- bar
+.
+<ul>
+<li>foo</li>
+<li></li>
+<li>bar</li>
+</ul>
+.
+
+Here is an empty ordered list item:
+
+.
+1. foo
+2.
+3. bar
+.
+<ol>
+<li>foo</li>
+<li></li>
+<li>bar</li>
+</ol>
+.
+
+A list may start or end with an empty list item:
+
+.
+*
+.
+<ul>
+<li></li>
+</ul>
+.
+
+4.  **Indentation.**  If a sequence of lines *Ls* constitutes a list item
+    according to rule #1, #2, or #3, then the result of indenting each line
     of *L* by 1-3 spaces (the same for each line) also constitutes a
     list item with the same contents and attributes.  If a line is
     empty, then it need not be indented.
@@ -2968,10 +3100,10 @@ Four spaces indent gives a code block:
 .
 
 
-4.  **Laziness.**  If a string of lines *Ls* constitute a [list
+5.  **Laziness.**  If a string of lines *Ls* constitute a [list
     item](#list-item) with contents *Bs*, then the result of deleting
     some or all of the indentation from one or more lines in which the
-    next non-space character after the indentation is
+    next [non-space character](#non-space-character) after the indentation is
     [paragraph continuation text](#paragraph-continuation-text) is a
     list item with the same contents and attributes.  The unindented
     lines are called
@@ -3048,8 +3180,8 @@ continued here.</p>
 .
 
 
-5.  **That's all.** Nothing that is not counted as a list item by rules
-    #1--4 counts as a [list item](#list-item).
+6.  **That's all.** Nothing that is not counted as a list item by rules
+    #1--5 counts as a [list item](#list-item).
 
 The rules for sublists follow from the general rules above.  A sublist
 must be indented the same number of spaces a paragraph would need to be
@@ -3148,28 +3280,6 @@ A list may be the first block in a list item:
 </ol>
 .
 
-A list item may be empty:
-
-.
-- foo
--
-- bar
-.
-<ul>
-<li>foo</li>
-<li></li>
-<li>bar</li>
-</ul>
-.
-
-.
--
-.
-<ul>
-<li></li>
-</ul>
-.
-
 A list item can contain a header:
 
 .
@@ -3248,7 +3358,7 @@ determine the indentation necessary for blocks to fall under the list
 item, rather than having a fixed and arbitrary number.  The writer can
 think of the body of the list item as a unit which gets indented to the
 right enough to fit the list marker (and any indentation on the list
-marker).  (The laziness rule, #4, then allows continuation lines to be
+marker).  (The laziness rule, #5, then allows continuation lines to be
 unindented if needed.)
 
 This rule is superior, we claim, to any rule requiring a fixed level of
@@ -3481,11 +3591,12 @@ blank lines:
 Second, we are attracted to a
 
 > [principle of uniformity](@principle-of-uniformity):
-> if a span of text has a certain
-> meaning, it will continue to have the same meaning when put into a list
-> item.
+> if a chunk of text has a certain
+> meaning, it will continue to have the same meaning when put into a
+> container block (such as a list item or blockquote).
 
-(Indeed, the spec for [list items](#list-item) presupposes this.)
+(Indeed, the spec for [list items](#list-item) and
+[blockquotes](#block-quotes) presupposes this principle.)
 This principle implies that if
 
       * I need to buy
@@ -4055,7 +4166,7 @@ handle the unicode chars and need not be HTML-entity aware.
 
 [Named entities](@name-entities) consist of `&`
 + any of the valid HTML5 entity names + `;`. The
-[following document](http://www.whatwg.org/specs/web-apps/current-work/multipage/entities.json)
+[following document](https://html.spec.whatwg.org/multipage/entities.json)
 is used as an authoritative source of the valid entity names and their
 corresponding codepoints.
 
@@ -4173,11 +4284,11 @@ A [backtick string](@backtick-string)
 is a string of one or more backtick characters (`` ` ``) that is neither
 preceded nor followed by a backtick.
 
-A [code span](@code-span) begins with a backtick string and ends with a backtick
-string of equal length.  The contents of the code span are the
-characters between the two backtick strings, with leading and trailing
-spaces and newlines removed, and consecutive spaces and newlines
-collapsed to single spaces.
+A [code span](@code-span) begins with a backtick string and ends with
+a backtick string of equal length.  The contents of the code span are
+the characters between the two backtick strings, with leading and
+trailing spaces and [line endings](#line-ending) removed, and
+[whitespace](#whitespace) collapsed to single spaces.
 
 This is a simple code span:
 
@@ -4205,7 +4316,7 @@ spaces:
 <p><code>``</code></p>
 .
 
-Newlines are treated like spaces:
+[Line endings](#line-ending) are treated like spaces:
 
 .
 ``
@@ -4215,8 +4326,8 @@ foo
 <p><code>foo</code></p>
 .
 
-Interior spaces and newlines are collapsed into single spaces, just
-as they would be by a browser:
+Interior spaces and [line endings](#line-ending) are collapsed into
+single spaces, just as they would be by a browser:
 
 .
 `foo   bar
@@ -4230,13 +4341,13 @@ anyway?  A:  Because we might be targeting a non-HTML format, and we
 shouldn't rely on HTML-specific rendering assumptions.
 
 (Existing implementations differ in their treatment of internal
-spaces and newlines.  Some, including `Markdown.pl` and
-`showdown`, convert an internal newline into a `<br />` tag.
-But this makes things difficult for those who like to hard-wrap
-their paragraphs, since a line break in the midst of a code
-span will cause an unintended line break in the output.  Others
-just leave internal spaces as they are, which is fine if only
-HTML is being targeted.)
+spaces and [line endings](#line-ending).  Some, including `Markdown.pl` and
+`showdown`, convert an internal [line ending](#line-ending) into a
+`<br />` tag.  But this makes things difficult for those who like to
+hard-wrap their paragraphs, since a line break in the midst of a code
+span will cause an unintended line break in the output.  Others just
+leave internal spaces as they are, which is fine if only HTML is being
+targeted.)
 
 .
 `foo `` bar`
@@ -4350,39 +4461,107 @@ internal emphasis: foo*bar*baz
 no emphasis: foo_bar_baz
 ```
 
-The following rules capture all of these patterns, while allowing
-for efficient parsing strategies that do not backtrack:
+The rules given below capture all of these patterns, while allowing
+for efficient parsing strategies that do not backtrack.
+
+First, some definitions.  A [delimiter run](@delimiter-run) is either
+a sequence of one or more `*` characters that is not preceded or
+followed by a `*` character, or a sequence of one or more `_`
+characters that is not preceded or followed by a `_` character.
+
+A [left-flanking delimiter run](@left-flanking-delimiter-run) is
+a [delimiter run](#delimiter-run) that is (a) not followed by [unicode
+whitespace](#unicode-whitespace), and (b) either not followed by a
+[punctuation character](#punctuation-character), or
+preceded by [unicode whitespace](#unicode-whitespace) or
+a [punctuation character](#punctuation-character).
+
+A [right-flanking delimiter run](@right-flanking-delimiter-run) is
+a [delimiter run](#delimiter-run) that is (a) not preceded by [unicode
+whitespace](#unicode-whitespace), and (b) either not preceded by a
+[punctuation character](#punctuation-character), or
+followed by [unicode whitespace](#unicode-whitespace) or
+a [punctuation character](#punctuation-character).
+
+Here are some examples of delimiter runs.
+
+  - left-flanking but not right-flanking:
+
+    ```
+    ***abc
+      _abc
+    **"abc"
+     _"abc"
+    ```
+
+  - right-flanking but not left-flanking:
+
+    ```
+    abc***
+      abc_
+    "abc"**
+     _"abc"
+    ```
+
+  - Both right and right-flanking:
+
+    ```
+    abc***def
+    "abc"_"def"
+    ```
+
+  - Neither right nor right-flanking:
+
+    ```
+    abc *** def
+    a _ b
+    ```
+
+(The idea of distinguishing left-flanking and right-flanking
+delimiter runs based on the character before and the character
+after comes from Roopesh Chander's
+[vfmd](http://www.vfmd.org/vfmd-spec/specification/#procedure-for-identifying-emphasis-tags).
+vfmd uses the terminology "emphasis indicator string" instead of "delimiter
+run," and its rules for distinguishing left- and right-flanking runs
+are a bit more complex than the ones given here.)
+
+The following rules define emphasis and strong emphasis:
 
 1.  A single `*` character [can open emphasis](@can-open-emphasis)
-    iff it is not followed by
-    whitespace.
+    iff it is part of a
+    [left-flanking delimiter run](#left-flanking-delimiter-run).
 
 2.  A single `_` character [can open emphasis](#can-open-emphasis) iff
-    it is not followed by whitespace and it is not preceded by an
-    ASCII alphanumeric character.
+    it is part of a
+    [left-flanking delimiter run](#left-flanking-delimiter-run)
+    and is not preceded by an ASCII alphanumeric character.
 
 3.  A single `*` character [can close emphasis](@can-close-emphasis)
-    iff it is not preceded by whitespace.
+    iff it is part of a
+    [right-flanking delimiter run](#right-flanking-delimiter-run).
 
-4.  A single `_` character [can close emphasis](#can-close-emphasis) iff
-    it is not preceded by whitespace and it is not followed by an
-    ASCII alphanumeric character.
+4.  A single `_` character [can close emphasis](#can-close-emphasis)
+    iff it is part of a
+    [right-flanking delimiter run](#right-flanking-delimiter-run).
+    and it is not followed by an ASCII alphanumeric character.
 
 5.  A double `**` [can open strong emphasis](@can-open-strong-emphasis)
-    iff it is not followed by
-    whitespace.
+    iff it is part of a
+    [left-flanking delimiter run](#left-flanking-delimiter-run).
 
 6.  A double `__` [can open strong emphasis](#can-open-strong-emphasis)
-    iff it is not followed by whitespace and it is not preceded by an
-    ASCII alphanumeric character.
+    iff it is part of a
+    [left-flanking delimiter run](#left-flanking-delimiter-run)
+    and is not preceded by an ASCII alphanumeric character.
 
 7.  A double `**` [can close strong emphasis](@can-close-strong-emphasis)
-    iff it is not preceded by
-    whitespace.
+    iff it is part of a
+    [right-flanking delimiter run](#right-flanking-delimiter-run).
 
 8.  A double `__` [can close strong emphasis](#can-close-strong-emphasis)
-    iff it is not preceded by whitespace and it is not followed by an
-    ASCII alphanumeric character.
+    iff it is part of a
+    [right-flanking delimiter run](#right-flanking-delimiter-run).
+    and is not followed by an ASCII alphanumeric character.
 
 9.  Emphasis begins with a delimiter that [can open
     emphasis](#can-open-emphasis) and ends with a delimiter that [can close
@@ -4450,12 +4629,31 @@ Rule 1:
 .
 
 This is not emphasis, because the opening `*` is followed by
-whitespace:
+whitespace, and hence not part of a [left-flanking delimiter
+run](#left-flanking-delimiter-run):
 
 .
 a * foo bar*
 .
 <p>a * foo bar*</p>
+.
+
+This is not emphasis, because the opening `*` is preceded
+by an alphanumeric and followed by punctuation, and hence
+not part of a [left-flanking delimiter run](#left-flanking-delimiter-run):
+
+.
+a*"foo"*
+.
+<p>a*&quot;foo&quot;*</p>
+.
+
+Unicode nonbreaking spaces count as whitespace, too:
+
+.
+* a *
+.
+<p>* a *</p>
 .
 
 Intraword emphasis with `*` is permitted:
@@ -4489,6 +4687,15 @@ _ foo bar_
 <p>_ foo bar_</p>
 .
 
+This is not emphasis, because the opening `_` is preceded
+by an alphanumeric and followed by punctuation:
+
+.
+a_"foo"_
+.
+<p>a_&quot;foo&quot;_</p>
+.
+
 Emphasis with `_` is not allowed inside ASCII words:
 
 .
@@ -4513,6 +4720,15 @@ But it is permitted inside non-ASCII words:
 
 Rule 3:
 
+This is not emphasis, because the closing delimiter does
+not match the opening delimiter:
+
+.
+_foo*
+.
+<p>_foo*</p>
+.
+
 This is not emphasis, because the closing `*` is preceded by
 whitespace:
 
@@ -4520,6 +4736,26 @@ whitespace:
 *foo bar *
 .
 <p>*foo bar *</p>
+.
+
+This is not emphasis, because the second `*` is
+preceded by punctuation and followed by an alphanumeric
+(hence it is not part of a [right-flanking delimiter
+run](#right-flanking-delimiter-run):
+
+.
+*(*foo)
+.
+<p>*(*foo)</p>
+.
+
+The point of this restriction is more easily appreciated
+with this example:
+
+.
+*(*foo*)*
+.
+<p><em>(<em>foo</em>)</em></p>
 .
 
 Intraword emphasis with `*` is allowed:
@@ -4542,7 +4778,24 @@ _foo bar _
 <p>_foo bar _</p>
 .
 
-Intraword emphasis:
+This is not emphasis, because the second `_` is
+preceded by punctuation and followed by an alphanumeric:
+
+.
+_(_foo)
+.
+<p>_(_foo)</p>
+.
+
+This is emphasis within emphasis:
+
+.
+_(_foo_)_
+.
+<p><em>(<em>foo</em>)</em></p>
+.
+
+Intraword emphasis is disallowed for `_`:
 
 .
 _foo_bar
@@ -4579,6 +4832,16 @@ followed by whitespace:
 <p>** foo bar**</p>
 .
 
+This is not strong emphasis, because the opening `**` is preceded
+by an alphanumeric and followed by punctuation, and hence
+not part of a [left-flanking delimiter run](#left-flanking-delimiter-run):
+
+.
+a**"foo"**
+.
+<p>a**&quot;foo&quot;**</p>
+.
+
 Intraword strong emphasis with `**` is permitted:
 
 .
@@ -4604,7 +4867,16 @@ __ foo bar__
 <p>__ foo bar__</p>
 .
 
-Intraword emphasis examples:
+This is not strong emphasis, because the opening `__` is preceded
+by an alphanumeric and followed by punctuation:
+
+.
+a__"foo"__
+.
+<p>a__&quot;foo&quot;__</p>
+.
+
+Intraword strong emphasis is forbidden with `__`:
 
 .
 foo__bar__
@@ -4644,6 +4916,38 @@ by whitespace:
 (Nor can it be interpreted as an emphasized `*foo bar *`, because of
 Rule 11.)
 
+This is not strong emphasis, because the second `**` is
+preceded by punctuation and followed by an alphanumeric:
+
+.
+**(**foo)
+.
+<p>**(**foo)</p>
+.
+
+The point of this restriction is more easily appreciated
+with these examples:
+
+.
+*(**foo**)*
+.
+<p><em>(<strong>foo</strong>)</em></p>
+.
+
+.
+**Gomphocarpus (*Gomphocarpus physocarpus*, syn.
+*Asclepias physocarpa*)**
+.
+<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
+<em>Asclepias physocarpa</em>)</strong></p>
+.
+
+.
+**foo "*bar*" foo**
+.
+<p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>
+.
+
 Intraword emphasis:
 
 .
@@ -4663,7 +4967,25 @@ __foo bar __
 <p>__foo bar __</p>
 .
 
-Intraword strong emphasis examples:
+This is not strong emphasis, because the second `__` is
+preceded by punctuation and followed by an alphanumeric:
+
+.
+__(__foo)
+.
+<p>__(__foo)</p>
+.
+
+The point of this restriction is more easily appreciated
+with this example:
+
+.
+_(__foo__)_
+.
+<p><em>(<strong>foo</strong>)</em></p>
+.
+
+Intraword strong emphasis is forbidden with `__`:
 
 .
 __foo__bar
@@ -5218,11 +5540,11 @@ __a<http://foo.bar?q=__>
 ## Links
 
 A link contains [link text](#link-label) (the visible text),
-a [destination](#destination) (the URI that is the link destination),
+a [link destination](#link-destination) (the URI that is the link destination),
 and optionally a [link title](#link-title).  There are two basic kinds
-of links in Markdown.  In [inline links](#inline-links) the destination
+of links in Markdown.  In [inline links](#inline-link) the destination
 and title are given immediately after the link text.  In [reference
-links](#reference-links) the destination and title are defined elsewhere
+links](#reference-link) the destination and title are defined elsewhere
 in the document.
 
 A [link text](@link-text) consists of a sequence of zero or more
@@ -5273,11 +5595,12 @@ A [link title](@link-title)  consists of either
 
 An [inline link](@inline-link)
 consists of a [link text](#link-text) followed immediately
-by a left parenthesis `(`, optional whitespace,
+by a left parenthesis `(`, optional [whitespace](#whitespace),
 an optional [link destination](#link-destination),
 an optional [link title](#link-title) separated from the link
-destination by whitespace, optional whitespace, and a right
-parenthesis `)`.  The link's text consists of the inlines contained
+destination by [whitespace](#whitespace), optional
+[whitespace](#whitespace), and a right parenthesis `)`.
+The link's text consists of the inlines contained
 in the [link text](#link-text) (excluding the enclosing square brackets).
 The link's URI consists of the link destination, excluding enclosing
 `<...>` if present, with backslash-escapes in effect as described
@@ -5449,7 +5772,7 @@ quotation mark, though 1.0.2b8 does not.  It seems preferable to adopt
 a simple, rational rule that works the same way in inline links and
 link reference definitions.)
 
-Whitespace is allowed around the destination and title:
+[Whitespace](#whitespace) is allowed around the destination and title:
 
 .
 [link](   /uri
@@ -5522,6 +5845,12 @@ However, links may not contain other links, at any level of nesting.
 <p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
 .
 
+.
+![[[foo](uri1)](uri2)](uri3)
+.
+<p><img src="uri3" alt="[foo](uri2)" /></p>
+.
+
 These cases illustrate the precedence of link text grouping over
 emphasis grouping:
 
@@ -5563,7 +5892,8 @@ There are three kinds of [reference links](@reference-link):
 and [shortcut](#shortcut-reference-link).
 
 A [full reference link](@full-reference-link)
-consists of a [link text](#link-text), optional whitespace, and
+consists of a [link text](#link-text),
+optional [whitespace](#whitespace), and
 a [link label](#link-label) that [matches](#matches) a
 [link reference definition](#link-reference-definition) elsewhere in the
 document.
@@ -5577,9 +5907,9 @@ characters inside the square brackets.
 One label [matches](@matches)
 another just in case their normalized forms are equal.  To normalize a
 label, perform the *unicode case fold* and collapse consecutive internal
-whitespace to a single space.  If there are multiple matching reference
-link definitions, the one that comes first in the document is used.  (It
-is desirable in such cases to emit a warning.)
+[whitespace](#whitespace) to a single space.  If there are multiple
+matching reference link definitions, the one that comes first in the
+document is used.  (It is desirable in such cases to emit a warning.)
 
 The contents of the first link label are parsed as inlines, which are
 used as the link's text.  The link's URI and title are provided by the
@@ -5723,7 +6053,7 @@ Unicode case fold is used:
 <p><a href="/url">Толпой</a> is a Russian word.</p>
 .
 
-Consecutive internal whitespace is treated as one space for
+Consecutive internal [whitespace](#whitespace) is treated as one space for
 purposes of determining matching:
 
 .
@@ -5735,8 +6065,8 @@ purposes of determining matching:
 <p><a href="/url">Baz</a></p>
 .
 
-There can be whitespace between the [link text](#link-text) and the
-[link label](#link-label):
+There can be [whitespace](#whitespace) between the
+[link text](#link-text) and the [link label](#link-label):
 
 .
 [foo] [bar]
@@ -5822,10 +6152,11 @@ A [collapsed reference link](@collapsed-reference-link)
 consists of a [link
 label](#link-label) that [matches](#matches) a [link reference
 definition](#link-reference-definition) elsewhere in the
-document, optional whitespace, and the string `[]`.  The contents of the
-first link label are parsed as inlines, which are used as the link's
-text.  The link's URI and title are provided by the matching reference
-link definition.  Thus, `[foo][]` is equivalent to `[foo][foo]`.
+document, optional [whitespace](#whitespace), and the string `[]`.
+The contents of the first link label are parsed as inlines,
+which are used as the link's text.  The link's URI and title are
+provided by the matching reference link definition.  Thus,
+`[foo][]` is equivalent to `[foo][foo]`.
 
 .
 [foo][]
@@ -5854,7 +6185,7 @@ The link labels are case-insensitive:
 .
 
 
-As with full reference links, whitespace is allowed
+As with full reference links, [whitespace](#whitespace) is allowed
 between the two sets of brackets:
 
 .
@@ -6130,7 +6461,7 @@ The labels are case-insensitive:
 <p><img src="/url" alt="Foo" title="title" /></p>
 .
 
-As with full reference links, whitespace is allowed
+As with full reference links, [whitespace](#whitespace) is allowed
 between the two sets of brackets:
 
 .
@@ -6216,9 +6547,10 @@ as a link to the URI, with the URI as the link's label.
 
 An [absolute URI](@absolute-uri),
 for these purposes, consists of a [scheme](#scheme) followed by a colon (`:`)
-followed by zero or more characters other than ASCII whitespace and
-control characters, `<`, and `>`.  If the URI includes these characters,
-you must use percent-encoding (e.g. `%20` for a space).
+followed by zero or more characters other than ASCII
+[whitespace](#whitespace) and control characters, `<`, and `>`.  If
+the URI includes these characters, you must use percent-encoding
+(e.g. `%20` for a space).
 
 The following [schemes](@scheme)
 are recognized (case-insensitive):
@@ -6290,7 +6622,7 @@ and the URL is `mailto:` followed by the email address.
 An [email address](@email-address),
 for these purposes, is anything that matches
 the [non-normative regex from the HTML5
-spec](http://www.whatwg.org/specs/web-apps/current-work/multipage/forms.html#e-mail-state-%28type=email%29):
+spec](https://html.spec.whatwg.org/multipage/forms.html#e-mail-state-(type=email)):
 
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?
     (?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
@@ -6365,7 +6697,7 @@ Here is the grammar for tags:
 A [tag name](@tag-name) consists of an ASCII letter
 followed by zero or more ASCII letters or digits.
 
-An [attribute](@attribute) consists of whitespace,
+An [attribute](@attribute) consists of [whitespace](#whitespace),
 an [attribute name](#attribute-name), and an optional
 [attribute value specification](#attribute-value-specification).
 
@@ -6375,8 +6707,8 @@ letters, digits, `_`, `.`, `:`, or `-`.  (Note:  This is the XML
 specification restricted to ASCII.  HTML5 is laxer.)
 
 An [attribute value specification](@attribute-value-specification)
-consists of optional whitespace,
-a `=` character, optional whitespace, and an [attribute
+consists of optional [whitespace](#whitespace),
+a `=` character, optional [whitespace](#whitespace), and an [attribute
 value](#attribute-value).
 
 An [attribute value](@attribute-value)
@@ -6398,11 +6730,12 @@ characters not including `"`, and a final `"`.
 
 An [open tag](@open-tag) consists of a `<` character,
 a [tag name](#tag-name), zero or more [attributes](#attribute),
-optional whitespace, an optional `/` character, and a `>` character.
+optional [whitespace](#whitespace), an optional `/` character, and a
+`>` character.
 
 A [closing tag](@closing-tag) consists of the
-string `</`, a [tag name](#tag-name), optional whitespace, and the
-character `>`.
+string `</`, a [tag name](#tag-name), optional
+[whitespace](#whitespace), and the character `>`.
 
 An [HTML comment](@html-comment) consists of the
 string `<!--`, a string of characters not including the string `--`, and
@@ -6415,8 +6748,8 @@ of characters not including the string `?>`, and the string
 
 A [declaration](@declaration) consists of the
 string `<!`, a name consisting of one or more uppercase ASCII letters,
-whitespace, a string of characters not including the character `>`, and
-the character `>`.
+[whitespace](#whitespace), a string of characters not including the
+character `>`, and the character `>`.
 
 A [CDATA section](@cdata-section) consists of
 the string `<![CDATA[`, a string of characters not including the string
@@ -6424,10 +6757,8 @@ the string `<![CDATA[`, a string of characters not including the string
 
 An [HTML tag](@html-tag) consists of an [open
 tag](#open-tag), a [closing tag](#closing-tag), an [HTML
-comment](#html-comment), a [processing
-instruction](#processing-instruction), an [element type
-declaration](#element-type-declaration), or a [CDATA
-section](#cdata-section).
+comment](#html-comment), a [processing instruction](#processing-instruction),
+a [declaration](#declaration), or a [CDATA section](#cdata-section).
 
 Here are some simple open tags:
 
@@ -6445,7 +6776,7 @@ Empty elements:
 <p><a/><b2/></p>
 .
 
-Whitespace is allowed:
+[Whitespace](#whitespace) is allowed:
 
 .
 <a  /><b2
@@ -6489,7 +6820,7 @@ Illegal attribute values:
 <p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>
 .
 
-Illegal whitespace:
+Illegal [whitespace](#whitespace):
 
 .
 < a><
@@ -6499,7 +6830,7 @@ foo><bar/ >
 foo&gt;&lt;bar/ &gt;</p>
 .
 
-Missing whitespace:
+Missing [whitespace](#whitespace):
 
 .
 <a href='bar'title=title>
@@ -6602,8 +6933,8 @@ baz
 baz</p>
 .
 
-For a more visible alternative, a backslash before the newline may be
-used instead of two spaces:
+For a more visible alternative, a backslash before the
+[line ending](#line-ending) may be used instead of two spaces:
 
 .
 foo\
@@ -6726,9 +7057,10 @@ foo
 
 A regular line break (not in a code span or HTML tag) that is not
 preceded by two or more spaces is parsed as a softbreak.  (A
-softbreak may be rendered in HTML either as a newline or as a space.
-The result will be the same in browsers. In the examples here, a
-newline will be used.)
+softbreak may be rendered in HTML either as a
+[line ending](#line-ending) or as a space. The result will be the same
+in browsers. In the examples here, a [line ending](#line-ending) will
+be used.)
 
 .
 foo
@@ -6963,9 +7295,9 @@ document
           str "aliquando id"
 ```
 
-Notice how the newline in the first paragraph has been parsed as
-a `softbreak`, and the asterisks in the first list item have become
-an `emph`.
+Notice how the [line ending](#line-ending) in the first paragraph has
+been parsed as a `softbreak`, and the asterisks in the first list item
+have become an `emph`.
 
 The document can be rendered as HTML, or in any other format, given
 an appropriate renderer.
