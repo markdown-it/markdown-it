@@ -37,6 +37,7 @@ bower install markdown-it --save
 **browser (CDN):**
 
 - [jsDeliver CDN](http://www.jsdelivr.com/#!markdown-it "jsDelivr CDN")
+- [cdnjs.com CDN](https://cdnjs.com/libraries/markdown-it "cdnjs.com")
 
 
 ## Usage examples
