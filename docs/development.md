@@ -22,7 +22,7 @@ Prior to continue, make sure you've readed:
    [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
    or [rules](https://github.com/markdown-it/markdown-it/tree/master/lib),
    doing something similar. It can me more simple to modify existing code,
-   instead of writing from scratch.
+   instead of writing all from scratch.
 3. If you did all steps above, but still has questions - ask in
    [tracker](https://github.com/markdown-it/markdown-it/issues). But, please:
    - Be specific. Generic questions like "how to do plugins" and
@@ -35,7 +35,7 @@ Prior to continue, make sure you've readed:
 
 To simplify search:
 
-- add to `package.json` keyswords `markdown-it` and `markdown-it-plugin` for plugins
+- add to `package.json` keyswords `markdown-it` and `markdown-it-plugin` for plugins.
 - add keyword `markdown-it` for any other related packages.
 
 
@@ -69,13 +69,13 @@ __Note.__ Don't try to replace text with html markup! That's not secure.
 
 #### Why my inline rule is not executed?
 
-Inline parser skips porsion of texts for the best speed. It stops only on [small set of chars](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_inline/text.js), which can be tokens. We did not made this list extendable, also for performance reasons.
+Inline parser skips peases of texts for the best speed. It stops only on [small set of chars](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_inline/text.js), which can be tokens. We did not made this list extendable, also for performance reasons.
 
 If you are absolutely sure, that something important is missed there - create a
-ticket and we will add new charcodes.
+ticket and we will consider adding new charcodes.
 
 
-#### Why do you reject to accept some useful things?
+#### Why do you reject some useful things?
 
 We do markdown parser. It should keep "markdown spirit". Other things should
 be kept separate (in plugins, for example). We have no clear criteria, sorry.

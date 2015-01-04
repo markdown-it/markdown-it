@@ -79,7 +79,8 @@ var result = md.renderInline('__markdown-it__ rulezz!');
 ### Init with presets and options
 
 (*) preset define combination of active rules and options. Can be
-`"full"`|`"commonmark"`|`"zero"` or `"default"` if skipped.
+`"commonmark"`, `"zero"` or `"default"` (if skipped). See
+[API docs](https://markdown-it.github.io/markdown-it/#MarkdownIt.new) for more details.
 
 ```js
 // commonmark mode
@@ -89,7 +90,7 @@ var md = require('markdown-it')('commonmark');
 var md = require('markdown-it')();
 
 // enable everything
-var md = require('markdown-it')('full', {
+var md = require('markdown-it')({
   html: true,
   linkify: true,
   typographer: true
@@ -123,7 +124,7 @@ var md = require('markdown-it')({
 ```js
 var md = require('markdown-it')()
             .use(plugin1)
-            .use(plugin2, opts)
+            .use(plugin2, opts, ...)
             .use(plugin3);
 ```
 
@@ -156,7 +157,7 @@ var md = require('markdown-it')({
 
 ## API
 
-[API documentation](https://markdown-it.github.io/markdown-it/)
+__[API documentation](https://markdown-it.github.io/markdown-it/)__
 
 If you are going to write plugins - take a look at
 [Development info](https://github.com/markdown-it/markdown-it/tree/master/docs).
@@ -164,33 +165,33 @@ If you are going to write plugins - take a look at
 
 ## Syntax extensions
 
-Enabled by default:
+Embedded (enabled by default):
 
 - [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
-- [\<del>](https://help.github.com/articles/github-flavored-markdown/#strikethrough)
-  (GFM strikethrough) - `~~deleted text~~`
+- [Strikethrough](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM)
 
-Disabled by default:
+Via plugins::
 
-- [\<sup>](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `19^th^`
-- [\<sub>](http://johnmacfarlane.net/pandoc/README.html#superscripts-and-subscripts) - `H~2~0`
-- [abbreviations](https://michelf.ca/projects/php-markdown/extra/#abbr)
-- [footnotes](http://johnmacfarlane.net/pandoc/README.html#footnotes)
-- __\<ins>__ - `++inserted text++` (experimental)
-- __\<mark>__ - `==marked text==` (experimental)
-
-__*__ Experimental extensions can be changed later for something like
-[Critic Markup](http://criticmarkup.com/), but you will still be able to use
-old-style rules via external plugins if you prefer.
+- [subscript](https://github.com/markdown-it/markdown-it-sub)
+- [superscript](https://github.com/markdown-it/markdown-it-sup)
+- [footnote](https://github.com/markdown-it/markdown-it-footnote)
+- [definition list](https://github.com/markdown-it/markdown-it-deflist)
+- [abbreviation](https://github.com/markdown-it/markdown-it-abbr)
+- [insert](https://github.com/markdown-it/markdown-it-ins)
+- [mark](https://github.com/markdown-it/markdown-it-mark)
 
 
 ### Manage rules
 
+By default all rules are enebled, but can be restricted by options. On plugin
+load all it's rules are enabled automatically.
+
 ```js
-// Activate/deactivate rules
+// Activate/deactivate rules, with curring
 var md = require('markdown-it')()
-            .enable([ 'ins', 'mark' ])
-            .disable([ 'table' ]);
+            .disable([ 'link', 'image' ])
+            .enable([ 'link' ])
+            .enable('image');
 
 // Enable everything
 md = require('markdown-it')('full', {
@@ -198,22 +199,6 @@ md = require('markdown-it')('full', {
   linkify: true,
   typographer: true,
 });
-
-// Manually enable rules, disabled by default:
-var md = require('markdown-it')()
-            .enable([
-              /* core */
-              'abbr',
-              /* block */
-              'footnote',
-              'deflist',
-              /* inline */
-              'footnote_inline',
-              'ins',
-              'mark',
-              'sub',
-              'sup'
-            ]);
 ```
 
 

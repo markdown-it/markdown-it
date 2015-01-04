@@ -8,7 +8,7 @@ Input data is piped via nestesd chains of rules. There are 3 nested chains -
 ```
 core
     core.rule1
-    ... (none yet, you can patch input string here)
+    ... (normalize)
 
     block
         block.rule1
@@ -16,15 +16,15 @@ core
         block.ruleX
 
     core.ruleXX
-    ... (references, abbreviations, footnotes)
+    ... (nothing yet)
 
-    inline (applyed to each block token with "inline type")
+    inline (applyed to each block token with "inline" type)
         inline.rule1
         ...
         inline.ruleX
 
     core.ruleYY
-    ... (typographer, linkifier)
+    ... (abbreviation, footnote, typographer, linkifier)
 
 ```
 
@@ -48,7 +48,7 @@ Difference is simple:
 
 - Tokens are sequence (Array).
 - Opening and closing tags are separate tokens.
-- There are special token object, "inline containers", having nested token
+- There are special token objects, "inline containers", having nested token
   sequences with inline markup (bold, italic, text, ...).
 
 Each token has common fields:
@@ -90,7 +90,8 @@ registered in one of chain with unique name.
 Rules are managed by names via [Ruler](https://markdown-it.github.io/markdown-it/#Ruler) instances and `enable` / `disable` methods in [MarkdownIt](https://markdown-it.github.io/markdown-it/#MarkdownIt).
 
 You can note, that some rules have "validation mode" - in this mode rule does not
-modify token stream, and only search end of token. It's one of important design principle - token stream is "write only" on block & inline parse stages.
+modify token stream, and only look ahead for the end of token. It's one of
+important design principle - token stream is "write only" on block & inline parse stages.
 
 Parser is designed to keep rules independent. You can safely disable any, or
 add new one. There are no universal recipes how to create new rules - design of
@@ -99,7 +100,7 @@ can investigate existing rules & plugins to see possible approaches.
 
 Also, in complex cases you can try to ask for help in tracker. Condition is very
 simple - it should be clear from your ticket, that you studied docs, sources,
-and tryed to do something yourself. We never reject with help to real developpers.
+and tried to do something yourself. We never reject with help to real developpers.
 
 
 ## Renderer
@@ -107,11 +108,11 @@ and tryed to do something yourself. We never reject with help to real developper
 After token stream is generated, it's passed to [renderer](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js).
 It just plays all tokens, passing each to rule with the same name as token type.
 
-Randerer rules are located in `md.renderer.rules[name]` and are simple functions
+Renderer rules are located in `md.renderer.rules[name]` and are simple functions
 with the same signature:
 
 ```js
-function (tokens, idx, options, env, self) {
+function (tokens, idx, options, env, renderer) {
   //...
   return htmlResult;
 }
