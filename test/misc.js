@@ -137,7 +137,7 @@ describe('API', function () {
     };
 
     // Disable 2 rule in each chain & compare result
-    md.disable([ 'block', 'inline', 'code', 'fences', 'emphasis', 'entity' ]);
+    md.disable([ 'block', 'inline', 'code', 'fence', 'emphasis', 'entity' ]);
 
     var now = {
       core: md.core.ruler.getRules('').length + 2,
@@ -148,7 +148,7 @@ describe('API', function () {
     assert.deepEqual(was, now);
 
     // Enable the same rules back
-    md.enable([ 'block', 'inline', 'code', 'fences', 'emphasis', 'entity' ]);
+    md.enable([ 'block', 'inline', 'code', 'fence', 'emphasis', 'entity' ]);
 
     var back = {
       core: md.core.ruler.getRules('').length,
