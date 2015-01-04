@@ -12,10 +12,10 @@ In most cases you will use `markdown-it` in very simple way:
 ```javascript
 var md = require('markdown-it')();
 
-var result = md.render(your_markdown_string);
+var result = md.render('your_markdown_string');
 
 // Or for inline (without paragraths & blocks)
-var resultInline = md.renderInline(your_markdown_inline_string);
+var resultInline = md.renderInline('your_markdown_inline_string');
 ```
 
 ### Advanced use
