@@ -8,7 +8,7 @@ var generate = require('markdown-it-testgen');
 
 
 describe('markdown-it', function () {
-  var md = require('../')('full', {
+  var md = require('../')({
     html: true,
     langPrefix: '',
     typographer: true,

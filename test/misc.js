@@ -62,7 +62,7 @@ describe('API', function () {
   });
 
   it('configure coverage', function () {
-    var md = markdownit('full');
+    var md = markdownit();
 
     // conditions coverage
     md.configure({});
@@ -184,7 +184,7 @@ describe('Misc', function () {
   });
 
   it('Should parse inlines only', function () {
-    var md = markdownit('full');
+    var md = markdownit();
 
     assert.strictEqual(md.renderInline('a *b* c'), 'a <em>b</em> c');
   });
