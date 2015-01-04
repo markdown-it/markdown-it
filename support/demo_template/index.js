@@ -58,9 +58,9 @@
       mdHtml = window.markdownit('commonmark');
       mdSrc = window.markdownit('commonmark');
     } else {
-      mdHtml = window.markdownit('full', defaults)
+      mdHtml = window.markdownit(defaults)
                   .use(window.markdownitEmoji);
-      mdSrc = window.markdownit('full', defaults)
+      mdSrc = window.markdownit(defaults)
                   .use(window.markdownitEmoji);
     }
 
