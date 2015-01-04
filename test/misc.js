@@ -159,6 +159,23 @@ describe('API', function () {
     assert.deepEqual(was, back);
   });
 
+  it('bulk enable/dusable with errors control', function () {
+    var md = markdownit();
+
+    assert.throws(function () {
+      md.enable([ 'link', 'code', 'invalid' ]);
+    });
+    assert.throws(function () {
+      md.disable([ 'link', 'code', 'invalid' ]);
+    });
+    assert.doesNotThrow(function () {
+      md.enable([ 'link', 'code' ]);
+    });
+    assert.doesNotThrow(function () {
+      md.disable([ 'link', 'code' ]);
+    });
+  });
+
 });
 
 
