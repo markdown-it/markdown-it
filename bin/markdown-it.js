@@ -60,7 +60,7 @@ readFile(options.file, 'utf8', function (err, input) {
     process.exit(1);
   }
 
-  md = require('..')('full', {
+  md = require('..')({
     html: true,
     xhtmlOut: true,
     typographer: true,
