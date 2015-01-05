@@ -7,7 +7,7 @@
 - Added `md` (parser instance) link to all state objects (instead of former
   options/parser).
 - References/Footnotes/Abbrs moved to `block` chain.
-- Input normalisation moved to `core` chain.
+- Input normalization moved to `core` chain.
 - Splitted links and images to separate rules.
 - Renamed some rules.
 - Removed `full` preset. Not needed anymore.

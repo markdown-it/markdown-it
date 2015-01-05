@@ -50,15 +50,7 @@ __This is bold text__
 
 _This is italic text_
 
-~~Deleted text~~
-
-Superscript: 19^th^
-
-Subscript: H~2~O
-
-++Inserted text++
-
-==Marked text==
+~~Strikethrough~~
 
 
 ## Blockquotes
@@ -165,7 +157,13 @@ With a reference later in the document defining the URL location:
 [id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
 
 
-# Emojies (via [plugin](https://github.com/markdown-it/markdown-it-emoji))
+## Plugins
+
+The killer feature of `markdown-it` is very effective support of
+[syntax plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin).
+
+
+### [Emojies](https://github.com/markdown-it/markdown-it-emoji)
 
 > Classic markup: :wink: :crush: :cry: :tear: :laughing: :yum:
 >
@@ -174,7 +172,23 @@ With a reference later in the document defining the URL location:
 see [how to change output](https://github.com/markdown-it/markdown-it-emoji#change-output) with twemoji.
 
 
-## Footnotes
+### [Subscipt](https://www.npmjs.com/packages/markdown-it-sub) / [Superscirpt](https://www.npmjs.com/packages/markdown-it-sup)
+
+- 19^th^
+- H~2~O
+
+
+### [\<ins>](https://www.npmjs.com/packages/markdown-it-ins)
+
+++Inserted text++
+
+
+### [\<mark>](https://www.npmjs.com/packages/markdown-it-mark)
+
+==Marked text==
+
+
+### [Footnotes](https://www.npmjs.com/packages/markdown-it-footnote)
 
 Footnote 1 link[^first].
 
@@ -191,7 +205,7 @@ Duplicated footnote reference[^second].
 [^second]: Footnote text.
 
 
-## Definition lists
+### [Definition lists](https://www.npmjs.com/packages/markdown-it-deflist)
 
 Term 1
 
@@ -216,7 +230,7 @@ Term 2
   ~ Definition 2b
 
 
-## Abbreviations
+### [Abbreviations](https://www.npmjs.com/packages/markdown-it-abbr)
 
 This is HTML abbreviation example.
 

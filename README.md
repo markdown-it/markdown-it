@@ -170,7 +170,7 @@ Embedded (enabled by default):
 - [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
 - [Strikethrough](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM)
 
-Via plugins::
+Via plugins:
 
 - [subscript](https://github.com/markdown-it/markdown-it-sub)
 - [superscript](https://github.com/markdown-it/markdown-it-sup)

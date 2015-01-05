@@ -59,9 +59,23 @@
       mdSrc = window.markdownit('commonmark');
     } else {
       mdHtml = window.markdownit(defaults)
-                  .use(window.markdownitEmoji);
+                  .use(window.markdownitAbbr)
+                  .use(window.markdownitDeflist)
+                  .use(window.markdownitEmoji)
+                  .use(window.markdownitFootnote)
+                  .use(window.markdownitIns)
+                  .use(window.markdownitMark)
+                  .use(window.markdownitSub)
+                  .use(window.markdownitSup);
       mdSrc = window.markdownit(defaults)
-                  .use(window.markdownitEmoji);
+                  .use(window.markdownitAbbr)
+                  .use(window.markdownitDeflist)
+                  .use(window.markdownitEmoji)
+                  .use(window.markdownitFootnote)
+                  .use(window.markdownitIns)
+                  .use(window.markdownitMark)
+                  .use(window.markdownitSub)
+                  .use(window.markdownitSup);
     }
 
     // Beautify output of parser for html content
