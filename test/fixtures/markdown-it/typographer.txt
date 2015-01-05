@@ -45,6 +45,38 @@ plus-minus
 .
 
 
+heart
+.
+<3
+.
+<p>♥</p>
+.
+
+
+leftarrow
+.
+<-
+.
+<p>←</p>
+.
+
+
+rightarrow
+.
+->
+.
+<p>→</p>
+.
+
+
+leftrightarrow
+.
+<->
+.
+<p>↔</p>
+.
+
+
 ellipsis
 .
 test.. test... test..... test?..... test!....
