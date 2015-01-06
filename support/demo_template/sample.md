@@ -172,23 +172,23 @@ The killer feature of `markdown-it` is very effective support of
 see [how to change output](https://github.com/markdown-it/markdown-it-emoji#change-output) with twemoji.
 
 
-### [Subscipt](https://www.npmjs.com/packages/markdown-it-sub) / [Superscirpt](https://www.npmjs.com/packages/markdown-it-sup)
+### [Subscipt](https://github.com/markdown-it/markdown-it-sub) / [Superscirpt](https://github.com/markdown-it/markdown-it-sup)
 
 - 19^th^
 - H~2~O
 
 
-### [\<ins>](https://www.npmjs.com/packages/markdown-it-ins)
+### [\<ins>](https://github.com/markdown-it/markdown-it-ins)
 
 ++Inserted text++
 
 
-### [\<mark>](https://www.npmjs.com/packages/markdown-it-mark)
+### [\<mark>](https://github.com/markdown-it/markdown-it-mark)
 
 ==Marked text==
 
 
-### [Footnotes](https://www.npmjs.com/packages/markdown-it-footnote)
+### [Footnotes](https://github.com/markdown-it/markdown-it-footnote)
 
 Footnote 1 link[^first].
 
@@ -205,7 +205,7 @@ Duplicated footnote reference[^second].
 [^second]: Footnote text.
 
 
-### [Definition lists](https://www.npmjs.com/packages/markdown-it-deflist)
+### [Definition lists](https://github.com/markdown-it/markdown-it-deflist)
 
 Term 1
 
@@ -230,7 +230,7 @@ Term 2
   ~ Definition 2b
 
 
-### [Abbreviations](https://www.npmjs.com/packages/markdown-it-abbr)
+### [Abbreviations](https://github.com/markdown-it/markdown-it-abbr)
 
 This is HTML abbreviation example.
 
