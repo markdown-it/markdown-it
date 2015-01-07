@@ -1,4 +1,4 @@
-/*! markdown-it 3.0.0 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 3.0.1 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2568,8 +2568,46 @@ function escapeHtml(str) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+var SURRORATE_TEST_RE   = /[\uD800-\uDFFF]/;
+var SURRORATE_SEARCH_RE = /[\uD800-\uDFFF]/g;
+
+function replaceBadSurrogate(ch, pos, orig) {
+  var code = ch.charCodeAt(0);
+
+  if (code >= 0xD800 && code <= 0xDBFF) {
+    // high surrogate
+    if (pos >= orig.length - 1) { return '\uFFFD'; }
+    code = orig.charCodeAt(pos + 1);
+    if (code < 0xDC00 || code > 0xDFFF) { return '\uFFFD'; }
+
+    return ch;
+  }
+
+  // low surrogate
+  if (pos === 0) { return '\uFFFD'; }
+  code = orig.charCodeAt(pos - 1);
+  if (code < 0xD900 || code > 0xDBFF) { return '\uFFFD'; }
+  return ch;
+}
+
+function fixBrokenSurrogates(str) {
+  if (!SURRORATE_TEST_RE.test(str)) { return str; }
+
+  return str.replace(SURRORATE_SEARCH_RE, replaceBadSurrogate);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+
 // Incoming link can be partially encoded. Convert possible combinations to
 // unified form.
+//
+// TODO: Rewrite it. Should use:
+//
+// - encodeURIComponent for query
+// - encodeURI for path
+// - (?) punicode for domain mame (but encodeURI seems to work in real world)
+//
 function normalizeLink(url) {
   var normalized = replaceEntities(url);
 
@@ -2579,7 +2617,9 @@ function normalizeLink(url) {
     normalized = decodeURI(normalized);
   } catch (__) {}
 
-  return encodeURI(normalized);
+  // Encoder throws exception on broken surrogate pairs.
+  // Fix those first.
+  return encodeURI(fixBrokenSurrogates(normalized));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -7217,6 +7257,7 @@ function isTerminatorChar(ch) {
     case 0x5B/* [ */:
     case 0x5D/* ] */:
     case 0x21/* ! */:
+    case 0x23/* # */:
     case 0x26/* & */:
     case 0x3C/* < */:
     case 0x3E/* > */:
