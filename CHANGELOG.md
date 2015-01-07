@@ -1,3 +1,10 @@
+3.0.1 / 2015-01-07
+------------------
+
+- Improved link encoder - fix invalid surrogates to avoid errors.
+- Added # to terminator chars.
+
+
 3.0.0 / 2015-01-04
 ------------------
 
