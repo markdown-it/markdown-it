@@ -183,7 +183,7 @@ Via plugins:
 
 ### Manage rules
 
-By default all rules are enebled, but can be restricted by options. On plugin
+By default all rules are enabled, but can be restricted by options. On plugin
 load all it's rules are enabled automatically.
 
 ```js
