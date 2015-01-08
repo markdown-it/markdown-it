@@ -1,3 +1,9 @@
+3.0.2 / 2015-01-09
+------------------
+
+- Allow dashes in HTML tag names (needed for custom HTML tags).
+
+
 3.0.1 / 2015-01-07
 ------------------
 
