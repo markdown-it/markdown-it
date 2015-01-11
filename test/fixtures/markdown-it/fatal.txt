@@ -1,0 +1,26 @@
+Should not throw exception on mailformed URI
+.
+[foo](<&#x25;test>)
+.
+<p><a href="%25test">foo</a></p>
+.
+
+
+
+Should not hang comments regexp
+.
+foo <!--- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ->
+
+foo <!------------------------------------------------------------------->
+.
+<p>foo &lt;!— xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -&gt;</p>
+<p>foo &lt;!-------------------------------------------------------------------&gt;</p>
+.
+
+
+Should not hang cdata regexp
+.
+foo <![CDATA[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]>
+.
+<p>foo &lt;![CDATA[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]&gt;</p>
+.

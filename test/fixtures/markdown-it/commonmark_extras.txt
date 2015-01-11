@@ -106,16 +106,7 @@ Autolinks do not allow escaping:
 .
 
 
-Should not throw exception on mailformed URI
-.
-[foo](<&#x25;test>)
-.
-<p><a href="%25test">foo</a></p>
-.
-
-
 Multiline title in definitions:
-
 .
 [foo]: test '
 1
