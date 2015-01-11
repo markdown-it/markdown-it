@@ -52,6 +52,14 @@ Issue #55:
 .
 
 
+Issue #35. `<` shoud work as punctuation
+.
+an **(:**<br>
+.
+<p>an <strong>(:</strong><br></p>
+.
+
+
 Should unescape only needed things in link destinations/titles:
 .
 [test](<\f\o\o\>\\>)
