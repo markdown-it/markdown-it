@@ -5,77 +5,6 @@ var assert     = require('assert');
 var markdownit = require('../');
 
 
-describe('Utils', function () {
-
-  it('fromCodePoint', function () {
-    var fromCodePoint = require('../lib/common/utils').fromCodePoint;
-
-    assert.strictEqual(fromCodePoint(0x20), ' ');
-    assert.strictEqual(fromCodePoint(0x1F601), '😁');
-  });
-
-  it('isValidEntityCode', function () {
-    var isValidEntityCode = require('../lib/common/utils').isValidEntityCode;
-
-    assert.strictEqual(isValidEntityCode(0x20), true);
-    assert.strictEqual(isValidEntityCode(0xD800), false);
-    assert.strictEqual(isValidEntityCode(0xFDD0), false);
-    assert.strictEqual(isValidEntityCode(0x1FFFF), false);
-    assert.strictEqual(isValidEntityCode(0x1FFFE), false);
-    assert.strictEqual(isValidEntityCode(0x00), false);
-    assert.strictEqual(isValidEntityCode(0x0B), false);
-    assert.strictEqual(isValidEntityCode(0x0E), false);
-    assert.strictEqual(isValidEntityCode(0x7F), false);
-  });
-
-  it('replaceEntities', function () {
-    var replaceEntities = require('../lib/common/utils').replaceEntities;
-
-    assert.strictEqual(replaceEntities('&amp;'), '&');
-    assert.strictEqual(replaceEntities('&#32;'), ' ');
-    assert.strictEqual(replaceEntities('&#x20;'), ' ');
-    assert.strictEqual(replaceEntities('&amp;&amp;'), '&&');
-
-    assert.strictEqual(replaceEntities('&am;'), '&am;');
-    assert.strictEqual(replaceEntities('&#00;'), '&#00;');
-  });
-
-  it('assign', function () {
-    var assign = require('../lib/common/utils').assign;
-
-    assert.deepEqual(assign({ a: 1 }, null, { b: 2 }), { a: 1, b: 2 });
-    assert.throws(function () {
-      assign({}, 123);
-    });
-  });
-
-  it('fixBrokenSurrogates', function () {
-    var fixBrokenSurrogates = require('../lib/common/utils').fixBrokenSurrogates;
-
-    // Bad
-    assert.strictEqual(fixBrokenSurrogates('\uD800foo'), '\uFFFDfoo');
-    assert.strictEqual(fixBrokenSurrogates('foo\uD800'), 'foo\uFFFD');
-    assert.strictEqual(fixBrokenSurrogates('\uDC00foo'), '\uFFFDfoo');
-    assert.strictEqual(fixBrokenSurrogates('foo\uDC00'), 'foo\uFFFD');
-
-    // Good
-    assert.strictEqual(fixBrokenSurrogates('\uD800\uDC00'), '\uD800\uDC00');
-  });
-
-  it('normalizeLink', function () {
-    var normalizeLink = require('../lib/common/utils').normalizeLink;
-
-    // broken surrogates sequence (encodeURI should not throw)
-    assert.strictEqual(normalizeLink('/\uD800foo'), '/%EF%BF%BDfoo');
-    assert.strictEqual(normalizeLink('/\uD900foo'), '/%EF%BF%BDfoo');
-
-    // broken utf-8 encoding (catch decodeURI exception)
-    assert.strictEqual(normalizeLink('\u0025test'), '%25test');
-  });
-
-});
-
-
 describe('API', function () {
 
   it('constructor', function () {
@@ -253,7 +182,7 @@ describe('Misc', function () {
     assert.strictEqual(md.renderInline('___foo___'), '<strong><em>foo</em></strong>');
   });
 
-  it('Should correctly check block termination rules ahen those are disabled (#13)', function () {
+  it('Should correctly check block termination rules when those are disabled (#13)', function () {
     var md = markdownit('zero');
 
     assert.strictEqual(md.render('foo\nbar'), '<p>foo\nbar</p>\n');
