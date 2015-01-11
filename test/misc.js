@@ -9,9 +9,12 @@ describe('API', function () {
 
   it('constructor', function () {
     assert.throws(function () {
-      var md = markdownit('bad preset');
-      md.render('123');
+      markdownit('bad preset');
     });
+
+    // options should override preset
+    var md = markdownit('commonmark', { html: false });
+    assert.strictEqual(md.render('<!-- -->'), '<p>&lt;!-- --&gt;</p>\n');
   });
 
   it('configure coverage', function () {
@@ -19,8 +22,11 @@ describe('API', function () {
 
     // conditions coverage
     md.configure({});
-
     assert.strictEqual(md.render('123'), '<p>123</p>\n');
+
+    assert.throws(function () {
+      md.configure();
+    });
   });
 
   it('plugin', function () {
@@ -112,7 +118,7 @@ describe('API', function () {
     assert.deepEqual(was, back);
   });
 
-  it('bulk enable/dusable with errors control', function () {
+  it('bulk enable/disable with errors control', function () {
     var md = markdownit();
 
     assert.throws(function () {
@@ -127,6 +133,16 @@ describe('API', function () {
     assert.doesNotThrow(function () {
       md.disable([ 'link', 'code' ]);
     });
+  });
+
+  it('bulk enable/disable should understand strings', function () {
+    var md = markdownit();
+
+    md.disable('emphasis');
+    assert(md.renderInline('_foo_'), '_foo_');
+
+    md.enable('emphasis');
+    assert(md.renderInline('_foo_'), '<em>foo</em>');
   });
 
 });
