@@ -1,4 +1,4 @@
-/*! markdown-it 3.0.2 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 3.0.3 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2479,7 +2479,7 @@ function arrayReplaceAt(src, pos, newElements) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-var UNESCAPE_MD_RE = /\\([\\!"#$%&'()*+,.\/:;<=>?@[\]^_`{|}~-])/g;
+var UNESCAPE_MD_RE = /\\([!"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~])/g;
 
 function unescapeMd(str) {
   if (str.indexOf('\\') < 0) { return str; }
@@ -2661,6 +2661,54 @@ function isPunctChar(char) {
   return BMP_PUNCT_RE.test(char);
 }
 
+
+// Markdown ASCII punctuation characters.
+//
+// !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~
+// http://spec.commonmark.org/0.15/#ascii-punctuation-character
+//
+// Don't confuse with unicode punctuation !!! It lacks some chars in ascii range.
+//
+function isMdAsciiPunct(ch) {
+  switch (ch) {
+    case 0x21/* ! */:
+    case 0x22/* " */:
+    case 0x23/* # */:
+    case 0x24/* $ */:
+    case 0x25/* % */:
+    case 0x26/* & */:
+    case 0x27/* ' */:
+    case 0x28/* ( */:
+    case 0x29/* ) */:
+    case 0x2A/* * */:
+    case 0x2B/* + */:
+    case 0x2C/* , */:
+    case 0x2D/* - */:
+    case 0x2E/* . */:
+    case 0x2F/* / */:
+    case 0x3A/* : */:
+    case 0x3B/* ; */:
+    case 0x3C/* < */:
+    case 0x3D/* = */:
+    case 0x3E/* > */:
+    case 0x3F/* ? */:
+    case 0x40/* @ */:
+    case 0x5B/* [ */:
+    case 0x5C/* \ */:
+    case 0x5D/* ] */:
+    case 0x5E/* ^ */:
+    case 0x5F/* _ */:
+    case 0x60/* ` */:
+    case 0x7B/* { */:
+    case 0x7C/* | */:
+    case 0x7D/* } */:
+    case 0x7E/* ~ */:
+      return true;
+    default:
+      return false;
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 exports.assign            = assign;
@@ -2674,6 +2722,7 @@ exports.escapeHtml        = escapeHtml;
 exports.arrayReplaceAt    = arrayReplaceAt;
 exports.normalizeLink     = normalizeLink;
 exports.isWhiteSpace      = isWhiteSpace;
+exports.isMdAsciiPunct    = isMdAsciiPunct;
 exports.isPunctChar       = isPunctChar;
 exports.escapeRE          = escapeRE;
 
@@ -3956,19 +4005,8 @@ rules.paragraph_open = function (tokens, idx /*, options, env */) {
   return tokens[idx].tight ? '' : '<p>';
 };
 rules.paragraph_close = function (tokens, idx /*, options, env */) {
-  // We have 2 cases of "hidden" paragraphs
-  //
-  // 1. In tight lists
-  // 2. When content was stripped (reference definition, for example)
-  //
   if (tokens[idx].tight === true) {
-    if (!tokens[idx - 1].content) {
-      return '';
-    }
-    if (tokens[idx + 1].type.slice(-5) === 'close') {
-      return '';
-    }
-    return '\n';
+    return tokens[idx + 1].type.slice(-5) === 'close' ? '' : '\n';
   }
   return '</p>\n';
 };
@@ -6377,8 +6415,9 @@ module.exports = function backtick(state, silent) {
 
 'use strict';
 
-var isWhiteSpace = require('../common/utils').isWhiteSpace;
-var isPunctChar  = require('../common/utils').isPunctChar;
+var isWhiteSpace   = require('../common/utils').isWhiteSpace;
+var isPunctChar    = require('../common/utils').isPunctChar;
+var isMdAsciiPunct = require('../common/utils').isMdAsciiPunct;
 
 
 function isAlphaNum(code) {
@@ -6406,8 +6445,10 @@ function scanDelims(state, start) {
 
   nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
 
-  isLastPunctChar = lastChar >= 0 && isPunctChar(String.fromCharCode(lastChar));
-  isNextPunctChar = nextChar >= 0 && isPunctChar(String.fromCharCode(nextChar));
+  isLastPunctChar = lastChar >= 0 &&
+    (isMdAsciiPunct(lastChar) || isPunctChar(String.fromCharCode(lastChar)));
+  isNextPunctChar = nextChar >= 0 &&
+    (isMdAsciiPunct(nextChar) || isPunctChar(String.fromCharCode(nextChar)));
   isLastWhiteSpace = lastChar >= 0 && isWhiteSpace(lastChar);
   isNextWhiteSpace = nextChar >= 0 && isWhiteSpace(nextChar);
 
@@ -7246,30 +7287,35 @@ module.exports = function strikethrough(state, silent) {
 // Rule to skip pure text
 // '{}$%@~+=:' reserved for extentions
 
+// !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~
+
+// !!!! Don't confuse with "Markdown ASCII Punctuation" chars
+// http://spec.commonmark.org/0.15/#ascii-punctuation-character
 function isTerminatorChar(ch) {
   switch (ch) {
     case 0x0A/* \n */:
-    case 0x5C/* \ */:
-    case 0x60/* ` */:
-    case 0x2A/* * */:
-    case 0x5F/* _ */:
-    case 0x5E/* ^ */:
-    case 0x5B/* [ */:
-    case 0x5D/* ] */:
     case 0x21/* ! */:
     case 0x23/* # */:
-    case 0x26/* & */:
-    case 0x3C/* < */:
-    case 0x3E/* > */:
-    case 0x7B/* { */:
-    case 0x7D/* } */:
     case 0x24/* $ */:
     case 0x25/* % */:
-    case 0x40/* @ */:
-    case 0x7E/* ~ */:
+    case 0x26/* & */:
+    case 0x2A/* * */:
     case 0x2B/* + */:
-    case 0x3D/* = */:
+    case 0x2D/* - */:
     case 0x3A/* : */:
+    case 0x3C/* < */:
+    case 0x3D/* = */:
+    case 0x3E/* > */:
+    case 0x40/* @ */:
+    case 0x5B/* [ */:
+    case 0x5C/* \ */:
+    case 0x5D/* ] */:
+    case 0x5E/* ^ */:
+    case 0x5F/* _ */:
+    case 0x60/* ` */:
+    case 0x7B/* { */:
+    case 0x7D/* } */:
+    case 0x7E/* ~ */:
       return true;
     default:
       return false;
