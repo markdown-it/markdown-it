@@ -49,6 +49,30 @@ describe('Utils', function () {
     });
   });
 
+  it('fixBrokenSurrogates', function () {
+    var fixBrokenSurrogates = require('../lib/common/utils').fixBrokenSurrogates;
+
+    // Bad
+    assert.strictEqual(fixBrokenSurrogates('\uD800foo'), '\uFFFDfoo');
+    assert.strictEqual(fixBrokenSurrogates('foo\uD800'), 'foo\uFFFD');
+    assert.strictEqual(fixBrokenSurrogates('\uDC00foo'), '\uFFFDfoo');
+    assert.strictEqual(fixBrokenSurrogates('foo\uDC00'), 'foo\uFFFD');
+
+    // Good
+    assert.strictEqual(fixBrokenSurrogates('\uD800\uDC00'), '\uD800\uDC00');
+  });
+
+  it('normalizeLink', function () {
+    var normalizeLink = require('../lib/common/utils').normalizeLink;
+
+    // broken surrogates sequence (encodeURI should not throw)
+    assert.strictEqual(normalizeLink('/\uD800foo'), '/%EF%BF%BDfoo');
+    assert.strictEqual(normalizeLink('/\uD900foo'), '/%EF%BF%BDfoo');
+
+    // broken utf-8 encoding (catch decodeURI exception)
+    assert.strictEqual(normalizeLink('\u0025test'), '%25test');
+  });
+
 });
 
 
@@ -181,7 +205,7 @@ describe('API', function () {
 
 describe('Misc', function () {
 
-  it('Should strip (or replace) NULL characters', function () {
+  it('Should replace NULL characters', function () {
     var md = markdownit();
 
     assert.strictEqual(md.render('foo\u0000bar'), '<p>foo\uFFFDbar</p>\n');
