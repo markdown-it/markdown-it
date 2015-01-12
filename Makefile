@@ -51,7 +51,7 @@ lint:
 	eslint --reset .
 
 test: lint
-	mocha -R spec
+	mocha
 	echo "CommonMark stat:\n"
 	./support/specsplit.js test/fixtures/commonmark/spec.txt
 
