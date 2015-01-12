@@ -170,3 +170,33 @@ Coverage. Escape.
 .
 <p><em>\a</em></p>
 .
+
+
+Coverage. parseLinkDestination
+.
+[foo](<
+bar>)
+
+[foo](<bar)
+.
+<p>[foo](&lt;
+bar&gt;)</p>
+<p>[foo](&lt;bar)</p>
+.
+
+
+Coverage. parseLinkTitle
+.
+[foo](bar "ba)
+.
+<p>[foo](bar &quot;ba)</p>
+.
+
+Coverage. parseLinkTitle
+.
+[foo](bar "ba\
+z")
+.
+<p><a href="bar" title="ba
+z">foo</a></p>
+.

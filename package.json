@@ -42,6 +42,7 @@
     "markdown-it-deflist": "~ 0.1.0",
     "markdown-it-emoji": "~ 0.1.3",
     "markdown-it-footnote": "~ 0.1.0",
+    "markdown-it-for-inline": "~ 0.1.0",
     "markdown-it-ins": "~ 0.1.0",
     "markdown-it-mark": "~ 0.1.0",
     "markdown-it-sub": "~ 0.1.0",
