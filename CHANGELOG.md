@@ -1,3 +1,12 @@
+3.0.4 / 2015-01-13
+------------------
+
+- Improved errors processing in url normalizer (for broken sequences).
+- Improved nesting limit processing in inline parser.
+- Reorganised tests & improved coverage.
+- Show inline diffs for failed tests.
+
+
 3.0.3 / 2015-01-11
 ------------------
 
