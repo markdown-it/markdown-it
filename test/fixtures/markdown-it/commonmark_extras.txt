@@ -188,15 +188,11 @@ bar&gt;)</p>
 Coverage. parseLinkTitle
 .
 [foo](bar "ba)
-.
-<p>[foo](bar &quot;ba)</p>
-.
 
-Coverage. parseLinkTitle
-.
 [foo](bar "ba\
 z")
 .
-<p><a href="bar" title="ba
+<p>[foo](bar &quot;ba)</p>
+<p><a href="bar" title="ba\
 z">foo</a></p>
 .
