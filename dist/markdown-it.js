@@ -1,4 +1,4 @@
-/*! markdown-it 3.0.3 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 3.0.4 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2242,9 +2242,7 @@ var open_tag    = replace(/<[A-Za-z][A-Za-z0-9\-]*attribute*\s*\/?>/)
                     ();
 
 var close_tag   = /<\/[A-Za-z][A-Za-z0-9\-]*\s*>/;
-// That's less strict than http://www.w3.org/TR/html5/syntax.html#comments
-// but we do the rest of check in "inline" rule.
-var comment     = /<!--[\s\S]*?-->/;
+var comment     = /<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->/;
 var processing  = /<[?].*?[?]>/;
 var declaration = /<![A-Z]+\s+[^>]*>/;
 var cdata       = /<!\[CDATA\[[\s\S]*?\]\]>/;
@@ -2586,7 +2584,7 @@ function replaceBadSurrogate(ch, pos, orig) {
   // low surrogate
   if (pos === 0) { return '\uFFFD'; }
   code = orig.charCodeAt(pos - 1);
-  if (code < 0xD900 || code > 0xDBFF) { return '\uFFFD'; }
+  if (code < 0xD800 || code > 0xDBFF) { return '\uFFFD'; }
   return ch;
 }
 
@@ -2619,7 +2617,14 @@ function normalizeLink(url) {
 
   // Encoder throws exception on broken surrogate pairs.
   // Fix those first.
-  return encodeURI(fixBrokenSurrogates(normalized));
+
+  try {
+    return encodeURI(fixBrokenSurrogates(normalized));
+  } catch (__) {
+    // This should never happen and left for safety only.
+    /*istanbul ignore next*/
+    return '';
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2725,6 +2730,9 @@ exports.isWhiteSpace      = isWhiteSpace;
 exports.isMdAsciiPunct    = isMdAsciiPunct;
 exports.isPunctChar       = isPunctChar;
 exports.escapeRE          = escapeRE;
+
+// for testing only
+exports.fixBrokenSurrogates = fixBrokenSurrogates;
 
 },{"./entities":1}],6:[function(require,module,exports){
 // Just a shortcut for bulk export
@@ -3669,14 +3677,9 @@ ParserInline.prototype.skipToken = function (state) {
         return;
       }
     }
-    state.pos++;
-
-  } else {
-    // If nesting level exceeded - skip tail to the end. That's not ordinary
-    // situation and we should not care about content.
-    state.pos = state.max;
   }
 
+  state.pos++;
   state.cacheSet(pos, state.pos);
 };
 
@@ -3691,13 +3694,6 @@ ParserInline.prototype.tokenize = function (state) {
       maxNesting = state.md.options.maxNesting;
 
   while (state.pos < end) {
-
-    // If nesting level exceeded - skip tail to the end. That's not ordinary
-    // situation and we should not care about content.
-    if (state.level >= maxNesting) {
-      state.pos = end;
-      break;
-    }
     // Try all possible rules.
     // On success, rule should:
     //
@@ -3705,9 +3701,11 @@ ParserInline.prototype.tokenize = function (state) {
     // - update `state.tokens`
     // - return true
 
-    for (i = 0; i < len; i++) {
-      ok = rules[i](state, false);
-      if (ok) { break; }
+    if (state.level < maxNesting) {
+      for (i = 0; i < len; i++) {
+        ok = rules[i](state, false);
+        if (ok) { break; }
+      }
     }
 
     if (ok) {
@@ -5897,7 +5895,7 @@ function createLinkifier() {
     url: true,
     email: true,
     twitter: false,
-    replaceFn: function (autolinker, match) {
+    replaceFn: function (__, match) {
       // Only collect matched strings but don't change anything.
       switch (match.getType()) {
         /*eslint default-case:0*/
@@ -6043,8 +6041,6 @@ var NULL_RE      = /\u0000/g;
 
 module.exports = function inline(state) {
   var str, lineStart, lastTabPos;
-
-  if (!state.normalizeInput) { return; }
 
   // Normalize newlines
   str = state.src.replace(NEWLINES_RE, '\n');
@@ -6277,7 +6273,6 @@ module.exports = function StateCore(src, md, env) {
   this.env = env;
   this.tokens = [];
   this.inlineMode = false;
-  this.normalizeInput = true;
   this.md = md; // link to parser instance
 };
 
@@ -6412,8 +6407,9 @@ module.exports = function backtick(state, silent) {
 
 },{}],41:[function(require,module,exports){
 // Process *this* and _that_
-
+//
 'use strict';
+
 
 var isWhiteSpace   = require('../common/utils').isWhiteSpace;
 var isPunctChar    = require('../common/utils').isPunctChar;
@@ -6687,7 +6683,6 @@ module.exports = function escape(state, silent) {
 
 var HTML_TAG_RE = require('../common/html_re').HTML_TAG_RE;
 
-var COMMENT_RE = /^<!--[\s\S]*?-->$/;
 
 function isLetter(ch) {
   /*eslint no-bitwise:0*/
@@ -6697,7 +6692,7 @@ function isLetter(ch) {
 
 
 module.exports = function html_inline(state, silent) {
-  var ch, match, max, content, pos = state.pos;
+  var ch, match, max, pos = state.pos;
 
   if (!state.md.options.html) { return false; }
 
@@ -6720,17 +6715,10 @@ module.exports = function html_inline(state, silent) {
   match = state.src.slice(pos).match(HTML_TAG_RE);
   if (!match) { return false; }
 
-  content = state.src.slice(pos, pos + match[0].length);
-
-  // Additional check for comments
-  if (COMMENT_RE.test(content)) {
-    if (/(^>|^->|--|-$)/.test(content.slice(4, -3))) { return false; }
-  }
-
   if (!silent) {
     state.push({
       type: 'html_inline',
-      content: content,
+      content: state.src.slice(pos, pos + match[0].length),
       level: state.level
     });
   }
@@ -7174,13 +7162,22 @@ StateInline.prototype.cacheGet = function (key) {
 module.exports = StateInline;
 
 },{}],49:[function(require,module,exports){
+// ~~strike through~~
+//
 'use strict';
+
+
+var isWhiteSpace   = require('../common/utils').isWhiteSpace;
+var isPunctChar    = require('../common/utils').isPunctChar;
+var isMdAsciiPunct = require('../common/utils').isMdAsciiPunct;
 
 
 // parse sequence of markers,
 // "start" should point at a valid marker
 function scanDelims(state, start) {
   var pos = start, lastChar, nextChar, count,
+      isLastWhiteSpace, isLastPunctChar,
+      isNextWhiteSpace, isNextPunctChar,
       can_open = true,
       can_close = true,
       max = state.posMax,
@@ -7194,9 +7191,28 @@ function scanDelims(state, start) {
 
   nextChar = pos < max ? state.src.charCodeAt(pos) : -1;
 
-  // check whitespace conditions
-  if (nextChar === 0x20 || nextChar === 0x0A) { can_open = false; }
-  if (lastChar === 0x20 || lastChar === 0x0A) { can_close = false; }
+  isLastPunctChar = lastChar >= 0 &&
+    (isMdAsciiPunct(lastChar) || isPunctChar(String.fromCharCode(lastChar)));
+  isNextPunctChar = nextChar >= 0 &&
+    (isMdAsciiPunct(nextChar) || isPunctChar(String.fromCharCode(nextChar)));
+  isLastWhiteSpace = lastChar >= 0 && isWhiteSpace(lastChar);
+  isNextWhiteSpace = nextChar >= 0 && isWhiteSpace(nextChar);
+
+  if (isNextWhiteSpace) {
+    can_open = false;
+  } else if (isNextPunctChar) {
+    if (!(isLastWhiteSpace || isLastPunctChar || lastChar === -1)) {
+      can_open = false;
+    }
+  }
+
+  if (isLastWhiteSpace) {
+    can_close = false;
+  } else if (isLastPunctChar) {
+    if (!(isNextWhiteSpace || isNextPunctChar || nextChar === -1)) {
+      can_close = false;
+    }
+  }
 
   return {
     can_open: can_open,
@@ -7277,7 +7293,7 @@ module.exports = function strikethrough(state, silent) {
   return true;
 };
 
-},{}],50:[function(require,module,exports){
+},{"../common/utils":5}],50:[function(require,module,exports){
 // Skip text characters for text token, place those to pending buffer
 // and increment current pos
 
@@ -7357,9 +7373,9 @@ module.exports = function text(state, silent) {
 
 	/*!
 	 * Autolinker.js
-	 * 0.15.0
+	 * 0.15.2
 	 *
-	 * Copyright(c) 2014 Gregory Jacobs <greg@greg-jacobs.com>
+	 * Copyright(c) 2015 Gregory Jacobs <greg@greg-jacobs.com>
 	 * MIT Licensed. http://www.opensource.org/licenses/mit-license.php
 	 *
 	 * https://github.com/gregjacobs/Autolinker.js
@@ -7551,7 +7567,7 @@ module.exports = function text(state, silent) {
 		 * 
 		 * Ignoring &amp; as it could be part of a query string -- handling it separately.
 		 */
-		htmlCharacterEntitiesRegex: /(&nbsp;|&#160;|&lt;|&#60;|&gt;|&#62;)/gi,
+		htmlCharacterEntitiesRegex: /(&nbsp;|&#160;|&lt;|&#60;|&gt;|&#62;|&quot;|&#34;|&#39;)/gi,
 
 		/**
 		 * @private
@@ -8198,7 +8214,7 @@ module.exports = function text(state, silent) {
 		htmlRegex : (function() {
 			var tagNameRegex = /[0-9a-zA-Z][0-9a-zA-Z:]*/,
 			    attrNameRegex = /[^\s\0"'>\/=\x01-\x1F\x7F]+/,   // the unicode range accounts for excluding control chars, and the delete char
-			    attrValueRegex = /(?:".*?"|'.*?'|[^'"=<>`\s]+)/, // double quoted, single quoted, or unquoted attribute values
+			    attrValueRegex = /(?:"[^"]*?"|'[^']*?'|[^'"=<>`\s]+)/, // double quoted, single quoted, or unquoted attribute values
 			    nameEqualsValueRegex = attrNameRegex.source + '(?:\\s*=\\s*' + attrValueRegex.source + ')?';  // optional '=[value]'
 
 			return new RegExp( [
