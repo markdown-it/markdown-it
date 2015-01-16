@@ -196,3 +196,27 @@ z")
 <p><a href="bar" title="ba\
 z">foo</a></p>
 .
+
+Image coverage
+
+.
+![test]( x )
+.
+<p><img src="x" alt="test"></p>
+.
+
+.
+![test][foo]
+
+[bar]: 123
+.
+<p>![test][foo]</p>
+.
+
+.
+![test][[[
+
+[bar]: 123
+.
+<p>![test][[[</p>
+.
