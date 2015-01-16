@@ -32,7 +32,7 @@
     "benchmark": "~1.0.0",
     "browserify": "*",
     "chai": "~1.10.0",
-    "commonmark": "~ 0.15.0",
+    "commonmark": "~ 0.16.0",
     "coveralls": "~2.11.2",
     "eslint": "0.11.0",
     "eslint-plugin-nodeca": "^1.0.0",
