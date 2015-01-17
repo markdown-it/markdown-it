@@ -197,14 +197,13 @@ z")
 z">foo</a></p>
 .
 
-Image coverage
 
+Coverage. Image
 .
 ![test]( x )
 .
 <p><img src="x" alt="test"></p>
 .
-
 .
 ![test][foo]
 
@@ -212,11 +211,23 @@ Image coverage
 .
 <p>![test][foo]</p>
 .
-
 .
 ![test][[[
 
 [bar]: 123
 .
 <p>![test][[[</p>
+.
+.
+![test](
+.
+<p>![test](</p>
+.
+
+
+Coverage. Link
+.
+[test](
+.
+<p>[test](</p>
 .
