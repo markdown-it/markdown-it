@@ -77,3 +77,11 @@ javascript:alert(1)
 <p>javascript:alert(1)</p>
 <p>javascript:alert(1)</p>
 .
+
+References
+
+.
+[test]: javascript:alert(1)
+.
+<p>[test]: javascript:alert(1)</p>
+.

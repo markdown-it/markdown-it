@@ -231,3 +231,15 @@ Coverage. Link
 .
 <p>[test](</p>
 .
+
+Coverage. Reference
+.
+[
+test\
+]: 123
+foo
+bar
+.
+<p>foo
+bar</p>
+.
