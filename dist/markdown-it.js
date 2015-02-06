@@ -1,4 +1,4 @@
-/*! markdown-it 3.0.4 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 3.0.5 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2852,11 +2852,6 @@ module.exports = function parseLinkLabel(state, start, disableNested) {
       max = state.posMax,
       oldPos = state.pos;
 
-  if (state.labelUnmatchedScopes) {
-    state.labelUnmatchedScopes--;
-    return -1;
-  }
-
   state.pos = start + 1;
   level = 1;
 
@@ -2885,9 +2880,6 @@ module.exports = function parseLinkLabel(state, start, disableNested) {
 
   if (found) {
     labelEnd = state.pos;
-    state.labelUnmatchedScopes = 0;
-  } else {
-    state.labelUnmatchedScopes = level - 1;
   }
 
   // restore old state
@@ -3611,10 +3603,10 @@ var _rules = [
 var BAD_PROTOCOLS = [ 'vbscript', 'javascript', 'file' ];
 
 function validateLink(url) {
-  var str = url.trim().toLowerCase();
-
   // Care about digital entities "javascript&#x3A;alert(1)"
-  str = replaceEntities(str);
+  var str = replaceEntities(url);
+
+  str = str.trim().toLowerCase();
 
   if (str.indexOf(':') >= 0 && BAD_PROTOCOLS.indexOf(str.split(':')[0]) >= 0) {
     return false;
@@ -4565,8 +4557,6 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
       pos = state.bMarks[startLine] + state.tShift[startLine],
       max = state.eMarks[startLine];
 
-  if (pos > max) { return false; }
-
   // check the block quote marker
   if (state.src.charCodeAt(pos++) !== 0x3E/* > */) { return false; }
 
@@ -4826,8 +4816,6 @@ module.exports = function heading(state, startLine, endLine, silent) {
       pos = state.bMarks[startLine] + state.tShift[startLine],
       max = state.eMarks[startLine];
 
-  if (pos >= max) { return false; }
-
   ch  = state.src.charCodeAt(pos);
 
   if (ch !== 0x23/* # */ || pos >= max) { return false; }
@@ -4883,12 +4871,8 @@ module.exports = function heading(state, startLine, endLine, silent) {
 
 module.exports = function hr(state, startLine, endLine, silent) {
   var marker, cnt, ch,
-      pos = state.bMarks[startLine],
+      pos = state.bMarks[startLine] + state.tShift[startLine],
       max = state.eMarks[startLine];
-
-  pos += state.tShift[startLine];
-
-  if (pos > max) { return false; }
 
   marker = state.src.charCodeAt(pos++);
 
@@ -5069,8 +5053,6 @@ function skipBulletListMarker(state, startLine) {
   pos = state.bMarks[startLine] + state.tShift[startLine];
   max = state.eMarks[startLine];
 
-  if (pos >= max) { return -1; }
-
   marker = state.src.charCodeAt(pos++);
   // Check bullet
   if (marker !== 0x2A/* * */ &&
@@ -5094,6 +5076,7 @@ function skipOrderedListMarker(state, startLine) {
       pos = state.bMarks[startLine] + state.tShift[startLine],
       max = state.eMarks[startLine];
 
+  // List marker should have at least 2 chars (digit + dot)
   if (pos + 1 >= max) { return -1; }
 
   ch = state.src.charCodeAt(pos++);
@@ -5222,10 +5205,6 @@ module.exports = function list(state, startLine, endLine, silent) {
     // If we have more than 4 spaces, the indent is 1
     // (the rest is just indented code block)
     if (indentAfterMarker > 4) { indentAfterMarker = 1; }
-
-    // If indent is less than 1, assume that it's one, example:
-    //  "-\n  test"
-    if (indentAfterMarker < 1) { indentAfterMarker = 1; }
 
     // "  -  test"
     //  ^^^^^ - calculating total length of this thing
@@ -5358,26 +5337,24 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
   content = state.getLines(startLine, nextLine, state.blkIndent, false).trim();
 
   state.line = nextLine;
-  if (content.length) {
-    state.tokens.push({
-      type: 'paragraph_open',
-      tight: false,
-      lines: [ startLine, state.line ],
-      level: state.level
-    });
-    state.tokens.push({
-      type: 'inline',
-      content: content,
-      level: state.level + 1,
-      lines: [ startLine, state.line ],
-      children: []
-    });
-    state.tokens.push({
-      type: 'paragraph_close',
-      tight: false,
-      level: state.level
-    });
-  }
+  state.tokens.push({
+    type: 'paragraph_open',
+    tight: false,
+    lines: [ startLine, state.line ],
+    level: state.level
+  });
+  state.tokens.push({
+    type: 'inline',
+    content: content,
+    level: state.level + 1,
+    lines: [ startLine, state.line ],
+    children: []
+  });
+  state.tokens.push({
+    type: 'paragraph_close',
+    tight: false,
+    level: state.level
+  });
 
   return true;
 };
@@ -5412,14 +5389,13 @@ module.exports = function reference(state, startLine, _endLine, silent) {
       max = state.eMarks[startLine],
       nextLine = startLine + 1;
 
-  if (pos >= max) { return false; }
   if (state.src.charCodeAt(pos) !== 0x5B/* [ */) { return false; }
 
   endLine = state.lineMax;
 
   // jump line-by-line until empty one or EOF
   if (nextLine < endLine && !state.isEmpty(nextLine)) {
-    terminatorRules = state.md.block.ruler.getRules('references');
+    terminatorRules = state.md.block.ruler.getRules('reference');
 
     for (; nextLine < endLine && !state.isEmpty(nextLine); nextLine++) {
       // this would be a code block normally, but after paragraph
@@ -5730,7 +5706,7 @@ module.exports = function table(state, startLine, endLine, silent) {
   if (!/^[-:| ]+$/.test(lineText)) { return false; }
 
   rows = lineText.split('|');
-  if (rows <= 2) { return false; }
+  if (rows.length < 2) { return false; }
   aligns = [];
   for (i = 0; i < rows.length; i++) {
     t = rows[i].trim();
@@ -7106,11 +7082,6 @@ function StateInline(src, md, env, outTokens) {
 
   this.cache = [];        // Stores { start: end } pairs. Useful for backtrack
                           // optimization of pairs parse (emphasis, strikes).
-
-  // Link parser state vars
-
-  this.labelUnmatchedScopes = 0; // Track unpaired `[` for link labels
-                                 // (backtrack optimization)
 }
 
 
