@@ -1,3 +1,12 @@
+3.0.5 / 2015-02-06
+------------------
+
+- Fixed link validator - could skip some kind of javascript links with uppercase
+  digital entities (thanks to @opennota)
+- Significantly improved tests coverage (with dead code removal and other
+  related things).
+
+
 3.0.4 / 2015-01-13
 ------------------
 
