@@ -212,10 +212,10 @@ Selected samples: (1 of 27)
  > spec
 
 Sample: spec.txt (110610 bytes)
- > commonmark-reference x 60.70 ops/sec ±7.76% (61 runs sampled)
- > current x 80.00 ops/sec ±2.03% (68 runs sampled)
- > current-commonmark x 103 ops/sec ±0.72% (76 runs sampled)
- > marked-0.3.2 x 22.65 ops/sec ±3.07% (41 runs sampled)
+ > commonmark-reference x 68.63 ops/sec ±6.53% (72 runs sampled)
+ > current x 79.62 ops/sec ±3.22% (80 runs sampled)
+ > current-commonmark x 103 ops/sec ±1.10% (76 runs sampled)
+ > marked-0.3.2 x 23.14 ops/sec ±1.66% (42 runs sampled)
 ```
 
 As you can see, `markdown-it` doesn't pay with speed for it's flexibility.

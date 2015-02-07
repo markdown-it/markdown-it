@@ -1,7 +1,7 @@
 'use strict';
 
 var commonmark = require('commonmark');
-var parser = new commonmark.DocParser();
+var parser = new commonmark.Parser();
 var renderer = new commonmark.HtmlRenderer();
 
 exports.run = function(data) {
