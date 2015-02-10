@@ -1,5 +1,4 @@
-Tests from marked:
-
+Simple:
 .
 | Heading 1 | Heading 2
 | --------- | ---------
@@ -17,6 +16,7 @@ Tests from marked:
 </table>
 .
 
+Column alignment:
 .
 | Header 1 | Header 2 | Header 3 | Header 4 |
 | :------: | -------: | :------- | -------- |
@@ -34,23 +34,7 @@ Tests from marked:
 </table>
 .
 
-.
-Header 1 | Header 2
--------- | --------
-Cell 1   | Cell 2
-Cell 3   | Cell 4
-.
-<table>
-<thead>
-<tr><th>Header 1</th><th>Header 2</th></tr>
-</thead>
-<tbody>
-<tr><td>Cell 1</td><td>Cell 2</td></tr>
-<tr><td>Cell 3</td><td>Cell 4</td></tr>
-</tbody>
-</table>
-.
-
+Nested emphases:
 .
 Header 1|Header 2|Header 3|Header 4
 :-------|:------:|-------:|--------
@@ -69,7 +53,6 @@ Cell 1  |Cell 2  |Cell 3  |Cell 4
 .
 
 Nested tables inside blockquotes:
-
 .
 > foo|foo
 > ---|---
@@ -90,7 +73,6 @@ baz|baz
 .
 
 Nested tables inside lists:
-
 .
 -   foo|foo
     ---|---
@@ -112,8 +94,7 @@ Nested tables inside lists:
 <p>baz|baz</p>
 .
 
-Minimal one-column table test:
-
+Minimal one-column:
 .
 | foo
 |----
@@ -127,4 +108,118 @@ Minimal one-column table test:
 <tr><td>test2</td></tr>
 </tbody>
 </table>
+.
+
+Second line indent should not be smaller than first:
+.
+-   foo|foo
+---|---
+bar|bar
+.
+<ul>
+<li>foo|foo
+—|---
+bar|bar</li>
+</ul>
+.
+
+Second line should not contain symbols except "-", ":", "|" and " ":
+.
+foo|foo
+---|---s
+bar|bar
+.
+<p>foo|foo
+—|---s
+bar|bar</p>
+.
+
+Second line should contain "|" symbol:
+.
+foo|foo
+---:---
+bar|bar
+.
+<p>foo|foo
+—:---
+bar|bar</p>
+.
+
+Second line should not have empty columns in the middle:
+.
+foo|foo
+---||---
+bar|bar
+.
+<p>foo|foo
+—||—
+bar|bar</p>
+.
+
+Wrong alignment symbol position:
+.
+foo|foo
+---|-::-
+bar|bar
+.
+<p>foo|foo
+—|-::-
+bar|bar</p>
+.
+
+
+Title line should contain "|" symbol:
+.
+foo
+---|---
+bar|bar
+.
+<p>foo
+—|---
+bar|bar</p>
+.
+
+Title line should have correct column count:
+.
+foo|foo
+---|---|---
+bar|bar
+.
+<p>foo|foo
+—|---|—
+bar|bar</p>
+.
+
+Should terminate paragraph:
+.
+paragraph
+foo|foo
+---|---
+bar|bar
+.
+<p>paragraph</p>
+<table>
+<thead>
+<tr><th>foo</th><th>foo</th></tr>
+</thead>
+<tbody>
+<tr><td>bar</td><td>bar</td></tr>
+</tbody>
+</table>
+.
+
+Should be terminated via row without "|" symbol:
+.
+foo|foo
+---|---
+paragraph
+.
+<table>
+<thead>
+<tr><th>foo</th><th>foo</th></tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p>paragraph</p>
 .
