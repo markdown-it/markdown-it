@@ -6,5 +6,5 @@ If you just use `markdown-it` in your app, see
 
 __Content__:
 
-- [Parser architecture & design principles](architerture.md)
+- [Parser architecture & design principles](architecture.md)
 - [Some guidelines for plugin developpers](development.md)
