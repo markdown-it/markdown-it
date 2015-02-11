@@ -233,7 +233,8 @@
     return _scrollMap;
   }
 
-  function syncScroll() {
+  // Synchronize scroll position from source to result
+  var syncResultScroll = _.debounce(function () {
     var textarea   = $('.source'),
         lineHeight = parseFloat(textarea.css('line-height')),
         lineNo, posTo;
@@ -244,7 +245,41 @@
     $('.result-html').stop(true).animate({
       scrollTop: posTo
     }, 100, 'linear');
-  }
+  }, 50, { maxWait: 50 });
+
+  // Synchronize scroll position from result to source
+  var syncSrcScroll = _.debounce(function () {
+    var resultHtml = $('.result-html'),
+        scrollTop  = resultHtml.scrollTop(),
+        textarea   = $('.source'),
+        lineHeight = parseFloat(textarea.css('line-height')),
+        lines,
+        i,
+        line;
+
+    if (!scrollMap) { scrollMap = buildScrollMap(); }
+
+    lines = Object.keys(scrollMap);
+
+    if (lines.length < 1) {
+      return;
+    }
+
+    line = lines[0];
+
+    for (i = 1; i < lines.length; i++) {
+      if (scrollMap[lines[i]] < scrollTop) {
+        line = lines[i];
+        continue;
+      }
+
+      break;
+    }
+
+    textarea.stop(true).animate({
+      scrollTop: lineHeight * line
+    }, 100, 'linear');
+  }, 50, { maxWait: 50 });
 
   //////////////////////////////////////////////////////////////////////////////
   // Init on page load
@@ -341,7 +376,16 @@
 
     // Setup listeners
     $('.source').on('keyup paste cut mouseup', _.debounce(updateResult, 300, { maxWait: 500 }));
-    $('.source').on('scroll', _.debounce(syncScroll, 50, { maxWait: 50 }));
+
+    $('.source').on('touchstart mouseover', function () {
+      $('.result-html').off('scroll');
+      $('.source').on('scroll', syncResultScroll);
+    });
+
+    $('.result-html').on('touchstart mouseover', function () {
+      $('.source').off('scroll');
+      $('.result-html').on('scroll', syncSrcScroll);
+    });
 
     $('.source-clear').on('click', function (event) {
       $('.source').val('');
