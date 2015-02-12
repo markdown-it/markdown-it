@@ -1,4 +1,4 @@
-/*! markdown-it 3.0.5 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 3.0.6 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2714,22 +2714,32 @@ function isMdAsciiPunct(ch) {
   }
 }
 
+// Hepler to unify [reference labels].
+//
+function normalizeReference(str) {
+  // use .toUpperCase() instead of .toLowerCase()
+  // here to avoid a conflict with Object.prototype
+  // members (most notably, `__proto__`)
+  return str.trim().replace(/\s+/g, ' ').toUpperCase();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
-exports.assign            = assign;
-exports.isString          = isString;
-exports.has               = has;
-exports.unescapeMd        = unescapeMd;
-exports.isValidEntityCode = isValidEntityCode;
-exports.fromCodePoint     = fromCodePoint;
-exports.replaceEntities   = replaceEntities;
-exports.escapeHtml        = escapeHtml;
-exports.arrayReplaceAt    = arrayReplaceAt;
-exports.normalizeLink     = normalizeLink;
-exports.isWhiteSpace      = isWhiteSpace;
-exports.isMdAsciiPunct    = isMdAsciiPunct;
-exports.isPunctChar       = isPunctChar;
-exports.escapeRE          = escapeRE;
+exports.assign              = assign;
+exports.isString            = isString;
+exports.has                 = has;
+exports.unescapeMd          = unescapeMd;
+exports.isValidEntityCode   = isValidEntityCode;
+exports.fromCodePoint       = fromCodePoint;
+exports.replaceEntities     = replaceEntities;
+exports.escapeHtml          = escapeHtml;
+exports.arrayReplaceAt      = arrayReplaceAt;
+exports.normalizeLink       = normalizeLink;
+exports.isWhiteSpace        = isWhiteSpace;
+exports.isMdAsciiPunct      = isMdAsciiPunct;
+exports.isPunctChar         = isPunctChar;
+exports.escapeRE            = escapeRE;
+exports.normalizeReference  = normalizeReference;
 
 // for testing only
 exports.fixBrokenSurrogates = fixBrokenSurrogates;
@@ -2743,20 +2753,7 @@ exports.parseLinkLabel       = require('./parse_link_label');
 exports.parseLinkDestination = require('./parse_link_destination');
 exports.parseLinkTitle       = require('./parse_link_title');
 
-},{"./parse_link_destination":8,"./parse_link_label":9,"./parse_link_title":10}],7:[function(require,module,exports){
-'use strict';
-
-
-// Hepler to [reference labels]. No better place for this code :)
-// It's only for refs/links and should not be exported anywhere.
-module.exports = function normalizeReference(str) {
-  // use .toUpperCase() instead of .toLowerCase()
-  // here to avoid a conflict with Object.prototype
-  // members (most notably, `__proto__`)
-  return str.trim().replace(/\s+/g, ' ').toUpperCase();
-};
-
-},{}],8:[function(require,module,exports){
+},{"./parse_link_destination":7,"./parse_link_label":8,"./parse_link_title":9}],7:[function(require,module,exports){
 // Parse link destination
 //
 'use strict';
@@ -2838,7 +2835,7 @@ module.exports = function parseLinkDestination(str, pos, max) {
   return result;
 };
 
-},{"../common/utils":5}],9:[function(require,module,exports){
+},{"../common/utils":5}],8:[function(require,module,exports){
 // Parse link label
 //
 // this function assumes that first character ("[") already matches;
@@ -2888,7 +2885,7 @@ module.exports = function parseLinkLabel(state, start, disableNested) {
   return labelEnd;
 };
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // Parse link title
 //
 'use strict';
@@ -2943,7 +2940,7 @@ module.exports = function parseLinkTitle(str, pos, max) {
   return result;
 };
 
-},{"../common/utils":5}],11:[function(require,module,exports){
+},{"../common/utils":5}],10:[function(require,module,exports){
 // Main perser class
 
 'use strict';
@@ -3385,7 +3382,7 @@ MarkdownIt.prototype.renderInline = function (src, env) {
 
 module.exports = MarkdownIt;
 
-},{"./common/utils":5,"./helpers":6,"./parser_block":12,"./parser_core":13,"./parser_inline":14,"./presets/commonmark":15,"./presets/default":16,"./presets/zero":17,"./renderer":18}],12:[function(require,module,exports){
+},{"./common/utils":5,"./helpers":6,"./parser_block":11,"./parser_core":12,"./parser_inline":13,"./presets/commonmark":14,"./presets/default":15,"./presets/zero":16,"./renderer":17}],11:[function(require,module,exports){
 /** internal
  * class ParserBlock
  *
@@ -3403,7 +3400,7 @@ var _rules = [
   [ 'blockquote', require('./rules_block/blockquote'), [ 'paragraph', 'reference', 'blockquote', 'list' ] ],
   [ 'hr',         require('./rules_block/hr'),         [ 'paragraph', 'reference', 'blockquote', 'list' ] ],
   [ 'list',       require('./rules_block/list'),       [ 'paragraph', 'reference', 'blockquote' ] ],
-  [ 'reference',  require('./rules_block/reference'),  [ 'reference' ] ],
+  [ 'reference',  require('./rules_block/reference') ],
   [ 'heading',    require('./rules_block/heading'),    [ 'paragraph', 'reference', 'blockquote' ] ],
   [ 'lheading',   require('./rules_block/lheading') ],
   [ 'html_block', require('./rules_block/html_block'), [ 'paragraph', 'reference', 'blockquote' ] ],
@@ -3510,7 +3507,7 @@ ParserBlock.prototype.State = require('./rules_block/state_block');
 
 module.exports = ParserBlock;
 
-},{"./ruler":19,"./rules_block/blockquote":20,"./rules_block/code":21,"./rules_block/fence":22,"./rules_block/heading":23,"./rules_block/hr":24,"./rules_block/html_block":25,"./rules_block/lheading":26,"./rules_block/list":27,"./rules_block/paragraph":28,"./rules_block/reference":29,"./rules_block/state_block":30,"./rules_block/table":31}],13:[function(require,module,exports){
+},{"./ruler":18,"./rules_block/blockquote":19,"./rules_block/code":20,"./rules_block/fence":21,"./rules_block/heading":22,"./rules_block/hr":23,"./rules_block/html_block":24,"./rules_block/lheading":25,"./rules_block/list":26,"./rules_block/paragraph":27,"./rules_block/reference":28,"./rules_block/state_block":29,"./rules_block/table":30}],12:[function(require,module,exports){
 /** internal
  * class Core
  *
@@ -3570,7 +3567,7 @@ Core.prototype.State = require('./rules_core/state_core');
 
 module.exports = Core;
 
-},{"./ruler":19,"./rules_core/block":32,"./rules_core/inline":33,"./rules_core/linkify":34,"./rules_core/normalize":35,"./rules_core/replacements":36,"./rules_core/smartquotes":37,"./rules_core/state_core":38}],14:[function(require,module,exports){
+},{"./ruler":18,"./rules_core/block":31,"./rules_core/inline":32,"./rules_core/linkify":33,"./rules_core/normalize":34,"./rules_core/replacements":35,"./rules_core/smartquotes":36,"./rules_core/state_core":37}],13:[function(require,module,exports){
 /** internal
  * class ParserInline
  *
@@ -3731,7 +3728,7 @@ ParserInline.prototype.State = require('./rules_inline/state_inline');
 
 module.exports = ParserInline;
 
-},{"./common/utils":5,"./ruler":19,"./rules_inline/autolink":39,"./rules_inline/backticks":40,"./rules_inline/emphasis":41,"./rules_inline/entity":42,"./rules_inline/escape":43,"./rules_inline/html_inline":44,"./rules_inline/image":45,"./rules_inline/link":46,"./rules_inline/newline":47,"./rules_inline/state_inline":48,"./rules_inline/strikethrough":49,"./rules_inline/text":50}],15:[function(require,module,exports){
+},{"./common/utils":5,"./ruler":18,"./rules_inline/autolink":38,"./rules_inline/backticks":39,"./rules_inline/emphasis":40,"./rules_inline/entity":41,"./rules_inline/escape":42,"./rules_inline/html_inline":43,"./rules_inline/image":44,"./rules_inline/link":45,"./rules_inline/newline":46,"./rules_inline/state_inline":47,"./rules_inline/strikethrough":48,"./rules_inline/text":49}],14:[function(require,module,exports){
 // Commonmark default options
 
 'use strict';
@@ -3804,7 +3801,7 @@ module.exports = {
   }
 };
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 // markdown-it default options
 
 'use strict';
@@ -3843,7 +3840,7 @@ module.exports = {
   }
 };
 
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // "Zero" preset, with nothing enabled. Useful for manual configuring of simple
 // modes. For example, to parse bold/italic only.
 
@@ -3899,7 +3896,7 @@ module.exports = {
   }
 };
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * class Renderer
  *
@@ -4190,7 +4187,7 @@ Renderer.prototype.render = function (tokens, options, env) {
 
 module.exports = Renderer;
 
-},{"./common/utils":5}],19:[function(require,module,exports){
+},{"./common/utils":5}],18:[function(require,module,exports){
 /**
  * class Ruler
  *
@@ -4544,7 +4541,7 @@ Ruler.prototype.getRules = function (chainName) {
 
 module.exports = Ruler;
 
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // Block quotes
 
 'use strict';
@@ -4675,7 +4672,7 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // Code block (4 spaces padded)
 
 'use strict';
@@ -4712,7 +4709,7 @@ module.exports = function code(state, startLine, endLine/*, silent*/) {
   return true;
 };
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // fences (``` lang, ~~~ lang)
 
 'use strict';
@@ -4805,7 +4802,7 @@ module.exports = function fence(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // heading (#, ##, ...)
 
 'use strict';
@@ -4863,7 +4860,7 @@ module.exports = function heading(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // Horizontal rule
 
 'use strict';
@@ -4906,7 +4903,7 @@ module.exports = function hr(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // HTML block
 
 'use strict';
@@ -4982,7 +4979,7 @@ module.exports = function html_block(state, startLine, endLine, silent) {
   return true;
 };
 
-},{"../common/html_blocks":2}],26:[function(require,module,exports){
+},{"../common/html_blocks":2}],25:[function(require,module,exports){
 // lheading (---, ===)
 
 'use strict';
@@ -5039,7 +5036,7 @@ module.exports = function lheading(state, startLine, endLine/*, silent*/) {
   return true;
 };
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 // Lists
 
 'use strict';
@@ -5300,7 +5297,7 @@ module.exports = function list(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 // Paragraph
 
 'use strict';
@@ -5359,13 +5356,13 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
   return true;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 
 var parseLinkDestination = require('../helpers/parse_link_destination');
 var parseLinkTitle       = require('../helpers/parse_link_title');
-var normalizeReference   = require('../helpers/normalize_reference');
+var normalizeReference   = require('../common/utils').normalizeReference;
 
 
 module.exports = function reference(state, startLine, _endLine, silent) {
@@ -5390,6 +5387,17 @@ module.exports = function reference(state, startLine, _endLine, silent) {
       nextLine = startLine + 1;
 
   if (state.src.charCodeAt(pos) !== 0x5B/* [ */) { return false; }
+
+  // Simple check to quickly interrupt scan on [link](url) at the start of line.
+  // Can be useful on practice: https://github.com/markdown-it/markdown-it/issues/54
+  while (++pos < max) {
+    if (state.src.charCodeAt(pos) === 0x5D /* ] */ &&
+        state.src.charCodeAt(pos - 1) !== 0x5C/* \ */) {
+      if (pos + 1 === max) { return false; }
+      if (state.src.charCodeAt(pos + 1) !== 0x3A/* : */) { return false; }
+      break;
+    }
+  }
 
   endLine = state.lineMax;
 
@@ -5511,7 +5519,7 @@ module.exports = function reference(state, startLine, _endLine, silent) {
   return true;
 };
 
-},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_title":10}],30:[function(require,module,exports){
+},{"../common/utils":5,"../helpers/parse_link_destination":7,"../helpers/parse_link_title":9}],29:[function(require,module,exports){
 // Parser state class
 
 'use strict';
@@ -5669,7 +5677,7 @@ StateBlock.prototype.getLines = function getLines(begin, end, indent, keepLastLF
 
 module.exports = StateBlock;
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // GFM table, non-standard
 
 'use strict';
@@ -5680,6 +5688,34 @@ function getLine(state, line) {
       max = state.eMarks[line];
 
   return state.src.substr(pos, max - pos);
+}
+
+function escapedSplit(str) {
+  var result = [],
+      pos = 0,
+      max = str.length,
+      ch,
+      escapes = 0,
+      lastPos = 0;
+
+  ch  = str.charCodeAt(pos);
+
+  while (pos < max) {
+    if (ch === 0x7c/* | */ && (escapes % 2 === 0)) {
+      result.push(str.substring(lastPos, pos));
+      lastPos = pos + 1;
+    } else if (ch === 0x5c/* \ */) {
+      escapes++;
+    } else {
+      escapes = 0;
+    }
+
+    ch  = str.charCodeAt(++pos);
+  }
+
+  result.push(str.substring(lastPos));
+
+  return result;
 }
 
 
@@ -5732,7 +5768,7 @@ module.exports = function table(state, startLine, endLine, silent) {
 
   lineText = getLine(state, startLine).trim();
   if (lineText.indexOf('|') === -1) { return false; }
-  rows = lineText.replace(/^\||\|$/g, '').split('|');
+  rows = escapedSplit(lineText.replace(/^\||\|$/g, ''));
   if (aligns.length !== rows.length) { return false; }
   if (silent) { return true; }
 
@@ -5782,14 +5818,14 @@ module.exports = function table(state, startLine, endLine, silent) {
 
     lineText = getLine(state, nextLine).trim();
     if (lineText.indexOf('|') === -1) { break; }
-    rows = lineText.replace(/^\||\|$/g, '').split('|');
+    rows = escapedSplit(lineText.replace(/^\||\|$/g, ''));
 
     state.tokens.push({ type: 'tr_open', level: state.level++ });
     for (i = 0; i < rows.length; i++) {
       state.tokens.push({ type: 'td_open', align: aligns[i], level: state.level++ });
       state.tokens.push({
         type: 'inline',
-        content: rows[i].replace(/^\|? *| *\|?$/g, ''),
+        content: rows[i].trim(),
         level: state.level,
         children: []
       });
@@ -5805,7 +5841,7 @@ module.exports = function table(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 module.exports = function block(state) {
@@ -5824,7 +5860,7 @@ module.exports = function block(state) {
   }
 };
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 module.exports = function inline(state) {
@@ -5839,7 +5875,7 @@ module.exports = function inline(state) {
   }
 };
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // Replace link-like texts with link nodes.
 //
 // Currently restricted by `inline.validateLink()` to http/https/ftp
@@ -6004,7 +6040,7 @@ module.exports = function linkify(state) {
   }
 };
 
-},{"../common/utils":5,"autolinker":51}],35:[function(require,module,exports){
+},{"../common/utils":5,"autolinker":50}],34:[function(require,module,exports){
 // Normalize input string
 
 'use strict';
@@ -6045,7 +6081,7 @@ module.exports = function inline(state) {
   state.src = str;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // Simple typographyc replacements
 //
 // '' → ‘’
@@ -6121,7 +6157,7 @@ module.exports = function replace(state) {
   }
 };
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // Convert straight quotation marks to typographic ones
 //
 'use strict';
@@ -6239,7 +6275,7 @@ module.exports = function smartquotes(state) {
   }
 };
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // Core state object
 //
 'use strict';
@@ -6252,7 +6288,7 @@ module.exports = function StateCore(src, md, env) {
   this.md = md; // link to parser instance
 };
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 // Process autolinks '<protocol:...>'
 
 'use strict';
@@ -6334,7 +6370,7 @@ module.exports = function autolink(state, silent) {
   return false;
 };
 
-},{"../common/url_schemas":4,"../common/utils":5}],40:[function(require,module,exports){
+},{"../common/url_schemas":4,"../common/utils":5}],39:[function(require,module,exports){
 // Parse backticks
 
 'use strict';
@@ -6381,7 +6417,7 @@ module.exports = function backtick(state, silent) {
   return true;
 };
 
-},{}],41:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 // Process *this* and _that_
 //
 'use strict';
@@ -6550,7 +6586,7 @@ module.exports = function emphasis(state, silent) {
   return true;
 };
 
-},{"../common/utils":5}],42:[function(require,module,exports){
+},{"../common/utils":5}],41:[function(require,module,exports){
 // Process html entity - &#123;, &#xAF;, &quot;, ...
 
 'use strict';
@@ -6600,7 +6636,7 @@ module.exports = function entity(state, silent) {
   return true;
 };
 
-},{"../common/entities":1,"../common/utils":5}],43:[function(require,module,exports){
+},{"../common/entities":1,"../common/utils":5}],42:[function(require,module,exports){
 // Proceess escaped chars and hardbreaks
 
 'use strict';
@@ -6651,7 +6687,7 @@ module.exports = function escape(state, silent) {
   return true;
 };
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // Process html tags
 
 'use strict';
@@ -6702,7 +6738,7 @@ module.exports = function html_inline(state, silent) {
   return true;
 };
 
-},{"../common/html_re":3}],45:[function(require,module,exports){
+},{"../common/html_re":3}],44:[function(require,module,exports){
 // Process ![image](<src> "title")
 
 'use strict';
@@ -6710,7 +6746,7 @@ module.exports = function html_inline(state, silent) {
 var parseLinkLabel       = require('../helpers/parse_link_label');
 var parseLinkDestination = require('../helpers/parse_link_destination');
 var parseLinkTitle       = require('../helpers/parse_link_title');
-var normalizeReference   = require('../helpers/normalize_reference');
+var normalizeReference   = require('../common/utils').normalizeReference;
 
 
 module.exports = function image(state, silent) {
@@ -6861,7 +6897,7 @@ module.exports = function image(state, silent) {
   return true;
 };
 
-},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_label":9,"../helpers/parse_link_title":10}],46:[function(require,module,exports){
+},{"../common/utils":5,"../helpers/parse_link_destination":7,"../helpers/parse_link_label":8,"../helpers/parse_link_title":9}],45:[function(require,module,exports){
 // Process [link](<to> "stuff")
 
 'use strict';
@@ -6869,7 +6905,7 @@ module.exports = function image(state, silent) {
 var parseLinkLabel       = require('../helpers/parse_link_label');
 var parseLinkDestination = require('../helpers/parse_link_destination');
 var parseLinkTitle       = require('../helpers/parse_link_title');
-var normalizeReference   = require('../helpers/normalize_reference');
+var normalizeReference   = require('../common/utils').normalizeReference;
 
 
 module.exports = function link(state, silent) {
@@ -7012,7 +7048,7 @@ module.exports = function link(state, silent) {
   return true;
 };
 
-},{"../helpers/normalize_reference":7,"../helpers/parse_link_destination":8,"../helpers/parse_link_label":9,"../helpers/parse_link_title":10}],47:[function(require,module,exports){
+},{"../common/utils":5,"../helpers/parse_link_destination":7,"../helpers/parse_link_label":8,"../helpers/parse_link_title":9}],46:[function(require,module,exports){
 // Proceess '\n'
 
 'use strict';
@@ -7062,7 +7098,7 @@ module.exports = function newline(state, silent) {
   return true;
 };
 
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 // Inline parser state
 
 'use strict';
@@ -7132,7 +7168,7 @@ StateInline.prototype.cacheGet = function (key) {
 
 module.exports = StateInline;
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 // ~~strike through~~
 //
 'use strict';
@@ -7264,7 +7300,7 @@ module.exports = function strikethrough(state, silent) {
   return true;
 };
 
-},{"../common/utils":5}],50:[function(require,module,exports){
+},{"../common/utils":5}],49:[function(require,module,exports){
 // Skip text characters for text token, place those to pending buffer
 // and increment current pos
 
@@ -7325,7 +7361,7 @@ module.exports = function text(state, silent) {
   return true;
 };
 
-},{}],51:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -9322,11 +9358,11 @@ module.exports = function text(state, silent) {
 
 }));
 
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 
 module.exports = require('./lib/');
 
-},{"./lib/":11}]},{},[52])(52)
+},{"./lib/":10}]},{},[51])(51)
 });
