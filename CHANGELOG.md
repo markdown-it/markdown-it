@@ -1,3 +1,13 @@
+3.0.6 / 2015-02-12
+------------------
+
+- Fixed hang on long vertical list of links. Appeared in 3.0.5. See #54 for
+  details. Thanks to @fengmk2 for report!
+- Table lines now can have escaped pipe char `\|` (#5).
+- Sync scroll result => source in demo.
+- Moved `normalizeReference()` to utils.
+
+
 3.0.5 / 2015-02-06
 ------------------
 
