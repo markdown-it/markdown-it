@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "argparse": "~ 0.1.16",
-    "autolinker": "~ 0.15.2"
+    "autolinker": "~ 0.15.2",
+    "unicode-7.0.0": "~0.1.5"
   },
   "devDependencies": {
     "ansi": "~0.3.0",
