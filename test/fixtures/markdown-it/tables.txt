@@ -241,3 +241,22 @@ Delimiter escaping:
 </tbody>
 </table>
 .
+
+
+Add/remove columns to match the first row:
+.
+Heading 1|Heading 2|Heading 3
+---|---|---
+1|2
+1|2|3|4
+.
+<table>
+<thead>
+<tr><th>Heading 1</th><th>Heading 2</th><th>Heading 3</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>2</td><td></td></tr>
+<tr><td>1</td><td>2</td><td>3</td></tr>
+</tbody>
+</table>
+.
