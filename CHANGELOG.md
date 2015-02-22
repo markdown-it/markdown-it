@@ -1,4 +1,4 @@
-WIP /
+3.0.7 / 2015-02-22
 ------------------
 
 - Match table columns count by header.
