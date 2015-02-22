@@ -19,11 +19,12 @@
   },
   "license": "MIT",
   "main": "index.js",
+  "bin": { "markdown-it": "bin/markdown-it.js" },
   "scripts": {
     "test": "make test"
   },
   "dependencies": {
-    "argparse": "~ 0.1.16",
+    "argparse": "~ 1.0.0",
     "autolinker": "~ 0.15.2",
     "uc.micro": "~ 0.1.0"
   },
