@@ -1,4 +1,4 @@
-/*! markdown-it 3.0.6 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 3.0.7 https://github.com//markdown-it/markdown-it @license MIT */!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.markdownit=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // List of valid entities
 //
 // Generate with ./support/entities.js script
@@ -2203,59 +2203,26 @@ module.exports = html_blocks;
 
 'use strict';
 
+var attr_name     = '[a-zA-Z_:][a-zA-Z0-9:._-]*';
 
-function replace(regex, options) {
-  regex = regex.source;
-  options = options || '';
+var unquoted      = '[^"\'=<>`\\x00-\\x20]+';
+var single_quoted = "'[^']*'";
+var double_quoted = '"[^"]*"';
 
-  return function self(name, val) {
-    if (!name) {
-      return new RegExp(regex, options);
-    }
-    val = val.source;
-    regex = regex.replace(name, val);
-    return self;
-  };
-}
+var attr_value  = '(?:' + unquoted + '|' + single_quoted + '|' + double_quoted + ')';
 
+var attribute   = '(?:\\s+' + attr_name + '(?:\\s*=\\s*' + attr_value + ')?)';
 
-var attr_name     = /[a-zA-Z_:][a-zA-Z0-9:._-]*/;
+var open_tag    = '<[A-Za-z][A-Za-z0-9\\-]*' + attribute + '*\\s*\\/?>';
 
-var unquoted      = /[^"'=<>`\x00-\x20]+/;
-var single_quoted = /'[^']*'/;
-var double_quoted = /"[^"]*"/;
+var close_tag   = '<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>';
+var comment     = '<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->';
+var processing  = '<[?].*?[?]>';
+var declaration = '<![A-Z]+\\s+[^>]*>';
+var cdata       = '<!\\[CDATA\\[[\\s\\S]*?\\]\\]>';
 
-/*eslint no-spaced-func:0*/
-var attr_value  = replace(/(?:unquoted|single_quoted|double_quoted)/)
-                    ('unquoted', unquoted)
-                    ('single_quoted', single_quoted)
-                    ('double_quoted', double_quoted)
-                    ();
-
-var attribute   = replace(/(?:\s+attr_name(?:\s*=\s*attr_value)?)/)
-                    ('attr_name', attr_name)
-                    ('attr_value', attr_value)
-                    ();
-
-var open_tag    = replace(/<[A-Za-z][A-Za-z0-9\-]*attribute*\s*\/?>/)
-                    ('attribute', attribute)
-                    ();
-
-var close_tag   = /<\/[A-Za-z][A-Za-z0-9\-]*\s*>/;
-var comment     = /<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->/;
-var processing  = /<[?].*?[?]>/;
-var declaration = /<![A-Z]+\s+[^>]*>/;
-var cdata       = /<!\[CDATA\[[\s\S]*?\]\]>/;
-
-var HTML_TAG_RE = replace(/^(?:open_tag|close_tag|comment|processing|declaration|cdata)/)
-  ('open_tag', open_tag)
-  ('close_tag', close_tag)
-  ('comment', comment)
-  ('processing', processing)
-  ('declaration', declaration)
-  ('cdata', cdata)
-  ();
-
+var HTML_TAG_RE = new RegExp('^(?:' + open_tag + '|' + close_tag + '|' + comment +
+                        '|' + processing + '|' + declaration + '|' + cdata + ')');
 
 module.exports.HTML_TAG_RE = HTML_TAG_RE;
 
@@ -2637,14 +2604,15 @@ function escapeRE (str) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// Zs (unicode class) || 09, 0A, 0D, 0C
+// Zs (unicode class) || [\t\f\v\r\n]
 function isWhiteSpace(code) {
   if (code >= 0x2000 && code <= 0x200A) { return true; }
   switch (code) {
-    case 0x09:
-    case 0x0A:
-    case 0x0D:
-    case 0x0C:
+    case 0x09: // \t
+    case 0x0A: // \n
+    case 0x0B: // \v
+    case 0x0C: // \f
+    case 0x0D: // \r
     case 0x20:
     case 0xA0:
     case 0x1680:
@@ -2659,11 +2627,11 @@ function isWhiteSpace(code) {
 ////////////////////////////////////////////////////////////////////////////////
 
 /*eslint-disable max-len*/
-var BMP_PUNCT_RE = /[\x21-\x23\x25-\x2A\x2C-\x2F\x3A\x3B\x3F\x40\x5B-\x5D\x5F\x7B\x7D\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E42\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]/;
+var UNICODE_PUNCT_RE = require('uc.micro/categories/P/regex');
 
 // Currently without astral characters support.
 function isPunctChar(char) {
-  return BMP_PUNCT_RE.test(char);
+  return UNICODE_PUNCT_RE.test(char);
 }
 
 
@@ -2744,7 +2712,7 @@ exports.normalizeReference  = normalizeReference;
 // for testing only
 exports.fixBrokenSurrogates = fixBrokenSurrogates;
 
-},{"./entities":1}],6:[function(require,module,exports){
+},{"./entities":1,"uc.micro/categories/P/regex":51}],6:[function(require,module,exports){
 // Just a shortcut for bulk export
 'use strict';
 
@@ -3395,9 +3363,11 @@ var Ruler           = require('./ruler');
 
 
 var _rules = [
+  // First 2 params - rule name & source. Secondary array - list of rules,
+  // which can be terminated by this one.
   [ 'code',       require('./rules_block/code') ],
   [ 'fence',      require('./rules_block/fence'),      [ 'paragraph', 'reference', 'blockquote', 'list' ] ],
-  [ 'blockquote', require('./rules_block/blockquote'), [ 'paragraph', 'reference', 'blockquote', 'list' ] ],
+  [ 'blockquote', require('./rules_block/blockquote'), [ 'paragraph', 'reference', 'list' ] ],
   [ 'hr',         require('./rules_block/hr'),         [ 'paragraph', 'reference', 'blockquote', 'list' ] ],
   [ 'list',       require('./rules_block/list'),       [ 'paragraph', 'reference', 'blockquote' ] ],
   [ 'reference',  require('./rules_block/reference') ],
@@ -3659,6 +3629,7 @@ ParserInline.prototype.skipToken = function (state) {
     return;
   }
 
+  /*istanbul ignore else*/
   if (state.level < maxNesting) {
     for (i = 0; i < len; i++) {
       if (rules[i](state, true)) {
@@ -5820,12 +5791,15 @@ module.exports = function table(state, startLine, endLine, silent) {
     if (lineText.indexOf('|') === -1) { break; }
     rows = escapedSplit(lineText.replace(/^\||\|$/g, ''));
 
+    // set number of columns to number of columns in header row
+    rows.length = aligns.length;
+
     state.tokens.push({ type: 'tr_open', level: state.level++ });
     for (i = 0; i < rows.length; i++) {
       state.tokens.push({ type: 'td_open', align: aligns[i], level: state.level++ });
       state.tokens.push({
         type: 'inline',
-        content: rows[i].trim(),
+        content: rows[i] ? rows[i].trim() : '',
         level: state.level,
         children: []
       });
@@ -9359,10 +9333,12 @@ module.exports = function text(state, silent) {
 }));
 
 },{}],51:[function(require,module,exports){
+module.exports=/[!-#%-\*,-/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E42\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC8\uDDCD\uDE38-\uDE3D]|\uD805[\uDCC6\uDDC1-\uDDC9\uDE41-\uDE43]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD82F\uDC9F/
+},{}],52:[function(require,module,exports){
 'use strict';
 
 
 module.exports = require('./lib/');
 
-},{"./lib/":10}]},{},[51])(51)
+},{"./lib/":10}]},{},[52])(52)
 });
