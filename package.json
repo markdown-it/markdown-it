@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "argparse": "~ 1.0.0",
-    "autolinker": "~ 0.15.2",
+    "linkify-it": "~ 0.1.1",
     "uc.micro": "~ 0.1.0"
   },
   "devDependencies": {
