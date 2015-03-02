@@ -10,7 +10,7 @@ Should not throw exception on broken utf-8 sequence in URL [mailformed URI]
 .
 [foo](%C3)
 .
-<p><a href="%25C3">foo</a></p>
+<p><a href="%C3">foo</a></p>
 .
 
 

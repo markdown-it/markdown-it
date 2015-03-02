@@ -48,19 +48,6 @@ describe('Utils', function () {
     });
   });
 
-  it('fixBrokenSurrogates', function () {
-    var fixBrokenSurrogates = require('../lib/common/utils').fixBrokenSurrogates;
-
-    // Bad
-    assert.strictEqual(fixBrokenSurrogates('\uD800foo'), '\uFFFDfoo');
-    assert.strictEqual(fixBrokenSurrogates('foo\uD800'), 'foo\uFFFD');
-    assert.strictEqual(fixBrokenSurrogates('\uDC00foo'), '\uFFFDfoo');
-    assert.strictEqual(fixBrokenSurrogates('foo\uDC00'), 'foo\uFFFD');
-
-    // Good
-    assert.strictEqual(fixBrokenSurrogates('\uD800\uDC00'), '\uD800\uDC00');
-  });
-
   it('normalizeLink', function () {
     var normalizeLink = require('../lib/common/utils').normalizeLink;
 
