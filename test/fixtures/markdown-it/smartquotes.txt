@@ -31,6 +31,19 @@ Should match quotes on the same level:
 .
 
 
+Should handle adjacent nested quotes:
+
+.
+'"double in single"'
+
+"'single in double'"
+.
+<p>‘“double in single”’</p>
+<p>“‘single in double’”</p>
+.
+
+
+
 Should not match quotes on different levels:
 
 .
