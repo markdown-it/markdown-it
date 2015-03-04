@@ -8,28 +8,6 @@ Regression tests for link backtracking optimizations:
 .
 
 
-This is not a valid emphasis, because \n considered a whitespace:
-.
-**test
-**
-
-**
-test**
-
-**
-test
-**
-.
-<p>**test
-**</p>
-<p>**
-test**</p>
-<p>**
-test
-**</p>
-.
-
-
 Link label has priority over emphasis (not covered by commonmark tests):
 .
 [**link]()**
@@ -105,23 +83,6 @@ Autolinks do not allow escaping:
 <p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
 .
 
-
-Multiline title in definitions:
-.
-[foo]: test '
-1
-2
-3
-'
-
-[foo]
-.
-<p><a href="test" title="
-1
-2
-3
-">foo</a></p>
-.
 
 
 Escaping entities in links:
