@@ -88,15 +88,27 @@ Autolinks do not allow escaping:
 Escaping entities in links:
 
 .
-[](<&quot;>)
+[](<&quot;> "&amp;&ouml;")
 
-[](<\&quot;>)
+[](<\&quot;> "\&amp;\&ouml;")
 
-[](<\\&quot;>)
+[](<\\&quot;> "\\&quot;\\&ouml;")
 .
-<p><a href="%22"></a></p>
-<p><a href="&amp;quot;"></a></p>
-<p><a href="%5C%22"></a></p>
+<p><a href="%22" title="&amp;ö"></a></p>
+<p><a href="&amp;quot;" title="&amp;amp;&amp;ouml;"></a></p>
+<p><a href="%5C%22" title="\&quot;\ö"></a></p>
+.
+
+
+Checking combination of replaceEntities and unescapeMd:
+
+.
+~~~ &amp;\&amp;\\&amp;
+just a funny little fence
+~~~
+.
+<pre><code class="&amp;&amp;amp;\&amp;">just a funny little fence
+</code></pre>
 .
 
 
