@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "argparse": "~ 1.0.0",
-    "linkify-it": "~ 0.1.1",
-    "mdurl": "~ 0.0.1",
+    "linkify-it": "~ 0.1.2",
+    "mdurl": "~ 1.0.0",
     "uc.micro": "~ 0.1.0"
   },
   "devDependencies": {
@@ -34,8 +34,8 @@
     "autoprefixer-stylus": "~0.5.0",
     "benchmark": "~1.0.0",
     "browserify": "*",
-    "chai": "~1.10.0",
-    "commonmark": "~ 0.17.1",
+    "chai": "~2.1.0",
+    "commonmark": "~0.18.1",
     "coveralls": "~2.11.2",
     "eslint": "0.13.0",
     "eslint-plugin-nodeca": "^1.0.0",

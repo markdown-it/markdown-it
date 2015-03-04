@@ -1,3 +1,15 @@
+3.1.0 / WIP
+------------------
+
+- Significantly improved autolinking quality (use `linkify-it` package), #2.
+- Rewritten links normalizer to solve different edge cases (use `mdurl`
+  package), #29.
+- Moved link title entities replace out of renderer.
+- Fixed escaped entities in links (`foo\&amp;/bar`).
+- Improved smartquotes logic, #61.
+- Spec conformance update to 0.18.
+
+
 3.0.7 / 2015-02-22
 ------------------
 
