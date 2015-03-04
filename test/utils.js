@@ -82,8 +82,17 @@ describe('Utils', function () {
     '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'.split('').forEach(function (ch) {
       assert.strictEqual(isMdAsciiPunct(ch.charCodeAt(0)), true);
     });
+  });
 
+  it('unescapeMd', function () {
+    var unescapeMd = require('../lib/common/utils').unescapeMd;
 
+    assert.strictEqual(unescapeMd('\\foo'), '\\foo');
+    assert.strictEqual(unescapeMd('foo'), 'foo');
+
+    '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'.split('').forEach(function (ch) {
+      assert.strictEqual(unescapeMd('\\' + ch), ch);
+    });
   });
 
 });

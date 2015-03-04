@@ -74,9 +74,9 @@ Should try and find matching quote in this case:
 Should not touch 'inches' in quotes:
 
 .
-"Monitor 21""
+"Monitor 21"" and "Monitor""
 .
-<p>“Monitor 21&quot;”</p>
+<p>“Monitor 21&quot;” and “Monitor”&quot;</p>
 .
 
 
