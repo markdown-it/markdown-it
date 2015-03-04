@@ -124,6 +124,21 @@ Multiline title in definitions:
 .
 
 
+Escaping entities in links:
+
+.
+[](<&quot;>)
+
+[](<\&quot;>)
+
+[](<\\&quot;>)
+.
+<p><a href="%22"></a></p>
+<p><a href="&amp;quot;"></a></p>
+<p><a href="%5C%22"></a></p>
+.
+
+
 Coverage. Directive can terminate paragraph.
 .
 a
