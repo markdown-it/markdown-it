@@ -1,24 +1,3 @@
-Regression tests for link backtracking optimizations:
-.
-[[some unrelated text [link]
-
-[link]: foo
-.
-<p>[[some unrelated text <a href="foo">link</a></p>
-.
-
-
-Link label has priority over emphasis (not covered by commonmark tests):
-.
-[**link]()**
-
-**[link**]()
-.
-<p><a href="">**link</a>**</p>
-<p>**<a href="">link**</a></p>
-.
-
-
 Issue #55:
 .
 ![test]
@@ -30,7 +9,7 @@ Issue #55:
 .
 
 
-Issue #35. `<` shoud work as punctuation
+Issue #35. `<` should work as punctuation
 .
 an **(:**<br>
 .
@@ -41,13 +20,10 @@ an **(:**<br>
 Should unescape only needed things in link destinations/titles:
 .
 [test](<\f\o\o\>\\>)
-.
-<p><a href="%5Cf%5Co%5Co%3E%5C">test</a></p>
-.
 
-.
 [test](foo "\\\"\b\a\r")
 .
+<p><a href="%5Cf%5Co%5Co%3E%5C">test</a></p>
 <p><a href="foo" title="\&quot;\b\a\r">test</a></p>
 .
 
@@ -60,27 +36,11 @@ Not a closing tag
 .
 
 
-Not a list item
-.
-1.list
-.
-<p>1.list</p>
-.
-
-
 Normalize link destination, but not text inside it:
 .
 <http://example.com/α%CE%B2γ%CE%B4>
 .
 <p><a href="http://example.com/%CE%B1%CE%B2%CE%B3%CE%B4">http://example.com/α%CE%B2γ%CE%B4</a></p>
-.
-
-
-Autolinks do not allow escaping:
-.
-<http://example.com/\[\>
-.
-<p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
 .
 
 
@@ -228,4 +188,13 @@ bar
 .
 <p>foo
 bar</p>
+.
+.
+[
+test
+]
+.
+<p>[
+test
+]</p>
 .
