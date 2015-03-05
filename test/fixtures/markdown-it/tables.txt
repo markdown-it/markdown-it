@@ -7,11 +7,20 @@ Simple:
 .
 <table>
 <thead>
-<tr><th>Heading 1</th><th>Heading 2</th></tr>
+<tr>
+<th>Heading 1</th>
+<th>Heading 2</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>Cell 1</td><td>Cell 2</td></tr>
-<tr><td>Cell 3</td><td>Cell 4</td></tr>
+<tr>
+<td>Cell 1</td>
+<td>Cell 2</td>
+</tr>
+<tr>
+<td>Cell 3</td>
+<td>Cell 4</td>
+</tr>
 </tbody>
 </table>
 .
@@ -26,11 +35,26 @@ Column alignment:
 .
 <table>
 <thead>
-<tr><th style="text-align:center">Header 1</th><th style="text-align:right">Header 2</th><th style="text-align:left">Header 3</th><th>Header 4</th></tr>
+<tr>
+<th style="text-align:center">Header 1</th>
+<th style="text-align:right">Header 2</th>
+<th style="text-align:left">Header 3</th>
+<th>Header 4</th>
+</tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Cell 1</td><td style="text-align:right">Cell 2</td><td style="text-align:left">Cell 3</td><td>Cell 4</td></tr>
-<tr><td style="text-align:center">Cell 5</td><td style="text-align:right">Cell 6</td><td style="text-align:left">Cell 7</td><td>Cell 8</td></tr>
+<tr>
+<td style="text-align:center">Cell 1</td>
+<td style="text-align:right">Cell 2</td>
+<td style="text-align:left">Cell 3</td>
+<td>Cell 4</td>
+</tr>
+<tr>
+<td style="text-align:center">Cell 5</td>
+<td style="text-align:right">Cell 6</td>
+<td style="text-align:left">Cell 7</td>
+<td>Cell 8</td>
+</tr>
 </tbody>
 </table>
 .
@@ -45,11 +69,26 @@ Cell 1  |Cell 2  |Cell 3  |Cell 4
 .
 <table>
 <thead>
-<tr><th style="text-align:left">Header 1</th><th style="text-align:center">Header 2</th><th style="text-align:right">Header 3</th><th>Header 4</th></tr>
+<tr>
+<th style="text-align:left">Header 1</th>
+<th style="text-align:center">Header 2</th>
+<th style="text-align:right">Header 3</th>
+<th>Header 4</th>
+</tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left">Cell 1</td><td style="text-align:center">Cell 2</td><td style="text-align:right">Cell 3</td><td>Cell 4</td></tr>
-<tr><td style="text-align:left"><em>Cell 5</em></td><td style="text-align:center">Cell 6</td><td style="text-align:right">Cell 7</td><td>Cell 8</td></tr>
+<tr>
+<td style="text-align:left">Cell 1</td>
+<td style="text-align:center">Cell 2</td>
+<td style="text-align:right">Cell 3</td>
+<td>Cell 4</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>Cell 5</em></td>
+<td style="text-align:center">Cell 6</td>
+<td style="text-align:right">Cell 7</td>
+<td>Cell 8</td>
+</tr>
 </tbody>
 </table>
 .
@@ -65,10 +104,16 @@ baz|baz
 <blockquote>
 <table>
 <thead>
-<tr><th>foo</th><th>foo</th></tr>
+<tr>
+<th>foo</th>
+<th>foo</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>bar</td><td>bar</td></tr>
+<tr>
+<td>bar</td>
+<td>bar</td>
+</tr>
 </tbody>
 </table>
 </blockquote>
@@ -87,10 +132,16 @@ Nested tables inside lists:
 <li>
 <table>
 <thead>
-<tr><th>foo</th><th>foo</th></tr>
+<tr>
+<th>foo</th>
+<th>foo</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>bar</td><td>bar</td></tr>
+<tr>
+<td>bar</td>
+<td>bar</td>
+</tr>
 </tbody>
 </table>
 </li>
@@ -106,10 +157,14 @@ Minimal one-column:
 .
 <table>
 <thead>
-<tr><th>foo</th></tr>
+<tr>
+<th>foo</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>test2</td></tr>
+<tr>
+<td>test2</td>
+</tr>
 </tbody>
 </table>
 .
@@ -211,10 +266,16 @@ bar|bar
 <p>paragraph</p>
 <table>
 <thead>
-<tr><th>foo</th><th>foo</th></tr>
+<tr>
+<th>foo</th>
+<th>foo</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>bar</td><td>bar</td></tr>
+<tr>
+<td>bar</td>
+<td>bar</td>
+</tr>
 </tbody>
 </table>
 .
@@ -228,10 +289,12 @@ paragraph
 .
 <table>
 <thead>
-<tr><th>foo</th><th>foo</th></tr>
+<tr>
+<th>foo</th>
+<th>foo</th>
+</tr>
 </thead>
-<tbody>
-</tbody>
+<tbody></tbody>
 </table>
 <p>paragraph</p>
 .
@@ -246,11 +309,20 @@ Delimiter escaping:
 .
 <table>
 <thead>
-<tr><th>Heading 1 \\</th><th>Heading 2</th></tr>
+<tr>
+<th>Heading 1 \\</th>
+<th>Heading 2</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>Cell|1|</td><td>Cell|2</td></tr>
-<tr><td>| Cell\|3 \</td><td>Cell|4</td></tr>
+<tr>
+<td>Cell|1|</td>
+<td>Cell|2</td>
+</tr>
+<tr>
+<td>| Cell\|3 \</td>
+<td>Cell|4</td>
+</tr>
 </tbody>
 </table>
 .
@@ -265,11 +337,23 @@ Heading 1|Heading 2|Heading 3
 .
 <table>
 <thead>
-<tr><th>Heading 1</th><th>Heading 2</th><th>Heading 3</th></tr>
+<tr>
+<th>Heading 1</th>
+<th>Heading 2</th>
+<th>Heading 3</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>1</td><td>2</td><td></td></tr>
-<tr><td>1</td><td>2</td><td>3</td></tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
 </tbody>
 </table>
 .

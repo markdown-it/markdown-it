@@ -207,7 +207,7 @@ describe('Misc', function () {
   it('Should render link target attr', function () {
     var md = markdownit()
                 .use(require('markdown-it-for-inline'), 'target', 'link_open', function (tokens, idx) {
-                  tokens[idx].target = '_blank';
+                  tokens[idx].attrs.push([ 'target', '_blank' ]);
                 });
 
     assert.strictEqual(md.render('[foo](bar)'), '<p><a href="bar" target="_blank">foo</a></p>\n');
@@ -244,7 +244,7 @@ describe('maxNesting', function () {
     var md = markdownit({ maxNesting: 2 });
     assert.strictEqual(
       md.render('>foo\n>>bar\n>>>baz'),
-      '<blockquote>\n<p>foo</p>\n<blockquote>\n</blockquote>\n</blockquote>\n'
+      '<blockquote>\n<p>foo</p>\n<blockquote></blockquote>\n</blockquote>\n'
     );
   });
 

@@ -32,6 +32,12 @@ var options = cli.parseArgs();
 
 ////////////////////////////////////////////////////////////////////////////////
 
+function normalize(text) {
+  return text.replace(/<blockquote>\n<\/blockquote>/g, '<blockquote></blockquote>');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 function readFile(filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
@@ -79,7 +85,7 @@ readFile(options.spec, 'utf8', function (error, input) {
     };
 
     try {
-      if (markdown.render(md) === html) {
+      if (markdown.render(md) === normalize(html)) {
         good.push(result);
       } else {
         result.err = markdown.render(md);
