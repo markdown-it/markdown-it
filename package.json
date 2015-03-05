@@ -10,13 +10,7 @@
     "markdown-it-plugin"
   ],
   "homepage": "https://github.com/markdown-it/markdown-it",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/markdown-it/markdown-it.git"
-  },
-  "bugs": {
-    "url": "https://github.com/markdown-it/markdown-it/issues"
-  },
+  "repository": "markdown-it/markdown-it",
   "license": "MIT",
   "main": "index.js",
   "bin": { "markdown-it": "bin/markdown-it.js" },
