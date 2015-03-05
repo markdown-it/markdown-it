@@ -22,15 +22,8 @@ x ~~~~foo~~~~
 <p>x <s><s>foo</s></s></p>
 .
 
-# Disabled since we moved subsripts to plugins
-#.
-#x ~~~foo~~~
-#.
-#<p>x <s><sub>foo</sub></s></p>
-#.
 
 Strikeouts have the same priority as emphases:
-
 .
 **~~test**~~
 
@@ -39,6 +32,7 @@ Strikeouts have the same priority as emphases:
 <p><strong>~~test</strong>~~</p>
 <p><s>**test</s>**</p>
 .
+
 
 Strikeouts have the same priority as emphases with respect to links:
 .
@@ -50,6 +44,7 @@ Strikeouts have the same priority as emphases with respect to links:
 <p>~~<a href="">link~~</a></p>
 .
 
+
 Strikeouts have the same priority as emphases with respect to backticks:
 .
 ~~`code~~`
@@ -60,18 +55,17 @@ Strikeouts have the same priority as emphases with respect to backticks:
 <p><code>~~code</code>~~</p>
 .
 
+
 Nested strikeouts:
 .
 ~~foo ~~bar~~ baz~~
-.
-<p><s>foo <s>bar</s> baz</s></p>
-.
 
-.
 ~~f **o ~~o b~~ a** r~~
 .
+<p><s>foo <s>bar</s> baz</s></p>
 <p><s>f <strong>o <s>o b</s> a</strong> r</s></p>
 .
+
 
 Should not have a whitespace between text and "~~":
 .
@@ -82,7 +76,6 @@ foo ~~ bar ~~ baz
 
 
 Newline should be considered a whitespace:
-
 .
 ~~test
 ~~

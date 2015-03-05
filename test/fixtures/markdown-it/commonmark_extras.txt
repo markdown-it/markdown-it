@@ -84,9 +84,7 @@ Autolinks do not allow escaping:
 .
 
 
-
 Escaping entities in links:
-
 .
 [](<&quot;> "&amp;&ouml;")
 
@@ -101,7 +99,6 @@ Escaping entities in links:
 
 
 Checking combination of replaceEntities and unescapeMd:
-
 .
 ~~~ &amp;\&amp;\\&amp;
 just a funny little fence
@@ -219,6 +216,7 @@ Coverage. Link
 .
 <p>[test](</p>
 .
+
 
 Coverage. Reference
 .

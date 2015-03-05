@@ -68,17 +68,14 @@ dashes
 markdownit---awesome
 
 abc ----
-.
-<p>—markdownit — super—</p>
-<p>markdownit—awesome</p>
-<p>abc ----</p>
-.
-.
+
 --markdownit -- super--
 
 markdownit--awesome
 .
+<p>—markdownit — super—</p>
+<p>markdownit—awesome</p>
+<p>abc ----</p>
 <p>–markdownit – super–</p>
 <p>markdownit–awesome</p>
 .
-

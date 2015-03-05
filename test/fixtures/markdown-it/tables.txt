@@ -16,6 +16,7 @@ Simple:
 </table>
 .
 
+
 Column alignment:
 .
 | Header 1 | Header 2 | Header 3 | Header 4 |
@@ -34,6 +35,7 @@ Column alignment:
 </table>
 .
 
+
 Nested emphases:
 .
 Header 1|Header 2|Header 3|Header 4
@@ -51,6 +53,7 @@ Cell 1  |Cell 2  |Cell 3  |Cell 4
 </tbody>
 </table>
 .
+
 
 Nested tables inside blockquotes:
 .
@@ -71,6 +74,7 @@ baz|baz
 </blockquote>
 <p>baz|baz</p>
 .
+
 
 Nested tables inside lists:
 .
@@ -110,6 +114,7 @@ Minimal one-column:
 </table>
 .
 
+
 Second line indent should not be smaller than first:
 .
 -   foo|foo
@@ -123,6 +128,7 @@ bar|bar</li>
 </ul>
 .
 
+
 Second line should not contain symbols except "-", ":", "|" and " ":
 .
 foo|foo
@@ -133,6 +139,7 @@ bar|bar
 —|---s
 bar|bar</p>
 .
+
 
 Second line should contain "|" symbol:
 .
@@ -145,6 +152,7 @@ bar|bar
 bar|bar</p>
 .
 
+
 Second line should not have empty columns in the middle:
 .
 foo|foo
@@ -155,6 +163,7 @@ bar|bar
 —||—
 bar|bar</p>
 .
+
 
 Wrong alignment symbol position:
 .
@@ -179,6 +188,7 @@ bar|bar
 bar|bar</p>
 .
 
+
 Title line should have correct column count:
 .
 foo|foo
@@ -189,6 +199,7 @@ bar|bar
 —|---|—
 bar|bar</p>
 .
+
 
 Should terminate paragraph:
 .
@@ -208,6 +219,7 @@ bar|bar
 </table>
 .
 
+
 Should be terminated via row without "|" symbol:
 .
 foo|foo
@@ -223,6 +235,7 @@ paragraph
 </table>
 <p>paragraph</p>
 .
+
 
 Delimiter escaping:
 .
