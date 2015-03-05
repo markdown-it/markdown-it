@@ -1,4 +1,4 @@
-3.1.0 / WIP
+3.1.0 / 2015-03-05
 ------------------
 
 - Significantly improved autolinking quality (use `linkify-it` package), #2.
