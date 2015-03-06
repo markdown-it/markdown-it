@@ -17,7 +17,7 @@ core
         block.ruleX
 
     core.ruleX1 (intermediate rule that applies on block tokens, nothing yet)
-    ... 
+    ...
     core.ruleXX
 
     inline (applied to each block token with "inline" type)
@@ -49,17 +49,8 @@ The difference is simple:
 - There are special token objects, "inline containers", having nested tokens.
   sequences with inline markup (bold, italic, text, ...).
 
-Each token has some common fields:
-
-- __type__ - token name.
-- __level__ - nesting level, useful to seek closing pair.
-- __lines__ - [begin, end], for block tokens only. Range of input lines,
-  compiled to this token.
-
-Inline tokens (`type === "inline"`) have additional properties:
-
-- __content__ - raw text, unparsed inline content.
-- __children__ - nested token stream.
+See [source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
+for details about each token content.
 
 In total, a token stream is:
 
