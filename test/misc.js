@@ -221,7 +221,7 @@ describe('Links validation', function () {
   it('Override validator, disable everything', function () {
     var md = markdownit({ linkify: true });
 
-    md.inline.validateLink = function () { return false; };
+    md.validateLink = function () { return false; };
 
     assert.strictEqual(md.render('foo@example.com'), '<p>foo@example.com</p>\n');
     assert.strictEqual(md.render('http://example.com'), '<p>http://example.com</p>\n');
