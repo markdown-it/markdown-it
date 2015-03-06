@@ -47,3 +47,11 @@ mailto:test@example.com
 <p><a href="mailto:test@example.com">test@example.com</a></p>
 <p><a href="mailto:test@example.com">mailto:test@example.com</a></p>
 .
+
+
+typorgapher should not break href
+.
+http://example.com/(c)
+.
+<p><a href="http://example.com/(c)">http://example.com/©</a></p>
+.
