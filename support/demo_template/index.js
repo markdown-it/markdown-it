@@ -90,27 +90,19 @@
     //
     // Inject line numbers for sync scroll. Notes:
     //
-    // - We track only headings and paragraphs on first level. That's enougth.
+    // - We track only headings and paragraphs on first level. That's enough.
     // - Footnotes content causes jumps. Level limit filter it automatically.
-    //
-
-    mdHtml.renderer.rules.paragraph_open = function (tokens, idx) {
+    function injectLineNumbers(tokens, idx, options, env, self) {
       var line;
-      if (tokens[idx].lines && tokens[idx].level === 0) {
-        line = tokens[idx].lines[0];
-        return '<p class="line" data-line="' + line + '">';
+      if (tokens[idx].map && tokens[idx].level === 0) {
+        line = tokens[idx].map[0];
+        tokens[idx].attrPush([ 'class', 'line' ]);
+        tokens[idx].attrPush([ 'data-line', String(line) ]);
       }
-      return '<p>';
-    };
+      return self.renderToken(tokens, idx, options, env, self);
+    }
 
-    mdHtml.renderer.rules.heading_open = function (tokens, idx) {
-      var line;
-      if (tokens[idx].lines && tokens[idx].level === 0) {
-        line = tokens[idx].lines[0];
-        return '<h' + tokens[idx].hLevel + ' class="line" data-line="' + line + '">';
-      }
-      return '<h' + tokens[idx].hLevel + '>';
-    };
+    mdHtml.renderer.rules.paragraph_open = mdHtml.renderer.rules.heading_open = injectLineNumbers;
   }
 
   function setHighlightedlContent(selector, content, lang) {
