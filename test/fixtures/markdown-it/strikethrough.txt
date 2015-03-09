@@ -95,3 +95,11 @@ test~~</p>
 test
 ~~</p>
 .
+
+From CommonMark test suite, replacing `**` with our marker:
+
+.
+a~~"foo"~~
+.
+<p>a~~“foo”~~</p>
+.
