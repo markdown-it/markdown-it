@@ -48,17 +48,6 @@ describe('Utils', function () {
     });
   });
 
-  it('normalizeLink', function () {
-    var normalizeLink = require('../lib/common/utils').normalizeLink;
-
-    // broken surrogates sequence (encodeURI should not throw)
-    assert.strictEqual(normalizeLink('/\uD800foo'), '/%EF%BF%BDfoo');
-    assert.strictEqual(normalizeLink('/\uD900foo'), '/%EF%BF%BDfoo');
-
-    // broken utf-8 encoding (catch decodeURI exception)
-    assert.strictEqual(normalizeLink('\u0025test'), '%25test');
-  });
-
   it('escapeRE', function () {
     var escapeRE = require('../lib/common/utils').escapeRE;
 
