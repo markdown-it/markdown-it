@@ -43,6 +43,22 @@ Invalid punycode (non-ascii):
 <p><a href="http://xn--xn---emd.com/">http://xn–γ.com/</a></p>
 .
 
+Two slashes should start a domain:
+
+.
+[](//☃.net/)
+.
+<p><a href="//xn--n3h.net/"></a></p>
+.
+
+Don't encode domains in unknown schemas:
+
+.
+[](skype:γγγ)
+.
+<p><a href="skype:%CE%B3%CE%B3%CE%B3"></a></p>
+.
+
 Should auto-add protocol to autolinks:
 
 .
