@@ -80,3 +80,21 @@ test http://☃.net/ foo
 .
 <p>test <a href="http://xn--n3h.net/">http://☃.net/</a> foo</p>
 .
+
+.
+test //xn--n3h.net/ foo
+.
+<p>test <a href="//xn--n3h.net/">//☃.net/</a> foo</p>
+.
+
+.
+test xn--n3h.net foo
+.
+<p>test <a href="http://xn--n3h.net">☃.net</a> foo</p>
+.
+
+.
+test xn--n3h@xn--n3h.net foo
+.
+<p>test <a href="mailto:xn--n3h@xn--n3h.net">xn–n3h@☃.net</a> foo</p>
+.
