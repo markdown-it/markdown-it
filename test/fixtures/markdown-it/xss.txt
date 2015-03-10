@@ -31,10 +31,13 @@ Should not allow some protocols in links and images
 [xss link](&#74;avascript:alert(1))
 
 [xss link](&#x26;#74;avascript:alert(1))
+
+[xss link](\&#74;avascript:alert(1))
 .
 <p><a href="%22%3E%3Cscript%3Ealert(%22xss%22)%3C/script%3E">xss link</a></p>
 <p>[xss link](Javascript:alert(1))</p>
-<p>[xss link](&amp;#74;avascript:alert(1))</p>
+<p><a href="&amp;#74;avascript:alert(1)">xss link</a></p>
+<p><a href="&amp;#74;avascript:alert(1)">xss link</a></p>
 .
 
 .
