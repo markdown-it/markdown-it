@@ -36,13 +36,6 @@ Not a closing tag
 .
 
 
-Normalize link destination, but not text inside it:
-.
-<http://example.com/α%CE%B2γ%CE%B4>
-.
-<p><a href="http://example.com/%CE%B1%CE%B2%CE%B3%CE%B4">http://example.com/αβγδ</a></p>
-.
-
 
 Escaping entities in links:
 .

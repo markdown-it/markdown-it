@@ -216,6 +216,31 @@ describe('Misc', function () {
 });
 
 
+describe('Url normalization', function () {
+
+  it('Should be overridable', function () {
+    var md = markdownit({ linkify: true });
+
+    md.normalizeLink = function (url) {
+      assert(url.match(/example\.com/), 'wrong url passed');
+      return 'LINK';
+    };
+    md.normalizeLinkText = function (url) {
+      assert(url.match(/example\.com/), 'wrong url passed');
+      return 'TEXT';
+    };
+
+    assert.strictEqual(md.render('foo@example.com'), '<p><a href="LINK">TEXT</a></p>\n');
+    assert.strictEqual(md.render('http://example.com'), '<p><a href="LINK">TEXT</a></p>\n');
+    assert.strictEqual(md.render('<foo@example.com>'), '<p><a href="LINK">TEXT</a></p>\n');
+    assert.strictEqual(md.render('<http://example.com>'), '<p><a href="LINK">TEXT</a></p>\n');
+    assert.strictEqual(md.render('[test](http://example.com)'), '<p><a href="LINK">test</a></p>\n');
+    assert.strictEqual(md.render('![test](http://example.com)'), '<p><img src="LINK" alt="test"></p>\n');
+  });
+
+});
+
+
 describe('Links validation', function () {
 
   it('Override validator, disable everything', function () {
@@ -228,6 +253,7 @@ describe('Links validation', function () {
     assert.strictEqual(md.render('<foo@example.com>'), '<p>&lt;foo@example.com&gt;</p>\n');
     assert.strictEqual(md.render('<http://example.com>'), '<p>&lt;http://example.com&gt;</p>\n');
     assert.strictEqual(md.render('[test](http://example.com)'), '<p>[test](http://example.com)</p>\n');
+    assert.strictEqual(md.render('![test](http://example.com)'), '<p>![test](http://example.com)</p>\n');
   });
 
 });
