@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "argparse": "~ 1.0.0",
+    "entities": "~ 1.1.1",
     "linkify-it": "~ 0.1.2",
     "mdurl": "~ 1.0.0",
     "uc.micro": "~ 0.1.0"
