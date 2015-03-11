@@ -45,11 +45,11 @@ Instead of traditional AST we use more low-level data representation - *tokens*.
 The difference is simple:
 
 - Tokens are a simple sequence (Array).
-- Opening and closing tags are separate tokens.
+- Opening and closing tags are separate.
 - There are special token objects, "inline containers", having nested tokens.
   sequences with inline markup (bold, italic, text, ...).
 
-See [source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
+See [token class](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
 for details about each token content.
 
 In total, a token stream is:
@@ -68,6 +68,7 @@ to an AST.
 More details about tokens:
 
 - [Renderer source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
+- [Token source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
 - [Live demo](https://markdown-it.github.io/) - type your text ant click `debug` tab.
 
 

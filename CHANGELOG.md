@@ -1,3 +1,20 @@
+4.0.0 / 2015-03-11
+------------------
+
+- Breaking internal API changes. See [v4 migration notes](https://github.com/markdown-it/markdown-it/blob/master/docs/4.0_migration.md). In usual case you will need to update plugins.
+- Token internals changed
+- Unified the most of renderer methods.
+- Changed tokens creation - use `state.push(...)` (see sources)
+- Moved `normalizeUrl()` to root class as `.normalizeLink()` &
+  added `normalizeLinkText()` method.
+- Moved `.validateUrl()` to root class and simplified logic - no more need to
+  replace entities.
+- Joined md unescape & replace entities logic to `utils.unescapeAll()`.
+- `md.utils.lib` now exposes useful libs for plugins.
+- Use entities data from external package.
+- Fixed emphasis regression, caused by CM v0.18 spec (#65).
+
+
 3.1.0 / 2015-03-05
 ------------------
 
