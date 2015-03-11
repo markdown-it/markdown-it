@@ -27,7 +27,7 @@ describe('Utils', function () {
     assert.strictEqual(isValidEntityCode(0x7F), false);
   });
 
-  it('replaceEntities', function () {
+  /*it('replaceEntities', function () {
     var replaceEntities = require('../lib/common/utils').replaceEntities;
 
     assert.strictEqual(replaceEntities('&amp;'), '&');
@@ -37,7 +37,7 @@ describe('Utils', function () {
 
     assert.strictEqual(replaceEntities('&am;'), '&am;');
     assert.strictEqual(replaceEntities('&#00;'), '&#00;');
-  });
+  });*/
 
   it('assign', function () {
     var assign = require('../lib/common/utils').assign;

@@ -53,11 +53,11 @@ Escaping entities in links:
 
 Checking combination of replaceEntities and unescapeMd:
 .
-~~~ &amp;\&amp;\\&amp;
+~~~ &amp;&bad;\&amp;\\&amp;
 just a funny little fence
 ~~~
 .
-<pre><code class="&amp;&amp;amp;\&amp;">just a funny little fence
+<pre><code class="&amp;&amp;bad;&amp;amp;\&amp;">just a funny little fence
 </code></pre>
 .
 
