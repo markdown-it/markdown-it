@@ -18,18 +18,18 @@
     "test": "make test"
   },
   "dependencies": {
-    "argparse": "~ 1.0.0",
-    "entities": "~ 1.1.1",
-    "linkify-it": "~ 0.1.2",
-    "mdurl": "~ 1.0.0",
-    "uc.micro": "~ 0.1.0"
+    "argparse": "~1.0.0",
+    "entities": "~1.1.1",
+    "linkify-it": "~0.1.2",
+    "mdurl": "~1.0.0",
+    "uc.micro": "^1.0.0"
   },
   "devDependencies": {
     "ansi": "~0.3.0",
     "autoprefixer-stylus": "~0.5.0",
     "benchmark": "~1.0.0",
     "browserify": "*",
-    "chai": "~2.1.0",
+    "chai": "^2.1.0",
     "commonmark": "~0.18.1",
     "coveralls": "~2.11.2",
     "eslint": "0.13.0",
