@@ -61,6 +61,14 @@ just a funny little fence
 </code></pre>
 .
 
+Underscore between punctuation chars should be able to close emphasis.
+
+.
+_(hai)_.
+.
+<p><em>(hai)</em>.</p>
+.
+
 
 Coverage. Directive can terminate paragraph.
 .

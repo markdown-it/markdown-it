@@ -82,3 +82,11 @@ users' stuff
 .
 <p>users’ stuff</p>
 .
+
+Quotes between punctuation chars:
+
+.
+"(hai)".
+.
+<p>“(hai)”.</p>
+.
