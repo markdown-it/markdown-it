@@ -84,7 +84,7 @@
     };
     // Replace emoji codes with images
     mdHtml.renderer.rules.emoji = function(token, idx) {
-      return window.twemoji.parse(token[idx].to);
+      return window.twemoji.parse(token[idx].content);
     };
 
     //
