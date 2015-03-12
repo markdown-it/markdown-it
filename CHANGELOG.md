@@ -10,6 +10,7 @@
 - Moved `.validateUrl()` to root class and simplified logic - no more need to
   replace entities.
 - Joined md unescape & replace entities logic to `utils.unescapeAll()`.
+- Removed `replaceEntities()` in `utils`.
 - `md.utils.lib` now exposes useful libs for plugins.
 - Use entities data from external package.
 - Fixed emphasis regression, caused by CM v0.18 spec (#65).
