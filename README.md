@@ -179,8 +179,11 @@ Via plugins:
 - [footnote](https://github.com/markdown-it/markdown-it-footnote)
 - [definition list](https://github.com/markdown-it/markdown-it-deflist)
 - [abbreviation](https://github.com/markdown-it/markdown-it-abbr)
+- [emoji](https://github.com/markdown-it/markdown-it-emoji)
+- [custom container](https://github.com/markdown-it/markdown-it-container)
 - [insert](https://github.com/markdown-it/markdown-it-ins)
 - [mark](https://github.com/markdown-it/markdown-it-mark)
+- ... and [others](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
 
 
 ### Manage rules
