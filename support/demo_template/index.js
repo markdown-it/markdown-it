@@ -60,6 +60,7 @@
     } else {
       mdHtml = window.markdownit(defaults)
                   .use(window.markdownitAbbr)
+                  .use(window.markdownitContainer, 'warning')
                   .use(window.markdownitDeflist)
                   .use(window.markdownitEmoji)
                   .use(window.markdownitFootnote)
@@ -69,6 +70,7 @@
                   .use(window.markdownitSup);
       mdSrc = window.markdownit(defaults)
                   .use(window.markdownitAbbr)
+                  .use(window.markdownitContainer, 'warning')
                   .use(window.markdownitDeflist)
                   .use(window.markdownitEmoji)
                   .use(window.markdownitFootnote)

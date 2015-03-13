@@ -29,6 +29,7 @@ demo: lint
 	cp ./support/demo_template/README.md ./demo/
 	mkdir ./demo/plugins
 	cp ./node_modules/markdown-it-abbr/dist/* ./demo/plugins
+	cp ./node_modules/markdown-it-container/dist/* ./demo/plugins
 	cp ./node_modules/markdown-it-deflist/dist/* ./demo/plugins
 	cp ./node_modules/markdown-it-emoji/dist/* ./demo/plugins
 	cp ./node_modules/markdown-it-footnote/dist/* ./demo/plugins

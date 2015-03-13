@@ -37,6 +37,7 @@
     "istanbul": "*",
     "jade": "~1.9.2",
     "markdown-it-abbr": "^1.0.0",
+    "markdown-it-container": "^1.0.0",
     "markdown-it-deflist": "^1.0.0",
     "markdown-it-emoji": "^1.0.0",
     "markdown-it-footnote": "^1.0.0",
