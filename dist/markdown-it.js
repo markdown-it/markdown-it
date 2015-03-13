@@ -1,4 +1,4 @@
-/*! markdown-it 4.0.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 4.0.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -3764,7 +3764,7 @@ module.exports = function linkify(state) {
 
   for (j = 0, l = blockTokens.length; j < l; j++) {
     if (blockTokens[j].type !== 'inline' ||
-        !state.md.linkify.test(blockTokens[j].content)) {
+        !state.md.linkify.pretest(blockTokens[j].content)) {
       continue;
     }
 
@@ -6165,6 +6165,12 @@ function compile(self) {
   self.re.schema_test   = RegExp('(^|(?!_)(?:>|' + re.src_ZPCcCf + '))(' + slist + ')', 'i');
   self.re.schema_search = RegExp('(^|(?!_)(?:>|' + re.src_ZPCcCf + '))(' + slist + ')', 'ig');
 
+  self.re.pretest       = RegExp(
+                            '(' + self.re.schema_test.source + ')|' +
+                            '(' + self.re.host_fuzzy_test.source + ')|' +
+                            '@',
+                            'i');
+
   //
   // Cleanup
   //
@@ -6370,6 +6376,18 @@ LinkifyIt.prototype.test = function test(text) {
 
 
 /**
+ * LinkifyIt#pretest(text) -> Boolean
+ *
+ * Very quick check, that can give false positives. Returns true if link MAY BE
+ * can exists. Can be used for speed optimization, when you need to check that
+ * link NOT exists.
+ **/
+LinkifyIt.prototype.pretest = function pretest(text) {
+  return this.re.pretest.test(text);
+};
+
+
+/**
  * LinkifyIt#testSchemaAt(text, name, position) -> Number
  * - text (String): text to scan
  * - name (String): rule (schema) name
@@ -6500,6 +6518,9 @@ var src_P   = exports.src_P  = require('uc.micro/categories/P/regex').source;
 // \p{\Z\P\Cc\CF} (white spaces + control + format + punctuation)
 var src_ZPCcCf = exports.src_ZPCcCf = [ src_Z, src_P, src_Cc, src_Cf ].join('|');
 
+// \p{\Z\Cc\CF} (white spaces + control + format)
+var src_ZCcCf = exports.src_ZCcCf = [ src_Z, src_Cc, src_Cf ].join('|');
+
 // All possible word characters (everything without punctuation, spaces & controls)
 // Defined via punctuation & spaces to save space
 // Should be something like \p{\L\N\S\M} (\w but without `_`)
@@ -6513,7 +6534,7 @@ var src_ip4 = exports.src_ip4 =
 
   '(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
 
-exports.src_auth    = '(?:(?:(?!' + src_Z + ').)+@)?';
+exports.src_auth    = '(?:(?:(?!' + src_ZCcCf + ').)+@)?';
 
 var src_port = exports.src_port =
 
@@ -6528,18 +6549,20 @@ var src_path = exports.src_path =
   '(?:' +
     '[/?#]' +
       '(?:' +
-        '(?!' + src_Z + '|[()[\\]{}.,"\'?!\\-]).|' +
-        '\\[(?:(?!' + src_Z + '|\\]).)*\\]|' +
-        '\\((?:(?!' + src_Z + '|[)]).)*\\)|' +
-        '\\{(?:(?!' + src_Z + '|[}]).)*\\}|' +
-        '\\"(?:(?!' + src_Z + '|["]).)+\\"|' +
-        "\\'(?:(?!" + src_Z + "|[']).)+\\'|" +
+        '(?!' + src_ZCcCf + '|[()[\\]{}.,"\'?!\\-]).|' +
+        '\\[(?:(?!' + src_ZCcCf + '|\\]).)*\\]|' +
+        '\\((?:(?!' + src_ZCcCf + '|[)]).)*\\)|' +
+        '\\{(?:(?!' + src_ZCcCf + '|[}]).)*\\}|' +
+        '\\"(?:(?!' + src_ZCcCf + '|["]).)+\\"|' +
+        "\\'(?:(?!" + src_ZCcCf + "|[']).)+\\'|" +
         "\\'(?=" + src_pseudo_letter + ').|' +  // allow `I'm_king` if no pair found
-        '\\.(?!' + src_Z + '|[.]).|' +
-        '\\-(?!' + src_Z + '|--(?:[^-]|$))(?:[-]+|.)|' +  // `---` => long dash, terminate
-        '\\,(?!' + src_Z + ').|' +      // allow `,,,` in paths
-        '\\!(?!' + src_Z + '|[!]).|' +
-        '\\?(?!' + src_Z + '|[?]).' +
+        '\\.{2,3}[a-zA-Z0-9%]|' + // github has ... in commit range links. Restrict to
+                                  // english & percent-encoded only, until more examples found.
+        '\\.(?!' + src_ZCcCf + '|[.]).|' +
+        '\\-(?!' + src_ZCcCf + '|--(?:[^-]|$))(?:[-]+|.)|' +  // `---` => long dash, terminate
+        '\\,(?!' + src_ZCcCf + ').|' +      // allow `,,,` in paths
+        '\\!(?!' + src_ZCcCf + '|[!]).|' +
+        '\\?(?!' + src_ZCcCf + '|[?]).' +
       ')+' +
     '|\\/' +
   ')?';
@@ -6619,7 +6642,7 @@ exports.tpl_host_fuzzy_test =
 
 exports.tpl_email_fuzzy =
 
-    '(^|>|' + src_Z + ')(' + src_email_name + '@' + tpl_host_fuzzy_strict + ')';
+    '(^|>|' + src_ZCcCf + ')(' + src_email_name + '@' + tpl_host_fuzzy_strict + ')';
 
 exports.tpl_link_fuzzy =
     // Fuzzy link can't be prepended with .:/\- and non punctuation.
