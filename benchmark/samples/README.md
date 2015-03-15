@@ -209,26 +209,22 @@ md = require('markdown-it')('full', {
 
 ## Benchmark
 
-Here is result of readme parse at MB Pro Retina 2013 (2.4 GHz):
+Here is result of CommonMark spec parse at Core i5 2.4 GHz (i5-4258U):
 
 ```bash
-$ benchmark/benchmark.js readme
-Selected samples: (1 of 28)
- > README
+$ benchmark/benchmark.js spec
+Selected samples: (1 of 27)
+ > spec
 
-Sample: README.md (7774 bytes)
- > commonmark-reference x 1,222 ops/sec ±0.96% (97 runs sampled)
- > current x 743 ops/sec ±0.84% (97 runs sampled)
- > current-commonmark x 1,568 ops/sec ±0.84% (98 runs sampled)
- > marked-0.3.2 x 1,587 ops/sec ±4.31% (93 runs sampled)
+Sample: spec.txt (110610 bytes)
+ > commonmark-reference x 68.63 ops/sec ±6.53% (72 runs sampled)
+ > current x 79.62 ops/sec ±3.22% (80 runs sampled)
+ > current-commonmark x 103 ops/sec ±1.10% (76 runs sampled)
+ > marked-0.3.2 x 23.14 ops/sec ±1.66% (42 runs sampled)
 ```
 
-__Note.__ CommonMark version runs with [simplified link normalizers](https://github.com/markdown-it/markdown-it/blob/master/benchmark/implementations/current-commonmark/index.js)
-for more "honest" compare. Difference is ~ 1.5x.
-
 As you can see, `markdown-it` doesn't pay with speed for it's flexibility.
-Slowdown of "full" version caused by additional features, not available in
-other implementations.
+Because it's written in monomorphyc style and uses JIT inline caches effectively.
 
 
 ## Authors
