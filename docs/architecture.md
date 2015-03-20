@@ -128,11 +128,57 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
            '</div>\n';
   }
 
-  return defaultRender(tokens, idx, options, env, self);
+  return self.renderToken(tokens, idx, options);
 });
 ```
 
-You also can write your own renderer to generate other formats than HTML, such as JSON/XML... You can even use it to generate AST.
+Here is another example, how to add `target="_blank"` to all links:
+
+```js
+// Remember old renderer, if overriden, or proxy to default renderer
+val old_render = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+  self.renderToken(tokens, idx, options);
+};
+
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+  // If you are sure other plugins can't add `target` - drop check below
+  var aIndex = token[idx].attrIndex('target');
+
+  if (aIndex < 0) {
+    token[idx].attrPush(['target', '_blank']); // add new attribute
+  } else {
+    token[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+  }
+
+  // pass token to default renderer.
+  old_render(tokens, idx, options, env, self);
+};
+```
+
+Note, if you need to add attributes, you can do things without renderer override.
+For example, you can update tokens in `core` chain. That is slower, than direct
+renderer override, but can be more simple. Let's use
+[markdown-for-inline](https://github.com/markdown-it/markdown-it-for-inline) plugin
+to do the same thing as in previous example:
+
+```js
+var iterator = require('markdown-it-for-inline');
+
+var md = require('markdown-it')()
+            .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
+              var aIndex = token[idx].attrIndex('target');
+
+              if (aIndex < 0) {
+                token[idx].attrPush(['target', '_blank']);
+              } else {
+                token[idx].attrs[aIndex][1] = '_blank';
+              }
+            });
+```
+
+
+You also can write your own renderer to generate other formats than HTML, such as
+JSON/XML... You can even use it to generate AST.
 
 
 ## Summary
