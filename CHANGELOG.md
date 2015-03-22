@@ -1,3 +1,10 @@
+4.0.2 / 2015-03-22
+------------------
+
+- Fixed emphasis `marker` fields in tokens (#69).
+- Fixed html block tokens with numbers in name (#74).
+
+
 4.0.1 / 2015-03-13
 ------------------
 
