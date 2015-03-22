@@ -1,4 +1,4 @@
-/*! markdown-it 4.0.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 4.0.2 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -1828,7 +1828,7 @@ default_rules.image = function (tokens, idx, options, env, self) {
   token.attrs[token.attrIndex('alt')][1] =
     self.renderInlineAsText(token.children, options, env);
 
-  return self.renderToken(tokens, idx, options, env, self);
+  return self.renderToken(tokens, idx, options);
 };
 
 
@@ -2001,7 +2001,7 @@ Renderer.prototype.renderInline = function (tokens, options, env) {
     if (typeof rules[type] !== 'undefined') {
       result += rules[type](tokens, i, options, env, this);
     } else {
-      result += this.renderToken(tokens, i, options, env);
+      result += this.renderToken(tokens, i, options);
     }
   }
 
@@ -2782,8 +2782,8 @@ module.exports = function hr(state, startLine, endLine, silent) {
 var block_names = require('../common/html_blocks');
 
 
-var HTML_TAG_OPEN_RE = /^<([a-zA-Z]{1,15})[\s\/>]/;
-var HTML_TAG_CLOSE_RE = /^<\/([a-zA-Z]{1,15})[\s>]/;
+var HTML_TAG_OPEN_RE = /^<([a-zA-Z][a-zA-Z0-9]{0,14})[\s\/>]/;
+var HTML_TAG_CLOSE_RE = /^<\/([a-zA-Z][a-zA-Z0-9]{0,14})[\s>]/;
 
 function isLetter(ch) {
   /*eslint no-bitwise:0*/
@@ -4463,11 +4463,11 @@ module.exports = function emphasis(state, silent) {
 
   if (count % 2) {
     token        = state.push('em_close', 'em', -1);
-    token.markup = String.fromCharCode(marker) + String.fromCharCode(marker);
+    token.markup = String.fromCharCode(marker);
   }
   for (count = startCount; count > 1; count -= 2) {
     token        = state.push('strong_close', 'strong', -1);
-    token.markup = String.fromCharCode(marker);
+    token.markup = String.fromCharCode(marker) + String.fromCharCode(marker);
   }
 
   state.pos = state.posMax + startCount;
