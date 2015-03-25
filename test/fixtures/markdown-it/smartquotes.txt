@@ -50,6 +50,12 @@ Should not match quotes on different levels:
 <p><em>&quot;foo</em> bar <em>baz&quot;</em></p>
 .
 
+Smartquotes should not overlap with other tags:
+.
+*foo "bar* *baz" quux*
+.
+<p><em>foo &quot;bar</em> <em>baz&quot; quux</em></p>
+.
 
 
 Should try and find matching quote in this case:
