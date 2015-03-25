@@ -1,3 +1,11 @@
+4.0.3 / 2015-03-25
+------------------
+
+- Updated linkifier.
+- Smartquotes rule cleanup (#76).
+- Fixed replacements rule bug in PhantomJS (#77).
+
+
 4.0.2 / 2015-03-22
 ------------------
 
