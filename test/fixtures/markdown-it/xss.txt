@@ -66,9 +66,14 @@ Should not allow data-uri except some whitelisted mimes
 <p>[xss link](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)</p>
 .
 
+.
+[normal link](/javascript:link)
+.
+<p><a href="/javascript:link">normal link</a></p>
+.
 
 
-Image parser use the same code base.
+Image parser use the same code base as link.
 .
 ![xss link](javascript:alert(1))
 .
