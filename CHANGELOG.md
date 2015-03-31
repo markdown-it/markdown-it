@@ -1,3 +1,13 @@
+4.1.0 / 2015-03-31
+------------------
+
+- Security: disabled `data:` URLs by default (except some image mimes), to avoid
+  possible XSS. Version bumped, because features changed (formally). If you did
+  not used `data:` URLs, consider this version as 4.0.4 (no API changes).
+- Simplified link validator code. Now more easy to understand and to copy
+  into your projects for customization.
+
+
 4.0.3 / 2015-03-25
 ------------------
 
