@@ -1,4 +1,4 @@
-/*! markdown-it 4.1.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 4.1.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -2301,7 +2301,7 @@ Ruler.prototype.after = function (afterName, ruleName, fn, options) {
  * ```javascript
  * var md = require('markdown-it')();
  *
- * md.core.ruler.push('emphasis', 'my_rule', function replace(state) {
+ * md.core.ruler.push('my_rule', function replace(state) {
  *   //...
  * });
  * ```
@@ -3570,12 +3570,17 @@ function escapedSplit(str) {
       max = str.length,
       ch,
       escapes = 0,
-      lastPos = 0;
+      lastPos = 0,
+      backTicked = false,
+      lastBackTick = 0;
 
   ch  = str.charCodeAt(pos);
 
   while (pos < max) {
-    if (ch === 0x7c/* | */ && (escapes % 2 === 0)) {
+    if (ch === 0x60/* ` */ && (escapes % 2 === 0)) {
+      backTicked = !backTicked;
+      lastBackTick = pos;
+    } else if (ch === 0x7c/* | */ && (escapes % 2 === 0) && !backTicked) {
       result.push(str.substring(lastPos, pos));
       lastPos = pos + 1;
     } else if (ch === 0x5c/* \ */) {
@@ -3584,7 +3589,16 @@ function escapedSplit(str) {
       escapes = 0;
     }
 
-    ch  = str.charCodeAt(++pos);
+    pos++;
+
+    // If there was an un-closed backtick, go back to just after
+    // the last backtick, but as if it was a normal character
+    if (pos === max && backTicked) {
+      backTicked = false;
+      pos = lastBackTick + 1;
+    }
+
+    ch = str.charCodeAt(pos);
   }
 
   result.push(str.substring(lastPos));
