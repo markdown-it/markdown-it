@@ -1,3 +1,9 @@
+4.1.1 / 2015-04-15
+------------------
+
+- Improved pipe chars support in table cells, #86 (thanks to @jbt).
+
+
 4.1.0 / 2015-03-31
 ------------------
 
