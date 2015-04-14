@@ -137,21 +137,21 @@ Here is another example, how to add `target="_blank"` to all links:
 ```js
 // Remember old renderer, if overriden, or proxy to default renderer
 val old_render = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
-  self.renderToken(tokens, idx, options);
+  return self.renderToken(tokens, idx, options);
 };
 
 md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   // If you are sure other plugins can't add `target` - drop check below
-  var aIndex = token[idx].attrIndex('target');
+  var aIndex = tokens[idx].attrIndex('target');
 
   if (aIndex < 0) {
-    token[idx].attrPush(['target', '_blank']); // add new attribute
+    tokens[idx].attrPush(['target', '_blank']); // add new attribute
   } else {
-    token[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+    tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
   }
 
   // pass token to default renderer.
-  old_render(tokens, idx, options, env, self);
+  return old_render(tokens, idx, options, env, self);
 };
 ```
 
