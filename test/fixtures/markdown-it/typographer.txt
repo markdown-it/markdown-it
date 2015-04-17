@@ -79,3 +79,26 @@ markdownit--awesome
 <p>–markdownit – super–</p>
 <p>markdownit–awesome</p>
 .
+
+
+arrows
+.
+--> <-- <--> ==> <== <==>
+
+==>markdownit <==> super<==
+
+markdownit==>awesome<==>yay<==arrows
+
+abc ----> <---- -->> <<-- ===> <<== <<==>>
+
+-->markdownit <--> super<--
+
+markdownit-->awesome<-->yay<--arrows
+.
+<p>→ ← ↔ ⇒ ⇐ ⇔</p>
+<p>⇒markdownit ⇔ super⇐</p>
+<p>markdownit⇒awesome⇔yay⇐arrows</p>
+<p>abc ----&gt; &lt;---- --&gt;&gt; &lt;&lt;-- ===&gt; &lt;&lt;== &lt;&lt;==&gt;&gt;</p>
+<p>→markdownit ↔ super←</p>
+<p>markdownit→awesome↔yay←arrows</p>
+.
