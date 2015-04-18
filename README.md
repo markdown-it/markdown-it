@@ -12,6 +12,7 @@ __[Live demo](https://markdown-it.github.io)__
 - Follows the __[CommonMark spec](http://spec.commonmark.org/)__ + adds syntax extensions & sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
 - High speed.
+- [Safe](https://github.com/markdown-it/markdown-it/tree/master/docs/security.md) by default.
 - Community-written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [other packages](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
 __Table of content__
