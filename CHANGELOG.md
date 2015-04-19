@@ -1,3 +1,10 @@
+4.1.2 / 2015-04-19
+------------------
+
+- Bumped linkifier version. More strict 2-chars tald support for links without
+  schema. Should not linkify things like `io.js` and `node.js`.
+
+
 4.1.1 / 2015-04-15
 ------------------
 
