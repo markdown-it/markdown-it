@@ -1,4 +1,4 @@
-/*! markdown-it 4.1.2 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 4.2.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -6000,6 +6000,20 @@ function escapeRE (str) { return str.replace(/[.?*+^$[\]\\(){}|-]/g, '\\$&'); }
 ////////////////////////////////////////////////////////////////////////////////
 
 
+var defaultOptions = {
+  fuzzyLink: true,
+  fuzzyEmail: true,
+  fuzzyIP: false
+};
+
+
+function isOptionsObj(obj) {
+  return Object.keys(obj || {}).reduce(function (acc, k) {
+    return acc || defaultOptions.hasOwnProperty(k);
+  }, false);
+}
+
+
 var defaultSchemas = {
   'http:': {
     validate: function (text, pos, self) {
@@ -6110,6 +6124,7 @@ function compile(self) {
 
   re.email_fuzzy      = RegExp(untpl(re.tpl_email_fuzzy), 'i');
   re.link_fuzzy       = RegExp(untpl(re.tpl_link_fuzzy), 'i');
+  re.link_no_ip_fuzzy = RegExp(untpl(re.tpl_link_no_ip_fuzzy), 'i');
   re.host_fuzzy_test  = RegExp(untpl(re.tpl_host_fuzzy_test), 'i');
 
   //
@@ -6273,8 +6288,9 @@ function createMatch(self, shift) {
  **/
 
 /**
- * new LinkifyIt(schemas)
+ * new LinkifyIt(schemas, options)
  * - schemas (Object): Optional. Additional schemas to validate (prefix/validator)
+ * - options (Object): { fuzzyLink|fuzzyEmail|fuzzyIP: true|false }
  *
  * Creates new linkifier instance with optional additional schemas.
  * Can be called without `new` keyword for convenience.
@@ -6296,11 +6312,28 @@ function createMatch(self, shift) {
  *       or `RegExp`.
  *     - _normalize_ - optional function to normalize text & url of matched result
  *       (for example, for @twitter mentions).
+ *
+ * `options`:
+ *
+ * - __fuzzyLink__ - recognige URL-s without `http(s):` prefix. Default `true`.
+ * - __fuzzyIP__ - allow IPs in fuzzy links above. Can conflict with some texts
+ *   like version numbers. Default `false`.
+ * - __fuzzyEmail__ - recognize emails without `mailto:` prefix.
+ *
  **/
-function LinkifyIt(schemas) {
+function LinkifyIt(schemas, options) {
   if (!(this instanceof LinkifyIt)) {
-    return new LinkifyIt(schemas);
+    return new LinkifyIt(schemas, options);
   }
+
+  if (!options) {
+    if (isOptionsObj(schemas)) {
+      options = schemas;
+      schemas = {};
+    }
+  }
+
+  this.__opts__           = assign({}, defaultOptions, options);
 
   // Cache last tested result. Used to skip repeating steps on next `match` call.
   this.__index__          = -1;
@@ -6334,6 +6367,18 @@ LinkifyIt.prototype.add = function add(schema, definition) {
 };
 
 
+/** chainable
+ * LinkifyIt#set(options)
+ * - options (Object): { fuzzyLink|fuzzyEmail|fuzzyIP: true|false }
+ *
+ * Set recognition options for links without schema.
+ **/
+LinkifyIt.prototype.set = function set(options) {
+  this.__opts__ = assign(this.__opts__, options);
+  return this;
+};
+
+
 /**
  * LinkifyIt#test(text) -> Boolean
  *
@@ -6363,13 +6408,13 @@ LinkifyIt.prototype.test = function test(text) {
     }
   }
 
-  if (this.__compiled__['http:']) {
+  if (this.__opts__.fuzzyLink && this.__compiled__['http:']) {
     // guess schemaless links
     tld_pos = text.search(this.re.host_fuzzy_test);
     if (tld_pos >= 0) {
       // if tld is located after found link - no need to check fuzzy pattern
       if (this.__index__ < 0 || tld_pos < this.__index__) {
-        if ((ml = text.match(this.re.link_fuzzy)) !== null) {
+        if ((ml = text.match(this.__opts__.fuzzyIP ? this.re.link_fuzzy : this.re.link_no_ip_fuzzy)) !== null) {
 
           shift = ml.index + ml[1].length;
 
@@ -6383,7 +6428,7 @@ LinkifyIt.prototype.test = function test(text) {
     }
   }
 
-  if (this.__compiled__['mailto:']) {
+  if (this.__opts__.fuzzyEmail && this.__compiled__['mailto:']) {
     // guess schemaless emails
     at_pos = text.indexOf('@');
     if (at_pos >= 0) {
@@ -6648,6 +6693,10 @@ var tpl_host_fuzzy = exports.tpl_host_fuzzy =
     '(?:(?:(?:' + src_domain + ')\\.)+(?:%TLDS%))' +
   ')';
 
+var tpl_host_no_ip_fuzzy = exports.tpl_host_no_ip_fuzzy =
+
+  '(?:(?:(?:' + src_domain + ')\\.)+(?:%TLDS%))';
+
 exports.src_host_strict =
 
   src_host + src_host_terminator;
@@ -6663,6 +6712,11 @@ exports.src_host_port_strict =
 var tpl_host_port_fuzzy_strict = exports.tpl_host_port_fuzzy_strict =
 
   tpl_host_fuzzy + src_port + src_host_terminator;
+
+var tpl_host_port_no_ip_fuzzy_strict = exports.tpl_host_port_no_ip_fuzzy_strict =
+
+  tpl_host_no_ip_fuzzy + src_port + src_host_terminator;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Main rules
@@ -6681,6 +6735,12 @@ exports.tpl_link_fuzzy =
     // but can start with > (markdown blockquote)
     '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + src_ZPCc + '))' +
     '((?![$+<=>^`|])' + tpl_host_port_fuzzy_strict + src_path + ')';
+
+exports.tpl_link_no_ip_fuzzy =
+    // Fuzzy link can't be prepended with .:/\- and non punctuation.
+    // but can start with > (markdown blockquote)
+    '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + src_ZPCc + '))' +
+    '((?![$+<=>^`|])' + tpl_host_port_no_ip_fuzzy_strict + src_path + ')';
 
 },{"uc.micro/categories/Cc/regex":60,"uc.micro/categories/P/regex":62,"uc.micro/categories/Z/regex":63,"uc.micro/properties/Any/regex":65}],55:[function(require,module,exports){
 
