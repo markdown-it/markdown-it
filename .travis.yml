@@ -1,5 +1,5 @@
 language: node_js
 node_js:
  - '0.10'
-script: make test-ci
+after_success: make report-coverage
 sudo: false
