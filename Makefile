@@ -24,19 +24,8 @@ demo: lint
 		> ./demo/index.css
 	rm -rf ./support/demo_template/sample.json
 	browserify ./ -s markdownit > ./demo/markdown-it.js
-	#cp ./dist/markdown-it.js ./demo/
-	cp ./support/demo_template/index.js ./demo/
+	browserify ./support/demo_template/index.js > ./demo/index.js
 	cp ./support/demo_template/README.md ./demo/
-	mkdir ./demo/plugins
-	cp ./node_modules/markdown-it-abbr/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-container/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-deflist/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-emoji/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-footnote/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-ins/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-mark/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-sub/dist/* ./demo/plugins
-	cp ./node_modules/markdown-it-sup/dist/* ./demo/plugins
 
 gh-demo: demo
 	touch ./demo/.nojekyll
