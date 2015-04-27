@@ -3,6 +3,8 @@
 /*eslint-env browser*/
 /*global $, _*/
 
+var mdurl = require('mdurl');
+
 var mdHtml, mdSrc, permalink, scrollMap;
 
 var defaults = {
@@ -139,10 +141,10 @@ function updateResult() {
   try {
     if (source) {
       // serialize state - source and options
-      permalink.href = '#md64=' + window.btoa(JSON.stringify({
+      permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
         source: source,
         defaults: _.omit(defaults, 'highlight')
-      }));
+      }), mdurl.encode.componentChars, false);
     } else {
       permalink.href = '';
     }
@@ -274,6 +276,61 @@ var syncSrcScroll = _.debounce(function () {
   }, 100, 'linear');
 }, 50, { maxWait: 50 });
 
+
+function loadPermalink() {
+
+  if (!location.hash) { return; }
+
+  var cfg, opts;
+
+  try {
+
+    if (/^#md3=/.test(location.hash)) {
+      cfg = JSON.parse(mdurl.decode(location.hash.slice(5), mdurl.decode.componentChars));
+
+    } else if (/^#md64=/.test(location.hash)) {
+      cfg = JSON.parse(window.atob(location.hash.slice(6)));
+
+    } else if (/^#md=/.test(location.hash)) {
+      cfg = JSON.parse(decodeURIComponent(location.hash.slice(4)));
+
+    } else {
+      return;
+    }
+
+    if (_.isString(cfg.source)) {
+      $('.source').val(cfg.source);
+    }
+  } catch (__) {
+    return;
+  }
+
+  opts = _.isObject(cfg.defaults) ? cfg.defaults : {};
+
+  // copy config to defaults, but only if key exists
+  // and value has the same type
+  _.forOwn(opts, function (val, key) {
+    if (!_.has(defaults, key)) { return; }
+
+    // Legacy, for old links
+    if (key === '_src') {
+      defaults._view = val ? 'src' : 'html';
+      return;
+    }
+
+    if ((_.isBoolean(defaults[key]) && _.isBoolean(val)) ||
+        (_.isString(defaults[key]) && _.isString(val))) {
+      defaults[key] = val;
+    }
+  });
+
+  // sanitize for sure
+  if ([ 'html', 'src', 'debug' ].indexOf(defaults._view) === -1) {
+    defaults._view = 'html';
+  }
+}
+
+
 //////////////////////////////////////////////////////////////////////////////
 // Init on page load
 //
@@ -285,48 +342,7 @@ $(function() {
     });
   }
 
-  // Restore content if opened by permalink
-  if (location.hash && /^(#md=|#md64=)/.test(location.hash)) {
-    try {
-      var cfg;
-
-      if (/^#md64=/.test(location.hash)) {
-        cfg = JSON.parse(window.atob(location.hash.slice(6)));
-      } else {
-        // Legacy mode for old links. Those become broken in github posts,
-        // so we switched to base64 encoding.
-        cfg = JSON.parse(decodeURIComponent(location.hash.slice(4)));
-      }
-
-      if (_.isString(cfg.source)) {
-        $('.source').val(cfg.source);
-      }
-
-      var opts = _.isObject(cfg.defaults) ? cfg.defaults : {};
-
-      // copy config to defaults, but only if key exists
-      // and value has the same type
-      _.forOwn(opts, function (val, key) {
-        if (!_.has(defaults, key)) { return; }
-
-        // Legacy, for old links
-        if (key === '_src') {
-          defaults._view = val ? 'src' : 'html';
-          return;
-        }
-
-        if ((_.isBoolean(defaults[key]) && _.isBoolean(val)) ||
-            (_.isString(defaults[key]) && _.isString(val))) {
-          defaults[key] = val;
-        }
-      });
-
-      // sanitize for sure
-      if ([ 'html', 'src', 'debug' ].indexOf(defaults._view) === -1) {
-        defaults._view = 'html';
-      }
-    } catch (__) {}
-  }
+  loadPermalink();
 
   // Activate tooltips
   $('._tip').tooltip({ container: 'body' });
