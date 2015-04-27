@@ -144,7 +144,7 @@ function updateResult() {
       permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
         source: source,
         defaults: _.omit(defaults, 'highlight')
-      }), mdurl.encode.componentChars, false);
+      }), '-_.!~', false);
     } else {
       permalink.href = '';
     }
