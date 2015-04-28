@@ -1,8 +1,8 @@
 ---
 title: CommonMark Spec
 author: John MacFarlane
-version: 0.18
-date: 2015-03-03
+version: 0.19
+date: 2015-04-27
 license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
 ...
 
@@ -192,8 +192,8 @@ an implementation without writing an abstract syntax tree renderer.
 
 This document is generated from a text file, `spec.txt`, written
 in Markdown with a small extension for the side-by-side tests.
-The script `spec2md.pl` can be used to turn `spec.txt` into pandoc
-Markdown, which can then be converted into other formats.
+The script `tools/makespec.py` can be used to convert `spec.txt` into
+HTML or CommonMark (which can then be converted into other formats).
 
 In the examples, the `→` character is used to represent tabs.
 
@@ -724,13 +724,14 @@ ATX headers can be empty:
 ## Setext headers
 
 A [setext header](@setext-header)
-consists of a line of text, containing at least one
-[non-space character],
+consists of a line of text, containing at least one [non-space character],
 with no more than 3 spaces indentation, followed by a [setext header
 underline].  The line of text must be
 one that, were it not followed by the setext header underline,
-would be interpreted as part of a paragraph:  it cannot be a code
-block, header, blockquote, horizontal rule, or list.
+would be interpreted as part of a paragraph:  it cannot be
+interpretable as a [code fence], [ATX header][ATX headers],
+[block quote][block quotes], [horizontal rule][horizontal rules],
+[list item][list items], or [HTML block][HTML blocks].
 
 A [setext header underline](@setext-header-underline) is a sequence of
 `=` characters or a sequence of `-` characters, with no more than 3
@@ -1811,7 +1812,7 @@ title], which if it is present must be separated
 from the [link destination] by [whitespace].
 No further [non-space character]s may occur on the line.
 
-A [link reference-definition]
+A [link reference definition]
 does not correspond to a structural element of a document.  Instead, it
 defines a label which can be used in [reference link]s
 and reference-style [images] elsewhere in the document.  [Link
@@ -2587,7 +2588,7 @@ The following rules define [list items]:
 1.  **Basic case.**  If a sequence of lines *Ls* constitute a sequence of
     blocks *Bs* starting with a [non-space character] and not separated
     from each other by more than one blank line, and *M* is a list
-    marker *M* of width *W* followed by 0 < *N* < 5 spaces, then the result
+    marker of width *W* followed by 0 < *N* < 5 spaces, then the result
     of prepending *M* and the following spaces to the first line of
     *Ls*, and indenting subsequent lines of *Ls* by *W + N* spaces, is a
     list item with *Bs* as its contents.  The type of the list item
@@ -2726,7 +2727,7 @@ this example:
 
 Here `two` occurs in the same column as the list marker `1.`,
 but is actually contained in the list item, because there is
-sufficent indentation after the last containing blockquote marker.
+sufficient indentation after the last containing blockquote marker.
 
 The converse is also possible.  In the following example, the word `two`
 occurs far to the right of the initial text of the list item, `one`, but
@@ -2852,7 +2853,7 @@ A list item may contain any kind of block:
 2.  **Item starting with indented code.**  If a sequence of lines *Ls*
     constitute a sequence of blocks *Bs* starting with an indented code
     block and not separated from each other by more than one blank line,
-    and *M* is a list marker *M* of width *W* followed by
+    and *M* is a list marker of width *W* followed by
     one space, then the result of prepending *M* and the following
     space to the first line of *Ls*, and indenting subsequent lines of
     *Ls* by *W + 1* spaces, is a list item with *Bs* as its contents.
@@ -3001,7 +3002,7 @@ the above case:
 3.  **Item starting with a blank line.**  If a sequence of lines *Ls*
     starting with a single [blank line] constitute a (possibly empty)
     sequence of blocks *Bs*, not separated from each other by more than
-    one blank line, and *M* is a list marker *M* of width *W*,
+    one blank line, and *M* is a list marker of width *W*,
     then the result of prepending *M* to the first line of *Ls*, and
     indenting subsequent lines of *Ls* by *W + 1* spaces, is a list
     item with *Bs* as its contents.
@@ -3090,7 +3091,7 @@ A list may start or end with an empty list item:
 
 4.  **Indentation.**  If a sequence of lines *Ls* constitutes a list item
     according to rule #1, #2, or #3, then the result of indenting each line
-    of *L* by 1-3 spaces (the same for each line) also constitutes a
+    of *Ls* by 1-3 spaces (the same for each line) also constitutes a
     list item with the same contents and attributes.  If a line is
     empty, then it need not be indented.
 
@@ -4275,8 +4276,8 @@ corresponding codepoints.
 
 [Decimal entities](@decimal-entities)
 consist of `&#` + a string of 1--8 arabic digits + `;`. Again, these
-entities need to be recognised and tranformed into their corresponding
-UTF8 codepoints. Invalid Unicode codepoints will be written as the
+entities need to be recognised and transformed into their corresponding
+unicode codepoints. Invalid unicode codepoints will be written as the
 "unknown codepoint" character (`0xFFFD`)
 
 .
@@ -4287,7 +4288,8 @@ UTF8 codepoints. Invalid Unicode codepoints will be written as the
 
 [Hexadecimal entities](@hexadecimal-entities)
 consist of `&#` + either `X` or `x` + a string of 1-8 hexadecimal digits
-+ `;`. They will also be parsed and turned into their corresponding UTF8 values in the AST.
++ `;`. They will also be parsed and turned into the corresponding
+unicode codepoints in the AST.
 
 .
 &#X22; &#XD06; &#xcab;
@@ -4581,14 +4583,16 @@ characters that is not preceded or followed by a `_` character.
 A [left-flanking delimiter run](@left-flanking-delimiter-run) is
 a [delimiter run] that is (a) not followed by [unicode whitespace],
 and (b) either not followed by a [punctuation character], or
-preceded by [unicode whitespace] or a [punctuation character] or
-the beginning of a line.
+preceded by [unicode whitespace] or a [punctuation character].
+For purposes of this definition, the beginning and the end of
+the line count as unicode whitespace.
 
 A [right-flanking delimiter run](@right-flanking-delimiter-run) is
 a [delimiter run] that is (a) not preceded by [unicode whitespace],
 and (b) either not preceded by a [punctuation character], or
-followed by [unicode whitespace] or a [punctuation character] or
-the end of a line.
+followed by [unicode whitespace] or a [punctuation character].
+For purposes of this definition, the beginning and the end of
+the line count as unicode whitespace.
 
 Here are some examples of delimiter runs.
 
@@ -4604,20 +4608,20 @@ Here are some examples of delimiter runs.
   - right-flanking but not left-flanking:
 
     ```
-    abc***
-      abc_
+     abc***
+     abc_
     "abc"**
-     _"abc"
+    "abc"_
     ```
 
-  - Both right and right-flanking:
+  - Both left and right-flanking:
 
     ```
-    abc***def
+     abc***def
     "abc"_"def"
     ```
 
-  - Neither right nor right-flanking:
+  - Neither left nor right-flanking:
 
     ```
     abc *** def
@@ -4635,32 +4639,40 @@ are a bit more complex than the ones given here.)
 The following rules define emphasis and strong emphasis:
 
 1.  A single `*` character [can open emphasis](@can-open-emphasis)
-    iff it is part of a [left-flanking delimiter run].
+    iff (if and only if) it is part of a [left-flanking delimiter run].
 
 2.  A single `_` character [can open emphasis] iff
     it is part of a [left-flanking delimiter run]
-    and not part of a [right-flanking delimiter run].
+    and either (a) not part of a [right-flanking delimiter run]
+    or (b) part of a [right-flanking delimeter run]
+    preceded by punctuation.
 
 3.  A single `*` character [can close emphasis](@can-close-emphasis)
     iff it is part of a [right-flanking delimiter run].
 
-4.  A single `_` character [can close emphasis]
-    iff it is part of a [right-flanking delimiter run]
-    and not part of a [left-flanking delimiter run].
+4.  A single `_` character [can close emphasis] iff
+    it is part of a [right-flanking delimiter run]
+    and either (a) not part of a [left-flanking delimiter run]
+    or (b) part of a [left-flanking delimeter run]
+    followed by punctuation.
 
 5.  A double `**` [can open strong emphasis](@can-open-strong-emphasis)
     iff it is part of a [left-flanking delimiter run].
 
-6.  A double `__` [can open strong emphasis]
-    iff it is part of a [left-flanking delimiter run]
-    and not part of a [right-flanking delimiter run].
+6.  A double `__` [can open strong emphasis] iff
+    it is part of a [left-flanking delimiter run]
+    and either (a) not part of a [right-flanking delimiter run]
+    or (b) part of a [right-flanking delimeter run]
+    preceded by punctuation.
 
 7.  A double `**` [can close strong emphasis](@can-close-strong-emphasis)
     iff it is part of a [right-flanking delimiter run].
 
 8.  A double `__` [can close strong emphasis]
-    iff it is part of a [right-flanking delimiter run]
-    and not part of a [left-flanking delimiter run].
+    it is part of a [right-flanking delimiter run]
+    and either (a) not part of a [left-flanking delimiter run]
+    or (b) part of a [left-flanking delimeter run]
+    followed by punctuation.
 
 9.  Emphasis begins with a delimiter that [can open emphasis] and ends
     with a delimiter that [can close emphasis], and that uses the same
@@ -4822,13 +4834,14 @@ aa_"bb"_cc
 <p>aa_&quot;bb&quot;_cc</p>
 .
 
-Here there is no emphasis, because the delimiter runs are
-both left- and right-flanking:
+This is emphasis, even though the opening delimiter is
+both left- and right-flanking, because it is preceded by
+punctuation:
 
 .
-"aa"_"bb"_"cc"
+foo-_(bar)_
 .
-<p>&quot;aa&quot;_&quot;bb&quot;_&quot;cc&quot;</p>
+<p>foo-<em>(bar)</em></p>
 .
 
 Rule 3:
@@ -4939,6 +4952,16 @@ _foo_bar_baz_
 <p><em>foo_bar_baz</em></p>
 .
 
+This is emphasis, even though the closing delimiter is
+both left- and right-flanking, because it is followed by
+punctuation:
+
+.
+_(bar)_.
+.
+<p><em>(bar)</em>.</p>
+.
+
 Rule 5:
 
 .
@@ -5034,6 +5057,17 @@ __foo, __bar__, baz__
 .
 <p><strong>foo, <strong>bar</strong>, baz</strong></p>
 .
+
+This is strong emphasis, even though the opening delimiter is
+both left- and right-flanking, because it is preceded by
+punctuation:
+
+.
+foo-_(bar)_
+.
+<p>foo-<em>(bar)</em></p>
+.
+
 
 Rule 7:
 
@@ -5136,6 +5170,16 @@ __пристаням__стремятся
 __foo__bar__baz__
 .
 <p><strong>foo__bar__baz</strong></p>
+.
+
+This is strong emphasis, even though the closing delimiter is
+both left- and right-flanking, because it is followed by
+punctuation:
+
+.
+_(bar)_.
+.
+<p><em>(bar)</em>.</p>
 .
 
 Rule 9:
@@ -5706,7 +5750,7 @@ A [link destination](@link-destination) consists of either
   ASCII space or control characters, and includes parentheses
   only if (a) they are backslash-escaped or (b) they are part of
   a balanced pair of unescaped parentheses that is not itself
-  inside a balanced pair of unescaped paretheses.
+  inside a balanced pair of unescaped parentheses.
 
 A [link title](@link-title)  consists of either
 
@@ -5839,8 +5883,8 @@ in Markdown:
 
 URL-escaping should be left alone inside the destination, as all
 URL-escaped characters are also valid URL characters. HTML entities in
-the destination will be parsed into their UTF-8 codepoints, as usual, and
-optionally URL-escaped when written as HTML.
+the destination will be parsed into the corresponding unicode
+codepoints, as usual, and optionally URL-escaped when written as HTML.
 
 .
 [link](foo%20b&auml;)
@@ -7215,10 +7259,10 @@ foo
 ## Soft line breaks
 
 A regular line break (not in a code span or HTML tag) that is not
-preceded by two or more spaces is parsed as a softbreak.  (A
-softbreak may be rendered in HTML either as a
-[line ending] or as a space. The result will be the same
-in browsers. In the examples here, a [line ending] will be used.)
+preceded by two or more spaces or a backslash is parsed as a
+softbreak.  (A softbreak may be rendered in HTML either as a
+[line ending] or as a space. The result will be the same in
+browsers. In the examples here, a [line ending] will be used.)
 
 .
 foo
