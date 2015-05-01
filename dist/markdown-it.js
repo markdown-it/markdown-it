@@ -1,4 +1,4 @@
-/*! markdown-it 4.2.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 4.2.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -4336,11 +4336,11 @@ var isMdAsciiPunct = require('../common/utils').isMdAsciiPunct;
 // parse sequence of emphasis markers,
 // "start" should point at a valid marker
 function scanDelims(state, start) {
-  var pos = start, lastChar, nextChar, count,
+  var pos = start, lastChar, nextChar, count, can_open, can_close,
       isLastWhiteSpace, isLastPunctChar,
       isNextWhiteSpace, isNextPunctChar,
-      can_open = true,
-      can_close = true,
+      left_flanking = true,
+      right_flanking = true,
       max = state.posMax,
       marker = state.src.charCodeAt(start);
 
@@ -4348,10 +4348,6 @@ function scanDelims(state, start) {
   lastChar = start > 0 ? state.src.charCodeAt(start - 1) : 0x20;
 
   while (pos < max && state.src.charCodeAt(pos) === marker) { pos++; }
-
-  if (pos >= max) {
-    can_open = false;
-  }
 
   count = pos - start;
 
@@ -4365,27 +4361,28 @@ function scanDelims(state, start) {
   isNextWhiteSpace = isWhiteSpace(nextChar);
 
   if (isNextWhiteSpace) {
-    can_open = false;
+    left_flanking = false;
   } else if (isNextPunctChar) {
     if (!(isLastWhiteSpace || isLastPunctChar)) {
-      can_open = false;
+      left_flanking = false;
     }
   }
 
   if (isLastWhiteSpace) {
-    can_close = false;
+    right_flanking = false;
   } else if (isLastPunctChar) {
     if (!(isNextWhiteSpace || isNextPunctChar)) {
-      can_close = false;
+      right_flanking = false;
     }
   }
 
   if (marker === 0x5F /* _ */) {
-    if (can_open && can_close) {
-      // "_" inside a word can neither open nor close an emphasis
-      can_open = false;
-      can_close = isNextPunctChar;
-    }
+    // "_" inside a word can neither open nor close an emphasis
+    can_open  = left_flanking  && (!right_flanking || isLastPunctChar);
+    can_close = right_flanking && (!left_flanking  || isNextPunctChar);
+  } else {
+    can_open  = left_flanking;
+    can_close = right_flanking;
   }
 
   return {
