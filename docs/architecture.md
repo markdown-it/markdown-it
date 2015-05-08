@@ -118,7 +118,7 @@ var defaultRender = md.renderer.rules.image,
 
 md.renderer.rules.image = function (tokens, idx, options, env, self) {
   var token = tokens[idx],
-      aIndex = token.attrIdx('href');
+      aIndex = token.attrIndex('src');
 
   if (vimeoRE.test(token.attrs[aIndex][1])) {
 
