@@ -117,11 +117,12 @@ var defaultRender = md.renderer.rules.image,
     vimeoRE       = /^https?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
 
 md.renderer.rules.image = function (tokens, idx, options, env, self) {
-  var id;
+  var token = tokens[idx],
+      aIndex = token.attrIdx('href');
 
-  if (vimeoRE.test(tokens[idx].href)) {
+  if (vimeoRE.test(token.attrs[aIndex][1])) {
 
-    id = tokens[idx].href.match(vimeoRE)[2];
+    var id = token.attrs[aIndex][1].match(vimeoRE)[2];
 
     return '<div class="embed-responsive embed-responsive-16by9">\n' +
            '  <iframe class="embed-responsive-item" src="//player.vimeo.com/video/' + id + '"></iframe>\n' +
