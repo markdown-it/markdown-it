@@ -129,7 +129,8 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
            '</div>\n';
   }
 
-  return self.renderToken(tokens, idx, options);
+  // pass token to default renderer.
+  return defaultRender(tokens, idx, options, env, self);
 });
 ```
 
@@ -137,7 +138,7 @@ Here is another example, how to add `target="_blank"` to all links:
 
 ```js
 // Remember old renderer, if overriden, or proxy to default renderer
-val old_render = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
 };
 
@@ -152,7 +153,7 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   }
 
   // pass token to default renderer.
-  return old_render(tokens, idx, options, env, self);
+  return defaultRender(tokens, idx, options, env, self);
 };
 ```
 
