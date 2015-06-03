@@ -69,6 +69,23 @@ _(hai)_.
 <p><em>(hai)</em>.</p>
 .
 
+Those are two separate blockquotes:
+.
+ - > foo
+  > bar
+.
+<ul>
+<li>
+<blockquote>
+<p>foo</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>bar</p>
+</blockquote>
+.
+
 
 Coverage. Directive can terminate paragraph.
 .
@@ -198,4 +215,11 @@ test
 <p>[
 test
 ]</p>
+.
+.
+> [foo]: bar
+[foo]
+.
+<blockquote></blockquote>
+<p><a href="bar">foo</a></p>
 .
