@@ -275,3 +275,36 @@ describe('maxNesting', function () {
   });
 
 });
+
+
+describe('smartquotes', function () {
+  var md = markdownit({
+    typographer: true,
+
+    // all strings have different length to make sure
+    // we didn't accidentally count the wrong one
+    quotes: [ '[[[', ']]', '(((((', '))))' ]
+  });
+
+  it('Should support multi-character quotes', function () {
+    assert.strictEqual(
+      md.render('"foo" \'bar\''),
+      '<p>[[[foo]] (((((bar))))</p>\n'
+    );
+  });
+
+  it('Should support nested multi-character quotes', function () {
+    assert.strictEqual(
+      md.render('"foo \'bar\' baz"'),
+      '<p>[[[foo (((((bar)))) baz]]</p>\n'
+    );
+  });
+
+  it('Should support multi-character quotes in different tags', function () {
+    assert.strictEqual(
+      md.render('"a *b \'c *d* e\' f* g"'),
+      '<p>[[[a <em>b (((((c <em>d</em> e)))) f</em> g]]</p>\n'
+    );
+  });
+
+});
