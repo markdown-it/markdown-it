@@ -1,6 +1,6 @@
 {
   "name": "markdown-it",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "Markdown-it - modern pluggable markdown parser.",
   "keywords": [
     "markdown",
@@ -20,7 +20,7 @@
   "dependencies": {
     "argparse": "~1.0.2",
     "entities": "~1.1.1",
-    "linkify-it": "~1.1.0",
+    "linkify-it": "~1.1.1",
     "mdurl": "~1.0.0",
     "uc.micro": "^1.0.0"
   },
