@@ -1,8 +1,8 @@
 ---
 title: CommonMark Spec
 author: John MacFarlane
-version: 0.19
-date: 2015-04-27
+version: 0.20
+date: 2015-06-08
 license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
 ...
 
@@ -212,12 +212,8 @@ to a certain encoding.
 A [line](@line) is a sequence of zero or more [character]s
 followed by a [line ending] or by the end of file.
 
-A [line ending](@line-ending) is, depending on the platform, a
-newline (`U+000A`), carriage return (`U+000D`), or
-carriage return + newline.
-
-For security reasons, a conforming parser must strip or replace the
-Unicode character `U+0000`.
+A [line ending](@line-ending) is a newline (`U+000A`), carriage return
+(`U+000D`), or carriage return + newline.
 
 A line containing no characters, or a line containing only spaces
 (`U+0020`) or tabs (`U+0009`), is called a [blank line](@blank-line).
@@ -239,7 +235,10 @@ carriage return (`U+000D`), newline (`U+000A`), or form feed
 [Unicode whitespace](@unicode-whitespace) is a sequence of one
 or more [unicode whitespace character]s.
 
-A [non-space character](@non-space-character) is anything but `U+0020`.
+A [space](@space) is `U+0020`.
+
+A [non-space character](@non-space-character) is any character
+that is not a [whitespace character].
 
 An [ASCII punctuation character](@ascii-punctuation-character)
 is `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`,
@@ -250,9 +249,10 @@ A [punctuation character](@punctuation-character) is an [ASCII
 punctuation character] or anything in
 the unicode classes `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
 
-## Tab expansion
+## Preprocessing
 
-Tabs in lines are expanded to spaces, with a tab stop of 4 characters:
+Tabs in lines are immediately expanded to [spaces][space], with a tab
+stop of 4 characters:
 
 .
 →foo→baz→→bim
@@ -270,14 +270,19 @@ Tabs in lines are expanded to spaces, with a tab stop of 4 characters:
 </code></pre>
 .
 
+## Insecure characters
+
+For security reasons, the Unicode character `U+0000` must be replaced
+with the replacement character (`U+FFFD`).
+
 # Blocks and inlines
 
 We can think of a document as a sequence of
-[blocks](@block)---structural
-elements like paragraphs, block quotations,
-lists, headers, rules, and code blocks.  Blocks can contain other
-blocks, or they can contain [inline](@inline) content:
-words, spaces, links, emphasized text, images, and inline code.
+[blocks](@block)---structural elements like paragraphs, block
+quotations, lists, headers, rules, and code blocks.  Some blocks (like
+block quotes and list items) contain other blocks; others (like
+headers and paragraphs) contain [inline](@inline) content---text,
+links, emphasized text, images, code, and so on.
 
 ## Precedence
 
@@ -528,12 +533,12 @@ consists of a string of characters, parsed as inline content, between an
 opening sequence of 1--6 unescaped `#` characters and an optional
 closing sequence of any number of `#` characters.  The opening sequence
 of `#` characters cannot be followed directly by a
-[non-space character].
-The optional closing sequence of `#`s must be preceded by a space and may be
-followed by spaces only.  The opening `#` character may be indented 0-3
-spaces.  The raw contents of the header are stripped of leading and
-trailing spaces before being parsed as inline content.  The header level
-is equal to the number of `#` characters in the opening sequence.
+[non-space character]. The optional closing sequence of `#`s must be
+preceded by a [space] and may be followed by spaces only.  The opening
+`#` character may be indented 0-3 spaces.  The raw contents of the
+header are stripped of leading and trailing spaces before being parsed
+as inline content.  The header level is equal to the number of `#`
+characters in the opening sequence.
 
 Simple headers:
 
@@ -561,16 +566,21 @@ More than six `#` characters is not a header:
 <p>####### foo</p>
 .
 
-A space is required between the `#` characters and the header's
-contents.  Note that many implementations currently do not require
-the space.  However, the space was required by the [original ATX
-implementation](http://www.aaronsw.com/2002/atx/atx.py), and it helps
-prevent things like the following from being parsed as headers:
+At least one space is required between the `#` characters and the
+header's contents, unless the header is empty.  Note that many
+implementations currently do not require the space.  However, the
+space was required by the
+[original ATX implementation](http://www.aaronsw.com/2002/atx/atx.py),
+and it helps prevent things like the following from being parsed as
+headers:
 
 .
 #5 bolt
+
+#foobar
 .
 <p>#5 bolt</p>
+<p>#foobar</p>
 .
 
 This is not a header, because the first `#` is escaped:
@@ -1024,7 +1034,41 @@ paragraph.)
 </code></pre>
 .
 
-The contents are literal text, and do not get parsed as Markdown:
+If there is any ambiguity between an interpretation of indentation
+as a code block and as indicating that material belongs to a [list
+item][list items], the list item interpretation takes precedence:
+
+.
+  - foo
+
+    bar
+.
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+</ul>
+.
+
+.
+1.  foo
+
+    - bar
+.
+<ol>
+<li>
+<p>foo</p>
+<ul>
+<li>bar</li>
+</ul>
+</li>
+</ol>
+.
+
+
+The contents of a code block are literal text, and do not get parsed
+as Markdown:
 
 .
     <a/>
@@ -2325,9 +2369,16 @@ foo</p>
 </blockquote>
 .
 
-Laziness only applies to lines that are continuations of
-paragraphs. Lines containing characters or indentation that indicate
-block structure cannot be lazy.
+Laziness only applies to lines that would have been continuations of
+paragraphs had they been prepended with `>`.  For example, the
+`>` cannot be omitted in the second line of
+
+``` markdown
+> foo
+> ---
+```
+
+without changing the meaning:
 
 .
 > foo
@@ -2338,6 +2389,15 @@ block structure cannot be lazy.
 </blockquote>
 <hr />
 .
+
+Similarly, if we omit the `>` in the second line of
+
+``` markdown
+> - foo
+> - bar
+```
+
+then the block quote ends after the first line:
 
 .
 > - foo
@@ -2352,6 +2412,9 @@ block structure cannot be lazy.
 <li>bar</li>
 </ul>
 .
+
+For the same reason, we can't omit the `>` in front of
+subsequent lines of an indented or fenced code block:
 
 .
 >     foo
@@ -3835,9 +3898,11 @@ item:
  - b
   - c
    - d
-  - e
- - f
-- g
+    - e
+   - f
+  - g
+ - h
+- i
 .
 <ul>
 <li>a</li>
@@ -3847,7 +3912,29 @@ item:
 <li>e</li>
 <li>f</li>
 <li>g</li>
+<li>h</li>
+<li>i</li>
 </ul>
+.
+
+.
+1. a
+
+  2. b
+
+    3. c
+.
+<ol>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>c</p>
+</li>
+</ol>
 .
 
 This is a loose list, because there is a blank line between
@@ -4277,13 +4364,14 @@ corresponding codepoints.
 [Decimal entities](@decimal-entities)
 consist of `&#` + a string of 1--8 arabic digits + `;`. Again, these
 entities need to be recognised and transformed into their corresponding
-unicode codepoints. Invalid unicode codepoints will be written as the
-"unknown codepoint" character (`0xFFFD`)
+unicode codepoints. Invalid unicode codepoints will be replaced by
+the "unknown codepoint" character (`U+FFFD`).  For security reasons,
+the codepoint `U+0000` will also be replaced by `U+FFFD`.
 
 .
-&#35; &#1234; &#992; &#98765432;
+&#35; &#1234; &#992; &#98765432; &#0;
 .
-<p># Ӓ Ϡ �</p>
+<p># Ӓ Ϡ � �</p>
 .
 
 [Hexadecimal entities](@hexadecimal-entities)
@@ -5063,9 +5151,9 @@ both left- and right-flanking, because it is preceded by
 punctuation:
 
 .
-foo-_(bar)_
+foo-__(bar)__
 .
-<p>foo-<em>(bar)</em></p>
+<p>foo-<strong>(bar)</strong></p>
 .
 
 
@@ -5177,9 +5265,9 @@ both left- and right-flanking, because it is followed by
 punctuation:
 
 .
-_(bar)_.
+__(bar)__.
 .
-<p><em>(bar)</em>.</p>
+<p><strong>(bar)</strong>.</p>
 .
 
 Rule 9:
@@ -6086,6 +6174,7 @@ that [matches] a [link reference definition] elsewhere in the document.
 
 A [link label](@link-label)  begins with a left bracket (`[`) and ends
 with the first right bracket (`]`) that is not backslash-escaped.
+Between these brackets there must be at least one non-[whitespace character].
 Unescaped square bracket characters are not allowed in
 [link label]s.  A link label can have at most 999
 characters inside the square brackets.
@@ -6330,6 +6419,30 @@ backslash-escaped:
 [ref\[]: /uri
 .
 <p><a href="/uri">foo</a></p>
+.
+
+A [link label] must contain at least one non-[whitespace character]:
+
+.
+[]
+
+[]: /uri
+.
+<p>[]</p>
+<p>[]: /uri</p>
+.
+
+.
+[
+ ]
+
+[
+ ]: /uri
+.
+<p>[
+]</p>
+<p>[
+]: /uri</p>
 .
 
 A [collapsed reference link](@collapsed-reference-link)
