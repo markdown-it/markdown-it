@@ -258,6 +258,7 @@ during this project's development.
 **Ports**
 
 - [motion-markdown-it](https://github.com/digitalmoksha/motion-markdown-it) - Ruby/RubyMotion
+- [opennota/markdown](https://github.com/opennota/markdown) - Go
 
 
 ## License
