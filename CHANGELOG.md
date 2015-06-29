@@ -1,3 +1,9 @@
+4.3.0 / 2015-06-29
+------------------
+
+- `linkify-it` dependency update (1.2.0). Now accepts dash at the end of links.
+
+
 4.2.2 / 2015-06-10
 ------------------
 
