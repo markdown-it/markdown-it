@@ -109,3 +109,20 @@ References
 .
 <p>[test]: javascript:alert(1)</p>
 .
+
+
+Make sure we decode entities before split:
+.
+```js&#32;custom-class
+test1
+```
+
+```js&#x0C;custom-class
+test2
+```
+.
+<pre><code class="js">test1
+</code></pre>
+<pre><code class="js">test2
+</code></pre>
+.

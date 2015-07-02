@@ -98,6 +98,16 @@ Regression test (code block + regular paragraph)
 </blockquote>
 .
 
+Don't output empty class here:
+.
+```&#x20;
+test
+```
+.
+<pre><code>test
+</code></pre>
+.
+
 
 Coverage. Directive can terminate paragraph.
 .
