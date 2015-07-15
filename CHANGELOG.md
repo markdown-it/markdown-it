@@ -1,3 +1,10 @@
+4.3.1 / 2015-07-15
+------------------
+
+- Allow numbered lists starting from zero.
+- Fix class name injection in fence renderer.
+
+
 4.3.0 / 2015-06-29
 ------------------
 
