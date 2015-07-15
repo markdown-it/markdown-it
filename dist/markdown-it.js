@@ -1,4 +1,4 @@
-/*! markdown-it 4.3.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 4.3.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -1817,11 +1817,12 @@ default_rules.code_block = function (tokens, idx /*, options, env */) {
 
 default_rules.fence = function (tokens, idx, options, env, self) {
   var token = tokens[idx],
+      info = token.info ? unescapeAll(token.info).trim() : '',
       langName = '',
       highlighted;
 
-  if (token.info) {
-    langName = unescapeAll(token.info.trim().split(/\s+/g)[0]);
+  if (info) {
+    langName = info.split(/\s+/g)[0];
     token.attrPush([ 'class', options.langPrefix + langName ]);
   }
 
@@ -3052,7 +3053,7 @@ module.exports = function list(state, startLine, endLine, silent) {
     markerValue = Number(state.src.substr(start, posAfterMarker - start - 1));
 
     token       = state.push('ordered_list_open', 'ol', 1);
-    if (markerValue > 1) {
+    if (markerValue !== 1) {
       token.attrs = [ [ 'start', markerValue ] ];
     }
 
