@@ -108,19 +108,6 @@ test
 </code></pre>
 .
 
-List starting with zero:
-.
-0. foo
-1. bar
-2. baz
-.
-<ol start="0">
-<li>foo</li>
-<li>bar</li>
-<li>baz</li>
-</ol>
-.
-
 
 Coverage. Directive can terminate paragraph.
 .
