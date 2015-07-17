@@ -68,22 +68,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2479
-
-.
-[foo]: /url
-"title" ok
-.
-<p>&quot;title&quot; ok</p>
-.
-
-error:
-
-<p>[foo]: /url
-&quot;title&quot; ok</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 4737
 
 .
