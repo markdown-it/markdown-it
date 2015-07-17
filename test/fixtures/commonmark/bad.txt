@@ -1,0 +1,113 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 259
+
+.
+	foo	baz		bim
+.
+<pre><code>foo	baz		bim
+</code></pre>
+.
+
+error:
+
+<pre><code>foo baz     bim
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 266
+
+.
+  	foo	baz		bim
+.
+<pre><code>foo	baz		bim
+</code></pre>
+.
+
+error:
+
+<pre><code>foo baz     bim
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 273
+
+.
+    a	a
+    ὐ	a
+.
+<pre><code>a	a
+ὐ	a
+</code></pre>
+.
+
+error:
+
+<pre><code>a   a
+ὐ   a
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 295
+
+.
+>	foo	bar
+.
+<blockquote>
+<p>foo	bar</p>
+</blockquote>
+.
+
+error:
+
+<blockquote>
+<p>foo bar</p>
+</blockquote>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 2479
+
+.
+[foo]: /url
+"title" ok
+.
+<p>&quot;title&quot; ok</p>
+.
+
+error:
+
+<p>[foo]: /url
+&quot;title&quot; ok</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4737
+
+.
+\	\A\a\ \3\φ\«
+.
+<p>\	\A\a\ \3\φ\«</p>
+.
+
+error:
+
+<p>\   \A\a\ \3\φ\«</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6241
+
+.
+*foo __bar *baz bim__ bam*
+.
+<p><em>foo <strong>bar *baz bim</strong> bam</em></p>
+.
+
+error:
+
+<p>*foo <strong>bar *baz bim</strong> bam*</p>
+
+
