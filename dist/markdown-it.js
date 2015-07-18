@@ -1,4 +1,4 @@
-/*! markdown-it 4.3.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 4.4.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -12,63 +12,68 @@ module.exports = require('entities/maps/entities.json');
 
 'use strict';
 
-var html_blocks = {};
 
-[
+module.exports = [
+  'address',
   'article',
   'aside',
-  'button',
+  'base',
+  'basefont',
   'blockquote',
   'body',
-  'canvas',
   'caption',
+  'center',
   'col',
   'colgroup',
   'dd',
+  'details',
+  'dialog',
+  'dir',
   'div',
   'dl',
   'dt',
-  'embed',
   'fieldset',
   'figcaption',
   'figure',
   'footer',
   'form',
+  'frame',
+  'frameset',
   'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
+  'head',
   'header',
-  'hgroup',
   'hr',
-  'iframe',
+  'html',
+  'legend',
   'li',
-  'map',
-  'object',
+  'link',
+  'main',
+  'menu',
+  'menuitem',
+  'meta',
+  'nav',
+  'noframes',
   'ol',
-  'output',
+  'optgroup',
+  'option',
   'p',
+  'param',
   'pre',
-  'progress',
-  'script',
   'section',
-  'style',
+  'source',
+  'title',
+  'summary',
   'table',
   'tbody',
   'td',
-  'textarea',
   'tfoot',
   'th',
-  'tr',
   'thead',
-  'ul',
-  'video'
-].forEach(function (name) { html_blocks[name] = true; });
-
-
-module.exports = html_blocks;
+  'title',
+  'tr',
+  'track',
+  'ul'
+];
 
 },{}],3:[function(require,module,exports){
 // Regexps to match html elements
@@ -95,8 +100,10 @@ var cdata       = '<!\\[CDATA\\[[\\s\\S]*?\\]\\]>';
 
 var HTML_TAG_RE = new RegExp('^(?:' + open_tag + '|' + close_tag + '|' + comment +
                         '|' + processing + '|' + declaration + '|' + cdata + ')');
+var HTML_OPEN_CLOSE_TAG_RE = new RegExp('^(?:' + open_tag + '|' + close_tag + ')');
 
 module.exports.HTML_TAG_RE = HTML_TAG_RE;
+module.exports.HTML_OPEN_CLOSE_TAG_RE = HTML_OPEN_CLOSE_TAG_RE;
 
 },{}],4:[function(require,module,exports){
 // List of valid url schemas, accorting to commonmark spec
@@ -2803,74 +2810,73 @@ module.exports = function hr(state, startLine, endLine, silent) {
 
 
 var block_names = require('../common/html_blocks');
+var HTML_OPEN_CLOSE_TAG_RE = require('../common/html_re').HTML_OPEN_CLOSE_TAG_RE;
 
+// An array of opening and corresponding closing sequences for html tags,
+// last argument defines whether it can terminate a paragraph or not
+//
+var HTML_SEQUENCES = [
+  [ /^<(script|pre|style)(?=(\s|>|$))/i, /<\/(script|pre|style)>/i, true ],
+  [ /^<!--/,        /-->/,   true ],
+  [ /^<\?/,         /\?>/,   true ],
+  [ /^<![A-Z]/,     />/,     true ],
+  [ /^<!\[CDATA\[/, /\]\]>/, true ],
+  [ new RegExp('^</?(' + block_names.join('|') + ')(?=(\\s|/?>|$))', 'i'), /^$/, true ],
+  [ new RegExp(HTML_OPEN_CLOSE_TAG_RE.source + '\\s*$'),  /^$/, false ]
+];
 
-var HTML_TAG_OPEN_RE = /^<([a-zA-Z][a-zA-Z0-9]{0,14})[\s\/>]/;
-var HTML_TAG_CLOSE_RE = /^<\/([a-zA-Z][a-zA-Z0-9]{0,14})[\s>]/;
-
-function isLetter(ch) {
-  /*eslint no-bitwise:0*/
-  var lc = ch | 0x20; // to lower case
-  return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */);
-}
 
 module.exports = function html_block(state, startLine, endLine, silent) {
-  var ch, match, nextLine, token,
-      pos = state.bMarks[startLine],
-      max = state.eMarks[startLine],
-      shift = state.tShift[startLine];
-
-  pos += shift;
+  var i, nextLine, token, lineText,
+      pos = state.bMarks[startLine] + state.tShift[startLine],
+      max = state.eMarks[startLine];
 
   if (!state.md.options.html) { return false; }
 
-  if (shift > 3 || pos + 2 >= max) { return false; }
-
   if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false; }
 
-  ch = state.src.charCodeAt(pos + 1);
+  lineText = state.src.slice(pos, max);
 
-  if (ch === 0x21/* ! */ || ch === 0x3F/* ? */) {
-    // Directive start / comment start / processing instruction start
-    if (silent) { return true; }
-
-  } else if (ch === 0x2F/* / */ || isLetter(ch)) {
-
-    // Probably start or end of tag
-    if (ch === 0x2F/* \ */) {
-      // closing tag
-      match = state.src.slice(pos, max).match(HTML_TAG_CLOSE_RE);
-      if (!match) { return false; }
-    } else {
-      // opening tag
-      match = state.src.slice(pos, max).match(HTML_TAG_OPEN_RE);
-      if (!match) { return false; }
-    }
-    // Make sure tag name is valid
-    if (block_names[match[1].toLowerCase()] !== true) { return false; }
-    if (silent) { return true; }
-
-  } else {
-    return false;
+  for (i = 0; i < HTML_SEQUENCES.length; i++) {
+    if (HTML_SEQUENCES[i][0].test(lineText)) { break; }
   }
 
-  // If we are here - we detected HTML block.
-  // Let's roll down till empty line (block end).
+  if (i === HTML_SEQUENCES.length) { return false; }
+
+  if (silent) {
+    // true if this sequence can be a terminator, false otherwise
+    return HTML_SEQUENCES[i][2];
+  }
+
   nextLine = startLine + 1;
-  while (nextLine < state.lineMax && !state.isEmpty(nextLine)) {
-    nextLine++;
+
+  // If we are here - we detected HTML block.
+  // Let's roll down till block end.
+  if (!HTML_SEQUENCES[i][1].test(lineText)) {
+    for (; nextLine < endLine; nextLine++) {
+      if (state.tShift[nextLine] < state.blkIndent) { break; }
+
+      pos = state.bMarks[nextLine] + state.tShift[nextLine];
+      max = state.eMarks[nextLine];
+      lineText = state.src.slice(pos, max);
+
+      if (HTML_SEQUENCES[i][1].test(lineText)) {
+        if (lineText.length !== 0) { nextLine++; }
+        break;
+      }
+    }
   }
 
   state.line = nextLine;
 
   token         = state.push('html_block', '', 0);
-  token.map     = [ startLine, state.line ];
-  token.content = state.getLines(startLine, nextLine, 0, true);
+  token.map     = [ startLine, nextLine ];
+  token.content = state.getLines(startLine, nextLine, state.blkIndent, true);
 
   return true;
 };
 
-},{"../common/html_blocks":2}],25:[function(require,module,exports){
+},{"../common/html_blocks":2,"../common/html_re":3}],25:[function(require,module,exports){
 // lheading (---, ===)
 
 'use strict';
@@ -2956,7 +2962,8 @@ function skipBulletListMarker(state, startLine) {
 // or -1 on fail.
 function skipOrderedListMarker(state, startLine) {
   var ch,
-      pos = state.bMarks[startLine] + state.tShift[startLine],
+      start = state.bMarks[startLine] + state.tShift[startLine],
+      pos = start,
       max = state.eMarks[startLine];
 
   // List marker should have at least 2 chars (digit + dot)
@@ -2973,6 +2980,11 @@ function skipOrderedListMarker(state, startLine) {
     ch = state.src.charCodeAt(pos++);
 
     if (ch >= 0x30/* 0 */ && ch <= 0x39/* 9 */) {
+
+      // List marker should have no more than 9 digits
+      // (prevents integer overflow in browsers)
+      if (pos - start >= 10) { return -1; }
+
       continue;
     }
 
@@ -3374,6 +3386,17 @@ module.exports = function reference(state, startLine, _endLine, silent) {
 
   // skip trailing spaces until the rest of the line
   while (pos < max && str.charCodeAt(pos) === 0x20/* space */) { pos++; }
+
+  if (pos < max && str.charCodeAt(pos) !== 0x0A) {
+    if (title) {
+      // garbage at the end of the line after title,
+      // but it could still be a valid reference if we roll back
+      title = '';
+      pos = destEndPos;
+      lines = destEndLineNo;
+      while (pos < max && str.charCodeAt(pos) === 0x20/* space */) { pos++; }
+    }
+  }
 
   if (pos < max && str.charCodeAt(pos) !== 0x0A) {
     // garbage at the end of the line
