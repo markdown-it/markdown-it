@@ -245,3 +245,30 @@ test
 <blockquote></blockquote>
 <p><a href="bar">foo</a></p>
 .
+
+Coverage. Tabs in blockquotes.
+.
+   >	 foo
+   > 	 bar
+.
+<blockquote>
+<pre><code> foo
+ bar
+</code></pre>
+</blockquote>
+.
+
+Coverage. Tabs in lists.
+.
+1. 	foo
+
+	     bar
+.
+<ol>
+<li>
+<p>foo</p>
+<pre><code> bar
+</code></pre>
+</li>
+</ol>
+.
