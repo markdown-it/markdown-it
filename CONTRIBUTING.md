@@ -10,5 +10,6 @@
    Keep issues for bug reports, suggestions and so on.
 2. Make sure to read [dev info](https://github.com/markdown-it/markdown-it/tree/master/docs)
    prior to ask about plugins development.
-3. Issues of "question" type are closed after several days of inactivity,
+3. __Provide examples with [demo](https://markdown-it.github.io/) when possible.__
+4. Issues of "question" type are closed after several days of inactivity,
    if not qualified as bug report, enhancement etc (see 1).
