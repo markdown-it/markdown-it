@@ -28,12 +28,12 @@ defaults.highlight = function (str, lang) {
   if (lang && hljs.getLanguage(lang)) {
     try {
       return hljs.highlight(lang, str).value;
-    } catch (__) {}
+    } catch (__) { /**/ }
   }
 
   try {
     return hljs.highlightAuto(str).value;
-  } catch (__) {}
+  } catch (__) { /**/ }
 
   return '';
 };
@@ -95,14 +95,14 @@ function mdInit() {
   //
   // - We track only headings and paragraphs on first level. That's enough.
   // - Footnotes content causes jumps. Level limit filter it automatically.
-  function injectLineNumbers(tokens, idx, options, env, self) {
+  function injectLineNumbers(tokens, idx, options, env, slf) {
     var line;
     if (tokens[idx].map && tokens[idx].level === 0) {
       line = tokens[idx].map[0];
       tokens[idx].attrPush([ 'class', 'line' ]);
       tokens[idx].attrPush([ 'data-line', String(line) ]);
     }
-    return self.renderToken(tokens, idx, options, env, self);
+    return slf.renderToken(tokens, idx, options, env, slf);
   }
 
   mdHtml.renderer.rules.paragraph_open = mdHtml.renderer.rules.heading_open = injectLineNumbers;

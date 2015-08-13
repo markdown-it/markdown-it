@@ -32,7 +32,7 @@ describe('API', function () {
   it('plugin', function () {
     var succeeded = false;
 
-    function plugin(self, opts) { if (opts === 'bar') { succeeded = true; } }
+    function plugin(slf, opts) { if (opts === 'bar') { succeeded = true; } }
 
     var md = markdownit();
 

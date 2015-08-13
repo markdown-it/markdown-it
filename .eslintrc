@@ -99,7 +99,7 @@ rules:
   quotes:               [ 2, single, avoid-escape ]
   radix:                2
   semi:                 2
-  space-after-keywords: [ 2, always, , { "checkFunctionKeyword": true } ]
+  space-after-keywords: [ 2, always ]
   space-before-blocks:  2
   space-in-brackets:    [ 2, always, { propertyName: false } ]
   space-in-parens:      [ 2, never ]
