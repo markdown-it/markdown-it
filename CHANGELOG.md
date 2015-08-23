@@ -1,3 +1,10 @@
+4.5.0 / WIP
+------------------
+
+- Keep tabs (don't replace with spaces)
+- Don't wrap iframes with paragraphs (according to spec update).
+
+
 4.4.0 / 2015-07-18
 ------------------
 
