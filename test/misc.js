@@ -213,6 +213,13 @@ describe('Misc', function () {
     assert.strictEqual(md.render('[foo](bar)'), '<p><a href="bar" target="_blank">foo</a></p>\n');
   });
 
+  it('Should render tokens into an array', function() {
+    var md = markdownit()
+    
+    console.log(md.renderTokens('foo'));
+    assert.deepEqual(md.renderTokens('foo'), ['<p>', 'foo', '</p>\n']);
+  });
+
 });
 
 
