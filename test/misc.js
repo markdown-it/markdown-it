@@ -214,10 +214,9 @@ describe('Misc', function () {
   });
 
   it('Should render tokens into an array', function() {
-    var md = markdownit()
-    
-    console.log(md.renderTokens('foo'));
-    assert.deepEqual(md.renderTokens('foo'), ['<p>', 'foo', '</p>\n']);
+    var md = markdownit();
+
+    assert.deepEqual(md.renderTokens('foo'), [ '<p>', 'foo', '</p>\n' ]);
   });
 
 });
