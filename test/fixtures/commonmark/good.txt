@@ -5445,6 +5445,15 @@ src line: 6235
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6241
+
+.
+*foo __bar *baz bim__ bam*
+.
+<p><em>foo <strong>bar *baz bim</strong> bam</em></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 6249
 
 .

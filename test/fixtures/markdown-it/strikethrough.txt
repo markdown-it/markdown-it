@@ -22,6 +22,15 @@ x ~~~~foo~~~~
 <p>x <s><s>foo</s></s></p>
 .
 
+.
+x ~~a ~~foo~~~~~~~~~~~bar~~ b~~
+
+x ~~a ~~foo~~~~~~~~~~~~bar~~ b~~
+.
+<p>x <s>a <s>foo</s></s>~~~<s><s>bar</s> b</s></p>
+<p>x <s>a <s>foo</s></s>~~~~<s><s>bar</s> b</s></p>
+.
+
 
 Strikeouts have the same priority as emphases:
 .

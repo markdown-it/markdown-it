@@ -261,11 +261,6 @@ describe('Links validation', function () {
 
 describe('maxNesting', function () {
 
-  it('Inline parser should not nest above limit', function () {
-    var md = markdownit({ maxNesting: 2 });
-    assert.strictEqual(md.render('*foo *bar *baz* bar* foo*'), '<p><em>foo <em>bar *baz* bar</em> foo</em></p>\n');
-  });
-
   it('Block parser should not nest above limit', function () {
     var md = markdownit({ maxNesting: 2 });
     assert.strictEqual(
