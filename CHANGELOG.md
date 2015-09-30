@@ -1,8 +1,9 @@
-4.5.0 / WIP
+5.0.0 / 2015-09-30
 ------------------
 
-- Keep tabs (don't replace with spaces)
+- Keep tabs (don't replace with spaces).
 - Don't wrap iframes with paragraphs (according to spec update).
+- Changed emphasis algorithm to match one described in CM spec.
 
 
 4.4.0 / 2015-07-18
