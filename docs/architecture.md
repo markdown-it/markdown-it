@@ -168,12 +168,12 @@ var iterator = require('markdown-it-for-inline');
 
 var md = require('markdown-it')()
             .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
-              var aIndex = token[idx].attrIndex('target');
+              var aIndex = tokens[idx].attrIndex('target');
 
               if (aIndex < 0) {
-                token[idx].attrPush(['target', '_blank']);
+                tokens[idx].attrPush(['target', '_blank']);
               } else {
-                token[idx].attrs[aIndex][1] = '_blank';
+                tokens[idx].attrs[aIndex][1] = '_blank';
               }
             });
 ```
