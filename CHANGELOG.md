@@ -1,9 +1,15 @@
-5.0.0 / 2015-09-30
+5.0.0 / 2015-10-05
 ------------------
 
-- Keep tabs (don't replace with spaces).
-- Don't wrap iframes with paragraphs (according to spec update).
-- Changed emphasis algorithm to match one described in CM spec.
+- Internal API change. Due to new CM spec requirements, we had to update
+  internals. That should not touch ordinary users, but can affect some external
+  plugins. If you are plugin developper - see migration guide:
+  https://github.com/markdown-it/markdown-it/blob/master/docs/5.0_migration.md.
+- Updated CM spec compatibility to 0.22:
+  - Keep tabs (don't replace with spaces).
+  - Don't wrap iframes with paragraphs.
+  - Rewritten emphasis algorithm.
+- Fix closure compiler collisions (don't use reserved words), #159.
 
 
 4.4.0 / 2015-07-18
