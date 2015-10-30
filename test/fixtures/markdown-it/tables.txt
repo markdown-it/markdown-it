@@ -121,34 +121,6 @@ baz|baz
 .
 
 
-Nested tables inside lists:
-.
--   foo|foo
-    ---|---
-    bar|bar
-   baz|baz
-.
-<ul>
-<li>
-<table>
-<thead>
-<tr>
-<th>foo</th>
-<th>foo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bar</td>
-<td>bar</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<p>baz|baz</p>
-.
-
 Minimal one-column:
 .
 | foo
@@ -170,17 +142,26 @@ Minimal one-column:
 .
 
 
-Second line indent should not be smaller than first:
+This is parsed as one big table:
 .
 -   foo|foo
 ---|---
 bar|bar
 .
-<ul>
-<li>foo|foo
-—|---
-bar|bar</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>-   foo</th>
+<th>foo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bar</td>
+<td>bar</td>
+</tr>
+</tbody>
+</table>
 .
 
 
@@ -434,6 +415,29 @@ Heading 1|Heading 2|Heading 3
 <td>1</td>
 <td>2</td>
 <td>3</td>
+</tr>
+</tbody>
+</table>
+.
+
+
+Should be parsed before code blocks:
+.
+    foo | bar
+  ----- | -----
+    aaa | bbb
+.
+<table>
+<thead>
+<tr>
+<th>foo</th>
+<th>bar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aaa</td>
+<td>bbb</td>
 </tr>
 </tbody>
 </table>
