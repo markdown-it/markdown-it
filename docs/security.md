@@ -24,7 +24,7 @@ are fixed with top priority.
 
 ## Plugins
 
-Usually, plugins operate with tokenized content, and that's enougth to provide
+Usually, plugins operate with tokenized content, and that's enough to provide
 safe output.
 
 But there is one non-evident case you should know - don't allow plugins to
