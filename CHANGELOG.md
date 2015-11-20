@@ -1,3 +1,9 @@
+5.0.2 / WIP
+------------------
+
+- Fix meta information (`token.markup` and `token.info`) for autolink tokens.
+
+
 5.0.1 / 2015-10-30
 ------------------
 
