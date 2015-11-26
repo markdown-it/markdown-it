@@ -69,7 +69,7 @@ More details about tokens:
 
 - [Renderer source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
 - [Token source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
-- [Live demo](https://markdown-it.github.io/) - type your text ant click `debug` tab.
+- [Live demo](https://markdown-it.github.io/) - type your text and click `debug` tab.
 
 
 ## Rules
