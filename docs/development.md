@@ -18,6 +18,8 @@ Prior to continue, make sure you've read:
     block & inline rules are usually faster.
   - Sometime it's enougth to modify renderer only (for example, to add
     header IDs or `target="_blank"` for the links).
+  - Plugins should use passed arguments to access markdown-it. Plugins should 
+    *never* require markdown-it directly.
 2. Search existing
    [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
    or [rules](https://github.com/markdown-it/markdown-it/tree/master/lib),
