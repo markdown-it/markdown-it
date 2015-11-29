@@ -159,6 +159,16 @@ var md = require('markdown-it')({
 ```
 
 
+### Linkify
+
+`linkify: true` uses [linkify-it](https://github.com/markdown-it/linkify-it). To
+configure linkify-it, access the linkify instance through `md.linkify`:
+
+```js
+md.linkify.tlds('.py', false);  // disables .py as top level domain
+```
+
+
 ## API
 
 __[API documentation](https://markdown-it.github.io/markdown-it/)__
