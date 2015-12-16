@@ -43,9 +43,12 @@ emails
 test@example.com
 
 mailto:test@example.com
+
+[oh hey](mailto:test@example.com?subject=foo bar&body=what's up)
 .
 <p><a href="mailto:test@example.com">test@example.com</a></p>
 <p><a href="mailto:test@example.com">mailto:test@example.com</a></p>
+<p><a href="mailto:test@example.com?subject=foo%20bar&body=what's%20up>oh hey</a></p>
 .
 
 
