@@ -96,3 +96,16 @@ Quotes between punctuation chars:
 .
 <p>“(hai)”.</p>
 .
+
+Quotes at the start/end of the tokens:
+.
+"*foo* bar"
+
+"foo *bar*"
+
+"*foo bar*"
+.
+<p>“<em>foo</em> bar”</p>
+<p>“foo <em>bar</em>”</p>
+<p>“<em>foo bar</em>”</p>
+.
