@@ -1,3 +1,11 @@
+5.0.3 / 2016-01-04
+------------------
+
+- Allow single column and mismatched columns count in tables.
+- Smartquotes: take into account adjacent tokens.
+- Fill `content` property in image token with `alt` source.
+
+
 5.0.2 / 2015-11-20
 ------------------
 
