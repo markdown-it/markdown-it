@@ -1,4 +1,4 @@
-/*! markdown-it 5.0.2 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 5.0.3 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -3840,7 +3840,7 @@ function escapedSplit(str) {
 
 
 module.exports = function table(state, startLine, endLine, silent) {
-  var ch, lineText, pos, i, nextLine, rows, token,
+  var ch, lineText, pos, i, nextLine, columns, columnCount, token,
       aligns, t, tableLines, tbodyLines;
 
   // should have at least three lines
@@ -3861,15 +3861,14 @@ module.exports = function table(state, startLine, endLine, silent) {
   lineText = getLine(state, startLine + 1);
   if (!/^[-:| ]+$/.test(lineText)) { return false; }
 
-  rows = lineText.split('|');
-  if (rows.length < 2) { return false; }
+  columns = lineText.split('|');
   aligns = [];
-  for (i = 0; i < rows.length; i++) {
-    t = rows[i].trim();
+  for (i = 0; i < columns.length; i++) {
+    t = columns[i].trim();
     if (!t) {
       // allow empty columns before and after table, but not in between columns;
       // e.g. allow ` |---| `, disallow ` ---||--- `
-      if (i === 0 || i === rows.length - 1) {
+      if (i === 0 || i === columns.length - 1) {
         continue;
       } else {
         return false;
@@ -3888,8 +3887,13 @@ module.exports = function table(state, startLine, endLine, silent) {
 
   lineText = getLine(state, startLine).trim();
   if (lineText.indexOf('|') === -1) { return false; }
-  rows = escapedSplit(lineText.replace(/^\||\|$/g, ''));
-  if (aligns.length !== rows.length) { return false; }
+  columns = escapedSplit(lineText.replace(/^\||\|$/g, ''));
+
+  // header row will define an amount of columns in the entire table,
+  // and align row shouldn't be smaller than that (the rest of the rows can)
+  columnCount = columns.length;
+  if (columnCount > aligns.length) { return false; }
+
   if (silent) { return true; }
 
   token     = state.push('table_open', 'table', 1);
@@ -3901,7 +3905,7 @@ module.exports = function table(state, startLine, endLine, silent) {
   token     = state.push('tr_open', 'tr', 1);
   token.map = [ startLine, startLine + 1 ];
 
-  for (i = 0; i < rows.length; i++) {
+  for (i = 0; i < columns.length; i++) {
     token          = state.push('th_open', 'th', 1);
     token.map      = [ startLine, startLine + 1 ];
     if (aligns[i]) {
@@ -3909,7 +3913,7 @@ module.exports = function table(state, startLine, endLine, silent) {
     }
 
     token          = state.push('inline', '', 0);
-    token.content  = rows[i].trim();
+    token.content  = columns[i].trim();
     token.map      = [ startLine, startLine + 1 ];
     token.children = [];
 
@@ -3927,20 +3931,17 @@ module.exports = function table(state, startLine, endLine, silent) {
 
     lineText = getLine(state, nextLine).trim();
     if (lineText.indexOf('|') === -1) { break; }
-    rows = escapedSplit(lineText.replace(/^\||\|$/g, ''));
-
-    // set number of columns to number of columns in header row
-    rows.length = aligns.length;
+    columns = escapedSplit(lineText.replace(/^\||\|$/g, ''));
 
     token = state.push('tr_open', 'tr', 1);
-    for (i = 0; i < rows.length; i++) {
+    for (i = 0; i < columnCount; i++) {
       token          = state.push('td_open', 'td', 1);
       if (aligns[i]) {
         token.attrs  = [ [ 'style', 'text-align:' + aligns[i] ] ];
       }
 
       token          = state.push('inline', '', 0);
-      token.content  = rows[i] ? rows[i].trim() : '';
+      token.content  = columns[i] ? columns[i].trim() : '';
       token.children = [];
 
       token          = state.push('td_close', 'td', -1);
@@ -4289,9 +4290,37 @@ function process_inlines(tokens, state) {
       pos = t.index + 1;
       isSingle = (t[0] === "'");
 
-      // treat begin/end of the line as a whitespace
-      lastChar = t.index - 1 >= 0 ? text.charCodeAt(t.index - 1) : 0x20;
-      nextChar = pos < max ? text.charCodeAt(pos) : 0x20;
+      // Find previous character,
+      // default to space if it's the beginning of the line
+      //
+      lastChar = 0x20;
+
+      if (t.index - 1 >= 0) {
+        lastChar = text.charCodeAt(t.index - 1);
+      } else {
+        for (j = i - 1; j >= 0; j--) {
+          if (tokens[j].type !== 'text') { continue; }
+
+          lastChar = tokens[j].content.charCodeAt(tokens[j].content.length - 1);
+          break;
+        }
+      }
+
+      // Find next character,
+      // default to space if it's the end of the line
+      //
+      nextChar = 0x20;
+
+      if (pos < max) {
+        nextChar = text.charCodeAt(pos);
+      } else {
+        for (j = i + 1; j < tokens.length; j++) {
+          if (tokens[j].type !== 'text') { continue; }
+
+          nextChar = tokens[j].content.charCodeAt(0);
+          break;
+        }
+      }
 
       isLastPunctChar = isMdAsciiPunct(lastChar) || isPunctChar(String.fromCharCode(lastChar));
       isNextPunctChar = isMdAsciiPunct(nextChar) || isPunctChar(String.fromCharCode(nextChar));
@@ -4879,6 +4908,7 @@ var isSpace              = require('../common/utils').isSpace;
 module.exports = function image(state, silent) {
   var attrs,
       code,
+      content,
       label,
       labelEnd,
       labelStart,
@@ -5003,8 +5033,10 @@ module.exports = function image(state, silent) {
   // so all that's left to do is to call tokenizer.
   //
   if (!silent) {
+    content = state.src.slice(labelStart, labelEnd);
+
     state.md.inline.parse(
-      state.src.slice(labelStart, labelEnd),
+      content,
       state.md,
       state.env,
       tokens = []
@@ -5013,6 +5045,8 @@ module.exports = function image(state, silent) {
     token          = state.push('image', 'img', 0);
     token.attrs    = attrs = [ [ 'src', href ], [ 'alt', '' ] ];
     token.children = tokens;
+    token.content  = content;
+
     if (title) {
       attrs.push([ 'title', title ]);
     }
@@ -5750,7 +5784,7 @@ module.exports = Token;
 
 },{}],53:[function(require,module,exports){
 (function (global){
-/*! https://mths.be/punycode v1.3.2 by @mathias */
+/*! https://mths.be/punycode v1.4.0 by @mathias */
 ;(function(root) {
 
 	/** Detect free variables */
@@ -5816,7 +5850,7 @@ module.exports = Token;
 	 * @returns {Error} Throws a `RangeError` with the applicable error message.
 	 */
 	function error(type) {
-		throw RangeError(errors[type]);
+		throw new RangeError(errors[type]);
 	}
 
 	/**
@@ -5963,7 +5997,7 @@ module.exports = Token;
 
 	/**
 	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * http://tools.ietf.org/html/rfc3492#section-3.4
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
 	 * @private
 	 */
 	function adapt(delta, numPoints, firstTime) {
@@ -6268,14 +6302,17 @@ module.exports = Token;
 			return punycode;
 		});
 	} else if (freeExports && freeModule) {
-		if (module.exports == freeExports) { // in Node.js or RingoJS v0.8.0+
+		if (module.exports == freeExports) {
+			// in Node.js, io.js, or RingoJS v0.8.0+
 			freeModule.exports = punycode;
-		} else { // in Narwhal or RingoJS v0.7.0-
+		} else {
+			// in Narwhal or RingoJS v0.7.0-
 			for (key in punycode) {
 				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
 			}
 		}
-	} else { // in Rhino or a web browser
+	} else {
+		// in Rhino or a web browser
 		root.punycode = punycode;
 	}
 
