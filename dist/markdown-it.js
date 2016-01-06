@@ -1,4 +1,4 @@
-/*! markdown-it 5.0.3 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 5.1.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -913,7 +913,8 @@ function normalizeLinkText(url) {
  *   `['«\xA0', '\xA0»', '‹\xA0', '\xA0›']` for French (including nbsp).
  * - __highlight__ - `null`. Highlighter function for fenced code blocks.
  *   Highlighter `function (str, lang)` should return escaped HTML. It can also
- *   return empty string if the source was not changed and should be escaped externaly.
+ *   return empty string if the source was not changed and should be escaped
+ *   externaly. If result starts with <pre... internal wrapper is skipped.
  *
  * ##### Example
  *
@@ -945,14 +946,32 @@ function normalizeLinkText(url) {
  *       } catch (__) {}
  *     }
  *
- *     try {
- *       return hljs.highlightAuto(str).value;
- *     } catch (__) {}
- *
  *     return ''; // use external default escaping
  *   }
  * });
  * ```
+ *
+ * Or with full wrapper override (if you need assign class to <pre>):
+ *
+ * ```javascript
+ * var hljs = require('highlight.js') // https://highlightjs.org/
+ *
+ * // Actual default values
+ * var md = require('markdown-it')({
+ *   highlight: function (str, lang) {
+ *     if (lang && hljs.getLanguage(lang)) {
+ *       try {
+ *         return '<pre class="hljs"><code>' +
+ *                hljs.highlight(lang, str).value +
+ *                '</code></pre>';
+ *       } catch (__) {}
+ *     }
+ *
+ *     return '<pre class="hljs"><code>' + md.utils.esccapeHtml(str) + '</code></pre>';
+ *   }
+ * });
+ * ```
+ *
  **/
 function MarkdownIt(presetName, options) {
   if (!(this instanceof MarkdownIt)) {
@@ -1686,7 +1705,8 @@ module.exports = {
     quotes: '\u201c\u201d\u2018\u2019', /* “”‘’ */
 
     // Highlighter function. Should return escaped HTML,
-    // or '' if input not changed
+    // or '' if the source string is not changed and should be escaped externaly.
+    // If result starts with <pre... internal wrapper is skipped.
     //
     // function (/*str, lang*/) { return ''; }
     //
@@ -1767,7 +1787,8 @@ module.exports = {
     quotes: '\u201c\u201d\u2018\u2019', /* “”‘’ */
 
     // Highlighter function. Should return escaped HTML,
-    // or '' if input not changed
+    // or '' if the source string is not changed and should be escaped externaly.
+    // If result starts with <pre... internal wrapper is skipped.
     //
     // function (/*str, lang*/) { return ''; }
     //
@@ -1810,7 +1831,8 @@ module.exports = {
     quotes: '\u201c\u201d\u2018\u2019', /* “”‘’ */
 
     // Highlighter function. Should return escaped HTML,
-    // or '' if input not changed
+    // or '' if the source string is not changed and should be escaped externaly.
+    // If result starts with <pre... internal wrapper is skipped.
     //
     // function (/*str, lang*/) { return ''; }
     //
@@ -1886,13 +1908,17 @@ default_rules.fence = function (tokens, idx, options, env, slf) {
 
   if (info) {
     langName = info.split(/\s+/g)[0];
-    token.attrPush([ 'class', options.langPrefix + langName ]);
+    token.attrJoin('class', options.langPrefix + langName);
   }
 
   if (options.highlight) {
     highlighted = options.highlight(token.content, langName) || escapeHtml(token.content);
   } else {
     highlighted = escapeHtml(token.content);
+  }
+
+  if (highlighted.indexOf('<pre') === 0) {
+    return highlighted + '\n';
   }
 
   return  '<pre><code' + slf.renderAttrs(token) + '>'
@@ -5776,6 +5802,40 @@ Token.prototype.attrPush = function attrPush(attrData) {
     this.attrs.push(attrData);
   } else {
     this.attrs = [ attrData ];
+  }
+};
+
+
+/**
+ * Token.attrSet(name, value)
+ *
+ * Set `name` attribute to `value`. Override old value if exists.
+ **/
+Token.prototype.attrSet = function attrSet(name, value) {
+  var idx = this.attrIndex(name),
+      attrData = [ name, value ];
+
+  if (idx < 0) {
+    this.attrPush(attrData);
+  } else {
+    this.attrs[idx] = attrData;
+  }
+};
+
+
+/**
+ * Token.attrJoin(name, value)
+ *
+ * Join value to existing attribute via space. Or create new attribute if not
+ * exists. Useful to operate with token classes.
+ **/
+Token.prototype.attrJoin = function attrJoin(name, value) {
+  var idx = this.attrIndex(name);
+
+  if (idx < 0) {
+    this.attrPush([ name, value ]);
+  } else {
+    this.attrs[idx][1] = this.attrs[idx][1] + ' ' + value;
   }
 };
 
