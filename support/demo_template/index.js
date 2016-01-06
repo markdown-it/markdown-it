@@ -24,18 +24,25 @@ var defaults = {
 defaults.highlight = function (str, lang) {
   if (!defaults._highlight || !window.hljs) { return ''; }
 
-  var hljs = window.hljs;
+  var hljs = window.hljs,
+      esc = mdHtml.utils.escapeHtml;
+
   if (lang && hljs.getLanguage(lang)) {
     try {
-      return hljs.highlight(lang, str).value;
+      return '<pre class="hljs"><code>' +
+             hljs.highlight(lang, str).value +
+             '</code></pre>';
     } catch (__) { /**/ }
   }
 
-  try {
-    return hljs.highlightAuto(str).value;
-  } catch (__) { /**/ }
+  /* try {
+    var result = hljs.highlightAuto(str);
+    return '<pre class="hljs ' + esc(result.language) + '"><code>' +
+           result.value +
+           '</code></pre>';
+  } catch (__) {} */
 
-  return '';
+  return '<pre class="hljs"><code>' + esc(str) + '</code></pre>';
 };
 
 function setOptionClass(name, val) {
@@ -91,30 +98,6 @@ function mdInit() {
   };
 
 
-  mdHtml.renderer.rules.fence = function (tokens, idx, options, env, slf) {
-    var escapeHtml = mdHtml.utils.escapeHtml,
-        unescapeAll = mdHtml.utils.unescapeAll,
-        token = tokens[idx],
-        info = token.info ? unescapeAll(token.info).trim() : '',
-        langName = '',
-        highlighted;
-
-    if (info) {
-      langName = info.split(/\s+/g)[0];
-      token.attrPush([ 'class', options.langPrefix + langName ]);
-    }
-
-    if (options.highlight) {
-      highlighted = options.highlight(token.content, langName) || escapeHtml(token.content);
-    } else {
-      highlighted = escapeHtml(token.content);
-    }
-
-    return  '<pre class="hljs"><code' + slf.renderAttrs(token) + '>'
-          + highlighted
-          + '</code></pre>\n';
-  };
-
   //
   // Inject line numbers for sync scroll. Notes:
   //
@@ -124,8 +107,8 @@ function mdInit() {
     var line;
     if (tokens[idx].map && tokens[idx].level === 0) {
       line = tokens[idx].map[0];
-      tokens[idx].attrPush([ 'class', 'line' ]);
-      tokens[idx].attrPush([ 'data-line', String(line) ]);
+      tokens[idx].attrJoin('class', 'line');
+      tokens[idx].attrSet('data-line', String(line));
     }
     return slf.renderToken(tokens, idx, options, env, slf);
   }
