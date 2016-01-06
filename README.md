@@ -119,6 +119,7 @@ var md = require('markdown-it')({
 
   // Highlighter function. Should return escaped HTML,
   // or '' if the source string is not changed and should be escaped externaly.
+  // If result starts with <pre... internal wrapper is skipped.
   highlight: function (/*str, lang*/) { return ''; }
 });
 ```
@@ -149,15 +150,31 @@ var md = require('markdown-it')({
       } catch (__) {}
     }
 
-    try {
-      return hljs.highlightAuto(str).value;
-    } catch (__) {}
-
     return ''; // use external default escaping
   }
 });
 ```
 
+Or with full wrapper override (if you need assign class to <pre>):
+
+```js
+var hljs = require('highlight.js') // https://highlightjs.org/
+
+// Actual default values
+var md = require('markdown-it')({
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return '<pre class="hljs"><code>' +
+               hljs.highlight(lang, str).value +
+               '</code></pre>';
+      } catch (__) {}
+    }
+
+    return '<pre class="hljs"><code>' + md.utils.esccapeHtml(str) + '</code></pre>';
+  }
+});
+```
 
 ### Linkify
 

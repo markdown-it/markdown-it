@@ -45,7 +45,7 @@ describe('API', function () {
   it('highlight', function () {
     var md = markdownit({
       highlight: function (str) {
-        return '==' + str + '==';
+        return '<pre><code>==' + str + '==</code></pre>';
       }
     });
 
