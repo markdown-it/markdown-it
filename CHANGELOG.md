@@ -1,3 +1,10 @@
+5.1.0 / 2016-01-07
+------------------
+
+- Token: added `.attrSet()` & `.attrJoin()` methods.
+- Highlighter: allow wrapper override (if result starts with "<pre").
+
+
 5.0.3 / 2016-01-04
 ------------------
 

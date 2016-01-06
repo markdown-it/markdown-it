@@ -155,7 +155,7 @@ var md = require('markdown-it')({
 });
 ```
 
-Or with full wrapper override (if you need assign class to <pre>):
+Or with full wrapper override (if you need assign class to \<pre>):
 
 ```js
 var hljs = require('highlight.js') // https://highlightjs.org/
