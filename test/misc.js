@@ -303,3 +303,42 @@ describe('smartquotes', function () {
   });
 
 });
+
+
+describe('Token attributes', function () {
+  it('.attrJoin', function () {
+    var md = markdownit();
+
+    var tokens = md.parse('```'),
+        t = tokens[0];
+
+    t.attrJoin('class', 'foo');
+    t.attrJoin('class', 'bar');
+
+    assert.strictEqual(
+      md.renderer.render(tokens, md.options),
+      '<pre><code class="foo bar"></code></pre>\n'
+    );
+  });
+
+  it('.attrSet', function () {
+    var md = markdownit();
+
+    var tokens = md.parse('```'),
+        t = tokens[0];
+
+    t.attrSet('class', 'foo');
+
+    assert.strictEqual(
+      md.renderer.render(tokens, md.options),
+      '<pre><code class="foo"></code></pre>\n'
+    );
+
+    t.attrSet('class', 'bar');
+
+    assert.strictEqual(
+      md.renderer.render(tokens, md.options),
+      '<pre><code class="bar"></code></pre>\n'
+    );
+  });
+});
