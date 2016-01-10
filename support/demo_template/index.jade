@@ -14,8 +14,9 @@ html
     script(src='https://cdn.jsdelivr.net/bootstrap/3.2.0/js/bootstrap.min.js')
     link(rel='stylesheet' href='https://cdn.jsdelivr.net/bootstrap/3.2.0/css/bootstrap.css')
 
-    script(src='https://cdn.jsdelivr.net/highlight.js/9.0.0/highlight.min.js')
-    link(rel='stylesheet' href='https://cdn.jsdelivr.net/highlight.js/9.0.0/styles/monokai-sublime.min.css')
+    script(src='https://cdn.jsdelivr.net/highlight.js/9.1.0/highlight.min.js')
+    script(src='https://cdn.jsdelivr.net/highlight.js/9.1.0/languages/stylus.min.js')
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/github.min.css')
 
     script(src='markdown-it.js')
     script(src='https://twemoji.maxcdn.com/twemoji.min.js')
@@ -97,9 +98,9 @@ html
             a(href='#' data-result-as='src') source
             a(href='#' data-result-as='debug') debug
           .result-html.full-height
-          pre.result-src.full-height
+          pre.hljs.result-src.full-height
             code.result-src-content.full-height
-          pre.result-debug.full-height
+          pre.hljs.result-debug.full-height
             code.result-debug-content.full-height
 
     .gh-ribbon
