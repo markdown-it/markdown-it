@@ -89,7 +89,7 @@ defaults.highlight = function (str, lang) {
     if (lang && lang !== 'auto' && hljs.getLanguage(lang)) {
 
       return '<pre class="hljs language-' + esc(lang.toLowerCase()) + '"><code>' +
-             hljs.highlight(lang, str).value +
+             hljs.highlight(lang, str, true).value +
              '</code></pre>';
 
     } else if (lang === 'auto') {

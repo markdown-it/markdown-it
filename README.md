@@ -166,7 +166,7 @@ var md = require('markdown-it')({
     if (lang && hljs.getLanguage(lang)) {
       try {
         return '<pre class="hljs"><code>' +
-               hljs.highlight(lang, str).value +
+               hljs.highlight(lang, str, true).value +
                '</code></pre>';
       } catch (__) {}
     }
