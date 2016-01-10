@@ -13,7 +13,9 @@
   "repository": "markdown-it/markdown-it",
   "license": "MIT",
   "main": "index.js",
-  "bin": { "markdown-it": "bin/markdown-it.js" },
+  "bin": {
+    "markdown-it": "bin/markdown-it.js"
+  },
   "scripts": {
     "test": "make test"
   },
@@ -41,6 +43,7 @@
     "coveralls": "~2.11.6",
     "eslint": "0.24.0",
     "eslint-plugin-nodeca": "^1.0.0",
+    "highlight.js": "^9.1.0",
     "istanbul": "*",
     "jade": "~1.11.0",
     "markdown-it-abbr": "^1.0.2",
@@ -55,8 +58,8 @@
     "markdown-it-sup": "^1.0.0",
     "markdown-it-testgen": "~0.1.3",
     "marked": "0.3.5",
-    "stylus": "~0.53.0",
     "mocha": "*",
+    "stylus": "~0.53.0",
     "uglify-js": "*"
   }
 }
