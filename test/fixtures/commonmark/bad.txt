@@ -1,0 +1,221 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 877
+
+.
+Foo *bar
+baz*
+====
+.
+<h1>Foo <em>bar
+baz</em></h1>
+.
+
+error:
+
+<p>Foo <em>bar
+baz</em>
+====</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 1057
+
+.
+Foo
+Bar
+---
+.
+<h2>Foo
+Bar</h2>
+.
+
+error:
+
+<p>Foo
+Bar</p>
+<hr />
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3777
+
+.
+- Foo
+
+      bar
+
+
+      baz
+.
+<ul>
+<li>
+<p>Foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ul>
+<pre><code>  baz
+</code></pre>
+.
+
+error:
+
+<ul>
+<li>
+<p>Foo</p>
+<pre><code>bar
+
+
+baz
+</code></pre>
+</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4044
+
+.
+-
+
+  foo
+.
+<ul>
+<li></li>
+</ul>
+<p>foo</p>
+.
+
+error:
+
+<ul>
+<li>foo</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7098
+
+.
+[link](</my uri>)
+.
+<p>[link](&lt;/my uri&gt;)</p>
+.
+
+error:
+
+<p><a href="/my%20uri">link</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7614
+
+.
+[foo] [bar]
+
+[bar]: /url "title"
+.
+<p>[foo] <a href="/url" title="title">bar</a></p>
+.
+
+error:
+
+<p><a href="/url" title="title">foo</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7623
+
+.
+[foo]
+[bar]
+
+[bar]: /url "title"
+.
+<p>[foo]
+<a href="/url" title="title">bar</a></p>
+.
+
+error:
+
+<p><a href="/url" title="title">foo</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7809
+
+.
+[foo] 
+[]
+
+[foo]: /url "title"
+.
+<p><a href="/url" title="title">foo</a>
+[]</p>
+.
+
+error:
+
+<p><a href="/url" title="title">foo</a></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8111
+
+.
+![foo] 
+[]
+
+[foo]: /url "title"
+.
+<p><img src="/url" alt="foo" title="title" />
+[]</p>
+.
+
+error:
+
+<p><img src="/url" alt="foo" title="title" /></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8248
+
+.
+<a+b+c:d>
+.
+<p><a href="a+b+c:d">a+b+c:d</a></p>
+.
+
+error:
+
+<p>&lt;a+b+c:d&gt;</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8255
+
+.
+<made-up-scheme://foo,bar>
+.
+<p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
+.
+
+error:
+
+<p>&lt;made-up-scheme://foo,bar&gt;</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8269
+
+.
+<localhost:5001/foo>
+.
+<p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
+.
+
+error:
+
+<p>&lt;localhost:5001/foo&gt;</p>
+
+

@@ -75,13 +75,22 @@ readFile(options.spec, 'utf8', function (error, input) {
 
   input = input.replace(/→/g, '\t');
 
-  input.replace(/^\.\n([\s\S]*?)^\.\n([\s\S]*?)^\.$/gm, function(__, md, html, offset, orig) {
+  markdown.parse(input, {})
+          .filter(function (token) {
+            return token.tag === 'code' &&
+                   token.info.trim() === 'example';
+          })
+          .forEach(function (token) {
+
+    var arr  = token.content.split(/^\.\s*?$/m, 2);
+    var md   = arr[0];
+    var html = arr[1].replace(/^\n/, '');
 
     var result = {
-      md: md,
+      md:   md,
       html: html,
-      line: orig.slice(0, offset).split(/\r?\n/g).length,
-      err: ''
+      line: token.map[0],
+      err:  ''
     };
 
     try {
