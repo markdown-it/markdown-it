@@ -5747,6 +5747,15 @@ src line: 7091
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7098
+
+.
+[link](</my uri>)
+.
+<p>[link](&lt;/my uri&gt;)</p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 7105
 
 .
@@ -6225,6 +6234,30 @@ src line: 7601
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7614
+
+.
+[foo] [bar]
+
+[bar]: /url "title"
+.
+<p>[foo] <a href="/url" title="title">bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7623
+
+.
+[foo]
+[bar]
+
+[bar]: /url "title"
+.
+<p>[foo]
+<a href="/url" title="title">bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 7664
 
 .
@@ -6365,6 +6398,19 @@ src line: 7796
 [foo]: /url "title"
 .
 <p><a href="/url" title="title">Foo</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 7809
+
+.
+[foo] 
+[]
+
+[foo]: /url "title"
+.
+<p><a href="/url" title="title">foo</a>
+[]</p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -6651,6 +6697,19 @@ src line: 8099
 [foo]: /url "title"
 .
 <p><img src="/url" alt="Foo" title="title" /></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8111
+
+.
+![foo] 
+[]
+
+[foo]: /url "title"
+.
+<p><img src="/url" alt="foo" title="title" />
+[]</p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
