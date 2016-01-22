@@ -108,6 +108,32 @@ test
 </code></pre>
 .
 
+Setext header text supports lazy continuations:
+.
+ - foo
+bar
+   ===
+.
+<ul>
+<li>
+<h1>foo
+bar</h1>
+</li>
+</ul>
+.
+
+But setext header underline doesn't:
+.
+ - foo
+   bar
+  ===
+.
+<ul>
+<li>foo
+bar
+===</li>
+</ul>
+.
 
 Coverage. Directive can terminate paragraph.
 .
