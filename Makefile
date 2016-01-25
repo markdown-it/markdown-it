@@ -99,6 +99,11 @@ browserify:
 		--preamble "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" \
 		> dist/markdown-it.min.js
 
+specsplit:
+	./support/specsplit.js good ./test/fixtures/commonmark/spec.txt > ./test/fixtures/commonmark/good.txt
+	./support/specsplit.js bad ./test/fixtures/commonmark/spec.txt > ./test/fixtures/commonmark/bad.txt
+	./support/specsplit.js ./test/fixtures/commonmark/spec.txt
+
 todo:
 	grep 'TODO' -n -r ./lib 2>/dev/null || test true
 
