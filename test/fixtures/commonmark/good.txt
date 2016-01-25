@@ -6816,12 +6816,39 @@ src line: 8236
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8248
+
+.
+<a+b+c:d>
+.
+<p><a href="a+b+c:d">a+b+c:d</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8255
+
+.
+<made-up-scheme://foo,bar>
+.
+<p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 8262
 
 .
 <http://../>
 .
 <p><a href="http://../">http://../</a></p>
+.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 8269
+
+.
+<localhost:5001/foo>
+.
+<p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
 .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
