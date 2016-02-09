@@ -269,6 +269,22 @@ describe('maxNesting', function () {
     );
   });
 
+  it('Inline parser should not nest above limit', function () {
+    var md = markdownit({ maxNesting: 1 });
+    assert.strictEqual(
+      md.render('[`foo`]()'),
+      '<p><a href="">`foo`</a></p>\n'
+    );
+  });
+
+  it('Inline nesting coverage', function () {
+    var md = markdownit({ maxNesting: 2 });
+    assert.strictEqual(
+      md.render('[[[[[[[[[[[[[[[[[[foo]()'),
+      '<p>[[[[[[[[[[[[[[[[[<a href="">foo</a></p>\n'
+    );
+  });
+
 });
 
 
