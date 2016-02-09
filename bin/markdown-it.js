@@ -100,6 +100,4 @@ readFile(options.file, 'utf8', function (err, input) {
   }
 
   process.stdout.write(output);
-
-  process.exit(0);
 });
