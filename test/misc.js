@@ -281,7 +281,7 @@ describe('maxNesting', function () {
     var md = markdownit({ maxNesting: 2 });
     assert.strictEqual(
       md.render('[[[[[[[[[[[[[[[[[[foo]()'),
-      '<p>[[[[[[[[[[[[[[[[[<a href="">foo</a></p>\n'
+      '<p>[[[[[[[[[[[[[[[[[[foo]()</p>\n'
     );
   });
 
