@@ -1,3 +1,13 @@
+6.0.0 / 2016-02-11
+------------------
+
+- Maintenance release. Version bump caused by notable changes in CM spec
+  (multiline setext headers, no spaces inside links, ...). API was not changed.
+- Fit CM 0.24 spec requirements.
+- Fixed nesting limit check in inline blocks, #197.
+- Fixed posible tail loss in CLI ouput.
+
+
 5.1.0 / 2016-01-07
 ------------------
 
