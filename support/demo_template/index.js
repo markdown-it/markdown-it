@@ -96,6 +96,7 @@ defaults.highlight = function (str, lang) {
 
       var result = hljs.highlightAuto(str);
 
+      /*eslint-disable no-console*/
       console.log('highlight language: ' + result.language + ', relevance: ' + result.relevance);
 
       return '<pre class="hljs language-' + esc(result.language) + '"><code>' +
