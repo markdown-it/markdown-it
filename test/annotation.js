@@ -2,6 +2,10 @@
 
 var assert = require('chai').assert;
 
+function asertTokenContent(src, token, content) {
+  assert.strictEqual(src.slice(token.position, token.position + token.size), content);
+}
+
 describe.only('Annotation', function() {
   var md = require('../')({
     html: true,
@@ -50,6 +54,24 @@ describe.only('Annotation', function() {
     assert.strictEqual(tokens[4].size, 7);
     assert.strictEqual(tokens[5].position, 18);
     assert.strictEqual(tokens[5].size, 2);
+  });
+
+  it('should annotate lheadings', function () {
+    var src = 'Hello\n=====\n\nWorld\n=======';
+    var tokens = md.parse(src);
+    assert.strictEqual(tokens.length, 6);
+
+    // First heading
+    assert.strictEqual(tokens[0].position, 0);
+    asertTokenContent(src, tokens[0], '');
+    asertTokenContent(src, tokens[1], 'Hello');
+    asertTokenContent(src, tokens[2], '=====\n');
+
+    // Second heading
+    assert.strictEqual(tokens[3].position, 13);
+    assert.strictEqual(tokens[3].size, 0);
+    asertTokenContent(src, tokens[4], 'World');
+    asertTokenContent(src, tokens[5], '=======');
   });
 
   it('should annotate code blocks', function () {
