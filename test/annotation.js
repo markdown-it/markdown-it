@@ -2,12 +2,12 @@
 
 var assert = require('chai').assert;
 
-describe('Annotation', function() {
+describe.only('Annotation', function() {
   var md = require('../')({
     html: true,
     langPrefix: '',
-    typographer: true,
-    linkify: true
+    typographer: false,
+    linkify: false
   });
 
   it('should annotate paragraph', function () {
@@ -30,6 +30,39 @@ describe('Annotation', function() {
     assert.strictEqual(tokens[5].position, 28);
     assert.strictEqual(tokens[5].size, 0);
   });
+
+  it('should annotate headings', function () {
+    var tokens = md.parse('# Hello\n\n## World ##\n');
+    assert.strictEqual(tokens.length, 6);
+
+    // First heading
+    assert.strictEqual(tokens[0].position, 0);
+    assert.strictEqual(tokens[0].size, 1);
+    assert.strictEqual(tokens[1].position, 1);
+    assert.strictEqual(tokens[1].size, 6);
+    assert.strictEqual(tokens[2].position, 7);
+    assert.strictEqual(tokens[2].size, 0);
+
+    // Second heading
+    assert.strictEqual(tokens[3].position, 9);
+    assert.strictEqual(tokens[3].size, 2);
+    assert.strictEqual(tokens[4].position, 11);
+    assert.strictEqual(tokens[4].size, 7);
+    assert.strictEqual(tokens[5].position, 18);
+    assert.strictEqual(tokens[5].size, 2);
+  });
+
+  it('should annotate code blocks', function () {
+    var tokens = md.parse('\tHello\n\tWorld\n\nt\n\n\tBlock 2\n');
+    assert.strictEqual(tokens.length, 5);
+
+    assert.strictEqual(tokens[0].position, 0);
+    assert.strictEqual(tokens[0].size, 14);
+
+    assert.strictEqual(tokens[4].position, 18);
+    assert.strictEqual(tokens[4].size, 9);
+  });
+
 
 });
 
