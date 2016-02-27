@@ -4,10 +4,10 @@
 
 --index         "./support/api_header.md"
 --package       "./package.json"
---gh-ribbon     "{package.homepage}"
+--gh-ribbon     "https://github.com/{package.repository}"
 --output        "apidoc"
 --render        "html"
---link-format   "{package.homepage}/blob/master/{file}#L{line}"
+--link-format   "https://github.com/{package.repository}/blob/master/{file}#L{line}"
 --broken-links  "show"
 
 

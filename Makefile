@@ -53,13 +53,8 @@ report-coverage:
 	-istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
 doc:
-	@if test ! `which ndoc` ; then \
-		echo "You need 'ndoc' installed in order to generate docs." >&2 ; \
-		echo "  $ npm install -g ndoc" >&2 ; \
-		exit 128 ; \
-		fi
 	rm -rf ./apidoc
-	ndoc --link-format "{package.homepage}/blob/${CURR_HEAD}/{file}#L{line}"
+	ndoc --link-format "https://github.com/{package.repository}/blob/${CURR_HEAD}/{file}#L{line}"
 
 gh-doc: doc
 	touch ./apidoc/.nojekyll
