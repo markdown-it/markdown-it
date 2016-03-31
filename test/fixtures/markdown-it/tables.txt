@@ -401,7 +401,7 @@ Should be parsed before code blocks:
 .
 
 
-An amount of rows might be different across the table (issue #171):
+Allow tables with extra cells in a row outside of thead:
 .
 | 1 | 2 |
 | :-----: |  :-----: |  :-----: |
@@ -418,6 +418,8 @@ An amount of rows might be different across the table (issue #171):
 <tr>
 <td style="text-align:center">3</td>
 <td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td>6</td>
 </tr>
 </tbody>
 </table>
