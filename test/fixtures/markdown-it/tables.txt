@@ -470,3 +470,35 @@ Allow one-column tables (issue #171):
 </tbody>
 </table>
 .
+
+
+Allow tables with missing values:
+.
+0,0 | 0,1 | 0,2
+--- | --- | ---
+1,0 |     | 1,2
+    | 2,1 |
+
+.
+<table>
+<thead>
+<tr>
+<th>0,0</th>
+<th>0,1</th>
+<th>0,2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1,0</td>
+<td></td>
+<td>1,2</td>
+</tr>
+<tr>
+<td></td>
+<td>2,1</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+.
