@@ -2,7 +2,8 @@
 
 // Build demo data for embedding into html
 
-/*eslint no-console:0*/
+/*eslint-disable no-console*/
+'use strict';
 
 var fs   = require('fs');
 var path = require('path');

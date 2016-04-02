@@ -156,7 +156,7 @@ function mdInit() {
     return '<table class="table table-striped">\n';
   };
   // Replace emoji codes with images
-  mdHtml.renderer.rules.emoji = function(token, idx) {
+  mdHtml.renderer.rules.emoji = function (token, idx) {
     return window.twemoji.parse(token[idx].content);
   };
 
@@ -249,7 +249,7 @@ function buildScrollMap() {
   lineHeightMap = [];
 
   acc = 0;
-  textarea.val().split('\n').forEach(function(str) {
+  textarea.val().split('\n').forEach(function (str) {
     var h, lh;
 
     lineHeightMap.push(acc);
@@ -273,7 +273,7 @@ function buildScrollMap() {
   nonEmptyList.push(0);
   _scrollMap[0] = 0;
 
-  $('.line').each(function(n, el) {
+  $('.line').each(function (n, el) {
     var $el = $(el), t = $el.data('line');
     if (t === '') { return; }
     t = lineHeightMap[t];
@@ -405,10 +405,10 @@ function loadPermalink() {
 //////////////////////////////////////////////////////////////////////////////
 // Init on page load
 //
-$(function() {
+$(function () {
   // highlight snippet
   if (window.hljs) {
-    $('pre.code-sample code').each(function(i, block) {
+    $('pre.code-sample code').each(function (i, block) {
       window.hljs.highlightBlock(block);
     });
   }

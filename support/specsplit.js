@@ -44,11 +44,11 @@ function readFile(filename, encoding, callback) {
 
     var chunks = [];
 
-    process.stdin.on('data', function(chunk) {
+    process.stdin.on('data', function (chunk) {
       chunks.push(chunk);
     });
 
-    process.stdin.on('end', function() {
+    process.stdin.on('end', function () {
       return callback(null, Buffer.concat(chunks).toString(encoding));
     });
   } else {
@@ -81,30 +81,29 @@ readFile(options.spec, 'utf8', function (error, input) {
                    token.info.trim() === 'example';
           })
           .forEach(function (token) {
+            var arr  = token.content.split(/^\.\s*?$/m, 2);
+            var md   = arr[0];
+            var html = arr[1].replace(/^\n/, '');
 
-    var arr  = token.content.split(/^\.\s*?$/m, 2);
-    var md   = arr[0];
-    var html = arr[1].replace(/^\n/, '');
+            var result = {
+              md:   md,
+              html: html,
+              line: token.map[0],
+              err:  ''
+            };
 
-    var result = {
-      md:   md,
-      html: html,
-      line: token.map[0],
-      err:  ''
-    };
-
-    try {
-      if (markdown.render(md) === normalize(html)) {
-        good.push(result);
-      } else {
-        result.err = markdown.render(md);
-        bad.push(result);
-      }
-    } catch (___) {
-      // bad.push(result);
-      throw ___;
-    }
-  });
+            try {
+              if (markdown.render(md) === normalize(html)) {
+                good.push(result);
+              } else {
+                result.err = markdown.render(md);
+                bad.push(result);
+              }
+            } catch (___) {
+              // bad.push(result);
+              throw ___;
+            }
+          });
 
   if (!options.type) {
     console.log(util.format('passed samples - %s, failed samples - %s', good.length, bad.length));

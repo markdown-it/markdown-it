@@ -9,6 +9,6 @@ var encode = md.utils.lib.mdurl.encode;
 md.normalizeLink     = function (url) { return encode(url); };
 md.normalizeLinkText = function (str) { return str; };
 
-exports.run = function(data) {
+exports.run = function (data) {
   return md.render(data);
 };

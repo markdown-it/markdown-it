@@ -31,11 +31,11 @@ function readFile(filename, encoding, callback) {
 
     var chunks = [];
 
-    process.stdin.on('data', function(chunk) {
+    process.stdin.on('data', function (chunk) {
       chunks.push(chunk);
     });
 
-    process.stdin.on('end', function() {
+    process.stdin.on('end', function () {
       return callback(null, Buffer.concat(chunks).toString(encoding));
     });
   } else {

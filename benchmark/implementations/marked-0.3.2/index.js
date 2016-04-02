@@ -2,6 +2,6 @@
 
 var marked = require('marked');
 
-exports.run = function(data) {
+exports.run = function (data) {
   return marked(data);
 };

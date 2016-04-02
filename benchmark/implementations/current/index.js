@@ -6,6 +6,6 @@ var md = require('../../../')({
   typographer: true
 });
 
-exports.run = function(data) {
+exports.run = function (data) {
   return md.render(data);
 };
