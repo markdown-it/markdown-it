@@ -18,7 +18,7 @@ Before continuing, make sure you've read:
     block and inline rules are usually faster.
   - Sometimes, it's enough to only modify the renderer, for example, to add
     header IDs or `target="_blank"` for the links.
-  - Plug-ins should not require the `markdown-it` package as dependency in `package.json`.
+  - Plugins should not require the `markdown-it` package as dependency in `package.json`.
     If you need access to internals, those are available via a parser instance,
     passed on plugin load. See properties of main class and nested objects.
 2. Search existing
