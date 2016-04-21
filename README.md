@@ -139,7 +139,7 @@ var md = require('markdown-it')()
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
 ```js
-var hljs = require('highlight.js') // https://highlightjs.org/
+var hljs = require('highlight.js'); // https://highlightjs.org/
 
 // Actual default values
 var md = require('markdown-it')({
@@ -158,7 +158,7 @@ var md = require('markdown-it')({
 Or with full wrapper override (if you need assign class to `<pre>`):
 
 ```js
-var hljs = require('highlight.js') // https://highlightjs.org/
+var hljs = require('highlight.js'); // https://highlightjs.org/
 
 // Actual default values
 var md = require('markdown-it')({
