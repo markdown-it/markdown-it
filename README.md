@@ -228,7 +228,7 @@ var md = require('markdown-it')()
             .enable('image');
 
 // Enable everything
-md = require('markdown-it')('full', {
+md = require('markdown-it')({
   html: true,
   linkify: true,
   typographer: true,
