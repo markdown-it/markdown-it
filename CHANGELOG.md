@@ -1,3 +1,9 @@
+6.0.2 / 2016-05-16
+------------------
+
+- Fix: should not escape twice content of image alt attribute, #246.
+
+
 6.0.1 / 2016-04-02
 ------------------
 
