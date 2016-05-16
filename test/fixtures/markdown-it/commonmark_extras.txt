@@ -1,3 +1,17 @@
+Issue #246.  Double escaping in ALT
+.
+![&](#)
+.
+<p><img src="#" alt="&amp;"></p>
+.
+
+Strip markdown in ALT tags
+.
+![*strip* [markdown __in__ alt](#)](#)
+.
+<p><img src="#" alt="strip markdown in alt"></p>
+.
+
 Issue #55:
 .
 ![test]
