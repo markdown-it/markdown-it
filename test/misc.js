@@ -357,4 +357,17 @@ describe('Token attributes', function () {
       '<pre><code class="bar"></code></pre>\n'
     );
   });
+
+  it('.attrGet', function () {
+    var md = markdownit();
+
+    var tokens = md.parse('```'),
+        t = tokens[0];
+
+    assert.strictEqual(t.attrGet('myattr'), null);
+
+    t.attrSet('myattr', 'myvalue');
+
+    assert.strictEqual(t.attrGet('myattr'), 'myvalue');
+  });
 });
