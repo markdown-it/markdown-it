@@ -10,7 +10,6 @@ var hljs = require('highlight.js/lib/highlight.js');
 
 hljs.registerLanguage('actionscript', require('highlight.js/lib/languages/actionscript'));
 hljs.registerLanguage('apache',       require('highlight.js/lib/languages/apache'));
-hljs.registerLanguage('arduino',      require('highlight.js/lib/languages/arduino'));
 hljs.registerLanguage('armasm',       require('highlight.js/lib/languages/armasm'));
 hljs.registerLanguage('xml',          require('highlight.js/lib/languages/xml'));
 hljs.registerLanguage('asciidoc',     require('highlight.js/lib//languages/asciidoc'));
@@ -20,6 +19,7 @@ hljs.registerLanguage('clojure',      require('highlight.js/lib/languages/clojur
 hljs.registerLanguage('cmake',        require('highlight.js/lib/languages/cmake'));
 hljs.registerLanguage('coffeescript', require('highlight.js/lib/languages/coffeescript'));
 hljs.registerLanguage('cpp',          require('highlight.js/lib/languages/cpp'));
+hljs.registerLanguage('arduino',      require('highlight.js/lib/languages/arduino'));
 hljs.registerLanguage('css',          require('highlight.js/lib/languages/css'));
 hljs.registerLanguage('diff',         require('highlight.js/lib/languages/diff'));
 hljs.registerLanguage('django',       require('highlight.js/lib/languages/django'));
