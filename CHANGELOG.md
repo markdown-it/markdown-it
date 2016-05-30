@@ -1,3 +1,11 @@
+6.0.3 / 2016-05-30
+------------------
+
+- Security fix: possible ReDOS in `linkify-it` (forced bump of `linkify-it` &
+  `uc-micro` dependencies). New installs will use fixed packages automatically,
+  but we bumped `markdown-it` version for sure & for web builds.
+
+
 6.0.2 / 2016-05-16
 ------------------
 
