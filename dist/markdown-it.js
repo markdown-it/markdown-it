@@ -1,4 +1,4 @@
-/*! markdown-it 6.0.4 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 6.0.5 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -4049,7 +4049,7 @@ module.exports = function linkify(state) {
 'use strict';
 
 
-var NEWLINES_RE  = /\r[\n\u0085]|[\u2424\u2028\u0085]/g;
+var NEWLINES_RE  = /\r[\n\u0085]?|[\u2424\u2028\u0085]/g;
 var NULL_RE      = /\u0000/g;
 
 
@@ -6343,15 +6343,25 @@ var defaultSchemas = {
       var tail = text.slice(pos);
 
       if (!self.re.no_http) {
-      // compile lazily, becayse "host"-containing variables can change on tlds update.
+      // compile lazily, because "host"-containing variables can change on tlds update.
         self.re.no_http =  new RegExp(
-          '^' + self.re.src_auth + self.re.src_host_port_strict + self.re.src_path, 'i'
+          '^' +
+          self.re.src_auth +
+          // Don't allow single-level domains, because of false positives like '//test'
+          // with code comments
+          '(?:localhost|(?:(?:' + self.re.src_domain + ')\\.)+' + self.re.src_domain_root + ')' +
+          self.re.src_port +
+          self.re.src_host_terminator +
+          self.re.src_path,
+
+          'i'
         );
       }
 
       if (self.re.no_http.test(tail)) {
-        // should not be `://`, that protects from errors in protocol name
+        // should not be `://` & `///`, that protects from errors in protocol name
         if (pos >= 3 && text[pos - 3] === ':') { return 0; }
+        if (pos >= 3 && text[pos - 3] === '/') { return 0; }
         return tail.match(self.re.no_http)[0].length;
       }
       return 0;
@@ -6908,7 +6918,7 @@ var src_ZCc = exports.src_ZCc = [ src_Z, src_Cc ].join('|');
 // Should be something like \p{\L\N\S\M} (\w but without `_`)
 var src_pseudo_letter       = '(?:(?!' + src_ZPCc + ')' + src_Any + ')';
 // The same as abothe but without [0-9]
-var src_pseudo_letter_non_d = '(?:(?![0-9]|' + src_ZPCc + ')' + src_Any + ')';
+// var src_pseudo_letter_non_d = '(?:(?![0-9]|' + src_ZPCc + ')' + src_Any + ')';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -6916,7 +6926,8 @@ var src_ip4 = exports.src_ip4 =
 
   '(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
 
-exports.src_auth    = '(?:(?:(?!' + src_ZCc + ').)+@)?';
+// Prohibit [@/] in user/pass to avoid wrong domain fetch.
+exports.src_auth    = '(?:(?:(?!' + src_ZCc + '|[@/]).)+@)?';
 
 var src_port = exports.src_port =
 
@@ -6965,11 +6976,11 @@ var src_xn = exports.src_xn =
 
 var src_domain_root = exports.src_domain_root =
 
-  // Can't have digits and dashes
+  // Allow letters & digits (http://test1)
   '(?:' +
     src_xn +
     '|' +
-    src_pseudo_letter_non_d + '{1,63}' +
+    src_pseudo_letter + '{1,63}' +
   ')';
 
 var src_domain = exports.src_domain =
@@ -6988,8 +6999,9 @@ var src_domain = exports.src_domain =
 var src_host = exports.src_host =
 
   '(?:' +
-    src_ip4 +
-  '|' +
+  // Don't need IP check, because digits are already allowed in normal domain names
+  //   src_ip4 +
+  // '|' +
     '(?:(?:(?:' + src_domain + ')\\.)*' + src_domain_root + ')' +
   ')';
 
