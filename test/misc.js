@@ -213,6 +213,23 @@ describe('Misc', function () {
     assert.strictEqual(md.render('[foo](bar)'), '<p><a href="bar" target="_blank">foo</a></p>\n');
   });
 
+  it('Should normalize CR to LF', function () {
+    var md = markdownit();
+
+    assert.strictEqual(
+      md.render('# test\r\r - hello\r - world\r'),
+      md.render('# test\n\n - hello\n - world\n')
+    );
+  });
+
+  it('Should normalize CR+LF to LF', function () {
+    var md = markdownit();
+
+    assert.strictEqual(
+      md.render('# test\r\n\r\n - hello\r\n - world\r\n'),
+      md.render('# test\n\n - hello\n - world\n')
+    );
+  });
 });
 
 
