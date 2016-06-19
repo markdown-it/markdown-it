@@ -1,3 +1,10 @@
+6.1.0 / 2016-06-19
+------------------
+
+- Updated `fence` renderer to not mutate token. Token stream should be
+  immutable after renderer call.
+
+
 6.0.5 / 2016-06-01
 ------------------
 
