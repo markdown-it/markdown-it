@@ -1,3 +1,9 @@
+6.1.1 / WIP
+------------------
+
+- Render `code_inline` & `code_block` attributes if exist.
+
+
 6.1.0 / 2016-06-19
 ------------------
 
