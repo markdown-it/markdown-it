@@ -1,4 +1,4 @@
-/*! markdown-it 6.1.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 6.1.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -1734,13 +1734,23 @@ var escapeHtml      = require('./common/utils').escapeHtml;
 var default_rules = {};
 
 
-default_rules.code_inline = function (tokens, idx /*, options, env */) {
-  return '<code>' + escapeHtml(tokens[idx].content) + '</code>';
+default_rules.code_inline = function (tokens, idx, options, env, slf) {
+  var token = tokens[idx],
+      attrs = slf.renderAttrs(token);
+
+  return  '<code' + (attrs ? ' ' + attrs : '') + '>' +
+          escapeHtml(tokens[idx].content) +
+          '</code>';
 };
 
 
-default_rules.code_block = function (tokens, idx /*, options, env */) {
-  return '<pre><code>' + escapeHtml(tokens[idx].content) + '</code></pre>\n';
+default_rules.code_block = function (tokens, idx, options, env, slf) {
+  var token = tokens[idx],
+      attrs = slf.renderAttrs(token);
+
+  return  '<pre' + (attrs ? ' ' + attrs : '') + '><code>' +
+          escapeHtml(tokens[idx].content) +
+          '</code></pre>\n';
 };
 
 
