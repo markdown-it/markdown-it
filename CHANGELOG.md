@@ -1,3 +1,14 @@
+7.0.0 / 2016-06-22
+------------------
+
+- Bump `linkify-it` dependency to 2.0.0.
+  - `---` no longer terminates autodetected links by default.
+  - `md.linkifier.set('---', true)` will return old behaviour.
+- Major version bumped, because internals or `linkify-it` was changed.
+  You will not be affected anyhow, if not used direct access to
+  `require('linkify-it/re')` for customizations.
+
+
 6.1.1 / 2016-06-21
 ------------------
 
