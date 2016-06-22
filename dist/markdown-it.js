@@ -1,4 +1,4 @@
-/*! markdown-it 6.1.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 7.0.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -6456,10 +6456,12 @@ function createNormalizer() {
 function compile(self) {
 
   // Load & clone RE patterns.
-  var re = self.re = assign({}, require('./lib/re'));
+  var re = self.re = require('./lib/re')(self.__opts__);
 
   // Define dynamic patterns
   var tlds = self.__tlds__.slice();
+
+  self.onCompile();
 
   if (!self.__tlds_replaced__) {
     tlds.push(tlds_2ch_src_re);
@@ -6929,171 +6931,191 @@ LinkifyIt.prototype.normalize = function normalize(match) {
 };
 
 
+/**
+ * LinkifyIt#onCompile()
+ *
+ * Override to modify basic RegExp-s.
+ **/
+LinkifyIt.prototype.onCompile = function onCompile() {
+};
+
+
 module.exports = LinkifyIt;
 
 },{"./lib/re":55}],55:[function(require,module,exports){
 'use strict';
 
-// Use direct extract instead of `regenerate` to reduse browserified size
-var src_Any = exports.src_Any = require('uc.micro/properties/Any/regex').source;
-var src_Cc  = exports.src_Cc = require('uc.micro/categories/Cc/regex').source;
-var src_Z   = exports.src_Z  = require('uc.micro/categories/Z/regex').source;
-var src_P   = exports.src_P  = require('uc.micro/categories/P/regex').source;
 
-// \p{\Z\P\Cc\CF} (white spaces + control + format + punctuation)
-var src_ZPCc = exports.src_ZPCc = [ src_Z, src_P, src_Cc ].join('|');
+module.exports = function (opts) {
+  var re = {};
 
-// \p{\Z\Cc} (white spaces + control)
-var src_ZCc = exports.src_ZCc = [ src_Z, src_Cc ].join('|');
+  // Use direct extract instead of `regenerate` to reduse browserified size
+  re.src_Any = require('uc.micro/properties/Any/regex').source;
+  re.src_Cc  = require('uc.micro/categories/Cc/regex').source;
+  re.src_Z   = require('uc.micro/categories/Z/regex').source;
+  re.src_P   = require('uc.micro/categories/P/regex').source;
 
-// All possible word characters (everything without punctuation, spaces & controls)
-// Defined via punctuation & spaces to save space
-// Should be something like \p{\L\N\S\M} (\w but without `_`)
-var src_pseudo_letter       = '(?:(?!>|<|' + src_ZPCc + ')' + src_Any + ')';
-// The same as abothe but without [0-9]
-// var src_pseudo_letter_non_d = '(?:(?![0-9]|' + src_ZPCc + ')' + src_Any + ')';
+  // \p{\Z\P\Cc\CF} (white spaces + control + format + punctuation)
+  re.src_ZPCc = [ re.src_Z, re.src_P, re.src_Cc ].join('|');
 
-////////////////////////////////////////////////////////////////////////////////
+  // \p{\Z\Cc} (white spaces + control)
+  re.src_ZCc = [ re.src_Z, re.src_Cc ].join('|');
 
-var src_ip4 = exports.src_ip4 =
+  // All possible word characters (everything without punctuation, spaces & controls)
+  // Defined via punctuation & spaces to save space
+  // Should be something like \p{\L\N\S\M} (\w but without `_`)
+  re.src_pseudo_letter       = '(?:(?!>|<|' + re.src_ZPCc + ')' + re.src_Any + ')';
+  // The same as abothe but without [0-9]
+  // var src_pseudo_letter_non_d = '(?:(?![0-9]|' + src_ZPCc + ')' + src_Any + ')';
 
-  '(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
+  ////////////////////////////////////////////////////////////////////////////////
 
-// Prohibit [@/] in user/pass to avoid wrong domain fetch.
-exports.src_auth    = '(?:(?:(?!' + src_ZCc + '|[@/]).)+@)?';
+  re.src_ip4 =
 
-var src_port = exports.src_port =
+    '(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
 
-  '(?::(?:6(?:[0-4]\\d{3}|5(?:[0-4]\\d{2}|5(?:[0-2]\\d|3[0-5])))|[1-5]?\\d{1,4}))?';
+  // Prohibit [@/] in user/pass to avoid wrong domain fetch.
+  re.src_auth    = '(?:(?:(?!' + re.src_ZCc + '|[@/]).)+@)?';
 
-var src_host_terminator = exports.src_host_terminator =
+  re.src_port =
 
-  '(?=$|>|<|' + src_ZPCc + ')(?!-|_|:\\d|\\.-|\\.(?!$|' + src_ZPCc + '))';
+    '(?::(?:6(?:[0-4]\\d{3}|5(?:[0-4]\\d{2}|5(?:[0-2]\\d|3[0-5])))|[1-5]?\\d{1,4}))?';
 
-var src_path = exports.src_path =
+  re.src_host_terminator =
 
-  '(?:' +
-    '[/?#]' +
-      '(?:' +
-        '(?!' + src_ZCc + '|[()[\\]{}.,"\'?!\\-<>]).|' +
-        '\\[(?:(?!' + src_ZCc + '|\\]).)*\\]|' +
-        '\\((?:(?!' + src_ZCc + '|[)]).)*\\)|' +
-        '\\{(?:(?!' + src_ZCc + '|[}]).)*\\}|' +
-        '\\"(?:(?!' + src_ZCc + '|["]).)+\\"|' +
-        "\\'(?:(?!" + src_ZCc + "|[']).)+\\'|" +
-        "\\'(?=" + src_pseudo_letter + ').|' +  // allow `I'm_king` if no pair found
-        '\\.{2,3}[a-zA-Z0-9%/]|' + // github has ... in commit range links. Restrict to
-                                   // - english
-                                   // - percent-encoded
-                                   // - parts of file path
-                                   // until more examples found.
-        '\\.(?!' + src_ZCc + '|[.]).|' +
-        '\\-(?!--(?:[^-]|$))(?:-*)|' +  // `---` => long dash, terminate
-        '\\,(?!' + src_ZCc + ').|' +      // allow `,,,` in paths
-        '\\!(?!' + src_ZCc + '|[!]).|' +
-        '\\?(?!' + src_ZCc + '|[?]).' +
-      ')+' +
-    '|\\/' +
-  ')?';
+    '(?=$|>|<|' + re.src_ZPCc + ')(?!-|_|:\\d|\\.-|\\.(?!$|' + re.src_ZPCc + '))';
 
-var src_email_name = exports.src_email_name =
+  re.src_path =
 
-  '[\\-;:&=\\+\\$,\\"\\.a-zA-Z0-9_]+';
+    '(?:' +
+      '[/?#]' +
+        '(?:' +
+          '(?!' + re.src_ZCc + '|[()[\\]{}.,"\'?!\\-<>]).|' +
+          '\\[(?:(?!' + re.src_ZCc + '|\\]).)*\\]|' +
+          '\\((?:(?!' + re.src_ZCc + '|[)]).)*\\)|' +
+          '\\{(?:(?!' + re.src_ZCc + '|[}]).)*\\}|' +
+          '\\"(?:(?!' + re.src_ZCc + '|["]).)+\\"|' +
+          "\\'(?:(?!" + re.src_ZCc + "|[']).)+\\'|" +
+          "\\'(?=" + re.src_pseudo_letter + '|[-]).|' +  // allow `I'm_king` if no pair found
+          '\\.{2,3}[a-zA-Z0-9%/]|' + // github has ... in commit range links. Restrict to
+                                     // - english
+                                     // - percent-encoded
+                                     // - parts of file path
+                                     // until more examples found.
+          '\\.(?!' + re.src_ZCc + '|[.]).|' +
+          (opts && opts['---'] ?
+            '\\-(?!--(?:[^-]|$))(?:-*)|' // `---` => long dash, terminate
+          :
+            '\\-+|'
+          ) +
+          '\\,(?!' + re.src_ZCc + ').|' +      // allow `,,,` in paths
+          '\\!(?!' + re.src_ZCc + '|[!]).|' +
+          '\\?(?!' + re.src_ZCc + '|[?]).' +
+        ')+' +
+      '|\\/' +
+    ')?';
 
-var src_xn = exports.src_xn =
+  re.src_email_name =
 
-  'xn--[a-z0-9\\-]{1,59}';
+    '[\\-;:&=\\+\\$,\\"\\.a-zA-Z0-9_]+';
 
-// More to read about domain names
-// http://serverfault.com/questions/638260/
+  re.src_xn =
 
-var src_domain_root = exports.src_domain_root =
+    'xn--[a-z0-9\\-]{1,59}';
 
-  // Allow letters & digits (http://test1)
-  '(?:' +
-    src_xn +
+  // More to read about domain names
+  // http://serverfault.com/questions/638260/
+
+  re.src_domain_root =
+
+    // Allow letters & digits (http://test1)
+    '(?:' +
+      re.src_xn +
+      '|' +
+      re.src_pseudo_letter + '{1,63}' +
+    ')';
+
+  re.src_domain =
+
+    '(?:' +
+      re.src_xn +
+      '|' +
+      '(?:' + re.src_pseudo_letter + ')' +
+      '|' +
+      // don't allow `--` in domain names, because:
+      // - that can conflict with markdown &mdash; / &ndash;
+      // - nobody use those anyway
+      '(?:' + re.src_pseudo_letter + '(?:-(?!-)|' + re.src_pseudo_letter + '){0,61}' + re.src_pseudo_letter + ')' +
+    ')';
+
+  re.src_host =
+
+    '(?:' +
+    // Don't need IP check, because digits are already allowed in normal domain names
+    //   src_ip4 +
+    // '|' +
+      '(?:(?:(?:' + re.src_domain + ')\\.)*' + re.src_domain_root + ')' +
+    ')';
+
+  re.tpl_host_fuzzy =
+
+    '(?:' +
+      re.src_ip4 +
     '|' +
-    src_pseudo_letter + '{1,63}' +
-  ')';
+      '(?:(?:(?:' + re.src_domain + ')\\.)+(?:%TLDS%))' +
+    ')';
 
-var src_domain = exports.src_domain =
+  re.tpl_host_no_ip_fuzzy =
 
-  '(?:' +
-    src_xn +
-    '|' +
-    '(?:' + src_pseudo_letter + ')' +
-    '|' +
-    // don't allow `--` in domain names, because:
-    // - that can conflict with markdown &mdash; / &ndash;
-    // - nobody use those anyway
-    '(?:' + src_pseudo_letter + '(?:-(?!-)|' + src_pseudo_letter + '){0,61}' + src_pseudo_letter + ')' +
-  ')';
+    '(?:(?:(?:' + re.src_domain + ')\\.)+(?:%TLDS%))';
 
-var src_host = exports.src_host =
+  re.src_host_strict =
 
-  '(?:' +
-  // Don't need IP check, because digits are already allowed in normal domain names
-  //   src_ip4 +
-  // '|' +
-    '(?:(?:(?:' + src_domain + ')\\.)*' + src_domain_root + ')' +
-  ')';
+    re.src_host + re.src_host_terminator;
 
-var tpl_host_fuzzy = exports.tpl_host_fuzzy =
+  re.tpl_host_fuzzy_strict =
 
-  '(?:' +
-    src_ip4 +
-  '|' +
-    '(?:(?:(?:' + src_domain + ')\\.)+(?:%TLDS%))' +
-  ')';
+    re.tpl_host_fuzzy + re.src_host_terminator;
 
-var tpl_host_no_ip_fuzzy = exports.tpl_host_no_ip_fuzzy =
+  re.src_host_port_strict =
 
-  '(?:(?:(?:' + src_domain + ')\\.)+(?:%TLDS%))';
+    re.src_host + re.src_port + re.src_host_terminator;
 
-exports.src_host_strict =
+  re.tpl_host_port_fuzzy_strict =
 
-  src_host + src_host_terminator;
+    re.tpl_host_fuzzy + re.src_port + re.src_host_terminator;
 
-var tpl_host_fuzzy_strict = exports.tpl_host_fuzzy_strict =
+  re.tpl_host_port_no_ip_fuzzy_strict =
 
-  tpl_host_fuzzy + src_host_terminator;
-
-exports.src_host_port_strict =
-
-  src_host + src_port + src_host_terminator;
-
-var tpl_host_port_fuzzy_strict = exports.tpl_host_port_fuzzy_strict =
-
-  tpl_host_fuzzy + src_port + src_host_terminator;
-
-var tpl_host_port_no_ip_fuzzy_strict = exports.tpl_host_port_no_ip_fuzzy_strict =
-
-  tpl_host_no_ip_fuzzy + src_port + src_host_terminator;
+    re.tpl_host_no_ip_fuzzy + re.src_port + re.src_host_terminator;
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Main rules
+  ////////////////////////////////////////////////////////////////////////////////
+  // Main rules
 
-// Rude test fuzzy links by host, for quick deny
-exports.tpl_host_fuzzy_test =
+  // Rude test fuzzy links by host, for quick deny
+  re.tpl_host_fuzzy_test =
 
-  'localhost|www\\.|\\.\\d{1,3}\\.|(?:\\.(?:%TLDS%)(?:' + src_ZPCc + '|>|$))';
+    'localhost|www\\.|\\.\\d{1,3}\\.|(?:\\.(?:%TLDS%)(?:' + re.src_ZPCc + '|>|$))';
 
-exports.tpl_email_fuzzy =
+  re.tpl_email_fuzzy =
 
-    '(^|<|>|\\(|' + src_ZCc + ')(' + src_email_name + '@' + tpl_host_fuzzy_strict + ')';
+      '(^|<|>|\\(|' + re.src_ZCc + ')(' + re.src_email_name + '@' + re.tpl_host_fuzzy_strict + ')';
 
-exports.tpl_link_fuzzy =
-    // Fuzzy link can't be prepended with .:/\- and non punctuation.
-    // but can start with > (markdown blockquote)
-    '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + src_ZPCc + '))' +
-    '((?![$+<=>^`|])' + tpl_host_port_fuzzy_strict + src_path + ')';
+  re.tpl_link_fuzzy =
+      // Fuzzy link can't be prepended with .:/\- and non punctuation.
+      // but can start with > (markdown blockquote)
+      '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + re.src_ZPCc + '))' +
+      '((?![$+<=>^`|])' + re.tpl_host_port_fuzzy_strict + re.src_path + ')';
 
-exports.tpl_link_no_ip_fuzzy =
-    // Fuzzy link can't be prepended with .:/\- and non punctuation.
-    // but can start with > (markdown blockquote)
-    '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + src_ZPCc + '))' +
-    '((?![$+<=>^`|])' + tpl_host_port_no_ip_fuzzy_strict + src_path + ')';
+  re.tpl_link_no_ip_fuzzy =
+      // Fuzzy link can't be prepended with .:/\- and non punctuation.
+      // but can start with > (markdown blockquote)
+      '(^|(?![.:/\\-_@])(?:[$+<=>^`|]|' + re.src_ZPCc + '))' +
+      '((?![$+<=>^`|])' + re.tpl_host_port_no_ip_fuzzy_strict + re.src_path + ')';
+
+  return re;
+};
 
 },{"uc.micro/categories/Cc/regex":61,"uc.micro/categories/P/regex":63,"uc.micro/categories/Z/regex":64,"uc.micro/properties/Any/regex":66}],56:[function(require,module,exports){
 
