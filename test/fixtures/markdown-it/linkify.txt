@@ -53,5 +53,5 @@ typorgapher should not break href
 .
 http://example.com/(c)
 .
-<p><a href="http://example.com/(c)">http://example.com/©</a></p>
+<p><a href="http://example.com/(c)">http://example.com/(c)</a></p>
 .

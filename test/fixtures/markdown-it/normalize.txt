@@ -32,7 +32,7 @@ Invalid punycode:
 .
 <http://xn--xn.com/>
 .
-<p><a href="http://xn--xn.com/">http://xn–xn.com/</a></p>
+<p><a href="http://xn--xn.com/">http://xn--xn.com/</a></p>
 .
 
 Invalid punycode (non-ascii):
@@ -40,7 +40,7 @@ Invalid punycode (non-ascii):
 .
 <http://xn--γ.com/>
 .
-<p><a href="http://xn--xn---emd.com/">http://xn–γ.com/</a></p>
+<p><a href="http://xn--xn---emd.com/">http://xn--γ.com/</a></p>
 .
 
 Two slashes should start a domain:
@@ -96,5 +96,5 @@ test xn--n3h.net foo
 .
 test xn--n3h@xn--n3h.net foo
 .
-<p>test <a href="mailto:xn--n3h@xn--n3h.net">xn–n3h@☃.net</a> foo</p>
+<p>test <a href="mailto:xn--n3h@xn--n3h.net">xn--n3h@☃.net</a> foo</p>
 .
