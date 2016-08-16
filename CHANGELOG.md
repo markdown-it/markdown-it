@@ -1,3 +1,11 @@
+7.0.1 / 2016-08-16
+------------------
+
+- Fence renderer: fix concat of class array, #276.
+- Code renderer: do not render double space before attrs, #275.
+- Replacer: disable replacements inside autolinks, #272.
+
+
 7.0.0 / 2016-06-22
 ------------------
 
