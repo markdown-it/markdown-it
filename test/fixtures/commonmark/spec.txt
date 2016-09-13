@@ -1,8 +1,8 @@
 ---
 title: CommonMark Spec
 author: John MacFarlane
-version: 0.24
-date: '2015-01-12'
+version: 0.26
+date: '2016-07-15'
 license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
 ...
 
@@ -13,12 +13,90 @@ license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
 Markdown is a plain text format for writing structured documents,
 based on conventions used for indicating formatting in email and
 usenet posts.  It was developed in 2004 by John Gruber, who wrote
-the first Markdown-to-HTML converter in perl, and it soon became
-widely used in websites.  By 2014 there were dozens of
-implementations in many languages.  Some of them extended basic
-Markdown syntax with conventions for footnotes, definition lists,
-tables, and other constructs, and some allowed output not just in
-HTML but in LaTeX and many other formats.
+the first Markdown-to-HTML converter in Perl, and it soon became
+ubiquitous.  In the next decade, dozens of implementations were
+developed in many languages.  Some extended the original
+Markdown syntax with conventions for footnotes, tables, and
+other document elements.  Some allowed Markdown documents to be
+rendered in formats other than HTML.  Websites like Reddit,
+StackOverflow, and GitHub had millions of people using Markdown.
+And Markdown started to be used beyond the web, to author books,
+articles, slide shows, letters, and lecture notes.
+
+What distinguishes Markdown from many other lightweight markup
+syntaxes, which are often easier to write, is its readability.
+As Gruber writes:
+
+> The overriding design goal for Markdown's formatting syntax is
+> to make it as readable as possible. The idea is that a
+> Markdown-formatted document should be publishable as-is, as
+> plain text, without looking like it's been marked up with tags
+> or formatting instructions.
+> (<http://daringfireball.net/projects/markdown/>)
+
+The point can be illustrated by comparing a sample of
+[AsciiDoc](http://www.methods.co.nz/asciidoc/) with
+an equivalent sample of Markdown.  Here is a sample of
+AsciiDoc from the AsciiDoc manual:
+
+```
+1. List item one.
++
+List item one continued with a second paragraph followed by an
+Indented block.
++
+.................
+$ ls *.sh
+$ mv *.sh ~/tmp
+.................
++
+List item continued with a third paragraph.
+
+2. List item two continued with an open block.
++
+--
+This paragraph is part of the preceding list item.
+
+a. This list is nested and does not require explicit item
+continuation.
++
+This paragraph is part of the preceding list item.
+
+b. List item b.
+
+This paragraph belongs to item two of the outer list.
+--
+```
+
+And here is the equivalent in Markdown:
+```
+1.  List item one.
+
+    List item one continued with a second paragraph followed by an
+    Indented block.
+
+        $ ls *.sh
+        $ mv *.sh ~/tmp
+
+    List item continued with a third paragraph.
+
+2.  List item two continued with an open block.
+
+    This paragraph is part of the preceding list item.
+
+    1. This list is nested and does not require explicit item continuation.
+
+       This paragraph is part of the preceding list item.
+
+    2. List item b.
+
+    This paragraph belongs to item two of the outer list.
+```
+
+The AsciiDoc version is, arguably, easier to write. You don't need
+to worry about indentation.  But the Markdown version is much easier
+to read.  The nesting of list items is apparent to the eye in the
+source, not just in the processed document.
 
 ## Why is a spec needed?
 
@@ -258,9 +336,14 @@ the Unicode classes `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
 ## Tabs
 
 Tabs in lines are not expanded to [spaces].  However,
-in contexts where indentation is significant for the
-document's structure, tabs behave as if they were replaced
-by spaces with a tab stop of 4 characters.
+in contexts where whitespace helps to define block structure,
+tabs behave as if they were replaced by spaces with a tab stop
+of 4 characters.
+
+Thus, for example, a tab can be used instead of four spaces
+in an indented code block.  (Note, however, that internal
+tabs are passed through as literal tabs, not expanded to
+spaces.)
 
 ```````````````````````````````` example
 →foo→baz→→bim
@@ -269,14 +352,12 @@ by spaces with a tab stop of 4 characters.
 </code></pre>
 ````````````````````````````````
 
-
 ```````````````````````````````` example
   →foo→baz→→bim
 .
 <pre><code>foo→baz→→bim
 </code></pre>
 ````````````````````````````````
-
 
 ```````````````````````````````` example
     a→a
@@ -287,6 +368,9 @@ by spaces with a tab stop of 4 characters.
 </code></pre>
 ````````````````````````````````
 
+In the following example, a continuation paragraph of a list
+item is indented with a tab; this has exactly the same effect
+as indentation with four spaces would:
 
 ```````````````````````````````` example
   - foo
@@ -301,13 +385,47 @@ by spaces with a tab stop of 4 characters.
 </ul>
 ````````````````````````````````
 
+```````````````````````````````` example
+- foo
+
+→→bar
+.
+<ul>
+<li>
+<p>foo</p>
+<pre><code>  bar
+</code></pre>
+</li>
+</ul>
+````````````````````````````````
+
+Normally the `>` that begins a block quote may be followed
+optionally by a space, which is not considered part of the
+content.  In the following case `>` is followed by a tab,
+which is treated as if it were expanded into spaces.
+Since one of theses spaces is considered part of the
+delimiter, `foo` is considered to be indented six spaces
+inside the block quote context, so we get an indented
+code block starting with two spaces.
 
 ```````````````````````````````` example
->→foo→bar
+>→→foo
 .
 <blockquote>
-<p>foo→bar</p>
+<pre><code>  foo
+</code></pre>
 </blockquote>
+````````````````````````````````
+
+```````````````````````````````` example
+-→→foo
+.
+<ul>
+<li>
+<pre><code>  foo
+</code></pre>
+</li>
+</ul>
 ````````````````````````````````
 
 
@@ -320,6 +438,35 @@ bar
 </code></pre>
 ````````````````````````````````
 
+```````````````````````````````` example
+ - foo
+   - bar
+→ - baz
+.
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>baz</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+````````````````````````````````
+
+```````````````````````````````` example
+#→Foo
+.
+<h1>Foo</h1>
+````````````````````````````````
+
+```````````````````````````````` example
+*→*→*→
+.
+<hr />
+````````````````````````````````
 
 
 ## Insecure characters
@@ -655,15 +802,6 @@ headings:
 .
 <p>#5 bolt</p>
 <p>#hashtag</p>
-````````````````````````````````
-
-
-A tab will not work:
-
-```````````````````````````````` example
-#→foo
-.
-<p>#→foo</p>
 ````````````````````````````````
 
 
@@ -1204,7 +1342,7 @@ bar</p>
 
 
 or use a thematic break that cannot count as a [setext heading
-line], such as
+underline], such as
 
 ```````````````````````````````` example
 Foo
@@ -1847,7 +1985,7 @@ by their start and end conditions.  The block begins with a line that
 meets a [start condition](@) (after up to three spaces
 optional indentation).  It ends with the first subsequent line that
 meets a matching [end condition](@), or the last line of
-the document, if no line is encountered that meets the
+the document or other [container block](@), if no line is encountered that meets the
 [end condition].  If the first line meets both the [start condition]
 and the [end condition], the block will contain just that line.
 
@@ -2181,6 +2319,7 @@ import Text.HTML.TagSoup
 main :: IO ()
 main = print $ parseTags tags
 </code></pre>
+okay
 .
 <pre language="haskell"><code>
 import Text.HTML.TagSoup
@@ -2188,6 +2327,7 @@ import Text.HTML.TagSoup
 main :: IO ()
 main = print $ parseTags tags
 </code></pre>
+<p>okay</p>
 ````````````````````````````````
 
 
@@ -2199,12 +2339,14 @@ A script tag (type 1):
 
 document.getElementById("demo").innerHTML = "Hello JavaScript!";
 </script>
+okay
 .
 <script type="text/javascript">
 // JavaScript example
 
 document.getElementById("demo").innerHTML = "Hello JavaScript!";
 </script>
+<p>okay</p>
 ````````````````````````````````
 
 
@@ -2217,6 +2359,7 @@ h1 {color:red;}
 
 p {color:blue;}
 </style>
+okay
 .
 <style
   type="text/css">
@@ -2224,6 +2367,7 @@ h1 {color:red;}
 
 p {color:blue;}
 </style>
+<p>okay</p>
 ````````````````````````````````
 
 
@@ -2312,11 +2456,13 @@ A comment (type 2):
 
 bar
    baz -->
+okay
 .
 <!-- Foo
 
 bar
    baz -->
+<p>okay</p>
 ````````````````````````````````
 
 
@@ -2329,12 +2475,14 @@ A processing instruction (type 3):
   echo '>';
 
 ?>
+okay
 .
 <?php
 
   echo '>';
 
 ?>
+<p>okay</p>
 ````````````````````````````````
 
 
@@ -2362,6 +2510,7 @@ function matchwo(a,b)
   }
 }
 ]]>
+okay
 .
 <![CDATA[
 function matchwo(a,b)
@@ -2375,6 +2524,7 @@ function matchwo(a,b)
   }
 }
 ]]>
+<p>okay</p>
 ````````````````````````````````
 
 
@@ -3119,8 +3269,8 @@ Four spaces gives us a code block:
 ````````````````````````````````
 
 
-The Laziness clause allows us to omit the `>` before a
-paragraph continuation line:
+The Laziness clause allows us to omit the `>` before
+[paragraph continuation text]:
 
 ```````````````````````````````` example
 > # Foo
@@ -3226,8 +3376,8 @@ foo
 ````````````````````````````````
 
 
-Note that in the following case, we have a paragraph
-continuation line:
+Note that in the following case, we have a [lazy
+continuation line]:
 
 ```````````````````````````````` example
 > foo
@@ -3249,7 +3399,7 @@ To see why, note that in
 
 the `- bar` is indented too far to start a list, and can't
 be an indented code block because indented code blocks cannot
-interrupt paragraphs, so it is a [paragraph continuation line].
+interrupt paragraphs, so it is [paragraph continuation text].
 
 A block quote can be empty:
 
@@ -3478,13 +3628,19 @@ The following rules define [list items]:
 1.  **Basic case.**  If a sequence of lines *Ls* constitute a sequence of
     blocks *Bs* starting with a [non-whitespace character] and not separated
     from each other by more than one blank line, and *M* is a list
-    marker of width *W* followed by 0 < *N* < 5 spaces, then the result
+    marker of width *W* followed by 1 ≤ *N* ≤ 4 spaces, then the result
     of prepending *M* and the following spaces to the first line of
     *Ls*, and indenting subsequent lines of *Ls* by *W + N* spaces, is a
     list item with *Bs* as its contents.  The type of the list item
     (bullet or ordered) is determined by the type of its list marker.
     If the list item is ordered, then it is also assigned a start
     number, based on the ordered list marker.
+
+    Exceptions: When the list item interrupts a paragraph---that
+    is, when it starts on a line that would otherwise count as
+    [paragraph continuation text]---then (a) the lines *Ls* must
+    not begin with a blank line, and (b) if the list item is
+    ordered, the start number must be 1.
 
 For example, let *Ls* be the lines
 
@@ -3660,65 +3816,19 @@ any following content, so these are not list items:
 ````````````````````````````````
 
 
-A list item may not contain blocks that are separated by more than
-one blank line.  Thus, two blank lines will end a list, unless the
-two blanks are contained in a [fenced code block].
+A list item may contain blocks that are separated by more than
+one blank line.
 
 ```````````````````````````````` example
 - foo
 
-  bar
-
-- foo
-
 
   bar
-
-- ```
-  foo
-
-
-  bar
-  ```
-
-- baz
-
-  + ```
-    foo
-
-
-    bar
-    ```
 .
 <ul>
 <li>
 <p>foo</p>
 <p>bar</p>
-</li>
-<li>
-<p>foo</p>
-</li>
-</ul>
-<p>bar</p>
-<ul>
-<li>
-<pre><code>foo
-
-
-bar
-</code></pre>
-</li>
-<li>
-<p>baz</p>
-<ul>
-<li>
-<pre><code>foo
-
-
-bar
-</code></pre>
-</li>
-</ul>
 </li>
 </ul>
 ````````````````````````````````
@@ -3752,14 +3862,13 @@ A list item may contain any kind of block:
 
 
 A list item that contains an indented code block will preserve
-empty lines within the code block verbatim, unless there are two
-or more empty lines in a row (since as described above, two
-blank lines end the list):
+empty lines within the code block verbatim.
 
 ```````````````````````````````` example
 - Foo
 
       bar
+
 
       baz
 .
@@ -3767,33 +3876,13 @@ blank lines end the list):
 <li>
 <p>Foo</p>
 <pre><code>bar
+
 
 baz
 </code></pre>
 </li>
 </ul>
 ````````````````````````````````
-
-
-```````````````````````````````` example
-- Foo
-
-      bar
-
-
-      baz
-.
-<ul>
-<li>
-<p>Foo</p>
-<pre><code>bar
-</code></pre>
-</li>
-</ul>
-<pre><code>  baz
-</code></pre>
-````````````````````````````````
-
 
 Note that ordered list start numbers must be nine digits or less:
 
@@ -4037,6 +4126,18 @@ Here are some list items that start with a blank line but are not empty:
 </ul>
 ````````````````````````````````
 
+When the list item starts with a blank line, the number of spaces
+following the list marker doesn't change the required indentation:
+
+```````````````````````````````` example
+-   
+  foo
+.
+<ul>
+<li>foo</li>
+</ul>
+````````````````````````````````
+
 
 A list item can begin with at most one blank line.
 In the following example, `foo` is not part of the list
@@ -4109,6 +4210,20 @@ A list may start or end with an empty list item:
 </ul>
 ````````````````````````````````
 
+However, an empty list item cannot interrupt a paragraph:
+
+```````````````````````````````` example
+foo
+*
+
+foo
+1.
+.
+<p>foo
+*</p>
+<p>foo
+1.</p>
+````````````````````````````````
 
 
 4.  **Indentation.**  If a sequence of lines *Ls* constitutes a list item
@@ -4306,13 +4421,18 @@ So, in this case we need two spaces indent:
 - foo
   - bar
     - baz
+      - boo
 .
 <ul>
 <li>foo
 <ul>
 <li>bar
 <ul>
-<li>baz</li>
+<li>baz
+<ul>
+<li>boo</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -4327,11 +4447,13 @@ One is not enough:
 - foo
  - bar
   - baz
+   - boo
 .
 <ul>
 <li>foo</li>
 <li>bar</li>
 <li>baz</li>
+<li>boo</li>
 </ul>
 ````````````````````````````````
 
@@ -4684,28 +4806,20 @@ Foo
 </ul>
 ````````````````````````````````
 
-
 `Markdown.pl` does not allow this, through fear of triggering a list
 via a numeral in a hard-wrapped line:
 
-```````````````````````````````` example
+```````````````````````````````` markdown
 The number of windows in my house is
 14.  The number of doors is 6.
-.
-<p>The number of windows in my house is</p>
-<ol start="14">
-<li>The number of doors is 6.</li>
-</ol>
 ````````````````````````````````
+Oddly, though, `Markdown.pl` *does* allow a blockquote to
+interrupt a paragraph, even though the same considerations might
+apply.
 
-
-Oddly, `Markdown.pl` *does* allow a blockquote to interrupt a paragraph,
-even though the same considerations might apply.  We think that the two
-cases should be treated the same.  Here are two reasons for allowing
-lists to interrupt paragraphs:
-
-First, it is natural and not uncommon for people to start lists without
-blank lines:
+In CommonMark, we do allow lists to interrupt paragraphs, for
+two reasons.  First, it is natural and not uncommon for people
+to start lists without blank lines:
 
     I need to buy
     - new shoes
@@ -4739,20 +4853,40 @@ then
 
 by itself should be a paragraph followed by a nested sublist.
 
-Our adherence to the [principle of uniformity]
-thus inclines us to think that there are two coherent packages:
+Since it is well established Markdown practice to allow lists to
+interrupt paragraphs inside list items, the [principle of
+uniformity] requires us to allow this outside list items as
+well.  ([reStructuredText](http://docutils.sourceforge.net/rst.html)
+takes a different approach, requiring blank lines before lists
+even inside other list items.)
 
-1.  Require blank lines before *all* lists and blockquotes,
-    including lists that occur as sublists inside other list items.
+In order to solve of unwanted lists in paragraphs with
+hard-wrapped numerals, we allow only lists starting with `1` to
+interrupt paragraphs.  Thus,
 
-2.  Require blank lines in none of these places.
+```````````````````````````````` example
+The number of windows in my house is
+14.  The number of doors is 6.
+.
+<p>The number of windows in my house is
+14.  The number of doors is 6.</p>
+````````````````````````````````
 
-[reStructuredText](http://docutils.sourceforge.net/rst.html) takes
-the first approach, for which there is much to be said.  But the second
-seems more consistent with established practice with Markdown.
+We may still get an unintended result in cases like
 
-There can be blank lines between items, but two blank lines end
-a list:
+```````````````````````````````` example
+The number of windows in my house is
+1.  The number of doors is 6.
+.
+<p>The number of windows in my house is</p>
+<ol>
+<li>The number of doors is 6.</li>
+</ol>
+````````````````````````````````
+
+but this rule should prevent most spurious list captures.
+
+There can be any number of blank lines between items:
 
 ```````````````````````````````` example
 - foo
@@ -4769,35 +4903,11 @@ a list:
 <li>
 <p>bar</p>
 </li>
-</ul>
-<ul>
-<li>baz</li>
-</ul>
-````````````````````````````````
-
-
-As illustrated above in the section on [list items],
-two blank lines between blocks *within* a list item will also end a
-list:
-
-```````````````````````````````` example
-- foo
-
-
-  bar
-- baz
-.
-<ul>
-<li>foo</li>
-</ul>
-<p>bar</p>
-<ul>
-<li>baz</li>
+<li>
+<p>baz</p>
+</li>
 </ul>
 ````````````````````````````````
-
-
-Indeed, two blank lines will end *all* containing lists:
 
 ```````````````````````````````` example
 - foo
@@ -4812,26 +4922,28 @@ Indeed, two blank lines will end *all* containing lists:
 <ul>
 <li>bar
 <ul>
-<li>baz</li>
-</ul>
+<li>
+<p>baz</p>
+<p>bim</p>
 </li>
 </ul>
 </li>
 </ul>
-<pre><code>  bim
-</code></pre>
+</li>
+</ul>
 ````````````````````````````````
 
 
-Thus, two blank lines can be used to separate consecutive lists of
-the same type, or to separate a list from an indented code block
-that would otherwise be parsed as a subparagraph of the final list
-item:
+To separate consecutive lists of the same type, or to separate a
+list from an indented code block that would otherwise be parsed
+as a subparagraph of the final list item, you can insert a blank HTML
+comment:
 
 ```````````````````````````````` example
 - foo
 - bar
 
+<!-- -->
 
 - baz
 - bim
@@ -4840,6 +4952,7 @@ item:
 <li>foo</li>
 <li>bar</li>
 </ul>
+<!-- -->
 <ul>
 <li>baz</li>
 <li>bim</li>
@@ -4854,6 +4967,7 @@ item:
 
 -   foo
 
+<!-- -->
 
     code
 .
@@ -4866,6 +4980,7 @@ item:
 <p>foo</p>
 </li>
 </ul>
+<!-- -->
 <pre><code>code
 </code></pre>
 ````````````````````````````````
@@ -5812,18 +5927,22 @@ The following rules define emphasis and strong emphasis:
 
 9.  Emphasis begins with a delimiter that [can open emphasis] and ends
     with a delimiter that [can close emphasis], and that uses the same
-    character (`_` or `*`) as the opening delimiter.  There must
-    be a nonempty sequence of inlines between the open delimiter
-    and the closing delimiter; these form the contents of the emphasis
-    inline.
+    character (`_` or `*`) as the opening delimiter.  The
+    opening and closing delimiters must belong to separate
+    [delimiter runs].  If one of the delimiters can both
+    open and close emphasis, then the sum of the lengths of the
+    delimiter runs containing the opening and closing delimiters
+    must not be a multiple of 3.
 
 10. Strong emphasis begins with a delimiter that
     [can open strong emphasis] and ends with a delimiter that
     [can close strong emphasis], and that uses the same character
-    (`_` or `*`) as the opening delimiter.
-    There must be a nonempty sequence of inlines between the open
-    delimiter and the closing delimiter; these form the contents of
-    the strong emphasis inline.
+    (`_` or `*`) as the opening delimiter.  The
+    opening and closing delimiters must belong to separate
+    [delimiter runs].  If one of the delimiters can both open
+    and close strong emphasis, then the sum of the lengths of
+    the delimiter runs containing the opening and closing
+    delimiters must not be a multiple of 3.
 
 11. A literal `*` character cannot occur at the beginning or end of
     `*`-delimited emphasis or `**`-delimited strong emphasis, unless it
@@ -5847,9 +5966,7 @@ the following principles resolve ambiguity:
     so that the second begins before the first ends and ends after
     the first ends, the first takes precedence. Thus, for example,
     `*foo _bar* baz_` is parsed as `<em>foo _bar</em> baz_` rather
-    than `*foo <em>bar* baz</em>`.  For the same reason,
-    `**foo*bar**` is parsed as `<em><em>foo</em>bar</em>*`
-    rather than `<strong>foo*bar</strong>`.
+    than `*foo <em>bar* baz</em>`.
 
 16. When there are two potential emphasis or strong emphasis spans
     with the same closing delimiter, the shorter one (the one that
@@ -6022,10 +6139,8 @@ A newline also counts as whitespace:
 *foo bar
 *
 .
-<p>*foo bar</p>
-<ul>
-<li></li>
-</ul>
+<p>*foo bar
+*</p>
 ````````````````````````````````
 
 
@@ -6429,18 +6544,30 @@ __foo_ bar_
 <p><em>foo <strong>bar</strong> baz</em></p>
 ````````````````````````````````
 
-
-But note:
-
 ```````````````````````````````` example
 *foo**bar**baz*
 .
-<p><em>foo</em><em>bar</em><em>baz</em></p>
+<p><em>foo<strong>bar</strong>baz</em></p>
 ````````````````````````````````
 
+Note that in the preceding case, the interpretation
 
-The difference is that in the preceding case, the internal delimiters
-[can close emphasis], while in the cases with spaces, they cannot.
+``` markdown
+<p><em>foo</em><em>bar<em></em>baz</em></p>
+```
+
+
+is precluded by the condition that a delimiter that
+can both open and close (like the `*` after `foo`
+cannot form emphasis if the sum of the lengths of
+the delimiter runs containing the opening and
+closing delimiters is a multiple of 3.
+
+The same condition ensures that the following
+cases are all strong emphasis nested inside
+emphasis, even when the interior spaces are
+omitted:
+
 
 ```````````````````````````````` example
 ***foo** bar*
@@ -6456,17 +6583,18 @@ The difference is that in the preceding case, the internal delimiters
 ````````````````````````````````
 
 
-Note, however, that in the following case we get no strong
-emphasis, because the opening delimiter is closed by the first
-`*` before `bar`:
+```````````````````````````````` example
+*foo**bar***
+.
+<p><em>foo<strong>bar</strong></em></p>
+````````````````````````````````
+
 
 ```````````````````````````````` example
 *foo**bar***
 .
-<p><em>foo</em><em>bar</em>**</p>
+<p><em>foo<strong>bar</strong></em></p>
 ````````````````````````````````
-
-
 
 Indefinite levels of nesting are possible:
 
@@ -6560,17 +6688,12 @@ ____foo__ bar__
 ````````````````````````````````
 
 
-But note:
-
 ```````````````````````````````` example
 **foo*bar*baz**
 .
-<p><em><em>foo</em>bar</em>baz**</p>
+<p><strong>foo<em>bar</em>baz</strong></p>
 ````````````````````````````````
 
-
-The difference is that in the preceding case, the internal delimiters
-[can close emphasis], while in the cases with spaces, they cannot.
 
 ```````````````````````````````` example
 ***foo* bar**
@@ -6883,13 +7006,6 @@ Rule 15:
 *foo _bar* baz_
 .
 <p><em>foo _bar</em> baz_</p>
-````````````````````````````````
-
-
-```````````````````````````````` example
-**foo*bar**
-.
-<p><em><em>foo</em>bar</em>*</p>
 ````````````````````````````````
 
 
@@ -7823,7 +7939,7 @@ consists of a [link label] that [matches] a
 [link reference definition] elsewhere in the
 document and is not followed by `[]` or a link label.
 The contents of the first link label are parsed as inlines,
-which are used as the link's text.  the link's URI and title
+which are used as the link's text.  The link's URI and title
 are provided by the matching link reference definition.
 Thus, `[foo]` is equivalent to `[foo][]`.
 
@@ -8798,7 +8914,7 @@ foo
 
 A regular line break (not in a code span or HTML tag) that is not
 preceded by two or more spaces or a backslash is parsed as a
-softbreak.  (A softbreak may be rendered in HTML either as a
+[softbreak](@).  (A softbreak may be rendered in HTML either as a
 [line ending] or as a space. The result will be the same in
 browsers. In the examples here, a [line ending] will be used.)
 
@@ -8940,7 +9056,7 @@ This is text that can be incorporated into the last open
 block (a paragraph, code block, heading, or raw HTML).
 
 Setext headings are formed when we see a line of a paragraph
-that is a setext heading line.
+that is a [setext heading underline].
 
 Reference link definitions are detected when a paragraph is closed;
 the accumulated text lines are parsed to see if they begin with

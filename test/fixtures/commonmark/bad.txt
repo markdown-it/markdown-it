@@ -1,0 +1,352 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 387
+
+.
+- foo
+
+		bar
+.
+<ul>
+<li>
+<p>foo</p>
+<pre><code>  bar
+</code></pre>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 410
+
+.
+>		foo
+.
+<blockquote>
+<pre><code>  foo
+</code></pre>
+</blockquote>
+.
+
+error:
+
+<blockquote>
+<pre><code>	foo
+</code></pre>
+</blockquote>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 419
+
+.
+-		foo
+.
+<ul>
+<li>
+<pre><code>  foo
+</code></pre>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>
+<pre><code>foo
+</code></pre>
+</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 458
+
+.
+#	Foo
+.
+<h1>Foo</h1>
+.
+
+error:
+
+<p>#	Foo</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3821
+
+.
+- foo
+
+
+  bar
+.
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>foo</li>
+</ul>
+<p>bar</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 3866
+
+.
+- Foo
+
+      bar
+
+
+      baz
+.
+<ul>
+<li>
+<p>Foo</p>
+<pre><code>bar
+
+
+baz
+</code></pre>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>
+<p>Foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ul>
+<pre><code>  baz
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4214
+
+.
+foo
+*
+
+foo
+1.
+.
+<p>foo
+*</p>
+<p>foo
+1.</p>
+.
+
+error:
+
+<p>foo</p>
+<ul>
+<li></li>
+</ul>
+<p>foo</p>
+<ol>
+<li></li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4866
+
+.
+The number of windows in my house is
+14.  The number of doors is 6.
+.
+<p>The number of windows in my house is
+14.  The number of doors is 6.</p>
+.
+
+error:
+
+<p>The number of windows in my house is</p>
+<ol start="14">
+<li>The number of doors is 6.</li>
+</ol>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4890
+
+.
+- foo
+
+- bar
+
+
+- baz
+.
+<ul>
+<li>
+<p>foo</p>
+</li>
+<li>
+<p>bar</p>
+</li>
+<li>
+<p>baz</p>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>
+<p>foo</p>
+</li>
+<li>
+<p>bar</p>
+</li>
+</ul>
+<ul>
+<li>baz</li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 4911
+
+.
+- foo
+  - bar
+    - baz
+
+
+      bim
+.
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>
+<p>baz</p>
+<p>bim</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+.
+
+error:
+
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>baz</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>  bim
+</code></pre>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6137
+
+.
+*foo bar
+*
+.
+<p>*foo bar
+*</p>
+.
+
+error:
+
+<p>*foo bar</p>
+<ul>
+<li></li>
+</ul>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6546
+
+.
+*foo**bar**baz*
+.
+<p><em>foo<strong>bar</strong>baz</em></p>
+.
+
+error:
+
+<p><em>foo</em><em>bar</em><em>baz</em></p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6585
+
+.
+*foo**bar***
+.
+<p><em>foo<strong>bar</strong></em></p>
+.
+
+error:
+
+<p><em>foo</em><em>bar</em>**</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6592
+
+.
+*foo**bar***
+.
+<p><em>foo<strong>bar</strong></em></p>
+.
+
+error:
+
+<p><em>foo</em><em>bar</em>**</p>
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src line: 6690
+
+.
+**foo*bar*baz**
+.
+<p><strong>foo<em>bar</em>baz</strong></p>
+.
+
+error:
+
+<p><em><em>foo</em>bar</em>baz**</p>
+
+
