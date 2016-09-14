@@ -3,4 +3,4 @@ demo/
 dist/
 node_modules
 support/demo_template/sample.js
-benchmark/implementations/markdown-it-2.2.1*
+benchmark/extra/
