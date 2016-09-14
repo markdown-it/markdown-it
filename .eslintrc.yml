@@ -1,6 +1,7 @@
 env:
   node:     true
   browser:  false
+  es6:      false
 
 rules:
   accessor-pairs:         2
