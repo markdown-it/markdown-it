@@ -1,32 +1,4 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 387
-
-.
-- foo
-
-		bar
-.
-<ul>
-<li>
-<p>foo</p>
-<pre><code>  bar
-</code></pre>
-</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>
-<p>foo</p>
-<pre><code>bar
-</code></pre>
-</li>
-</ul>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 410
 
 .
@@ -44,30 +16,6 @@ error:
 <pre><code>	foo
 </code></pre>
 </blockquote>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 419
-
-.
--		foo
-.
-<ul>
-<li>
-<pre><code>  foo
-</code></pre>
-</li>
-</ul>
-.
-
-error:
-
-<ul>
-<li>
-<pre><code>foo
-</code></pre>
-</li>
-</ul>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
