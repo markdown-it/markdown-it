@@ -288,12 +288,88 @@ test
 
 Coverage. Tabs in blockquotes.
 .
-   >	 foo
-   > 	 bar
+>		test
+
+ >		test
+
+  >		test
+
+> ---
+>		test
+
+ > ---
+ >		test
+
+  > ---
+  >		test
+
+>			test
+
+ >			test
+
+  >			test
+
+> ---
+>			test
+
+ > ---
+ >			test
+
+  > ---
+  >			test
 .
 <blockquote>
-<pre><code> foo
- bar
+<pre><code>  test
+</code></pre>
+</blockquote>
+<blockquote>
+<pre><code> test
+</code></pre>
+</blockquote>
+<blockquote>
+<pre><code>test
+</code></pre>
+</blockquote>
+<blockquote>
+<hr>
+<pre><code>  test
+</code></pre>
+</blockquote>
+<blockquote>
+<hr>
+<pre><code> test
+</code></pre>
+</blockquote>
+<blockquote>
+<hr>
+<pre><code>test
+</code></pre>
+</blockquote>
+<blockquote>
+<pre><code>  	test
+</code></pre>
+</blockquote>
+<blockquote>
+<pre><code> 	test
+</code></pre>
+</blockquote>
+<blockquote>
+<pre><code>	test
+</code></pre>
+</blockquote>
+<blockquote>
+<hr>
+<pre><code>  	test
+</code></pre>
+</blockquote>
+<blockquote>
+<hr>
+<pre><code> 	test
+</code></pre>
+</blockquote>
+<blockquote>
+<hr>
+<pre><code>	test
 </code></pre>
 </blockquote>
 .
