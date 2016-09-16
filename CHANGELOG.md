@@ -1,11 +1,15 @@
-8.0.0 / 2016-09-15
+8.0.0 / 2016-09-16
 ------------------
 
 - Updated CM spec compatibility to 0.26:
   - Two consecutive newlines no longer terminate a list.
   - Ordered list terminating a paragraph can now only start with 1.
-  - Adjust emphasis algorithm (`*foo**bar**baz*` is now parsed as `<strong>` inside `<em>`).
+  - Adjust emphasis algorithm (`*foo**bar**baz*` is now parsed as `<strong>`
+    inside `<em>`).
   - Fix tab width calculation inside lists and blockquotes.
+- Benchmarks src cleanup.
+- Remove testing in old nodes (but still use es5).
+
 
 7.0.1 / 2016-08-16
 ------------------
