@@ -952,7 +952,7 @@ src line: 1417
 
     - bar
 .
-<ol>
+<ol start="1">
 <li>
 <p>foo</p>
 <ul>
@@ -2888,7 +2888,7 @@ src line: 3668
 
     > A block quote.
 .
-<ol>
+<ol start="1">
 <li>
 <p>A paragraph
 with two lines.</p>
@@ -2972,7 +2972,7 @@ src line: 3762
 .
 <blockquote>
 <blockquote>
-<ol>
+<ol start="1">
 <li>
 <p>one</p>
 <p>two</p>
@@ -3043,7 +3043,7 @@ src line: 3838
 
     > bam
 .
-<ol>
+<ol start="1">
 <li>
 <p>foo</p>
 <pre><code>bar
@@ -3191,7 +3191,7 @@ src line: 4001
 
        more code
 .
-<ol>
+<ol start="1">
 <li>
 <pre><code>indented code
 </code></pre>
@@ -3212,7 +3212,7 @@ src line: 4023
 
        more code
 .
-<ol>
+<ol start="1">
 <li>
 <pre><code> indented code
 </code></pre>
@@ -3355,7 +3355,7 @@ src line: 4189
 2.
 3. bar
 .
-<ol>
+<ol start="1">
 <li>foo</li>
 <li></li>
 <li>bar</li>
@@ -3400,7 +3400,7 @@ src line: 4236
 
      > A block quote.
 .
-<ol>
+<ol start="1">
 <li>
 <p>A paragraph
 with two lines.</p>
@@ -3424,7 +3424,7 @@ src line: 4260
 
       > A block quote.
 .
-<ol>
+<ol start="1">
 <li>
 <p>A paragraph
 with two lines.</p>
@@ -3448,7 +3448,7 @@ src line: 4284
 
        > A block quote.
 .
-<ol>
+<ol start="1">
 <li>
 <p>A paragraph
 with two lines.</p>
@@ -3492,7 +3492,7 @@ with two lines.
 
       > A block quote.
 .
-<ol>
+<ol start="1">
 <li>
 <p>A paragraph
 with two lines.</p>
@@ -3512,7 +3512,7 @@ src line: 4362
   1.  A paragraph
     with two lines.
 .
-<ol>
+<ol start="1">
 <li>A paragraph
 with two lines.</li>
 </ol>
@@ -3526,7 +3526,7 @@ src line: 4375
 continued here.
 .
 <blockquote>
-<ol>
+<ol start="1">
 <li>
 <blockquote>
 <p>Blockquote
@@ -3545,7 +3545,7 @@ src line: 4392
 > continued here.
 .
 <blockquote>
-<ol>
+<ol start="1">
 <li>
 <blockquote>
 <p>Blockquote
@@ -3651,7 +3651,7 @@ src line: 4506
 .
 1. - 2. foo
 .
-<ol>
+<ol start="1">
 <li>
 <ul>
 <li>
@@ -3708,7 +3708,7 @@ src line: 4777
 2. bar
 3) baz
 .
-<ol>
+<ol start="1">
 <li>foo</li>
 <li>bar</li>
 </ol>
@@ -3751,7 +3751,7 @@ The number of windows in my house is
 1.  The number of doors is 6.
 .
 <p>The number of windows in my house is</p>
-<ol>
+<ol start="1">
 <li>The number of doors is 6.</li>
 </ol>
 .
@@ -3895,7 +3895,7 @@ src line: 5018
 
     3. c
 .
-<ol>
+<ol start="1">
 <li>
 <p>a</p>
 </li>
@@ -4123,7 +4123,7 @@ src line: 5250
 
    bar
 .
-<ol>
+<ol start="1">
 <li>
 <pre><code>foo
 </code></pre>
