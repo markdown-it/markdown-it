@@ -225,6 +225,29 @@ bar|bar</p>
 .
 
 
+Allow tabs as a separator on 2nd line
+.
+|	foo	|	bar	|
+|	---	|	---	|
+|	baz	|	quux	|
+.
+<table>
+<thead>
+<tr>
+<th>foo</th>
+<th>bar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baz</td>
+<td>quux</td>
+</tr>
+</tbody>
+</table>
+.
+
+
 Should terminate paragraph:
 .
 paragraph
