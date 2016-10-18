@@ -1,4 +1,4 @@
-/*! markdown-it 8.0.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 8.0.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -3862,6 +3862,8 @@ module.exports = StateBlock;
 
 'use strict';
 
+var isSpace = require('../common/utils').isSpace;
+
 
 function getLine(state, line) {
   var pos = state.bMarks[line] + state.blkIndent,
@@ -3924,16 +3926,25 @@ module.exports = function table(state, startLine, endLine, silent) {
 
   if (state.sCount[nextLine] < state.blkIndent) { return false; }
 
-  // first character of the second line should be '|' or '-'
+  // first character of the second line should be '|', '-', ':',
+  // and no other characters are allowed but spaces;
+  // basically, this is the equivalent of /^[-:|][-:|\s]*$/ regexp
 
   pos = state.bMarks[nextLine] + state.tShift[nextLine];
   if (pos >= state.eMarks[nextLine]) { return false; }
 
-  ch = state.src.charCodeAt(pos);
+  ch = state.src.charCodeAt(pos++);
   if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */ && ch !== 0x3A/* : */) { return false; }
 
+  while (pos < state.eMarks[nextLine]) {
+    ch = state.src.charCodeAt(pos);
+
+    if (ch !== 0x7C/* | */ && ch !== 0x2D/* - */ && ch !== 0x3A/* : */ && !isSpace(ch)) { return false; }
+
+    pos++;
+  }
+
   lineText = getLine(state, startLine + 1);
-  if (!/^[-:| ]+$/.test(lineText)) { return false; }
 
   columns = lineText.split('|');
   aligns = [];
@@ -4033,7 +4044,7 @@ module.exports = function table(state, startLine, endLine, silent) {
   return true;
 };
 
-},{}],30:[function(require,module,exports){
+},{"../common/utils":4}],30:[function(require,module,exports){
 'use strict';
 
 
@@ -6592,8 +6603,8 @@ module.exports = function (opts) {
 
     '(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
 
-  // Prohibit [@/] in user/pass to avoid wrong domain fetch.
-  re.src_auth    = '(?:(?:(?!' + re.src_ZCc + '|[@/]).)+@)?';
+  // Prohibit any of "@/[]()" in user/pass to avoid wrong domain fetch.
+  re.src_auth    = '(?:(?:(?!' + re.src_ZCc + '|[@/\\[\\]()]).)+@)?';
 
   re.src_port =
 
@@ -6672,7 +6683,7 @@ module.exports = function (opts) {
     // Don't need IP check, because digits are already allowed in normal domain names
     //   src_ip4 +
     // '|' +
-      '(?:(?:(?:' + re.src_domain + ')\\.)*' + re.src_domain_root + ')' +
+      '(?:(?:(?:' + re.src_domain + ')\\.)*' + re.src_domain/*_root*/ + ')' +
     ')';
 
   re.tpl_host_fuzzy =
