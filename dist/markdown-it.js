@@ -1,4 +1,4 @@
-/*! markdown-it 8.0.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 8.1.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -920,7 +920,7 @@ function MarkdownIt(presetName, options) {
    * Link components parser functions, useful to write plugins. See details
    * [here](https://github.com/markdown-it/markdown-it/blob/master/lib/helpers).
    **/
-  this.helpers = helpers;
+  this.helpers = utils.assign({}, helpers);
 
 
   this.options = {};
@@ -3430,8 +3430,6 @@ module.exports = function paragraph(state, startLine/*, endLine*/) {
 'use strict';
 
 
-var parseLinkDestination = require('../helpers/parse_link_destination');
-var parseLinkTitle       = require('../helpers/parse_link_title');
 var normalizeReference   = require('../common/utils').normalizeReference;
 var isSpace              = require('../common/utils').isSpace;
 
@@ -3535,7 +3533,7 @@ module.exports = function reference(state, startLine, _endLine, silent) {
 
   // [label]:   destination   'title'
   //            ^^^^^^^^^^^ parse this
-  res = parseLinkDestination(str, pos, max);
+  res = state.md.helpers.parseLinkDestination(str, pos, max);
   if (!res.ok) { return false; }
 
   href = state.md.normalizeLink(res.str);
@@ -3564,7 +3562,7 @@ module.exports = function reference(state, startLine, _endLine, silent) {
 
   // [label]:   destination   'title'
   //                          ^^^^^^^ parse this
-  res = parseLinkTitle(str, pos, max);
+  res = state.md.helpers.parseLinkTitle(str, pos, max);
   if (pos < max && start !== pos && res.ok) {
     title = res.str;
     pos = res.pos;
@@ -3625,7 +3623,7 @@ module.exports = function reference(state, startLine, _endLine, silent) {
   return true;
 };
 
-},{"../common/utils":4,"../helpers/parse_link_destination":6,"../helpers/parse_link_title":8}],28:[function(require,module,exports){
+},{"../common/utils":4}],28:[function(require,module,exports){
 // Parser state class
 
 'use strict';
@@ -5012,9 +5010,6 @@ module.exports = function html_inline(state, silent) {
 
 'use strict';
 
-var parseLinkLabel       = require('../helpers/parse_link_label');
-var parseLinkDestination = require('../helpers/parse_link_destination');
-var parseLinkTitle       = require('../helpers/parse_link_title');
 var normalizeReference   = require('../common/utils').normalizeReference;
 var isSpace              = require('../common/utils').isSpace;
 
@@ -5041,7 +5036,7 @@ module.exports = function image(state, silent) {
   if (state.src.charCodeAt(state.pos + 1) !== 0x5B/* [ */) { return false; }
 
   labelStart = state.pos + 2;
-  labelEnd = parseLinkLabel(state, state.pos + 1, false);
+  labelEnd = state.md.helpers.parseLinkLabel(state, state.pos + 1, false);
 
   // parser failed to find ']', so it's not a valid link
   if (labelEnd < 0) { return false; }
@@ -5064,7 +5059,7 @@ module.exports = function image(state, silent) {
     // [link](  <href>  "title"  )
     //          ^^^^^^ parsing link destination
     start = pos;
-    res = parseLinkDestination(state.src, pos, state.posMax);
+    res = state.md.helpers.parseLinkDestination(state.src, pos, state.posMax);
     if (res.ok) {
       href = state.md.normalizeLink(res.str);
       if (state.md.validateLink(href)) {
@@ -5084,7 +5079,7 @@ module.exports = function image(state, silent) {
 
     // [link](  <href>  "title"  )
     //                  ^^^^^^^ parsing link title
-    res = parseLinkTitle(state.src, pos, state.posMax);
+    res = state.md.helpers.parseLinkTitle(state.src, pos, state.posMax);
     if (pos < max && start !== pos && res.ok) {
       title = res.str;
       pos = res.pos;
@@ -5112,7 +5107,7 @@ module.exports = function image(state, silent) {
 
     if (pos < max && state.src.charCodeAt(pos) === 0x5B/* [ */) {
       start = pos + 1;
-      pos = parseLinkLabel(state, pos);
+      pos = state.md.helpers.parseLinkLabel(state, pos);
       if (pos >= 0) {
         label = state.src.slice(start, pos++);
       } else {
@@ -5164,14 +5159,11 @@ module.exports = function image(state, silent) {
   return true;
 };
 
-},{"../common/utils":4,"../helpers/parse_link_destination":6,"../helpers/parse_link_label":7,"../helpers/parse_link_title":8}],45:[function(require,module,exports){
+},{"../common/utils":4}],45:[function(require,module,exports){
 // Process [link](<to> "stuff")
 
 'use strict';
 
-var parseLinkLabel       = require('../helpers/parse_link_label');
-var parseLinkDestination = require('../helpers/parse_link_destination');
-var parseLinkTitle       = require('../helpers/parse_link_title');
 var normalizeReference   = require('../common/utils').normalizeReference;
 var isSpace              = require('../common/utils').isSpace;
 
@@ -5195,7 +5187,7 @@ module.exports = function link(state, silent) {
   if (state.src.charCodeAt(state.pos) !== 0x5B/* [ */) { return false; }
 
   labelStart = state.pos + 1;
-  labelEnd = parseLinkLabel(state, state.pos, true);
+  labelEnd = state.md.helpers.parseLinkLabel(state, state.pos, true);
 
   // parser failed to find ']', so it's not a valid link
   if (labelEnd < 0) { return false; }
@@ -5218,7 +5210,7 @@ module.exports = function link(state, silent) {
     // [link](  <href>  "title"  )
     //          ^^^^^^ parsing link destination
     start = pos;
-    res = parseLinkDestination(state.src, pos, state.posMax);
+    res = state.md.helpers.parseLinkDestination(state.src, pos, state.posMax);
     if (res.ok) {
       href = state.md.normalizeLink(res.str);
       if (state.md.validateLink(href)) {
@@ -5238,7 +5230,7 @@ module.exports = function link(state, silent) {
 
     // [link](  <href>  "title"  )
     //                  ^^^^^^^ parsing link title
-    res = parseLinkTitle(state.src, pos, state.posMax);
+    res = state.md.helpers.parseLinkTitle(state.src, pos, state.posMax);
     if (pos < max && start !== pos && res.ok) {
       title = res.str;
       pos = res.pos;
@@ -5266,7 +5258,7 @@ module.exports = function link(state, silent) {
 
     if (pos < max && state.src.charCodeAt(pos) === 0x5B/* [ */) {
       start = pos + 1;
-      pos = parseLinkLabel(state, pos);
+      pos = state.md.helpers.parseLinkLabel(state, pos);
       if (pos >= 0) {
         label = state.src.slice(start, pos++);
       } else {
@@ -5313,7 +5305,7 @@ module.exports = function link(state, silent) {
   return true;
 };
 
-},{"../common/utils":4,"../helpers/parse_link_destination":6,"../helpers/parse_link_label":7,"../helpers/parse_link_title":8}],46:[function(require,module,exports){
+},{"../common/utils":4}],46:[function(require,module,exports){
 // Proceess '\n'
 
 'use strict';
