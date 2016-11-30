@@ -149,6 +149,16 @@ bar
 </ul>
 .
 
+Info string in fenced code block can't contain marker used for the fence
+.
+~~~test~
+
+~~~test`
+.
+<p>~~~test~</p>
+<pre><code class="test`"></code></pre>
+.
+
 Coverage. Directive can terminate paragraph.
 .
 a
