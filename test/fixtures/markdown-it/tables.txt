@@ -400,6 +400,53 @@ Another complicated backticks case
 </table>
 .
 
+`\` in tables should not count as escaped backtick
+.
+# | 1 | 2
+--|--|--
+x | `\` | `x`
+.
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>1</th>
+<th>2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td><code>\</code></td>
+<td><code>x</code></td>
+</tr>
+</tbody>
+</table>
+.
+
+Tables should handle escaped backticks
+.
+# | 1 | 2
+--|--|--
+x | \`\` | `x`
+.
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>1</th>
+<th>2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>``</td>
+<td><code>x</code></td>
+</tr>
+</tbody>
+</table>
+.
 
 Should be parsed before code blocks:
 .
