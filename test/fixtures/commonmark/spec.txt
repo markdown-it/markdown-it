@@ -1,8 +1,8 @@
 ---
 title: CommonMark Spec
 author: John MacFarlane
-version: 0.26
-date: '2016-07-15'
+version: 0.27
+date: '2016-11-18'
 license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
 ...
 
@@ -1985,7 +1985,7 @@ by their start and end conditions.  The block begins with a line that
 meets a [start condition](@) (after up to three spaces
 optional indentation).  It ends with the first subsequent line that
 meets a matching [end condition](@), or the last line of
-the document or other [container block](@), if no line is encountered that meets the
+the document or other [container block]), if no line is encountered that meets the
 [end condition].  If the first line meets both the [start condition]
 and the [end condition], the block will contain just that line.
 
@@ -2015,7 +2015,8 @@ followed by one of the strings (case-insensitive) `address`,
 `article`, `aside`, `base`, `basefont`, `blockquote`, `body`,
 `caption`, `center`, `col`, `colgroup`, `dd`, `details`, `dialog`,
 `dir`, `div`, `dl`, `dt`, `fieldset`, `figcaption`, `figure`,
-`footer`, `form`, `frame`, `frameset`, `h1`, `head`, `header`, `hr`,
+`footer`, `form`, `frame`, `frameset`,
+`h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `head`, `header`, `hr`,
 `html`, `iframe`, `legend`, `li`, `link`, `main`, `menu`, `menuitem`,
 `meta`, `nav`, `noframes`, `ol`, `optgroup`, `option`, `p`, `param`,
 `section`, `source`, `summary`, `table`, `tbody`, `td`,
@@ -3636,11 +3637,11 @@ The following rules define [list items]:
     If the list item is ordered, then it is also assigned a start
     number, based on the ordered list marker.
 
-    Exceptions: When the list item interrupts a paragraph---that
-    is, when it starts on a line that would otherwise count as
-    [paragraph continuation text]---then (a) the lines *Ls* must
-    not begin with a blank line, and (b) if the list item is
-    ordered, the start number must be 1.
+    Exceptions: When the first list item in a [list] interrupts
+    a paragraph---that is, when it starts on a line that would
+    otherwise count as [paragraph continuation text]---then (a)
+    the lines *Ls* must not begin with a blank line, and (b) if
+    the list item is ordered, the start number must be 1.
 
 For example, let *Ls* be the lines
 
@@ -4730,8 +4731,7 @@ takes four spaces (a common case), but diverge in other cases.
 
 A [list](@) is a sequence of one or more
 list items [of the same type].  The list items
-may be separated by single [blank lines], but two
-blank lines end all containing lists.
+may be separated by any number of blank lines.
 
 Two list items are [of the same type](@)
 if they begin with a [list marker] of the same type.
@@ -4809,10 +4809,11 @@ Foo
 `Markdown.pl` does not allow this, through fear of triggering a list
 via a numeral in a hard-wrapped line:
 
-```````````````````````````````` markdown
+``` markdown
 The number of windows in my house is
 14.  The number of doors is 6.
-````````````````````````````````
+```
+
 Oddly, though, `Markdown.pl` *does* allow a blockquote to
 interrupt a paragraph, even though the same considerations might
 apply.
@@ -4821,10 +4822,12 @@ In CommonMark, we do allow lists to interrupt paragraphs, for
 two reasons.  First, it is natural and not uncommon for people
 to start lists without blank lines:
 
-    I need to buy
-    - new shoes
-    - a coat
-    - a plane ticket
+``` markdown
+I need to buy
+- new shoes
+- a coat
+- a plane ticket
+```
 
 Second, we are attracted to a
 
@@ -4836,20 +4839,24 @@ Second, we are attracted to a
 (Indeed, the spec for [list items] and [block quotes] presupposes
 this principle.) This principle implies that if
 
-      * I need to buy
-        - new shoes
-        - a coat
-        - a plane ticket
+``` markdown
+  * I need to buy
+    - new shoes
+    - a coat
+    - a plane ticket
+```
 
 is a list item containing a paragraph followed by a nested sublist,
 as all Markdown implementations agree it is (though the paragraph
 may be rendered without `<p>` tags, since the list is "tight"),
 then
 
-    I need to buy
-    - new shoes
-    - a coat
-    - a plane ticket
+``` markdown
+I need to buy
+- new shoes
+- a coat
+- a plane ticket
+```
 
 by itself should be a paragraph followed by a nested sublist.
 
@@ -5668,6 +5675,16 @@ single spaces, just as they would be by a browser:
   baz`
 .
 <p><code>foo bar baz</code></p>
+````````````````````````````````
+
+
+Not all [Unicode whitespace] (for instance, non-breaking space) is
+collapsed, however:
+
+```````````````````````````````` example
+`a  b`
+.
+<p><code>a  b</code></p>
 ````````````````````````````````
 
 
@@ -6558,7 +6575,7 @@ Note that in the preceding case, the interpretation
 
 
 is precluded by the condition that a delimiter that
-can both open and close (like the `*` after `foo`
+can both open and close (like the `*` after `foo`)
 cannot form emphasis if the sum of the lengths of
 the delimiter runs containing the opening and
 closing delimiters is a multiple of 3.
@@ -6589,12 +6606,6 @@ omitted:
 <p><em>foo<strong>bar</strong></em></p>
 ````````````````````````````````
 
-
-```````````````````````````````` example
-*foo**bar***
-.
-<p><em>foo<strong>bar</strong></em></p>
-````````````````````````````````
 
 Indefinite levels of nesting are possible:
 
@@ -7361,6 +7372,16 @@ may be used in titles:
 ````````````````````````````````
 
 
+Titles must be separated from the link using a [whitespace].
+Other [Unicode whitespace] like non-breaking space doesn't work.
+
+```````````````````````````````` example
+[link](/url "title")
+.
+<p><a href="/url%C2%A0%22title%22">link</a></p>
+````````````````````````````````
+
+
 Nested balanced quotes are not allowed without escaping:
 
 ```````````````````````````````` example
@@ -8025,7 +8046,8 @@ following closing bracket:
 ````````````````````````````````
 
 
-Full references take precedence over shortcut references:
+Full and compact references take precedence over shortcut
+references:
 
 ```````````````````````````````` example
 [foo][bar]
@@ -8036,6 +8058,31 @@ Full references take precedence over shortcut references:
 <p><a href="/url2">foo</a></p>
 ````````````````````````````````
 
+```````````````````````````````` example
+[foo][]
+
+[foo]: /url1
+.
+<p><a href="/url1">foo</a></p>
+````````````````````````````````
+
+Inline links also take precedence:
+
+```````````````````````````````` example
+[foo]()
+
+[foo]: /url1
+.
+<p><a href="">foo</a></p>
+````````````````````````````````
+
+```````````````````````````````` example
+[foo](not a link)
+
+[foo]: /url1
+.
+<p><a href="/url1">foo</a>(not a link)</p>
+````````````````````````````````
 
 In the following case `[bar][baz]` is parsed as a reference,
 `[foo]` as normal text:
@@ -9045,7 +9092,7 @@ blocks.  But we cannot close unmatched blocks yet, because we may have a
 [lazy continuation line].
 
 2.  Next, after consuming the continuation markers for existing
-blocks, we look for new block starts (e.g. `>` for a block quote.
+blocks, we look for new block starts (e.g. `>` for a block quote).
 If we encounter a new block start, we close any blocks unmatched
 in step 1 before creating the new block as a child of the last
 matched block.
