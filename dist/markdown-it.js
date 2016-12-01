@@ -1,4 +1,4 @@
-/*! markdown-it 8.1.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! markdown-it 8.2.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -2720,7 +2720,7 @@ module.exports = function fence(state, startLine, endLine, silent) {
   markup = state.src.slice(mem, pos);
   params = state.src.slice(pos, max);
 
-  if (params.indexOf('`') >= 0) { return false; }
+  if (params.indexOf(String.fromCharCode(marker)) >= 0) { return false; }
 
   // Since start is found, we can report success here in validation mode
   if (silent) { return true; }
@@ -3883,13 +3883,22 @@ function escapedSplit(str) {
   ch  = str.charCodeAt(pos);
 
   while (pos < max) {
-    if (ch === 0x60/* ` */ && (escapes % 2 === 0)) {
-      backTicked = !backTicked;
-      lastBackTick = pos;
+    if (ch === 0x60/* ` */) {
+      if (backTicked) {
+        // make \` close code sequence, but not open it;
+        // the reason is: `\` is correct code block
+        backTicked = false;
+        lastBackTick = pos;
+      } else if (escapes % 2 === 0) {
+        backTicked = true;
+        lastBackTick = pos;
+      }
     } else if (ch === 0x7c/* | */ && (escapes % 2 === 0) && !backTicked) {
       result.push(str.substring(lastPos, pos));
       lastPos = pos + 1;
-    } else if (ch === 0x5c/* \ */) {
+    }
+
+    if (ch === 0x5c/* \ */) {
       escapes++;
     } else {
       escapes = 0;
@@ -5182,7 +5191,8 @@ module.exports = function link(state, silent) {
       href = '',
       oldPos = state.pos,
       max = state.posMax,
-      start = state.pos;
+      start = state.pos,
+      parseReference = true;
 
   if (state.src.charCodeAt(state.pos) !== 0x5B/* [ */) { return false; }
 
@@ -5197,6 +5207,9 @@ module.exports = function link(state, silent) {
     //
     // Inline link
     //
+
+    // might have found a valid shortcut link, disable reference parsing
+    parseReference = false;
 
     // [link](  <href>  "title"  )
     //        ^^ skipping these spaces
@@ -5246,11 +5259,13 @@ module.exports = function link(state, silent) {
     }
 
     if (pos >= max || state.src.charCodeAt(pos) !== 0x29/* ) */) {
-      state.pos = oldPos;
-      return false;
+      // parsing a valid shortcut link failed, fallback to reference
+      parseReference = true;
     }
     pos++;
-  } else {
+  }
+
+  if (parseReference) {
     //
     // Link reference
     //
