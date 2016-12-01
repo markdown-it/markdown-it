@@ -1,3 +1,12 @@
+8.2.0 / 2016-12-01
+------------------
+
+- Updated CM spec compatibility to 0.27 (no significant changes).
+- Fix backticks handle inside tables, #303.
+- Fix edge case for fenced blocks with `~~~` in info, #301.
+- Fix fallback to reference if link is not valid, #302.
+
+
 8.1.0 / 2016-11-03
 ------------------
 
