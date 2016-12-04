@@ -16,7 +16,8 @@
     "markdown-it": "bin/markdown-it.js"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "heroku-postbuild": "npm install express"
   },
   "files": [
     "index.js",
@@ -39,6 +40,7 @@
     "chai": "^3.4.1",
     "coveralls": "~2.11.9",
     "eslint": "^3.5.0",
+    "express": "^4.14.0",
     "highlight.js": "^9.2.0",
     "istanbul": "^0.4.5",
     "jade": "~1.11.0",
