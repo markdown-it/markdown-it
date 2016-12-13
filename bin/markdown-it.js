@@ -42,6 +42,11 @@ cli.addArgument([ 'file' ], {
   defaultValue: '-'
 });
 
+cli.addArgument([ '-o', '--output' ], {
+  help: 'File to write',
+  defaultValue: '-'
+});
+
 var options = cli.parseArgs();
 
 
@@ -99,5 +104,10 @@ readFile(options.file, 'utf8', function (err, input) {
     process.exit(1);
   }
 
-  process.stdout.write(output);
+  if (options.output === '-') {
+    // write to stdout
+    process.stdout.write(output);
+  } else {
+    fs.writeFileSync(options.output, output);
+  }
 });
