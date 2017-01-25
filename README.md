@@ -198,8 +198,8 @@ If you are going to write plugins - take a look at
 
 Embedded (enabled by default):
 
-- [Tables](https://help.github.com/articles/github-flavored-markdown/#tables) (GFM)
-- [Strikethrough](https://help.github.com/articles/github-flavored-markdown/#strikethrough) (GFM)
+- [Tables](https://help.github.com/articles/organizing-information-with-tables/) (GFM)
+- [Strikethrough](https://help.github.com/articles/basic-writing-and-formatting-syntax/#styling-text) (GFM)
 
 Via plugins:
 
