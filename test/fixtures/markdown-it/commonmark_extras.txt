@@ -112,6 +112,27 @@ Regression test (code block + regular paragraph)
 </blockquote>
 .
 
+Blockquotes inside indented lists should terminate correctly
+.
+   - a
+     > b
+     ```
+     c
+     ```
+   - d
+.
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote>
+<pre><code>c
+</code></pre>
+</li>
+<li>d</li>
+</ul>
+.
+
 Don't output empty class here:
 .
 ```&#x20;
