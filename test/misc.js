@@ -145,6 +145,15 @@ describe('API', function () {
     assert(md.renderInline('_foo_'), '<em>foo</em>');
   });
 
+  it('input type check', function () {
+    var md = markdownit();
+
+    assert.throws(
+      function () { md.render(null); },
+      /Input data should be a String/
+    );
+  });
+
 });
 
 
