@@ -1,7 +1,10 @@
-8.3.0 / WIP
+8.3.0 / 2017-02-16
 ------------------
 
-- Fix table indentation issues, #325.
+- Fix table indentation issues, #325, #224.
+- Remove tabs at the beginning of the line in paragraphs.
+- Fix blockquote termination inside indented lists, #329.
+-  Better error message for bad input type, #324.
 
 
 8.2.2 / 2016-12-15
