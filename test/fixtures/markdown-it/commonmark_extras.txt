@@ -202,6 +202,22 @@ foo2<br>
 bar</p>
 .
 
+List item terminating quote should not be paragraph continuation
+.
+1. foo
+   > quote
+2. bar
+.
+<ol>
+<li>foo
+<blockquote>
+<p>quote</p>
+</blockquote>
+</li>
+<li>bar</li>
+</ol>
+.
+
 Coverage. Directive can terminate paragraph.
 .
 a
@@ -440,4 +456,31 @@ Coverage. Tabs in lists.
 </code></pre>
 </li>
 </ol>
+.
+
+Coverage. Various tags not interrupting blockquotes because of indentation:
+.
+> foo
+    - - - -
+
+> foo
+    # not a heading
+
+> foo
+    ```
+    not a fence
+    ```
+.
+<blockquote>
+<p>foo
+- - - -</p>
+</blockquote>
+<blockquote>
+<p>foo
+# not a heading</p>
+</blockquote>
+<blockquote>
+<p>foo
+<code>not a fence</code></p>
+</blockquote>
 .

@@ -1,3 +1,9 @@
+8.3.1 / WIP
+------------------
+
+- Fix blockquote termination by list item, #338.
+
+
 8.3.0 / 2017-02-16
 ------------------
 
