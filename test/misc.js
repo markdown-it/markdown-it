@@ -291,7 +291,7 @@ describe('maxNesting', function () {
     var md = markdownit({ maxNesting: 2 });
     assert.strictEqual(
       md.render('>foo\n>>bar\n>>>baz'),
-      '<blockquote>\n<p>foo</p>\n<blockquote></blockquote>\n</blockquote>\n'
+      '<blockquote>\n<p>foo</p>\n<blockquote>\n</blockquote>\n</blockquote>\n'
     );
   });
 

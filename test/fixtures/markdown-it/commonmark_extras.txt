@@ -351,7 +351,8 @@ test
 > [foo]: bar
 [foo]
 .
-<blockquote></blockquote>
+<blockquote>
+</blockquote>
 <p><a href="bar">foo</a></p>
 .
 
