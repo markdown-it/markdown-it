@@ -58,6 +58,7 @@
     "mocha": "*",
     "ndoc": "^5.0.0",
     "stylus": "~0.54.2",
+    "supertest": "^3.0.0",
     "uglify-js": "^2.7.3"
   }
 }
