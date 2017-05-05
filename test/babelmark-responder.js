@@ -1,7 +1,7 @@
 'use strict';
 
 
-describe.only('babelmark responder app', function () {
+describe('babelmark responder app', function () {
   var app;
 
   var PORT    = 5005;
