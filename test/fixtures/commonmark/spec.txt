@@ -11,10 +11,12 @@ license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
 ## What is Markdown?
 
 Markdown is a plain text format for writing structured documents,
-based on conventions used for indicating formatting in email and
-usenet posts.  It was developed in 2004 by John Gruber, who wrote
-the first Markdown-to-HTML converter in Perl, and it soon became
-ubiquitous.  In the next decade, dozens of implementations were
+based on conventions for indicating formatting in email
+and usenet posts.  It was developed by John Gruber (with
+help from Aaron Swartz) and released in 2004 in the form of a
+[syntax description](http://daringfireball.net/projects/markdown/syntax)
+and a Perl script (`Markdown.pl`) for converting Markdown to
+HTML.  In the next decade, dozens of implementations were
 developed in many languages.  Some extended the original
 Markdown syntax with conventions for footnotes, tables, and
 other document elements.  Some allowed Markdown documents to be
@@ -312,7 +314,7 @@ form feed (`U+000C`), or carriage return (`U+000D`).
 characters].
 
 A [Unicode whitespace character](@) is
-any code point in the Unicode `Zs` class, or a tab (`U+0009`),
+any code point in the Unicode `Zs` general category, or a tab (`U+0009`),
 carriage return (`U+000D`), newline (`U+000A`), or form feed
 (`U+000C`).
 
@@ -331,7 +333,7 @@ is `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`,
 
 A [punctuation character](@) is an [ASCII
 punctuation character] or anything in
-the Unicode classes `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
+the general Unicode categories  `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
 
 ## Tabs
 
@@ -402,8 +404,8 @@ as indentation with four spaces would:
 Normally the `>` that begins a block quote may be followed
 optionally by a space, which is not considered part of the
 content.  In the following case `>` is followed by a tab,
-which is treated as if it were expanded into spaces.
-Since one of theses spaces is considered part of the
+which is treated as if it were expanded into three spaces.
+Since one of these spaces is considered part of the
 delimiter, `foo` is considered to be indented six spaces
 inside the block quote context, so we get an indented
 code block starting with two spaces.
@@ -5936,7 +5938,7 @@ The following rules define emphasis and strong emphasis:
 7.  A double `**` [can close strong emphasis](@)
     iff it is part of a [right-flanking delimiter run].
 
-8.  A double `__` [can close strong emphasis]
+8.  A double `__` [can close strong emphasis] iff
     it is part of a [right-flanking delimiter run]
     and either (a) not part of a [left-flanking delimiter run]
     or (b) part of a [left-flanking delimiter run]
@@ -5976,8 +5978,8 @@ the following principles resolve ambiguity:
     an interpretation `<strong>...</strong>` is always preferred to
     `<em><em>...</em></em>`.
 
-14. An interpretation `<strong><em>...</em></strong>` is always
-    preferred to `<em><strong>..</strong></em>`.
+14. An interpretation `<em><strong>...</strong></em>` is always
+    preferred to `<strong><em>..</em></strong>`.
 
 15. When two potential emphasis or strong emphasis spans overlap,
     so that the second begins before the first ends and ends after
@@ -7000,14 +7002,14 @@ Rule 14:
 ```````````````````````````````` example
 ***foo***
 .
-<p><strong><em>foo</em></strong></p>
+<p><em><strong>foo</strong></em></p>
 ````````````````````````````````
 
 
 ```````````````````````````````` example
 _____foo_____
 .
-<p><strong><strong><em>foo</em></strong></strong></p>
+<p><em><strong><strong>foo</strong></strong></em></p>
 ````````````````````````````````
 
 
@@ -7148,8 +7150,7 @@ A [link destination](@) consists of either
 - a nonempty sequence of characters that does not include
   ASCII space or control characters, and includes parentheses
   only if (a) they are backslash-escaped or (b) they are part of
-  a balanced pair of unescaped parentheses that is not itself
-  inside a balanced pair of unescaped parentheses.
+  a balanced pair of unescaped parentheses.
 
 A [link title](@)  consists of either
 
@@ -7255,35 +7256,29 @@ Parentheses inside the link destination may be escaped:
 <p><a href="(foo)">link</a></p>
 ````````````````````````````````
 
-One level of balanced parentheses is allowed without escaping:
-
-```````````````````````````````` example
-[link]((foo)and(bar))
-.
-<p><a href="(foo)and(bar)">link</a></p>
-````````````````````````````````
-
-However, if you have parentheses within parentheses, you need to escape
-or use the `<...>` form:
+Any number parentheses are allowed without escaping, as long as they are
+balanced:
 
 ```````````````````````````````` example
 [link](foo(and(bar)))
 .
-<p>[link](foo(and(bar)))</p>
+<p><a href="foo(and(bar))">link</a></p>
+````````````````````````````````
+
+However, if you have unbalanced parentheses, you need to escape or use the
+`<...>` form:
+
+```````````````````````````````` example
+[link](foo\(and\(bar\))
+.
+<p><a href="foo(and(bar)">link</a></p>
 ````````````````````````````````
 
 
 ```````````````````````````````` example
-[link](foo(and\(bar\)))
+[link](<foo(and(bar)>)
 .
-<p><a href="foo(and(bar))">link</a></p>
-````````````````````````````````
-
-
-```````````````````````````````` example
-[link](<foo(and(bar))>)
-.
-<p><a href="foo(and(bar))">link</a></p>
+<p><a href="foo(and(bar)">link</a></p>
 ````````````````````````````````
 
 
@@ -8326,11 +8321,11 @@ The link labels are case-insensitive:
 ````````````````````````````````
 
 
-If you just want bracketed text, you can backslash-escape the
-opening `!` and `[`:
+If you just want a literal `!` followed by bracketed text, you can
+backslash-escape the opening `[`:
 
 ```````````````````````````````` example
-\!\[foo]
+!\[foo]
 
 [foo]: /url "title"
 .
