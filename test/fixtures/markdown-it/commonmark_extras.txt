@@ -449,7 +449,7 @@ Coverage. Tabs in lists.
 
 	     bar
 .
-<ol>
+<ol start="1">
 <li>
 <p>foo</p>
 <pre><code> bar
