@@ -1,5 +1,7 @@
 # markdown-it
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/markdown-it/markdown-it.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://img.shields.io/travis/markdown-it/markdown-it/master.svg?style=flat)](https://travis-ci.org/markdown-it/markdown-it)
 [![NPM version](https://img.shields.io/npm/v/markdown-it.svg?style=flat)](https://www.npmjs.org/package/markdown-it)
 [![Coverage Status](https://coveralls.io/repos/markdown-it/markdown-it/badge.svg?branch=master&service=github)](https://coveralls.io/github/markdown-it/markdown-it?branch=master)
