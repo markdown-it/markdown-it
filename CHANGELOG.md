@@ -1,4 +1,4 @@
-8.3.2 / WIP
+8.3.2 / 2017-08-03
 ------------------
 
 - Fix blockquote termination inside lists, #386.
