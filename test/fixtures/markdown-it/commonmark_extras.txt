@@ -100,6 +100,26 @@ Those are two separate blockquotes:
 </blockquote>
 .
 
+Blockquote should terminate itself after paragraph continuation
+.
+- list
+    > blockquote
+blockquote continuation
+    - next list item
+.
+<ul>
+<li>list
+<blockquote>
+<p>blockquote
+blockquote continuation</p>
+</blockquote>
+<ul>
+<li>next list item</li>
+</ul>
+</li>
+</ul>
+.
+
 Regression test (code block + regular paragraph)
 .
 >     foo
