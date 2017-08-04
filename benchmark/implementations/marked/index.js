@@ -1,6 +1,6 @@
 'use strict';
 
-var marked = require('../../extra/lib/node_modules/marked');
+var marked = require('marked');
 
 exports.run = function (data) {
   return marked(data);
