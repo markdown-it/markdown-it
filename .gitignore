@@ -4,3 +4,4 @@ coverage/
 demo/
 apidoc/
 *.log
+.DS_Store

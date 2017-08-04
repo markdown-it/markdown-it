@@ -16,6 +16,7 @@ var IMPLS = [];
 
 
 fs.readdirSync(IMPLS_DIRECTORY).sort().forEach(function (name) {
+  if (name === '.DS_Store') { return; }
   var file = path.join(IMPLS_DIRECTORY, name);
   var code = require(file);
 
