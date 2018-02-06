@@ -109,3 +109,31 @@ Quotes at the start/end of the tokens:
 <p>“foo <em>bar</em>”</p>
 <p>“<em>foo bar</em>”</p>
 .
+
+Should treat softbreak as a space:
+.
+"this"
+and "that".
+
+"this" and
+"that".
+.
+<p>“this”
+and “that”.</p>
+<p>“this” and
+“that”.</p>
+.
+
+Should treat hardbreak as a space:
+.
+"this"\
+and "that".
+
+"this" and\
+"that".
+.
+<p>“this”<br>
+and “that”.</p>
+<p>“this” and<br>
+“that”.</p>
+.
