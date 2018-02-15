@@ -30,7 +30,7 @@
     "entities": "~1.1.1",
     "linkify-it": "^2.0.0",
     "mdurl": "^1.0.1",
-    "uc.micro": "^1.0.3"
+    "uc.micro": "^1.0.5"
   },
   "devDependencies": {
     "ansi": "^0.3.0",
