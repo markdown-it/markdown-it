@@ -131,7 +131,7 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
 
   // pass token to default renderer.
   return defaultRender(tokens, idx, options, env, self);
-});
+};
 ```
 
 Here is another example, how to add `target="_blank"` to all links:
