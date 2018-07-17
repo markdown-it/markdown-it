@@ -86,7 +86,7 @@ readFile(options.file, 'utf8', function (err, input) {
   }
 
   md = require('..')({
-    html: !options['no-html'],
+    html: !options.no_html,
     xhtmlOut: false,
     typographer: options.typographer,
     linkify: options.linkify
