@@ -154,6 +154,95 @@ describe('API', function () {
     );
   });
 
+  it('event-parse', function () {
+    var md = markdownit();
+    var firedPre = false;
+    var firedPost = false;
+    var subscribed = true;
+
+    function preBlock(e) {
+      assert.strictEqual(subscribed, true);
+
+      assert.strictEqual(e.name, 'willparse');
+      assert.approximately(e.timeStamp, Date.now(), 10);
+      assert.strictEqual(e.state.inlineMode, false);
+
+      assert.strictEqual(firedPre, false);
+      assert.strictEqual(firedPost, false);
+      firedPre = true;
+    }
+
+    function postBlock(e) {
+      assert.strictEqual(subscribed, true);
+
+      assert.strictEqual(e.name, 'parsed');
+      assert.approximately(e.timeStamp, Date.now(), 10);
+      assert.strictEqual(e.state.inlineMode, false);
+
+      assert.strictEqual(firedPre, true);
+      assert.strictEqual(firedPost, false);
+      firedPost = true;
+    }
+
+    function preInline(e) {
+      assert.strictEqual(subscribed, true);
+
+      assert.strictEqual(e.name, 'willparse');
+      assert.approximately(e.timeStamp, Date.now(), 10);
+      assert.strictEqual(e.state.inlineMode, true);
+
+      assert.strictEqual(firedPre, false);
+      assert.strictEqual(firedPost, false);
+      firedPre = true;
+    }
+
+    function postInline(e) {
+      assert.strictEqual(subscribed, true);
+
+      assert.strictEqual(e.name, 'parsed');
+      assert.approximately(e.timeStamp, Date.now(), 10);
+      assert.strictEqual(e.state.inlineMode, true);
+
+      assert.strictEqual(firedPre, true);
+      assert.strictEqual(firedPost, false);
+      firedPost = true;
+    }
+
+    md.addEventListener('willparse', preBlock);
+    md.addEventListener('willparse', preBlock); // double-adding does nothing
+    md.addEventListener('parsed', postBlock);
+
+    md.render('*a*');
+
+    assert.strictEqual(firedPre, true);
+    assert.strictEqual(firedPost, true);
+
+    md.removeEventListener('willparse', preBlock);
+    md.removeEventListener('willparse', preBlock); // double-removing does nothing
+    md.removeEventListener('parsed', postBlock);
+
+    firedPre = firedPost = false;
+
+    md.addEventListener('willparse', preInline);
+    md.addEventListener('parsed', postInline);
+
+    md.renderInline('*a*');
+
+    assert.strictEqual(firedPre, true);
+    assert.strictEqual(firedPost, true);
+
+    md.removeEventListener('willparse', preInline);
+    md.removeEventListener('parsed', postInline);
+
+    firedPre = firedPost = false;
+
+    md.render('*a*');
+    md.renderInline('*a*');
+
+    assert.strictEqual(firedPre, false);
+    assert.strictEqual(firedPost, false);
+  });
+
 });
 
 
