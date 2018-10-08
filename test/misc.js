@@ -154,6 +154,15 @@ describe('API', function () {
     );
   });
 
+  it('event-error', function () {
+    var md = markdownit();
+
+    assert.throws(
+      function () { md.addEventListener('', 42); },
+      /Argument 2 must be a function/
+    );
+  });
+
   it('event-parse', function () {
     var md = markdownit();
     var firedPre = false;
