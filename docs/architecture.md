@@ -89,7 +89,7 @@ can investigate existing rules & plugins to see possible approaches.
 
 Also, in complex cases you can try to ask for help in tracker. Condition is very
 simple - it should be clear from your ticket, that you studied docs, sources,
-and tried to do something yourself. We never reject with help to real developpers.
+and tried to do something yourself. We never reject with help to real developers.
 
 
 ## Renderer
@@ -137,7 +137,7 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
 Here is another example, how to add `target="_blank"` to all links:
 
 ```js
-// Remember old renderer, if overriden, or proxy to default renderer
+// Remember old renderer, if overridden, or proxy to default renderer
 var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
 };

@@ -38,7 +38,7 @@ Before continuing, make sure you've read:
 
 To simplify search:
 
-- add to `package.json` keyswords `markdown-it` and `markdown-it-plugin` for plugins.
+- add to `package.json` keywords `markdown-it` and `markdown-it-plugin` for plugins.
 - add keyword `markdown-it` for any other related packages.
 
 
