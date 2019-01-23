@@ -2,7 +2,7 @@
 
 Many people don't understand that markdown format does not care much about
 security. In many cases you have to pass output to sanitizers. `markdown-it`
-provides 2 possible stategies to produce safe output:
+provides 2 possible strategies to produce safe output:
 
 1. Don't enable HTML. Extend markup features with [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin). We think it's the best choice and use it by default.
    - That's ok for 99% of user needs.
