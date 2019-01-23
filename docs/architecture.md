@@ -11,7 +11,7 @@ core
     ...
     core.ruleX
 
-    blockx
+    block
         block.rule1 (blockquote)
         ...
         block.ruleX
