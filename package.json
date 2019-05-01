@@ -16,8 +16,7 @@
     "markdown-it": "bin/markdown-it.js"
   },
   "scripts": {
-    "test": "make test",
-    "heroku-postbuild": "npm install express"
+    "test": "make test"
   },
   "files": [
     "index.js",
