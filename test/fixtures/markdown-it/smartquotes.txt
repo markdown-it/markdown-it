@@ -137,3 +137,16 @@ and “that”.</p>
 <p>“this” and<br>
 “that”.</p>
 .
+
+Should render correctly em/strong combination:
+.
+***example***
+
+_**example**_
+
+**_example_**
+.
+<p><em><strong>example</strong></em></p>
+<p><em><strong>example</strong></em></p>
+<p><strong><em>example</em></strong></p>
+.
