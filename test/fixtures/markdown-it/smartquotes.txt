@@ -150,3 +150,43 @@ _**example**_
 <p><em><strong>example</strong></em></p>
 <p><strong><em>example</em></strong></p>
 .
+
+Should render correctly em/strong at the middle of word:
+.
+fo***ob***ar
+
+fo_**ob**_ar
+
+fo**_ob_**ar
+.
+<p>fo<em><strong>ob</strong></em>ar</p>
+<p>fo<em><strong>ob</strong></em>ar</p>
+<p>fo<strong><em>ob</em></strong>ar</p>
+.
+
+Should render correctly em/strong at start of word:
+.
+***foo***bar
+
+_**foo**_bar
+
+**_foo_**bar
+.
+<p><em><strong>foo</strong></em>bar</p>
+<p>_<strong>foo</strong>_bar</p>
+<p>**<em>foo</em>**bar</p>
+.
+
+Should render correctly em/strong at the end of word:
+.
+foo***bar***
+
+foo_**bar**_
+
+foo**_bar_**
+.
+<p>foo<em><strong>bar</strong></em></p>
+<p>foo_<strong>bar</strong>_</p>
+<p>foo**<em>bar</em>**</p>
+.
+
