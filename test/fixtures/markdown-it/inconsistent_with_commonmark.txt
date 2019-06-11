@@ -1,0 +1,84 @@
+
+Should render correctly em/strong combination (*** case):
+.
+***example***
+.
+<p><em><strong>example</strong></em></p>
+.
+
+Should render correctly em/strong combination (_** case):
+.
+_**example**_
+.
+<p><em><strong>example</strong></em></p>
+.
+
+Should render correctly em/strong combination (**_ case): 
+.
+**_example_**
+.
+<p><strong><em>example</em></strong></p>
+.
+
+Should render correctly em/strong at the middle of word (*** case):
+.
+fo***ob***ar
+.
+<p>fo<em><strong>ob</strong></em>ar</p>
+.
+
+Should render correctly em/strong at the middle of word (_** case):
+.
+fo_**ob**_ar
+.
+<p>fo_<strong>ob</strong>_ar</p>
+.
+
+Should render correctly em/strong at the middle of word (**_ case):
+.
+fo**_ob_**ar
+.
+<p>fo**<em>ob</em>**ar</p>
+.
+
+Should render correctly em/strong at start of word (*** case):
+.
+***foo***bar
+.
+<p><em><strong>foo</strong></em>bar</p>
+.
+
+Should render correctly em/strong at start of word (_** case):
+.
+_**foo**_bar
+.
+<p>_<strong>foo</strong>_bar</p>
+.
+
+Should render correctly em/strong at start of word (**_ case):
+.
+**_foo_**bar
+.
+<p>**<em>foo</em>**bar</p>
+.
+
+Should render correctly em/strong at the end of word (*** case):
+.
+foo***bar***
+.
+<p>foo<em><strong>bar</strong></em></p>
+.
+
+Should render correctly em/strong at the end of word (_** case):
+.
+foo_**bar**_
+.
+<p>foo_<strong>bar</strong>_</p>
+.
+
+Should render correctly em/strong at the end of word (**_ case):
+.
+foo**_bar_**
+.
+<p>foo**<em>bar</em>**</p>
+.
