@@ -1,3 +1,6 @@
+---
+skip: true
+---
 
 Should render correctly em/strong combination (*** case):
 .
