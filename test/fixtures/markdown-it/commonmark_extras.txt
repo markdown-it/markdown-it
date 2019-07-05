@@ -485,3 +485,13 @@ Coverage. Various tags not interrupting blockquotes because of indentation:
 # not a heading</p>
 </blockquote>
 .
+
+Coverage, entities with code > 10FFFF. Made this way for compatibility with commonmark.js.
+.
+&#x110000;
+
+&#x1100000;
+.
+<p>�</p>
+<p>&amp;#x1100000;</p>
+.
