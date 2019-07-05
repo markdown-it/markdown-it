@@ -16,25 +16,6 @@ aaa</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1995
-
-.
-~~~ aa ``` ~~~
-foo
-~~~
-.
-<pre><code class="language-aa">foo
-</code></pre>
-.
-
-error:
-
-<p>~~~ aa ``` ~~~
-foo</p>
-<pre><code></code></pre>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5176
 
 .
