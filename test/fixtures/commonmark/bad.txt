@@ -1,21 +1,4 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 1884
-
-.
-``` ```
-aaa
-.
-<p><code> </code>
-aaa</p>
-.
-
-error:
-
-<p><code></code>
-aaa</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5176
 
 .
@@ -83,114 +66,6 @@ error:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5898
-
-.
-`  ``  `
-.
-<p><code> `` </code></p>
-.
-
-error:
-
-<p><code>``</code></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5907
-
-.
-` a`
-.
-<p><code> a</code></p>
-.
-
-error:
-
-<p><code>a</code></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5916
-
-.
-` b `
-.
-<p><code> b </code></p>
-.
-
-error:
-
-<p><code>b</code></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5924
-
-.
-` `
-`  `
-.
-<p><code> </code>
-<code>  </code></p>
-.
-
-error:
-
-<p><code></code>
-<code></code></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5935
-
-.
-``
-foo
-bar  
-baz
-``
-.
-<p><code>foo bar   baz</code></p>
-.
-
-error:
-
-<p><code>foo bar baz</code></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5945
-
-.
-``
-foo 
-``
-.
-<p><code>foo </code></p>
-.
-
-error:
-
-<p><code>foo</code></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 5956
-
-.
-`foo   bar 
-baz`
-.
-<p><code>foo   bar  baz</code></p>
-.
-
-error:
-
-<p><code>foo bar baz</code></p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 6912
 
 .
@@ -216,20 +91,5 @@ foo******bar*********baz
 error:
 
 <p>foo******bar*********baz</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 9240
-
-.
-`code 
-span`
-.
-<p><code>code  span</code></p>
-.
-
-error:
-
-<p><code>code span</code></p>
 
 

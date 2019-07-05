@@ -475,11 +475,6 @@ Coverage. Various tags not interrupting blockquotes because of indentation:
 
 > foo
     # not a heading
-
-> foo
-    ```
-    not a fence
-    ```
 .
 <blockquote>
 <p>foo
@@ -488,9 +483,5 @@ Coverage. Various tags not interrupting blockquotes because of indentation:
 <blockquote>
 <p>foo
 # not a heading</p>
-</blockquote>
-<blockquote>
-<p>foo
-<code>not a fence</code></p>
 </blockquote>
 .
