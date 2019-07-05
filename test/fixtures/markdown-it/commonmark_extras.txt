@@ -23,6 +23,26 @@ Issue #55:
 .
 
 
+Reference labels: 'i̇θωkå'.toUpperCase() is 'İΘΩKÅ', but these should still be equivalent
+.
+[İϴΩKÅ]
+
+[i̇θωkå]: /url
+.
+<p><a href="/url">İϴΩKÅ</a></p>
+.
+
+
+Reference labels: support ligatures (equivalent according to unicode case folding)
+.
+[ﬀﬁﬂ]
+
+[fffifl]: /url
+.
+<p><a href="/url">ﬀﬁﬂ</a></p>
+.
+
+
 Issue #35. `<` should work as punctuation
 .
 an **(:**<br>
