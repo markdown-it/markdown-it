@@ -35,27 +35,6 @@ foo</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 2844
-
-.
-[Foo bar]:
-<my url>
-'title'
-
-[Foo bar]
-.
-<p><a href="my%20url" title="title">Foo bar</a></p>
-.
-
-error:
-
-<p>[Foo bar]:
-<my url>
-'title'</p>
-<p>[Foo bar]</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 src line: 5176
 
 .
@@ -256,20 +235,6 @@ foo******bar*********baz
 error:
 
 <p>foo******bar*********baz</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 7542
-
-.
-[link](</my uri>)
-.
-<p><a href="/my%20uri">link</a></p>
-.
-
-error:
-
-<p>[link](&lt;/my uri&gt;)</p>
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
