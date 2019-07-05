@@ -65,31 +65,3 @@ error:
 </ol>
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 6912
-
-.
-foo***bar***baz
-.
-<p>foo<em><strong>bar</strong></em>baz</p>
-.
-
-error:
-
-<p>foo***bar***baz</p>
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src line: 6918
-
-.
-foo******bar*********baz
-.
-<p>foo<strong><strong><strong>bar</strong></strong></strong>***baz</p>
-.
-
-error:
-
-<p>foo******bar*********baz</p>
-
-
