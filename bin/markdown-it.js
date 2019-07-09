@@ -47,6 +47,11 @@ cli.addArgument([ '-o', '--output' ], {
   defaultValue: '-'
 });
 
+cli.addArgument([ '-p', '--plugin' ], {
+	help: 'Load an optional plugin. Use multiple times for more than one plugin. Assumes PLUGIN has been installed already.',
+	action: 'append'
+});
+
 var options = cli.parseArgs();
 
 
@@ -91,6 +96,13 @@ readFile(options.file, 'utf8', function (err, input) {
     typographer: options.typographer,
     linkify: options.linkify
   });
+  
+  if( options.plugin ) {
+	  for( var p in options.plugin ) 	  {
+		var plugin = require(options.plugin[p]);
+		md.use(plugin);
+	  }
+  }
 
   try {
     output = md.render(input);
