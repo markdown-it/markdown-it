@@ -215,9 +215,9 @@ describe('Misc', function () {
 
   it('Should render link target attr', function () {
     var md = markdownit()
-                .use(require('markdown-it-for-inline'), 'target', 'link_open', function (tokens, idx) {
-                  tokens[idx].attrs.push([ 'target', '_blank' ]);
-                });
+      .use(require('markdown-it-for-inline'), 'target', 'link_open', function (tokens, idx) {
+        tokens[idx].attrs.push([ 'target', '_blank' ]);
+      });
 
     assert.strictEqual(md.render('[foo](bar)'), '<p><a href="bar" target="_blank">foo</a></p>\n');
   });

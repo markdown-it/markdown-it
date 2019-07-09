@@ -28,7 +28,7 @@ rules:
   guard-for-in:           2
   handle-callback-err:    2
 
-  indent:                 [ 2, 2, { VariableDeclarator: { var: 2, let: 2, const: 3 }, SwitchCase: 1 } ]
+  indent:                 [ 2, 2, { VariableDeclarator: { var: 2, let: 2, const: 3 }, SwitchCase: 1, ignoreComments: true } ]
 
   # key-spacing:            [ 2, { "align": "value" } ]
   keyword-spacing:        2

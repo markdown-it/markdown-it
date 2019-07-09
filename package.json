@@ -38,7 +38,7 @@
     "browserify": "^16.3.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.4",
-    "eslint": "^3.5.0",
+    "eslint": "^6.0.1",
     "express": "^4.14.0",
     "highlight.js": "^9.2.0",
     "istanbul": "^0.4.5",
