@@ -37,7 +37,7 @@
     "benchmark": "~2.1.0",
     "browserify": "*",
     "chai": "^3.4.1",
-    "coveralls": "~2.11.9",
+    "coveralls": "^3.0.4",
     "eslint": "^3.5.0",
     "express": "^4.14.0",
     "highlight.js": "^9.2.0",
