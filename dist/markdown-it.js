@@ -1,4 +1,4 @@
-/*! markdown-it 8.4.2 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+/*! markdown-it 9.0.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -200,9 +200,8 @@ function replaceEntityPattern(match, name) {
 
   if (name.charCodeAt(0) === 0x23/* # */ && DIGITAL_ENTITY_TEST_RE.test(name)) {
     code = name[1].toLowerCase() === 'x' ?
-      parseInt(name.slice(2), 16)
-    :
-      parseInt(name.slice(1), 10);
+      parseInt(name.slice(2), 16) : parseInt(name.slice(1), 10);
+
     if (isValidEntityCode(code)) {
       return fromCodePoint(code);
     }
@@ -353,10 +352,28 @@ function isMdAsciiPunct(ch) {
 // Hepler to unify [reference labels].
 //
 function normalizeReference(str) {
-  // use .toUpperCase() instead of .toLowerCase()
-  // here to avoid a conflict with Object.prototype
-  // members (most notably, `__proto__`)
-  return str.trim().replace(/\s+/g, ' ').toUpperCase();
+  // Trim and collapse whitespace
+  //
+  str = str.trim().replace(/\s+/g, ' ');
+
+  // In node v10 'ẞ'.toLowerCase() === 'Ṿ', which is presumed to be a bug
+  // fixed in v12 (couldn't find any details).
+  //
+  // So treat this one as a special case
+  // (remove this when node v10 is no longer supported).
+  //
+  if ('ẞ'.toLowerCase() === 'Ṿ') {
+    str = str.replace(/ẞ/g, 'ß');
+  }
+
+  // .toLowerCase().toUpperCase() should get rid of all differences
+  // between letter variants.
+  //
+  // Final result should be uppercased, because it's later stored in an object
+  // (this avoid a conflict with Object.prototype members,
+  // most notably, `__proto__`)
+  //
+  return str.toLowerCase().toUpperCase();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -401,7 +418,6 @@ exports.parseLinkTitle       = require('./parse_link_title');
 'use strict';
 
 
-var isSpace     = require('../common/utils').isSpace;
 var unescapeAll = require('../common/utils').unescapeAll;
 
 
@@ -420,7 +436,7 @@ module.exports = function parseLinkDestination(str, pos, max) {
     pos++;
     while (pos < max) {
       code = str.charCodeAt(pos);
-      if (code === 0x0A /* \n */ || isSpace(code)) { return result; }
+      if (code === 0x0A /* \n */) { return result; }
       if (code === 0x3E /* > */) {
         result.pos = pos + 1;
         result.str = unescapeAll(str.slice(start + 1, pos));
@@ -2765,7 +2781,11 @@ module.exports = function fence(state, startLine, endLine, silent) {
   markup = state.src.slice(mem, pos);
   params = state.src.slice(pos, max);
 
-  if (params.indexOf(String.fromCharCode(marker)) >= 0) { return false; }
+  if (marker === 0x60 /* ` */) {
+    if (params.indexOf(String.fromCharCode(marker)) >= 0) {
+      return false;
+    }
+  }
 
   // Since start is found, we can report success here in validation mode
   if (silent) { return true; }
@@ -3209,9 +3229,9 @@ module.exports = function list(state, startLine, endLine, silent) {
       max,
       nextLine,
       offset,
-      oldIndent,
-      oldLIndent,
+      oldListIndent,
       oldParentType,
+      oldSCount,
       oldTShift,
       oldTight,
       pos,
@@ -3226,6 +3246,18 @@ module.exports = function list(state, startLine, endLine, silent) {
 
   // if it's indented more than 3 spaces, it should be a code block
   if (state.sCount[startLine] - state.blkIndent >= 4) { return false; }
+
+  // Special case:
+  //  - item 1
+  //   - item 2
+  //    - item 3
+  //     - item 4
+  //      - this one is a paragraph continuation
+  if (state.listIndent >= 0 &&
+      state.sCount[startLine] - state.listIndent >= 4 &&
+      state.sCount[startLine] < state.blkIndent) {
+    return false;
+  }
 
   // limit conditions when list can interrupt
   // a paragraph (validation mode only)
@@ -3338,11 +3370,19 @@ module.exports = function list(state, startLine, endLine, silent) {
     token.markup = String.fromCharCode(markerCharCode);
     token.map    = itemLines = [ startLine, 0 ];
 
-    oldIndent = state.blkIndent;
+    // change current state, then restore it after parser subcall
     oldTight = state.tight;
     oldTShift = state.tShift[startLine];
-    oldLIndent = state.sCount[startLine];
+    oldSCount = state.sCount[startLine];
+
+    //  - example list
+    // ^ listIndent position will be here
+    //   ^ blkIndent position will be here
+    //
+    oldListIndent = state.listIndent;
+    state.listIndent = state.blkIndent;
     state.blkIndent = indent;
+
     state.tight = true;
     state.tShift[startLine] = contentStart - state.bMarks[startLine];
     state.sCount[startLine] = offset;
@@ -3368,9 +3408,10 @@ module.exports = function list(state, startLine, endLine, silent) {
     // but we should filter last element, because it means list finish
     prevEmptyEnd = (state.line - startLine) > 1 && state.isEmpty(state.line - 1);
 
-    state.blkIndent = oldIndent;
+    state.blkIndent = state.listIndent;
+    state.listIndent = oldListIndent;
     state.tShift[startLine] = oldTShift;
-    state.sCount[startLine] = oldLIndent;
+    state.sCount[startLine] = oldSCount;
     state.tight = oldTight;
 
     token        = state.push('list_item_close', 'li', -1);
@@ -3386,6 +3427,9 @@ module.exports = function list(state, startLine, endLine, silent) {
     // Try to check if list is terminated or continued.
     //
     if (state.sCount[nextLine] < state.blkIndent) { break; }
+
+    // if it's indented more than 3 spaces, it should be a code block
+    if (state.sCount[startLine] - state.blkIndent >= 4) { break; }
 
     // fail if terminating block found
     terminate = false;
@@ -3727,12 +3771,13 @@ function StateBlock(src, md, env, tokens) {
   this.bsCount = [];
 
   // block parser variables
-  this.blkIndent  = 0; // required block content indent
-                       // (for example, if we are in list)
+  this.blkIndent  = 0; // required block content indent (for example, if we are
+                       // inside a list, it would be positioned after list marker)
   this.line       = 0; // line index in src
   this.lineMax    = 0; // lines count
   this.tight      = false;  // loose/tight mode for lists
   this.ddIndent   = -1; // indent of the current dd block (-1 if there isn't any)
+  this.listIndent = -1; // indent of the current list block (-1 if there isn't any)
 
   // can be 'blockquote', 'list', 'root', 'paragraph' or 'reference'
   // used in lists to determine if they interrupt a paragraph
@@ -4292,7 +4337,7 @@ var NEWLINES_RE  = /\r[\n\u0085]?|[\u2424\u2028\u0085]/g;
 var NULL_RE      = /\u0000/g;
 
 
-module.exports = function inline(state) {
+module.exports = function normalize(state) {
   var str;
 
   // Normalize newlines
@@ -4305,7 +4350,7 @@ module.exports = function inline(state) {
 };
 
 },{}],34:[function(require,module,exports){
-// Simple typographyc replacements
+// Simple typographic replacements
 //
 // (c) (C) → ©
 // (tm) (TM) → ™
@@ -4369,16 +4414,16 @@ function replace_rare(inlineTokens) {
     if (token.type === 'text' && !inside_autolink) {
       if (RARE_RE.test(token.content)) {
         token.content = token.content
-                    .replace(/\+-/g, '±')
-                    // .., ..., ....... -> …
-                    // but ?..... & !..... -> ?.. & !..
-                    .replace(/\.{2,}/g, '…').replace(/([?!])…/g, '$1..')
-                    .replace(/([?!]){4,}/g, '$1$1$1').replace(/,{2,}/g, ',')
-                    // em-dash
-                    .replace(/(^|[^-])---([^-]|$)/mg, '$1\u2014$2')
-                    // en-dash
-                    .replace(/(^|\s)--(\s|$)/mg, '$1\u2013$2')
-                    .replace(/(^|[^-\s])--([^-\s]|$)/mg, '$1\u2013$2');
+          .replace(/\+-/g, '±')
+          // .., ..., ....... -> …
+          // but ?..... & !..... -> ?.. & !..
+          .replace(/\.{2,}/g, '…').replace(/([?!])…/g, '$1..')
+          .replace(/([?!]){4,}/g, '$1$1$1').replace(/,{2,}/g, ',')
+          // em-dash
+          .replace(/(^|[^-])---([^-]|$)/mg, '$1\u2014$2')
+          // en-dash
+          .replace(/(^|\s)--(\s|$)/mg, '$1\u2013$2')
+          .replace(/(^|[^-\s])--([^-\s]|$)/mg, '$1\u2013$2');
       }
     }
 
@@ -4738,8 +4783,8 @@ module.exports = function backtick(state, silent) {
         token         = state.push('code_inline', 'code', 0);
         token.markup  = marker;
         token.content = state.src.slice(pos, matchStart)
-                                 .replace(/[ \n]+/g, ' ')
-                                 .trim();
+          .replace(/\n/g, ' ')
+          .replace(/^ (.+) $/, '$1');
       }
       state.pos = matchEnd;
       return true;
@@ -4777,11 +4822,22 @@ module.exports = function link_pairs(state) {
           currDelim.end < 0 &&
           currDelim.level === lastDelim.level) {
 
+        var odd_match = false;
+
         // typeofs are for backward compatibility with plugins
-        var odd_match = (currDelim.close || lastDelim.open) &&
-                        typeof currDelim.length !== 'undefined' &&
-                        typeof lastDelim.length !== 'undefined' &&
-                        (currDelim.length + lastDelim.length) % 3 === 0;
+        if ((currDelim.close || lastDelim.open) &&
+            typeof currDelim.length !== 'undefined' &&
+            typeof lastDelim.length !== 'undefined') {
+
+          // from spec:
+          // sum of the lengths [...] must not be a multiple of 3
+          // unless both lengths are multiples of 3
+          if ((currDelim.length + lastDelim.length) % 3 === 0) {
+            if (currDelim.length % 3 !== 0 || lastDelim.length % 3 !== 0) {
+              odd_match = true;
+            }
+          }
+        }
 
         if (!odd_match) {
           lastDelim.jump = i - j;
@@ -4937,7 +4993,7 @@ var isValidEntityCode = require('../common/utils').isValidEntityCode;
 var fromCodePoint     = require('../common/utils').fromCodePoint;
 
 
-var DIGITAL_RE = /^&#((?:x[a-f0-9]{1,8}|[0-9]{1,8}));/i;
+var DIGITAL_RE = /^&#((?:x[a-f0-9]{1,6}|[0-9]{1,7}));/i;
 var NAMED_RE   = /^&([a-z][a-z0-9]{1,31});/i;
 
 
@@ -6267,11 +6323,10 @@ function compile(self) {
   self.re.schema_test   = RegExp('(^|(?!_)(?:[><\uff5c]|' + re.src_ZPCc + '))(' + slist + ')', 'i');
   self.re.schema_search = RegExp('(^|(?!_)(?:[><\uff5c]|' + re.src_ZPCc + '))(' + slist + ')', 'ig');
 
-  self.re.pretest       = RegExp(
-                            '(' + self.re.schema_test.source + ')|' +
-                            '(' + self.re.host_fuzzy_test.source + ')|' +
-                            '@',
-                            'i');
+  self.re.pretest = RegExp(
+    '(' + self.re.schema_test.source + ')|(' + self.re.host_fuzzy_test.source + ')|@',
+    'i'
+  );
 
   //
   // Cleanup
@@ -6713,7 +6768,7 @@ module.exports = function (opts) {
           '\\.(?!' + re.src_ZCc + '|[.]).|' +
           (opts && opts['---'] ?
             '\\-(?!--(?:[^-]|$))(?:-*)|' // `---` => long dash, terminate
-          :
+            :
             '\\-+|'
           ) +
           '\\,(?!' + re.src_ZCc + ').|' +      // allow `,,,` in paths
@@ -6750,10 +6805,7 @@ module.exports = function (opts) {
       '|' +
       '(?:' + re.src_pseudo_letter + ')' +
       '|' +
-      // don't allow `--` in domain names, because:
-      // - that can conflict with markdown &mdash; / &ndash;
-      // - nobody use those anyway
-      '(?:' + re.src_pseudo_letter + '(?:-(?!-)|' + re.src_pseudo_letter + '){0,61}' + re.src_pseudo_letter + ')' +
+      '(?:' + re.src_pseudo_letter + '(?:-|' + re.src_pseudo_letter + '){0,61}' + re.src_pseudo_letter + ')' +
     ')';
 
   re.src_host =
@@ -7939,11 +7991,11 @@ module.exports = urlParse;
 },{}],61:[function(require,module,exports){
 module.exports=/[\0-\x1F\x7F-\x9F]/
 },{}],62:[function(require,module,exports){
-module.exports=/[\xAD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF\uFFF9-\uFFFB]|\uD804\uDCBD|\uD82F[\uDCA0-\uDCA3]|\uD834[\uDD73-\uDD7A]|\uDB40[\uDC01\uDC20-\uDC7F]/
+module.exports=/[\xAD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF\uFFF9-\uFFFB]|\uD804[\uDCBD\uDCCD]|\uD82F[\uDCA0-\uDCA3]|\uD834[\uDD73-\uDD7A]|\uDB40[\uDC01\uDC20-\uDC7F]/
 },{}],63:[function(require,module,exports){
-module.exports=/[!-#%-\*,-/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u09FD\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E49\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC9\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDC4B-\uDC4F\uDC5B\uDC5D\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDE60-\uDE6C\uDF3C-\uDF3E]|\uD806[\uDE3F-\uDE46\uDE9A-\uDE9C\uDE9E-\uDEA2]|\uD807[\uDC41-\uDC45\uDC70\uDC71]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]|\uD83A[\uDD5E\uDD5F]/
+module.exports=/[!-#%-\*,-\/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u09FD\u0A76\u0AF0\u0C84\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E4E\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD803[\uDF55-\uDF59]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC8\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDC4B-\uDC4F\uDC5B\uDC5D\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDE60-\uDE6C\uDF3C-\uDF3E]|\uD806[\uDC3B\uDE3F-\uDE46\uDE9A-\uDE9C\uDE9E-\uDEA2]|\uD807[\uDC41-\uDC45\uDC70\uDC71\uDEF7\uDEF8]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD81B[\uDE97-\uDE9A]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]|\uD83A[\uDD5E\uDD5F]/
 },{}],64:[function(require,module,exports){
-module.exports=/[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]/
+module.exports=/[ \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/
 },{}],65:[function(require,module,exports){
 'use strict';
 
