@@ -1,3 +1,9 @@
+9.0.1 / 2019-07-12
+------------------
+
+- Fix possible corruption of open/close tag levels, #466
+
+
 9.0.0 / 2019-07-09
 ------------------
 
