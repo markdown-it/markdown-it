@@ -49,9 +49,23 @@ mailto:test@example.com
 .
 
 
-typorgapher should not break href
+typographer should not break href
 .
 http://example.com/(c)
 .
 <p><a href="http://example.com/(c)">http://example.com/(c)</a></p>
+.
+
+emphasis should not break linkify
+.
+https://example.com/_Think%20Italic_
+.
+<p><a href="https://example.com/_Think%20Italic_">https://example.com/_Think Italic_</a></p>
+.
+
+double emphasis should not break linkify
+.
+http://delivery.acm.org/etc?__acm__=1234
+.
+<p><a href="http://delivery.acm.org/etc?__acm__=1234">http://delivery.acm.org/etc?__acm__=1234</a></p>
 .
