@@ -1,8 +1,8 @@
-9.0.1 / 2019-07-12
+9.1.0 / 2019-08-11
 ------------------
 
-- Fix possible corruption of open/close tag levels, #466
-
+- Remove extra characters from line break check. Leave only 0x0A & 0x0D, as in
+  CommonMark spec, #581.
 
 9.0.0 / 2019-07-09
 ------------------
