@@ -17,14 +17,21 @@ __[Live demo](https://markdown-it.github.io)__
 
 __Table of content__
 
-- [Install](#install)
-- [Usage examples](#usage-examples)
-- [API](#api)
-- [Syntax extensions](#syntax-extensions)
-- [Benchmark](#benchmark)
-- [Authors](#authors)
-- [References / Thanks](#references--thanks)
-- [License](#license)
+- [markdown-it](#markdown-it)
+  - [Install](#install)
+  - [Usage examples](#usage-examples)
+    - [Simple](#simple)
+    - [Init with presets and options](#init-with-presets-and-options)
+    - [Plugins load](#plugins-load)
+    - [Syntax highlighting](#syntax-highlighting)
+    - [Linkify](#linkify)
+  - [API](#api)
+  - [Syntax extensions](#syntax-extensions)
+    - [Manage rules](#manage-rules)
+  - [Benchmark](#benchmark)
+  - [Support markdown-it](#support-markdown-it)
+  - [Authors](#authors)
+  - [References / Thanks](#references--thanks)
 
 ## Install
 
@@ -262,6 +269,12 @@ Slowdown of "full" version caused by additional features not available in
 other implementations.
 
 
+Support markdown-it
+-------------------
+
+You can support this project via [Tidelift subscription](https://tidelift.com/subscription/pkg/npm-markdown-it?utm_source=npm-markdown-it&utm_medium=referral&utm_campaign=readme).
+
+
 ## Authors
 
 - Alex Kocharin [github/rlidwka](https://github.com/rlidwka)
@@ -287,8 +300,3 @@ during this project's development.
 **Ports**
 
 - [motion-markdown-it](https://github.com/digitalmoksha/motion-markdown-it) - Ruby/RubyMotion
-
-
-## License
-
-[MIT](https://github.com/markdown-it/markdown-it/blob/master/LICENSE)
