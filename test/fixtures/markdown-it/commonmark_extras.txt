@@ -103,6 +103,13 @@ _(hai)_.
 <p><em>(hai)</em>.</p>
 .
 
+Regression test, should not match emphasis markers in different link tags:
+.
+[*b]() [c*]()
+.
+<p><a href="">*b</a> <a href="">c*</a></p>
+.
+
 Those are two separate blockquotes:
 .
  - > foo
