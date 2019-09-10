@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "official ones". Without update, old code will work, but can cause invalid
   result in rare case. This is the only reason of major version bump. With high probability you don't need to change your code, only update version dependency.
 - Updated changelog format.
+- Deps bump.
 
 
 ## [9.1.0] - 2019-08-11
