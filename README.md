@@ -242,6 +242,10 @@ md = require('markdown-it')({
 });
 ```
 
+You can find all rules in sources:
+[parser_core.js](lib/parser_core.js), [parser_block](lib/parser_block.js),
+[parser_inline](lib/parser_inline.js).
+
 
 ## Benchmark
 
