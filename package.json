@@ -12,14 +12,18 @@
   "repository": "markdown-it/markdown-it",
   "license": "MIT",
   "main": "index.js",
+  "module": "dist/markdown-it.mjs",
   "bin": {
     "markdown-it": "bin/markdown-it.js"
   },
   "scripts": {
+    "build": "rollup -c",
+    "prepare": "npm run build",
     "test": "make test"
   },
   "files": [
     "index.js",
+    "index.mjs",
     "bin/",
     "lib/",
     "dist/"
@@ -56,6 +60,10 @@
     "mocha": "^6.1.4",
     "ndoc": "^5.0.0",
     "pug-cli": "^1.0.0-alpha6",
+    "rollup": "^1.26.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "stylus": "^0.54.5",
     "supertest": "^4.0.2",
     "terser": "^4.1.2"
