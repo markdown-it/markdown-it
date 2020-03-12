@@ -137,3 +137,10 @@ and “that”.</p>
 <p>“this” and<br>
 “that”.</p>
 .
+
+Should allow quotes adjacent to other punctuation characters, #643:
+.
+The dog---"'man's' best friend"
+.
+<p>The dog—“‘man’s’ best friend”</p>
+.
