@@ -1,6 +1,18 @@
 language: node_js
+
+os: linux
+
+dist: xenial
+
 node_js:
- - '8'
- - node
+  - 8     # 8 version installed
+  - lts/* # Latest LTS version
+  - node  # Latest stable version
+
+script: npm test
+ 
 after_success: make report-coverage
-sudo: false
+
+cache:
+  npm: true
+  yarn: true
