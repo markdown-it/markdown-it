@@ -46,22 +46,22 @@
     "browserify": "^16.3.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.4",
-    "eslint": "^6.0.1",
+    "eslint": "^7.0.0",
     "express": "^4.14.0",
     "gh-pages": "^2.2.0",
-    "highlight.js": "^9.2.0",
+    "highlight.js": "^10.0.3",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-container": "^2.0.0",
     "markdown-it-deflist": "^2.0.0",
     "markdown-it-emoji": "^1.1.1",
     "markdown-it-footnote": "^3.0.1",
     "markdown-it-for-inline": "^0.1.0",
-    "markdown-it-ins": "^2.0.0",
-    "markdown-it-mark": "^2.0.0",
+    "markdown-it-ins": "^3.0.0",
+    "markdown-it-mark": "^3.0.0",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-it-testgen": "^0.1.3",
-    "mocha": "^6.1.4",
+    "mocha": "^7.1.2",
     "ndoc": "^5.0.0",
     "nyc": "^15.0.1",
     "pug-cli": "^1.0.0-alpha6",
@@ -69,5 +69,8 @@
     "stylus": "^0.54.5",
     "supertest": "^4.0.2",
     "terser": "^4.1.2"
+  },
+  "mocha": {
+    "inline-diffs": true
   }
 }
