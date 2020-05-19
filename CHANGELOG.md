@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [11.0.0] - 2020-05-20
+### Changed
+- Bumped `linkify-it` to 3.0.0, #661 + allow unlimited `.` inside links.
+- Dev deps bump.
+- Switch to `nyc` for coverage reports.
+- Partially moved tasks from Makefile to npm scripts.
+- Automate web update on npm publish.
+
+### Fixed
+- Fix em- and en-dashes not being typographed when separated by 1 char, #624.
+- Allow opening quote after another punctuation char in typographer, #641.
+- Assorted wording & typo fixes.
+
+
 ## [10.0.0] - 2019-09-11
 ### Security
 - Fix quadratic parse time for some combinations of pairs, #583. Algorithm is
@@ -485,6 +500,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed presets folder (configs -> presets).
 
 
+[11.0.0]: https://github.com/markdown-it/markdown-it/compare/10.0.0...11.0.0
 [10.0.0]: https://github.com/markdown-it/markdown-it/compare/9.1.0...10.0.0
 [9.1.0]: https://github.com/markdown-it/markdown-it/compare/9.0.1...9.1.0
 [9.0.1]: https://github.com/markdown-it/markdown-it/compare/9.0.0...9.0.1
