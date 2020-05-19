@@ -19,7 +19,9 @@
     "lint": "eslint .",
     "test": "npm run lint && nyc mocha && node support/specsplit.js test/fixtures/commonmark/spec.txt",
     "coverage": "npm run test && nyc report --reporter html",
-    "report-coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "report-coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "doc": "node support/build_doc.js",
+    "gh-doc": "npm run doc && gh-pages -d apidoc -f"
   },
   "files": [
     "index.js",
@@ -43,6 +45,7 @@
     "coveralls": "^3.0.4",
     "eslint": "^6.0.1",
     "express": "^4.14.0",
+    "gh-pages": "^2.2.0",
     "highlight.js": "^9.2.0",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-container": "^2.0.0",
@@ -59,6 +62,7 @@
     "ndoc": "^5.0.0",
     "nyc": "^15.0.1",
     "pug-cli": "^1.0.0-alpha6",
+    "shelljs": "^0.8.4",
     "stylus": "^0.54.5",
     "supertest": "^4.0.2",
     "terser": "^4.1.2"

@@ -47,18 +47,10 @@ coverage:
 	npm run coverage
 
 doc:
-	rm -rf ./apidoc
-	ndoc --link-format "https://github.com/{package.repository}/blob/${CURR_HEAD}/{file}#L{line}"
+	npm run doc
 
-gh-doc: doc
-	touch ./apidoc/.nojekyll
-	cd ./apidoc \
-		&& git init . \
-		&& git add . \
-		&& git commit -m "Auto-generate API doc" \
-		&& git remote add remote git@github.com:markdown-it/markdown-it.git \
-		&& git push --force remote +master:gh-pages
-	rm -rf ./apidoc
+gh-doc:
+	npm run gh-doc
 
 publish:
 	@if test 0 -ne `git status --porcelain | wc -l` ; then \
