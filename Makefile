@@ -3,39 +3,14 @@ PATH        := ./node_modules/.bin:${PATH}
 NPM_PACKAGE := $(shell node -e 'process.stdout.write(require("./package.json").name)')
 NPM_VERSION := $(shell node -e 'process.stdout.write(require("./package.json").version)')
 
-TMP_PATH    := /tmp/${NPM_PACKAGE}-$(shell date +%s)
-
-REMOTE_NAME ?= origin
-REMOTE_REPO ?= $(shell git config --get remote.${REMOTE_NAME}.url)
-
-CURR_HEAD   := $(firstword $(shell git show-ref --hash HEAD | cut -b -6) master)
 GITHUB_PROJ := https://github.com//markdown-it/${NPM_PACKAGE}
 
 
-demo: lint
-	rm -rf ./demo
-	mkdir ./demo
-	./support/demodata.js > ./support/demo_template/sample.json
-	pug ./support/demo_template/index.pug --pretty \
-		--obj ./support/demo_template/sample.json \
-		--out ./demo
-	stylus -u autoprefixer-stylus \
-		< ./support/demo_template/index.styl \
-		> ./demo/index.css
-	rm -rf ./support/demo_template/sample.json
-	browserify ./ -s markdownit > ./demo/markdown-it.js
-	browserify ./support/demo_template/index.js > ./demo/index.js
-	cp ./support/demo_template/README.md ./demo/
+demo:
+	npm run demo
 
-gh-demo: demo
-	touch ./demo/.nojekyll
-	cd ./demo \
-		&& git init . \
-		&& git add . \
-		&& git commit -m "Auto-generate demo" \
-		&& git remote add origin git@github.com:markdown-it/markdown-it.github.io.git \
-		&& git push --force origin master
-	rm -rf ./demo
+gh-demo:
+	npm run gh-demo
 
 lint:
 	npm run lint
