@@ -16,7 +16,10 @@
     "markdown-it": "bin/markdown-it.js"
   },
   "scripts": {
-    "test": "make test"
+    "lint": "eslint .",
+    "test": "npm run lint && nyc mocha && node support/specsplit.js test/fixtures/commonmark/spec.txt",
+    "coverage": "npm run test && nyc report --reporter html",
+    "report-coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "files": [
     "index.js",
@@ -41,7 +44,6 @@
     "eslint": "^6.0.1",
     "express": "^4.14.0",
     "highlight.js": "^9.2.0",
-    "istanbul": "^0.4.5",
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-container": "^2.0.0",
     "markdown-it-deflist": "^2.0.0",
@@ -55,6 +57,7 @@
     "markdown-it-testgen": "^0.1.3",
     "mocha": "^6.1.4",
     "ndoc": "^5.0.0",
+    "nyc": "^15.0.1",
     "pug-cli": "^1.0.0-alpha6",
     "stylus": "^0.54.5",
     "supertest": "^4.0.2",

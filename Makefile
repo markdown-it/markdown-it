@@ -38,19 +38,13 @@ gh-demo: demo
 	rm -rf ./demo
 
 lint:
-	eslint .
+	npm run lint
 
-test: lint
-	mocha
-	echo "CommonMark stat:\n"
-	./support/specsplit.js test/fixtures/commonmark/spec.txt
+test:
+	npm test
 
 coverage:
-	rm -rf coverage
-	istanbul cover node_modules/.bin/_mocha
-
-report-coverage:
-	-istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+	npm run coverage
 
 doc:
 	rm -rf ./apidoc

@@ -106,7 +106,7 @@ readFile(options.spec, 'utf8', function (error, input) {
     });
 
   if (!options.type) {
-    console.log(util.format('passed samples - %s, failed samples - %s', good.length, bad.length));
+    console.log(util.format('CM spec stat: passed samples - %s, failed samples - %s', good.length, bad.length));
   } else {
     var data = options.type === 'good' ? good : bad;
 
