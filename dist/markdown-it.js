@@ -1,4 +1,4 @@
-/*! markdown-it 10.0.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/*! markdown-it 11.0.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -1003,7 +1003,7 @@ MarkdownIt.prototype.set = function (options) {
  * MarkdownIt.configure(presets)
  *
  * Batch load of all options and compenent settings. This is internal method,
- * and you probably will not need it. But if you with - see available presets
+ * and you probably will not need it. But if you will - see available presets
  * and data structure [here](https://github.com/markdown-it/markdown-it/tree/master/lib/presets)
  *
  * We strongly recommend to use presets instead of direct config loads. That
@@ -1129,7 +1129,7 @@ MarkdownIt.prototype.use = function (plugin /*, params, ... */) {
  * - src (String): source string
  * - env (Object): environment sandbox
  *
- * Parse input string and returns list of block tokens (special token type
+ * Parse input string and return list of block tokens (special token type
  * "inline" will contain list of inline tokens). You should not call this
  * method directly, until you write custom renderer (for example, to produce
  * AST).
@@ -4446,10 +4446,10 @@ function replace_rare(inlineTokens) {
           .replace(/\.{2,}/g, '…').replace(/([?!])…/g, '$1..')
           .replace(/([?!]){4,}/g, '$1$1$1').replace(/,{2,}/g, ',')
           // em-dash
-          .replace(/(^|[^-])---([^-]|$)/mg, '$1\u2014$2')
+          .replace(/(^|[^-])---(?=[^-]|$)/mg, '$1\u2014')
           // en-dash
-          .replace(/(^|\s)--(\s|$)/mg, '$1\u2013$2')
-          .replace(/(^|[^-\s])--([^-\s]|$)/mg, '$1\u2013$2');
+          .replace(/(^|\s)--(?=\s|$)/mg, '$1\u2013')
+          .replace(/(^|[^-\s])--(?=[^-\s]|$)/mg, '$1\u2013');
       }
     }
 
@@ -4601,8 +4601,14 @@ function process_inlines(tokens, state) {
       }
 
       if (canOpen && canClose) {
-        // treat this as the middle of the word
-        canOpen = false;
+        // Replace quotes in the middle of punctuation sequence, but not
+        // in the middle of the words, i.e.:
+        //
+        // 1. foo " bar " baz - not replaced
+        // 2. foo-"-bar-"-baz - replaced
+        // 3. foo"bar"baz     - not replaced
+        //
+        canOpen = isLastPunctChar;
         canClose = isNextPunctChar;
       }
 
@@ -6892,12 +6898,13 @@ module.exports = function (opts) {
           '\\"(?:(?!' + re.src_ZCc + '|["]).)+\\"|' +
           "\\'(?:(?!" + re.src_ZCc + "|[']).)+\\'|" +
           "\\'(?=" + re.src_pseudo_letter + '|[-]).|' +  // allow `I'm_king` if no pair found
-          '\\.{2,4}[a-zA-Z0-9%/]|' + // github has ... in commit range links,
-                                     // google has .... in links (issue #66)
+          '\\.{2,}[a-zA-Z0-9%/&]|' + // google has many dots in "google search" links (#66, #81).
+                                     // github has ... in commit range links,
                                      // Restrict to
                                      // - english
                                      // - percent-encoded
                                      // - parts of file path
+                                     // - params separator
                                      // until more examples found.
           '\\.(?!' + re.src_ZCc + '|[.]).|' +
           (opts && opts['---'] ?
@@ -6906,7 +6913,7 @@ module.exports = function (opts) {
             '\\-+|'
           ) +
           '\\,(?!' + re.src_ZCc + ').|' +      // allow `,,,` in paths
-          '\\!(?!' + re.src_ZCc + '|[!]).|' +
+          '\\!(?!' + re.src_ZCc + ').|' +      // allow `!!!` in paths
           '\\?(?!' + re.src_ZCc + '|[?]).' +
         ')+' +
       '|\\/' +
