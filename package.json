@@ -23,7 +23,8 @@
     "doc": "node support/build_doc.js",
     "gh-doc": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.js",
-    "gh-demo": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git"
+    "gh-demo": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git",
+    "prepublishOnly": "npm run gh-demo && npm run gh-doc"
   },
   "files": [
     "index.js",
