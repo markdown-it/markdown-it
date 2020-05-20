@@ -55,7 +55,6 @@ hljs.registerLanguage('smalltalk',    require('highlight.js/lib/languages/smallt
 hljs.registerLanguage('stylus',       require('highlight.js/lib/languages/stylus'));
 hljs.registerLanguage('swift',        require('highlight.js/lib/languages/swift'));
 hljs.registerLanguage('tcl',          require('highlight.js/lib/languages/tcl'));
-hljs.registerLanguage('latex',        require('highlight.js/lib/languages/latex'));
 hljs.registerLanguage('typescript',   require('highlight.js/lib/languages/typescript'));
 hljs.registerLanguage('verilog',      require('highlight.js/lib/languages/verilog'));
 hljs.registerLanguage('vhdl',         require('highlight.js/lib/languages/vhdl'));
