@@ -62,25 +62,31 @@ See also:
 
 ```js
 // node.js, "classic" way:
-var MarkdownIt = require('markdown-it'),
+const MarkdownIt = require('markdown-it'),
     md = new MarkdownIt();
-var result = md.render('# markdown-it rulezz!');
+let result = md.render('# markdown-it rulezz!');
 
 // node.js, the same, but with sugar:
-var md = require('markdown-it')();
-var result = md.render('# markdown-it rulezz!');
+const md = require('markdown-it')();
+let result = md.render('# markdown-it rulezz!');
 
 // browser without AMD, added to "window" on script load
 // Note, there is no dash in "markdownit".
-var md = window.markdownit();
-var result = md.render('# markdown-it rulezz!');
+const md = window.markdownit();
+let result = md.render('# markdown-it rulezz!');
+
+// ES Module, React, TypeScript
+import MarkdownIt from 'markdown-it';
+const md = new MarkdownIt();
+// options and rules (see below)
+const md = new MarkdownIt({ breaks: true }).disable('image');
 ```
 
 Single line rendering, without paragraph wrap:
 
 ```js
-var md = require('markdown-it')();
-var result = md.renderInline('__markdown-it__ rulezz!');
+const md = require('markdown-it')();
+let result = md.renderInline('__markdown-it__ rulezz!');
 ```
 
 
@@ -92,20 +98,20 @@ var result = md.renderInline('__markdown-it__ rulezz!');
 
 ```js
 // commonmark mode
-var md = require('markdown-it')('commonmark');
+const md = require('markdown-it')('commonmark');
 
 // default mode
-var md = require('markdown-it')();
+const md = require('markdown-it')();
 
 // enable everything
-var md = require('markdown-it')({
+const md = require('markdown-it')({
   html: true,
   linkify: true,
   typographer: true
 });
 
 // full options list (defaults)
-var md = require('markdown-it')({
+const md = require('markdown-it')({
   html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />).
                               // This is only for full CommonMark compatibility.
