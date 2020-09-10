@@ -522,3 +522,53 @@ Coverage, entities with code > 10FFFF. Made this way for compatibility with comm
 <p>�</p>
 <p>&amp;#x1100000;</p>
 .
+
+Issue #696. Blockquotes should remember their level.
+.
+>>> foo
+bar
+>>> baz
+.
+<blockquote>
+<blockquote>
+<blockquote>
+<p>foo
+bar
+baz</p>
+</blockquote>
+</blockquote>
+</blockquote>
+.
+
+Issue #696. Blockquotes should stop when outdented from a list.
+.
+1. >>> foo
+   bar
+baz
+   >>> foo
+  >>> bar
+   >>> baz
+.
+<ol>
+<li>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>foo
+bar
+baz
+foo</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>bar
+baz</p>
+</blockquote>
+</blockquote>
+</blockquote>
+.
