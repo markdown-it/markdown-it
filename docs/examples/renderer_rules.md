@@ -1,5 +1,5 @@
 # Adding or modifying rules
-## Default rules
+## Default renderer rules
 Rules on how to translate markdown content to HTML elements are stored in `renderer.rules`:
 
 ```
@@ -22,7 +22,7 @@ Output:
   'html_inline'
 ]
 ```
-These are the default rules. For any element that is not explicitly listed in this array its default rule applays. For example the rule `bullet_list_open` is not defined, so when markdown-it tries to parse a list to HTML it defaults to using the rule `html_block` because `ul` is a block element.
+These are the default renderer rules. For any element that is not explicitly listed in this array its default rule applies. For example the rule `bullet_list_open` is not defined, so when markdown-it tries to parse a list to HTML it defaults to ua generic renderer called `Renderer.prototype.renderToken`.
 
 ## The demo tool
 
@@ -52,7 +52,11 @@ Now take a closer look at the first element in the resulting list:
     "hidden": false
   }
 ```
-This is a [Token](https://markdown-it.github.io/markdown-it/#Token). Its corresponding HTML `tag` is `ul` and it is of the type `bullet_list_open`. This means this specific token represents the opening tag of the HTML list we want to generate from markdown.
+This is a [Token](https://markdown-it.github.io/markdown-it/#Token). Its corresponding HTML `tag` is `ul` and its nesting is `1`. This means this specific token represents the opening tag of the HTML list we want to generate from markdown.
+
+* `{ nesting: 1}` is an opening tag: `<ul>`
+* `{ nesting: -1}` is a closing tag: `</ul>`
+* `{ nesting: 0}` is a self-closing tag: `<br />`
 
 ## Adding new rules
 ### To add a default CSS class to an element
@@ -138,9 +142,9 @@ Output:
 </ul>
 ```
 ### To add a wrapper element
-Let's imagen we are using CSS pseudo classes such as `:before` and `:after` to style our list because using `list-style-type` doesn't provide the bullet types we want and `list-style-image` isn't flexible enough to position itself properly across all major browser.
+Let's imagine we are using CSS pseudo classes such as `:before` and `:after` to style our list because using `list-style-type` doesn't provide the bullet types we want and `list-style-image` isn't flexible enough to position itself properly across all major browsers.
 
-To keep a proper line wrappring in our list we have set all elements in our `li` to display as a block (`li * {display: block;}`). This works for our pseudo classes and other `HTMLElements`. However, it does not work for `TextNodes`. So having this output will produce weird line indents:
+To keep a proper line wrapping in our list we have set all elements in our `li` to display as a block (`li * {display: block;}`). This works for our pseudo classes and other `HTMLElements`. However, it does not work for `TextNodes`. So having this output will produce weird line indents:
 ```
 <ul>
   <li>Hello World</li>
@@ -159,7 +163,7 @@ To fix this we can use a wrapper element which can be properly displayed as a bl
 
 So our next goal is:
 ```
-Add a rule that wrapps the content of every <li> in a <span>
+Add a rule that wraps the content of every <li> in a <span>
 ```
 
 Keen observers might have already noticed that rules return their HTML tags as strings. So this modification is rather straight forward.
@@ -214,29 +218,45 @@ console.log(md.render("- Hello World"));
 Output:
 ```
 <ul>
-<li><span>Hello World</span></li>
+  <li>
+    <span>Hello World</span>
+  </li>
 </ul>
 ```
 
 Of course using string manipulation might get really messy for bigger changes. So consider using `markdown-it`s Token class instead:
 ```
 const MarkdownIt = require('markdown-it');
+const Token = require('markdown-it/lib/token');
 const md = new MarkdownIt();
 
 const proxy = (tokens, idx, options, env, self) => self.renderToken(tokens, idx, options);
+
 const defaultListItemOpenRenderer = md.renderer.rules.list_item_open || proxy;
+const defaultSpanOpenRenderer = md.renderer.rules.span_open || proxy;
 
 md.renderer.rules.list_item_open = function(tokens, idx, options, env, self) {
-  const span = new Token("span_open", "span", 0);
-  const defaultSpanRenderer = md.renderer.rules.span_open || proxy;
-  return `${defaultListItemOpenRenderer(tokens, idx, options, env, self)}${defaultSpanRenderer([span], 0, options, env, self)}`;
+    const span = new Token("span_open", "span", 1);
+    return `${defaultListItemOpenRenderer(tokens, idx, options, env, self)}${defaultSpanOpenRenderer([span], 0, options, env, self)}`;
 };
+
+const defaultListItemCloseRenderer = md.renderer.rules.list_item_close || proxy;
+const defaultSpanCloseRenderer = md.renderer.rules.span_close|| proxy;
+
+md.renderer.rules.list_item_close = function(tokens, idx, options, env, self) {
+    const span = new Token("span_close", "span", -1);
+    return `${defaultSpanCloseRenderer([span], 0, options, env, self)}${defaultListItemCloseRenderer(tokens, idx, options, env, self)}`;
+};
+
+console.log(md.render("- Hello World"));
 ```
 
 Output:
 
 ```
 <ul>
-<li><span class="test">Hello World</li>
-<span></ul>
+  <li>
+    <span>Hello World<span>
+  </li>
+</ul>
 ```
