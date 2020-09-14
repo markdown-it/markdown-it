@@ -62,6 +62,18 @@ describe('API', function () {
     assert.strictEqual(md.render('```\n&\n```'), '<pre><code>&amp;\n</code></pre>\n');
   });
 
+  it('highlight arguments', function () {
+    var md = markdownit({
+      highlight: function (str, lang, attrs) {
+        assert.strictEqual(lang, 'a');
+        assert.strictEqual(attrs, 'b  c  d');
+        return '<pre><code>==' + str + '==</code></pre>';
+      }
+    });
+
+    assert.strictEqual(md.render('``` a  b  c  d \nhl\n```'), '<pre><code>==hl\n==</code></pre>\n');
+  });
+
   it('force hardbreaks', function () {
     var md = markdownit({ breaks: true });
 
