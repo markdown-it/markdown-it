@@ -1,4 +1,4 @@
-/*! markdown-it 11.0.0 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/*! markdown-it 11.0.1 https://github.com//markdown-it/markdown-it @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownit = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // HTML5 entities map: { name -> utf16string }
 //
 'use strict';
@@ -2477,7 +2477,7 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
       terminate,
       terminatorRules,
       token,
-      wasOutdented,
+      isOutdented,
       oldLineMax = state.lineMax,
       pos = state.bMarks[startLine] + state.tShift[startLine],
       max = state.eMarks[startLine];
@@ -2492,8 +2492,8 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
   // so no point trying to find the end of it in silent mode
   if (silent) { return true; }
 
-  // skip spaces after ">" and re-calculate offset
-  initial = offset = state.sCount[startLine] + pos - (state.bMarks[startLine] + state.tShift[startLine]);
+  // set offset past spaces and ">"
+  initial = offset = state.sCount[startLine] + 1;
 
   // skip one optional space after '>'
   if (state.src.charCodeAt(pos) === 0x20 /* space */) {
@@ -2558,7 +2558,6 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
 
   oldParentType = state.parentType;
   state.parentType = 'blockquote';
-  wasOutdented = false;
 
   // Search the end of the block
   //
@@ -2587,7 +2586,7 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
     //    > current blockquote
     // 2. checking this line
     // ```
-    if (state.sCount[nextLine] < state.blkIndent) wasOutdented = true;
+    isOutdented = state.sCount[nextLine] < state.blkIndent;
 
     pos = state.bMarks[nextLine] + state.tShift[nextLine];
     max = state.eMarks[nextLine];
@@ -2597,11 +2596,11 @@ module.exports = function blockquote(state, startLine, endLine, silent) {
       break;
     }
 
-    if (state.src.charCodeAt(pos++) === 0x3E/* > */ && !wasOutdented) {
+    if (state.src.charCodeAt(pos++) === 0x3E/* > */ && !isOutdented) {
       // This line is inside the blockquote.
 
-      // skip spaces after ">" and re-calculate offset
-      initial = offset = state.sCount[nextLine] + pos - (state.bMarks[nextLine] + state.tShift[nextLine]);
+      // set offset past spaces and ">"
+      initial = offset = state.sCount[nextLine] + 1;
 
       // skip one optional space after '>'
       if (state.src.charCodeAt(pos) === 0x20 /* space */) {
@@ -4164,11 +4163,13 @@ module.exports = function table(state, startLine, endLine, silent) {
     token = state.push('tr_open', 'tr', 1);
     for (i = 0; i < columnCount; i++) {
       token          = state.push('td_open', 'td', 1);
+      token.map      = [ nextLine, nextLine + 1 ];
       if (aligns[i]) {
         token.attrs  = [ [ 'style', 'text-align:' + aligns[i] ] ];
       }
 
       token          = state.push('inline', '', 0);
+      token.map      = [ nextLine, nextLine + 1 ];
       token.content  = columns[i] ? columns[i].trim() : '';
       token.children = [];
 
@@ -4547,7 +4548,7 @@ function process_inlines(tokens, state) {
       } else {
         for (j = i - 1; j >= 0; j--) {
           if (tokens[j].type === 'softbreak' || tokens[j].type === 'hardbreak') break; // lastChar defaults to 0x20
-          if (tokens[j].type !== 'text') continue;
+          if (!tokens[j].content) continue; // should skip all tokens except 'text', 'html_inline' or 'code_inline'
 
           lastChar = tokens[j].content.charCodeAt(tokens[j].content.length - 1);
           break;
@@ -4564,7 +4565,7 @@ function process_inlines(tokens, state) {
       } else {
         for (j = i + 1; j < tokens.length; j++) {
           if (tokens[j].type === 'softbreak' || tokens[j].type === 'hardbreak') break; // nextChar defaults to 0x20
-          if (tokens[j].type !== 'text') continue;
+          if (!tokens[j].content) continue; // should skip all tokens except 'text', 'html_inline' or 'code_inline'
 
           nextChar = tokens[j].content.charCodeAt(0);
           break;
@@ -4869,9 +4870,7 @@ function processDelimiters(state, delimiters) {
 
       if (newMinOpenerIdx === -1) newMinOpenerIdx = openerIdx;
 
-      if (opener.open &&
-          opener.end < 0 &&
-          opener.level === closer.level) {
+      if (opener.open && opener.end < 0) {
 
         isOddMatch = false;
 
@@ -6912,8 +6911,8 @@ module.exports = function (opts) {
             :
             '\\-+|'
           ) +
-          '\\,(?!' + re.src_ZCc + ').|' +      // allow `,,,` in paths
-          '\\!(?!' + re.src_ZCc + ').|' +      // allow `!!!` in paths
+          '\\,(?!' + re.src_ZCc + ').|' +       // allow `,,,` in paths
+          '\\!+(?!' + re.src_ZCc + '|[!]).|' +  // allow `!!!` in paths, but not at the end
           '\\?(?!' + re.src_ZCc + '|[?]).' +
         ')+' +
       '|\\/' +
