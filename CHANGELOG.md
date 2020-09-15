@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [12.0.0] - WIP
+### Changed
+- Added 3rd argument to `highlight(code, lang, attrs)`, #626.
+- Rewrite tables according to latest GFM spec, #697.
+
+
 ## [11.0.1] - 2020-09-14
 ### Fixed
 - Fix blockquote lazy newlines, #696.
@@ -506,6 +512,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed presets folder (configs -> presets).
 
 
+[12.0.0]: https://github.com/markdown-it/markdown-it/compare/11.0.1...12.0.0
 [11.0.1]: https://github.com/markdown-it/markdown-it/compare/11.0.0...11.0.1
 [11.0.0]: https://github.com/markdown-it/markdown-it/compare/10.0.0...11.0.0
 [10.0.0]: https://github.com/markdown-it/markdown-it/compare/9.1.0...10.0.0
