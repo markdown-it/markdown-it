@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [12.0.0] - WIP
+### Added
+- `.gitattributes`, force unix eol under windows, for development.
+
 ### Changed
 - Added 3rd argument to `highlight(code, lang, attrs)`, #626.
 - Rewrite tables according to latest GFM spec, #697.
