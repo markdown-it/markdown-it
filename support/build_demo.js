@@ -21,9 +21,6 @@ shell.exec('node_modules/.bin/stylus -u autoprefixer-stylus \
 
 shell.rm('-rf', 'support/demo_template/sample.json');
 
-shell.exec('node_modules/.bin/browserify ./ -s markdownit \
-> demo/markdown-it.js');
-shell.exec('node_modules/.bin/browserify support/demo_template/index.js \
-> demo/index.js');
+shell.exec('node_modules/.bin/rollup -c support/demo_template/rollup.config.js');
 
 shell.cp('support/demo_template/README.md', 'demo/');
