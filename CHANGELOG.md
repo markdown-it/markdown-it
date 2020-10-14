@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix mappings for table rows (amended fix made in 11.0.1), #705.
+- `%25` is no longer decoded in beautified urls, #720.
 
 
 ## [11.0.1] - 2020-09-14
