@@ -127,7 +127,7 @@ readFile(options.spec, 'utf8', function (error, input) {
     });
   }
 
-  if (options.output != '-') fs.writeFileSync(options.output, out.join('\n'));
+  if (options.output !== '-') fs.writeFileSync(options.output, out.join('\n'));
   else console.log(out.join('\n'));
 
   process.exit(0);
