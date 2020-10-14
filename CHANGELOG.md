@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added 3rd argument to `highlight(code, lang, attrs)`, #626.
 - Rewrite tables according to latest GFM spec, #697.
 - Use `rollup.js` to browserify sources.
+- Drop `bower.json` (bower reached EOL).
 
 ### Fixed
 - Fix mappings for table rows (amended fix made in 11.0.1), #705.

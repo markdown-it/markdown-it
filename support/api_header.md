@@ -2,11 +2,10 @@
 
 ## Install
 
-**node.js** & **bower**:
+**node.js**
 
 ```bash
 npm install markdown-it --save
-bower install markdown-it --save
 ```
 
 **browser (CDN):**
