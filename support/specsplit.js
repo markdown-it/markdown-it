@@ -22,8 +22,14 @@ cli.add_argument('type', {
   choices: [ 'good', 'bad' ]
 });
 
-cli.add_argument('spec', {
-  help: 'spec file to read'
+cli.add_argument('-s', '--spec', {
+  help: 'spec file to read',
+  default: require('path').join(__dirname, '../test/fixtures/commonmark/spec.txt')
+});
+
+cli.add_argument('-o', '--output', {
+  help: 'output file, stdout if not set',
+  default: '-'
 });
 
 var options = cli.parse_args();
@@ -103,21 +109,26 @@ readFile(options.spec, 'utf8', function (error, input) {
       }
     });
 
+  var out = [];
+
   if (!options.type) {
-    console.log(util.format('CM spec stat: passed samples - %s, failed samples - %s', good.length, bad.length));
+    out.push(util.format('CM spec stat: passed samples - %s, failed samples - %s', good.length, bad.length));
   } else {
     var data = options.type === 'good' ? good : bad;
 
     data.forEach(function (sample) {
-      console.log(util.format(
+      out.push(util.format(
         '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
         'src line: %s\n\n.\n%s.\n%s.\n',
         sample.line, sample.md, sample.html));
       if (sample.err) {
-        console.log(util.format('error:\n\n%s\n', sample.err));
+        out.push(util.format('error:\n\n%s\n', sample.err));
       }
     });
   }
+
+  if (options.output != '-') fs.writeFileSync(options.output, out.join('\n'));
+  else console.log(out.join('\n'));
 
   process.exit(0);
 });

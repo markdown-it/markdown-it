@@ -17,7 +17,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "npm run lint && nyc mocha && node support/specsplit.js test/fixtures/commonmark/spec.txt",
+    "test": "npm run lint && nyc mocha && node support/specsplit.js",
     "coverage": "npm run test && nyc report --reporter html",
     "report-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "doc": "node support/build_doc.js",
@@ -26,6 +26,8 @@
     "gh-demo": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git",
     "browserify": "rollup -c support/rollup.config.js",
     "benchmark-deps": "npm install --prefix benchmark/extra/ -g marked@0.3.6 commonmark@0.26.0 markdown-it/markdown-it.git#2.2.1",
+    "specsplit": "support/specsplit.js good -o test/fixtures/commonmark/good.txt && support/specsplit.js bad -o test/fixtures/commonmark/bad.txt && support/specsplit.js",
+    "todo": "grep 'TODO' -n -r ./lib 2>/dev/null",
     "prepublishOnly": "npm run gh-demo && npm run gh-doc"
   },
   "files": [
