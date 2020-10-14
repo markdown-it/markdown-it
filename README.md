@@ -1,4 +1,4 @@
-# markdown-it
+# markdown-it <!-- omit in toc -->
 
 [![Build Status](https://img.shields.io/travis/markdown-it/markdown-it/master.svg?style=flat)](https://travis-ci.org/markdown-it/markdown-it)
 [![NPM version](https://img.shields.io/npm/v/markdown-it.svg?style=flat)](https://www.npmjs.org/package/markdown-it)
@@ -17,21 +17,20 @@ __[Live demo](https://markdown-it.github.io)__
 
 __Table of content__
 
-- [markdown-it](#markdown-it)
-  - [Install](#install)
-  - [Usage examples](#usage-examples)
-    - [Simple](#simple)
-    - [Init with presets and options](#init-with-presets-and-options)
-    - [Plugins load](#plugins-load)
-    - [Syntax highlighting](#syntax-highlighting)
-    - [Linkify](#linkify)
-  - [API](#api)
-  - [Syntax extensions](#syntax-extensions)
-    - [Manage rules](#manage-rules)
-  - [Benchmark](#benchmark)
-  - [markdown-it for enterprise](#markdown-it-for-enterprise)
-  - [Authors](#authors)
-  - [References / Thanks](#references--thanks)
+- [Install](#install)
+- [Usage examples](#usage-examples)
+  - [Simple](#simple)
+  - [Init with presets and options](#init-with-presets-and-options)
+  - [Plugins load](#plugins-load)
+  - [Syntax highlighting](#syntax-highlighting)
+  - [Linkify](#linkify)
+- [API](#api)
+- [Syntax extensions](#syntax-extensions)
+  - [Manage rules](#manage-rules)
+- [Benchmark](#benchmark)
+- [markdown-it for enterprise](#markdown-it-for-enterprise)
+- [Authors](#authors)
+- [References / Thanks](#references--thanks)
 
 ## Install
 
