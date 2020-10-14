@@ -79,6 +79,7 @@
     "supertest": "^5.0.0"
   },
   "mocha": {
-    "inline-diffs": true
+    "inline-diffs": true,
+    "timeout": 60000
   }
 }
