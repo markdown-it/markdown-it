@@ -144,7 +144,7 @@ rules:
   #spaced-comment:         [ 1, always, { exceptions: [ '/', '=' ] } ]
   strict:                 [ 2, global ]
   quotes:                 [ 2, single, avoid-escape ]
-  quote-props:            [ 1, 'as-needed', { "keywords": true } ]
+  quote-props:            [ 1, 'as-needed' ]
   radix:                  2
   use-isnan:              2
   valid-typeof:           2

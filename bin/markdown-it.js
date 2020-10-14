@@ -12,42 +12,46 @@ var argparse = require('argparse');
 
 var cli = new argparse.ArgumentParser({
   prog: 'markdown-it',
-  version: require('../package.json').version,
-  addHelp: true
+  add_help: true
 });
 
-cli.addArgument([ '--no-html' ], {
+cli.add_argument('-v', '--version', {
+  action: 'version',
+  version: require('../package.json').version
+});
+
+cli.add_argument('--no-html', {
   help:   'Disable embedded HTML',
-  action: 'storeTrue'
+  action: 'store_true'
 });
 
-cli.addArgument([ '-l', '--linkify' ], {
+cli.add_argument('-l', '--linkify', {
   help:   'Autolink text',
-  action: 'storeTrue'
+  action: 'store_true'
 });
 
-cli.addArgument([ '-t', '--typographer' ], {
+cli.add_argument('-t', '--typographer', {
   help:   'Enable smartquotes and other typographic replacements',
-  action: 'storeTrue'
+  action: 'store_true'
 });
 
-cli.addArgument([ '--trace' ], {
+cli.add_argument('--trace', {
   help:   'Show stack trace on error',
-  action: 'storeTrue'
+  action: 'store_true'
 });
 
-cli.addArgument([ 'file' ], {
+cli.add_argument('file', {
   help: 'File to read',
   nargs: '?',
-  defaultValue: '-'
+  default: '-'
 });
 
-cli.addArgument([ '-o', '--output' ], {
+cli.add_argument('-o', '--output', {
   help: 'File to write',
-  defaultValue: '-'
+  default: '-'
 });
 
-var options = cli.parseArgs();
+var options = cli.parse_args();
 
 
 function readFile(filename, encoding, callback) {

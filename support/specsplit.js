@@ -13,22 +13,20 @@ var argparse  = require('argparse');
 
 
 var cli = new argparse.ArgumentParser({
-  prog: 'specsplit',
-  version: require('../package.json').version,
-  addHelp: true
+  add_help: true
 });
 
-cli.addArgument([ 'type' ], {
+cli.add_argument('type', {
   help: 'type of examples to filter',
   nargs: '?',
   choices: [ 'good', 'bad' ]
 });
 
-cli.addArgument([ 'spec' ], {
+cli.add_argument('spec', {
   help: 'spec file to read'
 });
 
-var options = cli.parseArgs();
+var options = cli.parse_args();
 
 ////////////////////////////////////////////////////////////////////////////////
 

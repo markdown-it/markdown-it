@@ -11,18 +11,16 @@ var argparse = require('argparse');
 ////////////////////////////////////////////////////////////////////////////////
 
 var cli = new argparse.ArgumentParser({
-  prog: 'markdown-it.js',
-  version: require('../package.json').version,
-  addHelp: true
+  add_help: true
 });
 
-cli.addArgument([ 'file' ], {
+cli.add_argument('file', {
   help: 'File to read',
   nargs: '?',
-  defaultValue: '-'
+  default: '-'
 });
 
-var options = cli.parseArgs();
+var options = cli.parse_args();
 
 
 function readFile(filename, encoding, callback) {
