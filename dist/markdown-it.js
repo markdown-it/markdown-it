@@ -1,4 +1,4 @@
-/*! markdown-it 12.0.0 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.0.1 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -4171,7 +4171,7 @@
   var parser_core = Core;
   var isSpace = utils.isSpace;
   function getLine(state, line) {
-    var pos = state.bMarks[line] + state.blkIndent, max = state.eMarks[line];
+    var pos = state.bMarks[line] + state.tShift[line], max = state.eMarks[line];
     return state.src.substr(pos, max - pos);
   }
   function escapedSplit(str) {
