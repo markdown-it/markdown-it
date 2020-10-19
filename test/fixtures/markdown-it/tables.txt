@@ -568,6 +568,42 @@ Escape before escaped Pipes inside backticks don't split cells:
 </table>
 .
 
+Regression test for #721, table in a list indented with tabs:
+.
+- Level 1
+
+	- Level 2
+
+		| Column 1 | Column 2 |
+		| -------- | -------- |
+		| abcdefgh | ijklmnop |
+.
+<ul>
+<li>
+<p>Level 1</p>
+<ul>
+<li>
+<p>Level 2</p>
+<table>
+<thead>
+<tr>
+<th>Column 1</th>
+<th>Column 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>abcdefgh</td>
+<td>ijklmnop</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+.
+
 GFM 4.10 Tables (extension), Example 198
 .
 | foo | bar |
