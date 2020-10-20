@@ -187,7 +187,7 @@ var md = require('markdown-it')({
 configure linkify-it, access the linkify instance through `md.linkify`:
 
 ```js
-md.linkify.tlds('.py', false);  // disables .py as top level domain
+md.linkify.set({ fuzzyEmail: false });  // disables converting email to link
 ```
 
 
