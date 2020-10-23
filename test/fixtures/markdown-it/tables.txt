@@ -604,6 +604,19 @@ Regression test for #721, table in a list indented with tabs:
 </ul>
 .
 
+
+Table without any columns is not a table, #724
+.
+|
+|
+|
+.
+<p>|
+|
+|</p>
+.
+
+
 GFM 4.10 Tables (extension), Example 198
 .
 | foo | bar |
