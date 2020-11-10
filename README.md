@@ -113,6 +113,7 @@ var md = require('markdown-it')({
   linkify:      false,        // Autoconvert URL-like text to links
 
   // Enable some language-neutral replacement + quotes beautification
+  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js
   typographer:  false,
 
   // Double + single quotes replacement pairs, when typographer enabled,
