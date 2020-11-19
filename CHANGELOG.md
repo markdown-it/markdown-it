@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [12.0.3] - WIP
 ### Fixed
 - `[](<foo<bar>)` is no longer a valid link.
+- Fix performance issues when parsing links, #732.
 
 
 ## [12.0.2] - 2020-10-23
