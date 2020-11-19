@@ -255,6 +255,18 @@ List item terminating quote should not be paragraph continuation
 </ol>
 .
 
+
+Link destination cannot contain '<'
+.
+[](<foo<bar>)
+
+[](<foo\<bar>)
+.
+<p>[](&lt;foo<bar>)</p>
+<p><a href="foo%3Cbar"></a></p>
+.
+
+
 Coverage. Directive can terminate paragraph.
 .
 a
