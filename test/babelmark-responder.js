@@ -1,14 +1,17 @@
 'use strict';
 
 
-describe.skip('babelmark responder app', function () {
+describe('babelmark responder app', function () {
   var app;
 
   var PORT    = 5005;
   var request = require('supertest')('http://127.0.0.1:' + PORT);
 
+  function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-  before(function (done) {
+  before(async () => {
     app = require('child_process').execFile(
       'node',
       [ '../support/babelmark-responder.js' ],
@@ -18,12 +21,18 @@ describe.skip('babelmark responder app', function () {
       }
     );
 
-    // Wait a bit until app bind port
-    setTimeout(done, 1000);
+    // Wait until app bind port
+    for (let i = 0; i < 50; i++) {
+      try {
+        await request.get('/').expect(200);
+        break;
+      } catch (e) {}
+      await timeout(100);
+    }
   });
 
 
-  it('ping root', function () {
+  it('ping root', () => {
     return request
       .get('/')
       .expect(200)
@@ -31,7 +40,7 @@ describe.skip('babelmark responder app', function () {
   });
 
 
-  it('do request', function () {
+  it('do request', () => {
     return request
       .get('/?text=foo')
       .expect(200)
@@ -43,7 +52,7 @@ describe.skip('babelmark responder app', function () {
   });
 
 
-  after(function () {
+  after(() => {
     if (app) app.kill();
   });
 });
