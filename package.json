@@ -19,7 +19,7 @@
     "lint": "eslint .",
     "test": "npm run lint && nyc mocha && node support/specsplit.js",
     "coverage": "npm run test && nyc report --reporter html",
-    "report-coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "report-coveralls": "nyc --reporter=lcov mocha",
     "doc": "node support/build_doc.js",
     "gh-doc": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.js",
