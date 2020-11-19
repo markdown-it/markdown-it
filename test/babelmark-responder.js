@@ -1,7 +1,7 @@
 'use strict';
 
 
-describe('babelmark responder app', function () {
+describe.skip('babelmark responder app', function () {
   var app;
 
   var PORT    = 5005;
