@@ -69,6 +69,7 @@
     "markdown-it-testgen": "^0.1.3",
     "mocha": "^8.0.1",
     "ndoc": "^6.0.0",
+    "needle": "^2.5.2",
     "nyc": "^15.0.1",
     "pug-cli": "^1.0.0-alpha6",
     "rollup": "^2.29.0",
