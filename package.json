@@ -38,7 +38,7 @@
   ],
   "dependencies": {
     "argparse": "^2.0.1",
-    "entities": "~2.0.0",
+    "entities": "~2.1.0",
     "linkify-it": "^3.0.1",
     "mdurl": "^1.0.1",
     "uc.micro": "^1.0.5"
