@@ -304,6 +304,14 @@ Coverage. Unpaired nested backtick (silent mode)
 .
 
 
+Coverage. Should continue scanning after closing "```" despite cache
+.
+```aaa``bbb``ccc```ddd``eee``
+.
+<p><code>aaa``bbb``ccc</code>ddd<code>eee</code></p>
+.
+
+
 Coverage. Entities.
 .
 *&*
