@@ -267,6 +267,17 @@ Link destination cannot contain '<'
 .
 
 
+Link title cannot contain '(' when opened with it
+.
+[](url (xxx())
+
+[](url (xxx\())
+.
+<p>[](url (xxx())</p>
+<p><a href="url" title="xxx("></a></p>
+.
+
+
 Coverage. Directive can terminate paragraph.
 .
 a
