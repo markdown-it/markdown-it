@@ -117,4 +117,10 @@ describe('Pathological sequences speed', () => {
       await test_pattern('[a](b'.repeat(30000));
     });
   });
+
+  describe('Markdown-it', () => {
+    it('emphasis **_* pattern', async () => {
+      await test_pattern('**_* '.repeat(50000));
+    });
+  });
 });
