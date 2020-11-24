@@ -278,6 +278,14 @@ Link title cannot contain '(' when opened with it
 .
 
 
+Escaped space is not allowed in link destination, commonmark/CommonMark#493.
+.
+[link](a\ b)
+.
+<p>[link](a\ b)</p>
+.
+
+
 Coverage. Directive can terminate paragraph.
 .
 a
