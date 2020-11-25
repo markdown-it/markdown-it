@@ -286,6 +286,16 @@ Escaped space is not allowed in link destination, commonmark/CommonMark#493.
 .
 
 
+Allow EOL in processing instructions, commonmark/commonmark.js#196.
+.
+a <?
+?>
+.
+<p>a <?
+?></p>
+.
+
+
 Coverage. Directive can terminate paragraph.
 .
 a
