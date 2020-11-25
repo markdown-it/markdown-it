@@ -126,5 +126,9 @@ describe('Pathological sequences speed', () => {
     it('backtick ``\\``\\`` pattern', async () => {
       await test_pattern('``\\'.repeat(50000));
     });
+
+    it('autolinks <<<<...<<> pattern', async () => {
+      await test_pattern('<'.repeat(400000) + '>');
+    });
   });
 });
