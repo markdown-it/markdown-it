@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix performance issues when parsing links (#732, #734), backticks, (#733, #736),
   emphases (#735), and autolinks (#737).
 - Allow newline in `<? ... ?>` in an inline context.
+- Allow `<meta>` html tag to appear in an inline context.
 
 
 ## [12.0.2] - 2020-10-23
