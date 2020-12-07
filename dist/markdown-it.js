@@ -1,4 +1,4 @@
-/*! markdown-it 12.0.2 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.0.3 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -2965,6 +2965,9 @@
         if (code === 10 /* \n */) {
           return result;
         }
+        if (code === 60 /* < */) {
+          return result;
+        }
         if (code === 62 /* > */) {
           result.pos = pos + 1;
           result.str = unescapeAll(str.slice(start + 1, pos));
@@ -2992,11 +2995,17 @@
         break;
       }
       if (code === 92 /* \ */ && pos + 1 < max) {
+        if (str.charCodeAt(pos + 1) === 32) {
+          break;
+        }
         pos += 2;
         continue;
       }
       if (code === 40 /* ( */) {
         level++;
+        if (level > 32) {
+          return result;
+        }
       }
       if (code === 41 /* ) */) {
         if (level === 0) {
@@ -3045,6 +3054,8 @@
         result.lines = lines;
         result.str = unescapeAll$1(str.slice(start + 1, pos));
         result.ok = true;
+        return result;
+      } else if (code === 40 /* ( */ && marker === 41 /* ) */) {
         return result;
       } else if (code === 10) {
         lines++;
@@ -5262,7 +5273,7 @@
     return true;
   };
   // List of valid html blocks names, accorting to commonmark spec
-    var html_blocks = [ "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption", "center", "col", "colgroup", "dd", "details", "dialog", "dir", "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "iframe", "legend", "li", "link", "main", "menu", "menuitem", "meta", "nav", "noframes", "ol", "optgroup", "option", "p", "param", "section", "source", "summary", "table", "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul" ];
+    var html_blocks = [ "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption", "center", "col", "colgroup", "dd", "details", "dialog", "dir", "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "iframe", "legend", "li", "link", "main", "menu", "menuitem", "nav", "noframes", "ol", "optgroup", "option", "p", "param", "section", "source", "summary", "table", "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul" ];
   // Regexps to match html elements
     var attr_name = "[a-zA-Z_:][a-zA-Z0-9:._-]*";
   var unquoted = "[^\"'=<>`\\x00-\\x20]+";
@@ -5273,7 +5284,7 @@
   var open_tag = "<[A-Za-z][A-Za-z0-9\\-]*" + attribute + "*\\s*\\/?>";
   var close_tag = "<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>";
   var comment = "\x3c!----\x3e|\x3c!--(?:-?[^>-])(?:-?[^-])*--\x3e";
-  var processing = "<[?].*?[?]>";
+  var processing = "<[?][\\s\\S]*?[?]>";
   var declaration = "<![A-Z]+\\s+[^>]*>";
   var cdata = "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>";
   var HTML_TAG_RE = new RegExp("^(?:" + open_tag + "|" + close_tag + "|" + comment + "|" + processing + "|" + declaration + "|" + cdata + ")");
@@ -5797,24 +5808,35 @@
   };
   // Parse backticks
     var backticks = function backtick(state, silent) {
-    var start, max, marker, matchStart, matchEnd, token, pos = state.pos, ch = state.src.charCodeAt(pos);
+    var start, max, marker, token, matchStart, matchEnd, openerLength, closerLength, pos = state.pos, ch = state.src.charCodeAt(pos);
     if (ch !== 96 /* ` */) {
       return false;
     }
     start = pos;
     pos++;
     max = state.posMax;
-    while (pos < max && state.src.charCodeAt(pos) === 96 /* ` */) {
+    // scan marker length
+        while (pos < max && state.src.charCodeAt(pos) === 96 /* ` */) {
       pos++;
     }
     marker = state.src.slice(start, pos);
+    openerLength = marker.length;
+    if (state.backticksScanned && (state.backticks[openerLength] || 0) <= start) {
+      if (!silent) state.pending += marker;
+      state.pos += openerLength;
+      return true;
+    }
     matchStart = matchEnd = pos;
-    while ((matchStart = state.src.indexOf("`", matchEnd)) !== -1) {
+    // Nothing found in the cache, scan until the end of the line (or until marker is found)
+        while ((matchStart = state.src.indexOf("`", matchEnd)) !== -1) {
       matchEnd = matchStart + 1;
-      while (matchEnd < max && state.src.charCodeAt(matchEnd) === 96 /* ` */) {
+      // scan marker length
+            while (matchEnd < max && state.src.charCodeAt(matchEnd) === 96 /* ` */) {
         matchEnd++;
       }
-      if (matchEnd - matchStart === marker.length) {
+      closerLength = matchEnd - matchStart;
+      if (closerLength === openerLength) {
+        // Found matching closer length.
         if (!silent) {
           token = state.push("code_inline", "code", 0);
           token.markup = marker;
@@ -5823,11 +5845,13 @@
         state.pos = matchEnd;
         return true;
       }
+      // Some different length found, put it in cache as upper limit of where closer can be found
+            state.backticks[closerLength] = matchStart;
     }
-    if (!silent) {
-      state.pending += marker;
-    }
-    state.pos += marker.length;
+    // Scanned through the end, didn't find anything
+        state.backticksScanned = true;
+    if (!silent) state.pending += marker;
+    state.pos += openerLength;
     return true;
   };
   // ~~strike through~~
@@ -6027,7 +6051,7 @@
   var normalizeReference$1 = utils.normalizeReference;
   var isSpace$9 = utils.isSpace;
   var link = function link(state, silent) {
-    var attrs, code, label, labelEnd, labelStart, pos, res, ref, title, token, href = "", oldPos = state.pos, max = state.posMax, start = state.pos, parseReference = true;
+    var attrs, code, label, labelEnd, labelStart, pos, res, ref, token, href = "", title = "", oldPos = state.pos, max = state.posMax, start = state.pos, parseReference = true;
     if (state.src.charCodeAt(state.pos) !== 91 /* [ */) {
       return false;
     }
@@ -6065,32 +6089,30 @@
         } else {
           href = "";
         }
-      }
-      // [link](  <href>  "title"  )
-      //                ^^ skipping these spaces
-            start = pos;
-      for (;pos < max; pos++) {
-        code = state.src.charCodeAt(pos);
-        if (!isSpace$9(code) && code !== 10) {
-          break;
-        }
-      }
-      // [link](  <href>  "title"  )
-      //                  ^^^^^^^ parsing link title
-            res = state.md.helpers.parseLinkTitle(state.src, pos, state.posMax);
-      if (pos < max && start !== pos && res.ok) {
-        title = res.str;
-        pos = res.pos;
         // [link](  <href>  "title"  )
-        //                         ^^ skipping these spaces
-                for (;pos < max; pos++) {
+        //                ^^ skipping these spaces
+                start = pos;
+        for (;pos < max; pos++) {
           code = state.src.charCodeAt(pos);
           if (!isSpace$9(code) && code !== 10) {
             break;
           }
         }
-      } else {
-        title = "";
+        // [link](  <href>  "title"  )
+        //                  ^^^^^^^ parsing link title
+                res = state.md.helpers.parseLinkTitle(state.src, pos, state.posMax);
+        if (pos < max && start !== pos && res.ok) {
+          title = res.str;
+          pos = res.pos;
+          // [link](  <href>  "title"  )
+          //                         ^^ skipping these spaces
+                    for (;pos < max; pos++) {
+            code = state.src.charCodeAt(pos);
+            if (!isSpace$9(code) && code !== 10) {
+              break;
+            }
+          }
+        }
       }
       if (pos >= max || state.src.charCodeAt(pos) !== 41 /* ) */) {
         // parsing a valid shortcut link failed, fallback to reference
@@ -6269,20 +6291,23 @@
     return true;
   };
   // Process autolinks '<protocol:...>'
-  /*eslint max-len:0*/  var EMAIL_RE = /^<([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/;
-  var AUTOLINK_RE = /^<([a-zA-Z][a-zA-Z0-9+.\-]{1,31}):([^<>\x00-\x20]*)>/;
+  /*eslint max-len:0*/  var EMAIL_RE = /^([a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)$/;
+  var AUTOLINK_RE = /^([a-zA-Z][a-zA-Z0-9+.\-]{1,31}):([^<>\x00-\x20]*)$/;
   var autolink = function autolink(state, silent) {
-    var tail, linkMatch, emailMatch, url, fullUrl, token, pos = state.pos;
+    var url, fullUrl, token, ch, start, max, pos = state.pos;
     if (state.src.charCodeAt(pos) !== 60 /* < */) {
       return false;
     }
-    tail = state.src.slice(pos);
-    if (tail.indexOf(">") < 0) {
-      return false;
+    start = state.pos;
+    max = state.posMax;
+    for (;;) {
+      if (++pos >= max) return false;
+      ch = state.src.charCodeAt(pos);
+      if (ch === 60 /* < */) return false;
+      if (ch === 62 /* > */) break;
     }
-    if (AUTOLINK_RE.test(tail)) {
-      linkMatch = tail.match(AUTOLINK_RE);
-      url = linkMatch[0].slice(1, -1);
+    url = state.src.slice(start + 1, pos);
+    if (AUTOLINK_RE.test(url)) {
       fullUrl = state.md.normalizeLink(url);
       if (!state.md.validateLink(fullUrl)) {
         return false;
@@ -6298,12 +6323,10 @@
         token.markup = "autolink";
         token.info = "auto";
       }
-      state.pos += linkMatch[0].length;
+      state.pos += url.length + 2;
       return true;
     }
-    if (EMAIL_RE.test(tail)) {
-      emailMatch = tail.match(EMAIL_RE);
-      url = emailMatch[0].slice(1, -1);
+    if (EMAIL_RE.test(url)) {
       fullUrl = state.md.normalizeLink("mailto:" + url);
       if (!state.md.validateLink(fullUrl)) {
         return false;
@@ -6319,7 +6342,7 @@
         token.markup = "autolink";
         token.info = "auto";
       }
-      state.pos += emailMatch[0].length;
+      state.pos += url.length + 2;
       return true;
     }
     return false;
@@ -6415,12 +6438,11 @@
         openersBottom[closer.marker] = [ -1, -1, -1 ];
       }
       minOpenerIdx = openersBottom[closer.marker][closer.length % 3];
-      newMinOpenerIdx = -1;
       openerIdx = closerIdx - closer.jump - 1;
+      newMinOpenerIdx = openerIdx;
       for (;openerIdx > minOpenerIdx; openerIdx -= opener.jump + 1) {
         opener = delimiters[openerIdx];
         if (opener.marker !== closer.marker) continue;
-        if (newMinOpenerIdx === -1) newMinOpenerIdx = openerIdx;
         if (opener.open && opener.end < 0) {
           isOddMatch = false;
           // from spec:
@@ -6517,6 +6539,9 @@
         this.delimiters = [];
     // Stack of delimiter lists for upper level tags
         this._prev_delimiters = [];
+    // backtick length => last seen position
+        this.backticks = {};
+    this.backticksScanned = false;
   }
   // Flush pending text
   
