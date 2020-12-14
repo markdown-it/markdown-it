@@ -127,3 +127,10 @@ Coverage: single tilde
 .
 <p>~a~</p>
 .
+
+Regression test for #742:
+.
+-~~~~;~~~~~~
+.
+<p>-<s><s>;</s></s>~~</p>
+.
