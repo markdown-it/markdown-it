@@ -1,4 +1,4 @@
-/*! markdown-it 12.0.3 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.0.4 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -3106,7 +3106,7 @@
       return highlighted + "\n";
     }
     // If language exists, inject class gently, without modifying original token.
-    // May be, one day we will add .clone() for token and simplify this part, but
+    // May be, one day we will add .deepClone() for token and simplify this part, but
     // now we prefer to keep things local.
         if (info) {
       i = token.attrIndex("class");
@@ -3114,6 +3114,7 @@
       if (i < 0) {
         tmpAttrs.push([ "class", options.langPrefix + langName ]);
       } else {
+        tmpAttrs[i] = tmpAttrs[i].slice();
         tmpAttrs[i][1] += " " + options.langPrefix + langName;
       }
       // Fake token just to render attributes
@@ -5883,7 +5884,8 @@
         marker: marker,
         length: 0,
         // disable "rule of 3" length checks meant for emphasis
-        jump: i,
+        jump: i / 2,
+        // for `~~` 1 marker = 2 characters
         token: state.tokens.length - 1,
         end: -1,
         open: scanned.can_open,
@@ -6439,6 +6441,8 @@
       }
       minOpenerIdx = openersBottom[closer.marker][closer.length % 3];
       openerIdx = closerIdx - closer.jump - 1;
+      // avoid crash if `closer.jump` is pointing outside of the array, see #742
+            if (openerIdx < -1) openerIdx = -1;
       newMinOpenerIdx = openerIdx;
       for (;openerIdx > minOpenerIdx; openerIdx -= opener.jump + 1) {
         opener = delimiters[openerIdx];
