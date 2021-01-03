@@ -49,6 +49,7 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "ansi": "^0.3.0",
     "autoprefixer-stylus": "^1.0.0",
+    "benchloop": "^1.3.2",
     "benchmark": "~2.1.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.4",
