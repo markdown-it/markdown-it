@@ -364,6 +364,7 @@ describe('typographer switches', function () {
   it('Should support disabling IP symbols', function () {
     var md = markdownit({
       typographer: {
+        dashes: true,
         quotes: true,
         rare: true,
         intellectualProperty: false
@@ -378,6 +379,7 @@ describe('typographer switches', function () {
   it('Should support disabling quote replacements', function () {
     var md = markdownit({
       typographer: {
+        dashes: true,
         quotes: false,
         rare: true,
         intellectualProperty: true
@@ -392,6 +394,7 @@ describe('typographer switches', function () {
   it('Should support disabling rare replacements', function () {
     var md = markdownit({
       typographer: {
+        dashes: true,
         quotes: true,
         rare: false,
         intellectualProperty: true
@@ -400,6 +403,21 @@ describe('typographer switches', function () {
     assert.strictEqual(
       md.render('Definitely should\'ve registered that (c)!!!!!!'),
       '<p>Definitely should’ve registered that ©!!!!!!</p>\n'
+    );
+  });
+
+  it('Should support disabling dash replacements', function () {
+    var md = markdownit({
+      typographer: {
+        dashes: false,
+        quotes: true,
+        rare: true,
+        intellectualProperty: true
+      }
+    });
+    assert.strictEqual(
+      md.render('(R) --- it\'s like (c) for trademarks!!!!!!!'),
+      '<p>® --- it’s like © for trademarks!!!</p>\n'
     );
   });
 
