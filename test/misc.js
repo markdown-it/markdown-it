@@ -367,7 +367,7 @@ describe('typographer switches', function () {
         dashes: true,
         quotes: true,
         rare: true,
-        intellectualProperty: false
+        ipSymbols: false
       }
     });
     assert.strictEqual(
@@ -382,7 +382,7 @@ describe('typographer switches', function () {
         dashes: true,
         quotes: false,
         rare: true,
-        intellectualProperty: true
+        ipSymbols: true
       }
     });
     assert.strictEqual(
@@ -397,7 +397,7 @@ describe('typographer switches', function () {
         dashes: true,
         quotes: true,
         rare: false,
-        intellectualProperty: true
+        ipSymbols: true
       }
     });
     assert.strictEqual(
@@ -412,7 +412,7 @@ describe('typographer switches', function () {
         dashes: false,
         quotes: true,
         rare: true,
-        intellectualProperty: true
+        ipSymbols: true
       }
     });
     assert.strictEqual(
