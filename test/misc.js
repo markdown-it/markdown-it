@@ -359,6 +359,53 @@ describe('smartquotes', function () {
 });
 
 
+describe('typographer switches', function () {
+
+  it('Should support disabling IP symbols', function () {
+    var md = markdownit({
+      typographer: {
+        quotes: true,
+        rare: true,
+        intellectualProperty: false
+      }
+    });
+    assert.strictEqual(
+      md.render('(P) means "phonogram"!!!!!!'),
+      '<p>(P) means “phonogram”!!!</p>\n'
+    );
+  });
+
+  it('Should support disabling quote replacements', function () {
+    var md = markdownit({
+      typographer: {
+        quotes: false,
+        rare: true,
+        intellectualProperty: true
+      }
+    });
+    assert.strictEqual(
+      md.render('Should\'ve registered that (c)!!!!!!'),
+      '<p>Should\'ve registered that ©!!!</p>\n'
+    );
+  });
+
+  it('Should support disabling rare replacements', function () {
+    var md = markdownit({
+      typographer: {
+        quotes: true,
+        rare: false,
+        intellectualProperty: true
+      }
+    });
+    assert.strictEqual(
+      md.render('Definitely should\'ve registered that (c)!!!!!!'),
+      '<p>Definitely should’ve registered that ©!!!!!!</p>\n'
+    );
+  });
+
+});
+
+
 describe('Token attributes', function () {
   it('.attrJoin', function () {
     var md = markdownit();
