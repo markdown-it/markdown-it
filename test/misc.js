@@ -294,6 +294,33 @@ describe('Links validation', function () {
     assert.strictEqual(md.render('![test](http://example.com)'), '<p>![test](http://example.com)</p>\n');
   });
 
+  it('default should allow common data:image/*', function () {
+    var md = markdownit();
+
+    assert.strictEqual(md.render('![test](data:image/gif;base64,)'), '<p><img src="data:image/gif;base64," alt="test"></p>\n');
+    assert.strictEqual(md.render('![test](data:image/png;base64,)'), '<p><img src="data:image/png;base64," alt="test"></p>\n');
+    assert.strictEqual(md.render('![test](data:image/jpeg;base64,)'), '<p><img src="data:image/jpeg;base64," alt="test"></p>\n');
+    assert.strictEqual(md.render('![test](data:image/svg+xml;base64,)'), '<p><img src="data:image/svg+xml;base64," alt="test"></p>\n');
+    assert.strictEqual(md.render('![test](data:image/webp;base64,)'), '<p><img src="data:image/webp;base64," alt="test"></p>\n');
+  });
+
+  it('default should allow tel: and map:', function () {
+    var md = markdownit();
+
+    assert.strictEqual(md.render('[Call me](tel:1234567)'), '<p><a href="tel:1234567">Call me</a></p>\n');
+    assert.strictEqual(md.render('[Track me](map:12.3,45.6)'), '<p><a href="map:12.3,45.6">Track me</a></p>\n');
+  });
+
+  it('default should skip blocklisted protocols', function () {
+    var md = markdownit();
+
+    assert.strictEqual(md.render('![test](data:image/x-something;base64,)'), '<p>![test](data:image/x-something;base64,)</p>\n');
+    assert.strictEqual(md.render('![test](data:text/javascript;base64,)'), '<p>![test](data:text/javascript;base64,)</p>\n');
+    assert.strictEqual(md.render('![test](vbscript:alert())'), '<p>![test](vbscript:alert())</p>\n');
+    assert.strictEqual(md.render('![test](javascript:alert())'), '<p>![test](javascript:alert())</p>\n');
+    assert.strictEqual(md.render('![test](file:/root.txt)'), '<p>![test](file:/root.txt)</p>\n');
+  });
+
 });
 
 
