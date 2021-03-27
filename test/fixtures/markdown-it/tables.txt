@@ -793,3 +793,16 @@ GFM 4.10 Tables (extension), Example 205
 </thead>
 </table>
 .
+
+A list takes precedence in case of ambiguity
+.
+a | b
+- | -
+1 | 2
+.
+<p>a | b</p>
+<ul>
+<li>| -
+1 | 2</li>
+</ul>
+.
