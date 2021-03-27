@@ -33,3 +33,11 @@ describe('CommonMark', function () {
 
   generate(p.join(__dirname, 'fixtures/commonmark/good.txt'), md);
 });
+
+describe('CommonMark defaults', function () {
+  var md = require('../')('commonmark');
+
+  it('defaults to the safe html false options', function () {
+    assert.strictEqual(md.render('<script>alert();</script>'), '<p>&lt;script&gt;alert();&lt;/script&gt;</p>\n');
+  });
+});
