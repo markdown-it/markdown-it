@@ -297,11 +297,30 @@ describe('Links validation', function () {
   it('default should allow common data:image/*', function () {
     var md = markdownit();
 
-    assert.strictEqual(md.render('![test](data:image/gif;base64,)'), '<p><img src="data:image/gif;base64," alt="test"></p>\n');
-    assert.strictEqual(md.render('![test](data:image/png;base64,)'), '<p><img src="data:image/png;base64," alt="test"></p>\n');
-    assert.strictEqual(md.render('![test](data:image/jpeg;base64,)'), '<p><img src="data:image/jpeg;base64," alt="test"></p>\n');
-    assert.strictEqual(md.render('![test](data:image/svg+xml;base64,)'), '<p><img src="data:image/svg+xml;base64," alt="test"></p>\n');
-    assert.strictEqual(md.render('![test](data:image/webp;base64,)'), '<p><img src="data:image/webp;base64," alt="test"></p>\n');
+    assert.strictEqual(
+      md.render('![test](data:image/gif;base64,)'),
+      '<p><img src="data:image/gif;base64," alt="test"></p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](data:image/png;base64,)'),
+      '<p><img src="data:image/png;base64," alt="test"></p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](data:image/jpeg;base64,)'),
+      '<p><img src="data:image/jpeg;base64," alt="test"></p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](data:image/svg+xml;base64,)'),
+      '<p><img src="data:image/svg+xml;base64," alt="test"></p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](data:image/webp;base64,)'),
+      '<p><img src="data:image/webp;base64," alt="test"></p>\n'
+    );
   });
 
   it('default should allow tel: and map:', function () {
@@ -315,12 +334,35 @@ describe('Links validation', function () {
     var md = markdownit();
 
     // Note: MIME type of SVG is "image/svg+xml", but not "image/svg".
-    assert.strictEqual(md.render('![test](data:image/svg;base64,)'), '<p>![test](data:image/svg;base64,)</p>\n');
-    assert.strictEqual(md.render('![test](data:image/vnd-something;base64,)'), '<p>![test](data:image/vnd-something;base64,)</p>\n');
-    assert.strictEqual(md.render('![test](data:text/javascript;base64,)'), '<p>![test](data:text/javascript;base64,)</p>\n');
-    assert.strictEqual(md.render('![test](vbscript:alert())'), '<p>![test](vbscript:alert())</p>\n');
-    assert.strictEqual(md.render('![test](javascript:alert())'), '<p>![test](javascript:alert())</p>\n');
-    assert.strictEqual(md.render('![test](file:/root.txt)'), '<p>![test](file:/root.txt)</p>\n');
+    assert.strictEqual(
+      md.render('![test](data:image/svg;base64,)'),
+      '<p>![test](data:image/svg;base64,)</p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](data:image/vnd-something;base64,)'),
+      '<p>![test](data:image/vnd-something;base64,)</p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](data:text/javascript;base64,)'),
+      '<p>![test](data:text/javascript;base64,)</p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](vbscript:alert())'),
+      '<p>![test](vbscript:alert())</p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](javascript:alert())'),
+      '<p>![test](javascript:alert())</p>\n'
+    );
+
+    assert.strictEqual(
+      md.render('![test](file:/root.txt)'),
+      '<p>![test](file:/root.txt)</p>\n'
+    );
   });
 
 });
