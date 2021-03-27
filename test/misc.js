@@ -314,7 +314,9 @@ describe('Links validation', function () {
   it('default should skip blocklisted protocols', function () {
     var md = markdownit();
 
-    assert.strictEqual(md.render('![test](data:image/x-something;base64,)'), '<p>![test](data:image/x-something;base64,)</p>\n');
+    // Note: MIME type of SVG is "image/svg+xml", but not "image/svg".
+    assert.strictEqual(md.render('![test](data:image/svg;base64,)'), '<p>![test](data:image/svg;base64,)</p>\n');
+    assert.strictEqual(md.render('![test](data:image/vnd-something;base64,)'), '<p>![test](data:image/vnd-something;base64,)</p>\n');
     assert.strictEqual(md.render('![test](data:text/javascript;base64,)'), '<p>![test](data:text/javascript;base64,)</p>\n');
     assert.strictEqual(md.render('![test](vbscript:alert())'), '<p>![test](vbscript:alert())</p>\n');
     assert.strictEqual(md.render('![test](javascript:alert())'), '<p>![test](javascript:alert())</p>\n');
