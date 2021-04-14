@@ -1,4 +1,4 @@
-/*! markdown-it 12.0.4 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.0.5 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -2160,7 +2160,7 @@
     zwnj: "\u200c"
   };
   /*eslint quotes:0*/  var entities = require$$0;
-  var regex = /[!-#%-\*,-\/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u09FD\u0A76\u0AF0\u0C84\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E4E\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD803[\uDF55-\uDF59]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC8\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDC4B-\uDC4F\uDC5B\uDC5D\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDE60-\uDE6C\uDF3C-\uDF3E]|\uD806[\uDC3B\uDE3F-\uDE46\uDE9A-\uDE9C\uDE9E-\uDEA2]|\uD807[\uDC41-\uDC45\uDC70\uDC71\uDEF7\uDEF8]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD81B[\uDE97-\uDE9A]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]|\uD83A[\uDD5E\uDD5F]/;
+  var regex$4 = /[!-#%-\*,-\/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u09FD\u0A76\u0AF0\u0C84\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E4E\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD803[\uDF55-\uDF59]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC8\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDC4B-\uDC4F\uDC5B\uDC5D\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDE60-\uDE6C\uDF3C-\uDF3E]|\uD806[\uDC3B\uDE3F-\uDE46\uDE9A-\uDE9C\uDE9E-\uDEA2]|\uD807[\uDC41-\uDC45\uDC70\uDC71\uDEF7\uDEF8]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD81B[\uDE97-\uDE9A]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]|\uD83A[\uDD5E\uDD5F]/;
   var encodeCache = {};
   // Create a lookup array where anything but characters in `chars` string
   // and alphanumeric chars is percent-encoded.
@@ -2192,12 +2192,12 @@
   //  - exclude      - list of characters to ignore (in addition to a-zA-Z0-9)
   //  - keepEscaped  - don't encode '%' in a correct escape sequence (default: true)
   
-    function encode(string, exclude, keepEscaped) {
+    function encode$2(string, exclude, keepEscaped) {
     var i, l, code, nextCode, cache, result = "";
     if (typeof exclude !== "string") {
       // encode(string, keepEscaped)
       keepEscaped = exclude;
-      exclude = encode.defaultChars;
+      exclude = encode$2.defaultChars;
     }
     if (typeof keepEscaped === "undefined") {
       keepEscaped = true;
@@ -2232,9 +2232,9 @@
     }
     return result;
   }
-  encode.defaultChars = ";/?:@&=+$,-_.!~*'()#";
-  encode.componentChars = "-_.!~*'()";
-  var encode_1 = encode;
+  encode$2.defaultChars = ";/?:@&=+$,-_.!~*'()#";
+  encode$2.componentChars = "-_.!~*'()";
+  var encode_1 = encode$2;
   /* eslint-disable no-bitwise */  var decodeCache = {};
   function getDecodeCache(exclude) {
     var i, ch, cache = decodeCache[exclude];
@@ -2254,10 +2254,10 @@
   }
   // Decode percent-encoded string.
   
-    function decode(string, exclude) {
+    function decode$2(string, exclude) {
     var cache;
     if (typeof exclude !== "string") {
-      exclude = decode.defaultChars;
+      exclude = decode$2.defaultChars;
     }
     cache = getDecodeCache(exclude);
     return string.replace(/(%[a-f0-9]{2})+/gi, (function(seq) {
@@ -2319,10 +2319,10 @@
       return result;
     }));
   }
-  decode.defaultChars = ";/?:@&=+$,#";
-  decode.componentChars = "";
-  var decode_1 = decode;
-  var format = function format(url) {
+  decode$2.defaultChars = ";/?:@&=+$,#";
+  decode$2.componentChars = "";
+  var decode_1 = decode$2;
+  var format$1 = function format(url) {
     var result = "";
     result += url.protocol || "";
     result += url.slashes ? "//" : "";
@@ -2593,26 +2593,26 @@
       this.hostname = host;
     }
   };
-  var parse = urlParse;
+  var parse$1 = urlParse;
   var encode$1 = encode_1;
   var decode$1 = decode_1;
-  var format$1 = format;
-  var parse$1 = parse;
+  var format = format$1;
+  var parse = parse$1;
   var mdurl = {
     encode: encode$1,
     decode: decode$1,
-    format: format$1,
-    parse: parse$1
+    format: format,
+    parse: parse
   };
-  var regex$1 = /[\0-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/;
+  var regex$3 = /[\0-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/;
   var regex$2 = /[\0-\x1F\x7F-\x9F]/;
-  var regex$3 = /[\xAD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF\uFFF9-\uFFFB]|\uD804[\uDCBD\uDCCD]|\uD82F[\uDCA0-\uDCA3]|\uD834[\uDD73-\uDD7A]|\uDB40[\uDC01\uDC20-\uDC7F]/;
-  var regex$4 = /[ \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/;
-  var Any = regex$1;
+  var regex$1 = /[\xAD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF\uFFF9-\uFFFB]|\uD804[\uDCBD\uDCCD]|\uD82F[\uDCA0-\uDCA3]|\uD834[\uDD73-\uDD7A]|\uDB40[\uDC01\uDC20-\uDC7F]/;
+  var regex = /[ \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/;
+  var Any = regex$3;
   var Cc = regex$2;
-  var Cf = regex$3;
-  var P = regex;
-  var Z = regex$4;
+  var Cf = regex$1;
+  var P = regex$4;
+  var Z = regex;
   var uc_micro = {
     Any: Any,
     Cc: Cc,
@@ -2795,7 +2795,7 @@
     /*eslint-disable max-len*/
     // Currently without astral characters support.
         function isPunctChar(ch) {
-      return regex.test(ch);
+      return regex$4.test(ch);
     }
     // Markdown ASCII punctuation characters.
     
@@ -2950,7 +2950,7 @@
         state.pos = oldPos;
     return labelEnd;
   };
-  var unescapeAll = utils.unescapeAll;
+  var unescapeAll$2 = utils.unescapeAll;
   var parse_link_destination = function parseLinkDestination(str, pos, max) {
     var code, level, lines = 0, start = pos, result = {
       ok: false,
@@ -2970,7 +2970,7 @@
         }
         if (code === 62 /* > */) {
           result.pos = pos + 1;
-          result.str = unescapeAll(str.slice(start + 1, pos));
+          result.str = unescapeAll$2(str.slice(start + 1, pos));
           result.ok = true;
           return result;
         }
@@ -3021,7 +3021,7 @@
     if (level !== 0) {
       return result;
     }
-    result.str = unescapeAll(str.slice(start, pos));
+    result.str = unescapeAll$2(str.slice(start, pos));
     result.lines = lines;
     result.pos = pos;
     result.ok = true;
@@ -3077,8 +3077,8 @@
     parseLinkDestination: parseLinkDestination,
     parseLinkTitle: parseLinkTitle
   };
-  var assign = utils.assign;
-  var unescapeAll$2 = utils.unescapeAll;
+  var assign$1 = utils.assign;
+  var unescapeAll = utils.unescapeAll;
   var escapeHtml = utils.escapeHtml;
   ////////////////////////////////////////////////////////////////////////////////
     var default_rules = {};
@@ -3091,7 +3091,7 @@
     return "<pre" + slf.renderAttrs(token) + "><code>" + escapeHtml(tokens[idx].content) + "</code></pre>\n";
   };
   default_rules.fence = function(tokens, idx, options, env, slf) {
-    var token = tokens[idx], info = token.info ? unescapeAll$2(token.info).trim() : "", langName = "", langAttrs = "", highlighted, i, arr, tmpAttrs, tmpToken;
+    var token = tokens[idx], info = token.info ? unescapeAll(token.info).trim() : "", langName = "", langAttrs = "", highlighted, i, arr, tmpAttrs, tmpToken;
     if (info) {
       arr = info.split(/(\s+)/g);
       langName = arr[0];
@@ -3182,7 +3182,7 @@
 	   * See [source code](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
 	   * for more details and examples.
 	   **/
-    this.rules = assign({}, default_rules);
+    this.rules = assign$1({}, default_rules);
   }
   /**
 	 * Renderer.renderAttrs(token) -> String
@@ -3829,9 +3829,9 @@
       }
     }
   };
-  var isWhiteSpace = utils.isWhiteSpace;
-  var isPunctChar = utils.isPunctChar;
-  var isMdAsciiPunct = utils.isMdAsciiPunct;
+  var isWhiteSpace$1 = utils.isWhiteSpace;
+  var isPunctChar$1 = utils.isPunctChar;
+  var isMdAsciiPunct$1 = utils.isMdAsciiPunct;
   var QUOTE_TEST_RE = /['"]/;
   var QUOTE_RE = /['"]/g;
   var APOSTROPHE = "\u2019";
@@ -3897,10 +3897,10 @@
             break;
           }
         }
-        isLastPunctChar = isMdAsciiPunct(lastChar) || isPunctChar(String.fromCharCode(lastChar));
-        isNextPunctChar = isMdAsciiPunct(nextChar) || isPunctChar(String.fromCharCode(nextChar));
-        isLastWhiteSpace = isWhiteSpace(lastChar);
-        isNextWhiteSpace = isWhiteSpace(nextChar);
+        isLastPunctChar = isMdAsciiPunct$1(lastChar) || isPunctChar$1(String.fromCharCode(lastChar));
+        isNextPunctChar = isMdAsciiPunct$1(nextChar) || isPunctChar$1(String.fromCharCode(nextChar));
+        isLastWhiteSpace = isWhiteSpace$1(lastChar);
+        isNextWhiteSpace = isWhiteSpace$1(nextChar);
         if (isNextWhiteSpace) {
           canOpen = false;
         } else if (isNextPunctChar) {
@@ -4058,7 +4058,10 @@
     /**
 	   * Token#info -> String
 	   *
-	   * fence infostring
+	   * Additional information:
+	   *
+	   * - Info string for "fence" tokens
+	   * - The value "auto" for autolink "link_open" and "link_close" tokens
 	   **/    this.info = "";
     /**
 	   * Token#meta -> Object
@@ -4154,7 +4157,7 @@
   // re-export Token class to use in core rules
     StateCore.prototype.Token = token;
   var state_core = StateCore;
-  var _rules = [ [ "normalize", normalize ], [ "block", block ], [ "inline", inline ], [ "linkify", linkify ], [ "replacements", replacements ], [ "smartquotes", smartquotes ] ];
+  var _rules$2 = [ [ "normalize", normalize ], [ "block", block ], [ "inline", inline ], [ "linkify", linkify ], [ "replacements", replacements ], [ "smartquotes", smartquotes ] ];
   /**
 	 * new Core()
 	 **/  function Core() {
@@ -4164,8 +4167,8 @@
 	   * [[Ruler]] instance. Keep configuration of core rules.
 	   **/
     this.ruler = new ruler;
-    for (var i = 0; i < _rules.length; i++) {
-      this.ruler.push(_rules[i][0], _rules[i][1]);
+    for (var i = 0; i < _rules$2.length; i++) {
+      this.ruler.push(_rules$2[i][0], _rules$2[i][1]);
     }
   }
   /**
@@ -4181,7 +4184,7 @@
   };
   Core.prototype.State = state_core;
   var parser_core = Core;
-  var isSpace = utils.isSpace;
+  var isSpace$a = utils.isSpace;
   function getLine(state, line) {
     var pos = state.bMarks[line] + state.tShift[line], max = state.eMarks[line];
     return state.src.substr(pos, max - pos);
@@ -4210,7 +4213,7 @@
     return result;
   }
   var table = function table(state, startLine, endLine, silent) {
-    var ch, lineText, pos, i, l, nextLine, columns, columnCount, token, aligns, t, tableLines, tbodyLines, oldParentType, terminate, terminatorRules;
+    var ch, lineText, pos, i, l, nextLine, columns, columnCount, token, aligns, t, tableLines, tbodyLines, oldParentType, terminate, terminatorRules, firstCh, secondCh;
     // should have at least two lines
         if (startLine + 2 > endLine) {
       return false;
@@ -4230,13 +4233,25 @@
     if (pos >= state.eMarks[nextLine]) {
       return false;
     }
-    ch = state.src.charCodeAt(pos++);
-    if (ch !== 124 /* | */ && ch !== 45 /* - */ && ch !== 58 /* : */) {
+    firstCh = state.src.charCodeAt(pos++);
+    if (firstCh !== 124 /* | */ && firstCh !== 45 /* - */ && firstCh !== 58 /* : */) {
+      return false;
+    }
+    if (pos >= state.eMarks[nextLine]) {
+      return false;
+    }
+    secondCh = state.src.charCodeAt(pos++);
+    if (secondCh !== 124 /* | */ && secondCh !== 45 /* - */ && secondCh !== 58 /* : */ && !isSpace$a(secondCh)) {
+      return false;
+    }
+    // if first character is '-', then second character must not be a space
+    // (due to parsing ambiguity with list)
+        if (firstCh === 45 /* - */ && isSpace$a(secondCh)) {
       return false;
     }
     while (pos < state.eMarks[nextLine]) {
       ch = state.src.charCodeAt(pos);
-      if (ch !== 124 /* | */ && ch !== 45 /* - */ && ch !== 58 /* : */ && !isSpace(ch)) {
+      if (ch !== 124 /* | */ && ch !== 45 /* - */ && ch !== 58 /* : */ && !isSpace$a(ch)) {
         return false;
       }
       pos++;
@@ -4465,7 +4480,7 @@
     token.map = [ startLine, state.line ];
     return true;
   };
-  var isSpace$1 = utils.isSpace;
+  var isSpace$9 = utils.isSpace;
   var blockquote = function blockquote(state, startLine, endLine, silent) {
     var adjustTab, ch, i, initial, l, lastLineEmpty, lines, nextLine, offset, oldBMarks, oldBSCount, oldIndent, oldParentType, oldSCount, oldTShift, spaceAfterMarker, terminate, terminatorRules, token, isOutdented, oldLineMax = state.lineMax, pos = state.bMarks[startLine] + state.tShift[startLine], max = state.eMarks[startLine];
     // if it's indented more than 3 spaces, it should be a code block
@@ -4514,7 +4529,7 @@
     state.bMarks[startLine] = pos;
     while (pos < max) {
       ch = state.src.charCodeAt(pos);
-      if (isSpace$1(ch)) {
+      if (isSpace$9(ch)) {
         if (ch === 9) {
           offset += 4 - (offset + state.bsCount[startLine] + (adjustTab ? 1 : 0)) % 4;
         } else {
@@ -4603,7 +4618,7 @@
         state.bMarks[nextLine] = pos;
         while (pos < max) {
           ch = state.src.charCodeAt(pos);
-          if (isSpace$1(ch)) {
+          if (isSpace$9(ch)) {
             if (ch === 9) {
               offset += 4 - (offset + state.bsCount[nextLine] + (adjustTab ? 1 : 0)) % 4;
             } else {
@@ -4683,7 +4698,7 @@
     state.blkIndent = oldIndent;
     return true;
   };
-  var isSpace$2 = utils.isSpace;
+  var isSpace$8 = utils.isSpace;
   var hr = function hr(state, startLine, endLine, silent) {
     var marker, cnt, ch, token, pos = state.bMarks[startLine] + state.tShift[startLine], max = state.eMarks[startLine];
     // if it's indented more than 3 spaces, it should be a code block
@@ -4699,7 +4714,7 @@
         cnt = 1;
     while (pos < max) {
       ch = state.src.charCodeAt(pos++);
-      if (ch !== marker && !isSpace$2(ch)) {
+      if (ch !== marker && !isSpace$8(ch)) {
         return false;
       }
       if (ch === marker) {
@@ -4718,7 +4733,7 @@
     token.markup = Array(cnt + 1).join(String.fromCharCode(marker));
     return true;
   };
-  var isSpace$3 = utils.isSpace;
+  var isSpace$7 = utils.isSpace;
   // Search `[-+*][\n ]`, returns next pos after marker on success
   // or -1 on fail.
     function skipBulletListMarker(state, startLine) {
@@ -4732,7 +4747,7 @@
     }
     if (pos < max) {
       ch = state.src.charCodeAt(pos);
-      if (!isSpace$3(ch)) {
+      if (!isSpace$7(ch)) {
         // " -test " - is not a list item
         return -1;
       }
@@ -4773,7 +4788,7 @@
     }
     if (pos < max) {
       ch = state.src.charCodeAt(pos);
-      if (!isSpace$3(ch)) {
+      if (!isSpace$7(ch)) {
         // " 1.test " - is not a list item
         return -1;
       }
@@ -4991,8 +5006,8 @@
     }
     return true;
   };
-  var normalizeReference = utils.normalizeReference;
-  var isSpace$4 = utils.isSpace;
+  var normalizeReference$2 = utils.normalizeReference;
+  var isSpace$6 = utils.isSpace;
   var reference = function reference(state, startLine, _endLine, silent) {
     var ch, destEndPos, destEndLineNo, endLine, href, i, l, label, labelEnd, oldParentType, res, start, str, terminate, terminatorRules, title, lines = 0, pos = state.bMarks[startLine] + state.tShift[startLine], max = state.eMarks[startLine], nextLine = startLine + 1;
     // if it's indented more than 3 spaces, it should be a code block
@@ -5069,7 +5084,7 @@
       ch = str.charCodeAt(pos);
       if (ch === 10) {
         lines++;
-      } else if (isSpace$4(ch)) ; else {
+      } else if (isSpace$6(ch)) ; else {
         break;
       }
     }
@@ -5095,7 +5110,7 @@
       ch = str.charCodeAt(pos);
       if (ch === 10) {
         lines++;
-      } else if (isSpace$4(ch)) ; else {
+      } else if (isSpace$6(ch)) ; else {
         break;
       }
     }
@@ -5114,7 +5129,7 @@
     // skip trailing spaces until the rest of the line
         while (pos < max) {
       ch = str.charCodeAt(pos);
-      if (!isSpace$4(ch)) {
+      if (!isSpace$6(ch)) {
         break;
       }
       pos++;
@@ -5128,7 +5143,7 @@
         lines = destEndLineNo;
         while (pos < max) {
           ch = str.charCodeAt(pos);
-          if (!isSpace$4(ch)) {
+          if (!isSpace$6(ch)) {
             break;
           }
           pos++;
@@ -5139,7 +5154,7 @@
       // garbage at the end of the line
       return false;
     }
-    label = normalizeReference(str.slice(1, labelEnd));
+    label = normalizeReference$2(str.slice(1, labelEnd));
     if (!label) {
       // CommonMark 0.20 disallows empty labels
       return false;
@@ -5159,6 +5174,84 @@
     }
     state.parentType = oldParentType;
     state.line = startLine + lines + 1;
+    return true;
+  };
+  // List of valid html blocks names, accorting to commonmark spec
+    var html_blocks = [ "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption", "center", "col", "colgroup", "dd", "details", "dialog", "dir", "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "iframe", "legend", "li", "link", "main", "menu", "menuitem", "nav", "noframes", "ol", "optgroup", "option", "p", "param", "section", "source", "summary", "table", "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul" ];
+  // Regexps to match html elements
+    var attr_name = "[a-zA-Z_:][a-zA-Z0-9:._-]*";
+  var unquoted = "[^\"'=<>`\\x00-\\x20]+";
+  var single_quoted = "'[^']*'";
+  var double_quoted = '"[^"]*"';
+  var attr_value = "(?:" + unquoted + "|" + single_quoted + "|" + double_quoted + ")";
+  var attribute = "(?:\\s+" + attr_name + "(?:\\s*=\\s*" + attr_value + ")?)";
+  var open_tag = "<[A-Za-z][A-Za-z0-9\\-]*" + attribute + "*\\s*\\/?>";
+  var close_tag = "<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>";
+  var comment = "\x3c!----\x3e|\x3c!--(?:-?[^>-])(?:-?[^-])*--\x3e";
+  var processing = "<[?][\\s\\S]*?[?]>";
+  var declaration = "<![A-Z]+\\s+[^>]*>";
+  var cdata = "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>";
+  var HTML_TAG_RE$1 = new RegExp("^(?:" + open_tag + "|" + close_tag + "|" + comment + "|" + processing + "|" + declaration + "|" + cdata + ")");
+  var HTML_OPEN_CLOSE_TAG_RE$1 = new RegExp("^(?:" + open_tag + "|" + close_tag + ")");
+  var HTML_TAG_RE_1 = HTML_TAG_RE$1;
+  var HTML_OPEN_CLOSE_TAG_RE_1 = HTML_OPEN_CLOSE_TAG_RE$1;
+  var html_re = {
+    HTML_TAG_RE: HTML_TAG_RE_1,
+    HTML_OPEN_CLOSE_TAG_RE: HTML_OPEN_CLOSE_TAG_RE_1
+  };
+  var HTML_OPEN_CLOSE_TAG_RE = html_re.HTML_OPEN_CLOSE_TAG_RE;
+  // An array of opening and corresponding closing sequences for html tags,
+  // last argument defines whether it can terminate a paragraph or not
+  
+    var HTML_SEQUENCES = [ [ /^<(script|pre|style)(?=(\s|>|$))/i, /<\/(script|pre|style)>/i, true ], [ /^<!--/, /-->/, true ], [ /^<\?/, /\?>/, true ], [ /^<![A-Z]/, />/, true ], [ /^<!\[CDATA\[/, /\]\]>/, true ], [ new RegExp("^</?(" + html_blocks.join("|") + ")(?=(\\s|/?>|$))", "i"), /^$/, true ], [ new RegExp(HTML_OPEN_CLOSE_TAG_RE.source + "\\s*$"), /^$/, false ] ];
+  var html_block = function html_block(state, startLine, endLine, silent) {
+    var i, nextLine, token, lineText, pos = state.bMarks[startLine] + state.tShift[startLine], max = state.eMarks[startLine];
+    // if it's indented more than 3 spaces, it should be a code block
+        if (state.sCount[startLine] - state.blkIndent >= 4) {
+      return false;
+    }
+    if (!state.md.options.html) {
+      return false;
+    }
+    if (state.src.charCodeAt(pos) !== 60 /* < */) {
+      return false;
+    }
+    lineText = state.src.slice(pos, max);
+    for (i = 0; i < HTML_SEQUENCES.length; i++) {
+      if (HTML_SEQUENCES[i][0].test(lineText)) {
+        break;
+      }
+    }
+    if (i === HTML_SEQUENCES.length) {
+      return false;
+    }
+    if (silent) {
+      // true if this sequence can be a terminator, false otherwise
+      return HTML_SEQUENCES[i][2];
+    }
+    nextLine = startLine + 1;
+    // If we are here - we detected HTML block.
+    // Let's roll down till block end.
+        if (!HTML_SEQUENCES[i][1].test(lineText)) {
+      for (;nextLine < endLine; nextLine++) {
+        if (state.sCount[nextLine] < state.blkIndent) {
+          break;
+        }
+        pos = state.bMarks[nextLine] + state.tShift[nextLine];
+        max = state.eMarks[nextLine];
+        lineText = state.src.slice(pos, max);
+        if (HTML_SEQUENCES[i][1].test(lineText)) {
+          if (lineText.length !== 0) {
+            nextLine++;
+          }
+          break;
+        }
+      }
+    }
+    state.line = nextLine;
+    token = state.push("html_block", "", 0);
+    token.map = [ startLine, nextLine ];
+    token.content = state.getLines(startLine, nextLine, state.blkIndent, true);
     return true;
   };
   var isSpace$5 = utils.isSpace;
@@ -5273,84 +5366,6 @@
     state.parentType = oldParentType;
     return true;
   };
-  // List of valid html blocks names, accorting to commonmark spec
-    var html_blocks = [ "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption", "center", "col", "colgroup", "dd", "details", "dialog", "dir", "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "iframe", "legend", "li", "link", "main", "menu", "menuitem", "nav", "noframes", "ol", "optgroup", "option", "p", "param", "section", "source", "summary", "table", "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul" ];
-  // Regexps to match html elements
-    var attr_name = "[a-zA-Z_:][a-zA-Z0-9:._-]*";
-  var unquoted = "[^\"'=<>`\\x00-\\x20]+";
-  var single_quoted = "'[^']*'";
-  var double_quoted = '"[^"]*"';
-  var attr_value = "(?:" + unquoted + "|" + single_quoted + "|" + double_quoted + ")";
-  var attribute = "(?:\\s+" + attr_name + "(?:\\s*=\\s*" + attr_value + ")?)";
-  var open_tag = "<[A-Za-z][A-Za-z0-9\\-]*" + attribute + "*\\s*\\/?>";
-  var close_tag = "<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>";
-  var comment = "\x3c!----\x3e|\x3c!--(?:-?[^>-])(?:-?[^-])*--\x3e";
-  var processing = "<[?][\\s\\S]*?[?]>";
-  var declaration = "<![A-Z]+\\s+[^>]*>";
-  var cdata = "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>";
-  var HTML_TAG_RE = new RegExp("^(?:" + open_tag + "|" + close_tag + "|" + comment + "|" + processing + "|" + declaration + "|" + cdata + ")");
-  var HTML_OPEN_CLOSE_TAG_RE = new RegExp("^(?:" + open_tag + "|" + close_tag + ")");
-  var HTML_TAG_RE_1 = HTML_TAG_RE;
-  var HTML_OPEN_CLOSE_TAG_RE_1 = HTML_OPEN_CLOSE_TAG_RE;
-  var html_re = {
-    HTML_TAG_RE: HTML_TAG_RE_1,
-    HTML_OPEN_CLOSE_TAG_RE: HTML_OPEN_CLOSE_TAG_RE_1
-  };
-  var HTML_OPEN_CLOSE_TAG_RE$1 = html_re.HTML_OPEN_CLOSE_TAG_RE;
-  // An array of opening and corresponding closing sequences for html tags,
-  // last argument defines whether it can terminate a paragraph or not
-  
-    var HTML_SEQUENCES = [ [ /^<(script|pre|style)(?=(\s|>|$))/i, /<\/(script|pre|style)>/i, true ], [ /^<!--/, /-->/, true ], [ /^<\?/, /\?>/, true ], [ /^<![A-Z]/, />/, true ], [ /^<!\[CDATA\[/, /\]\]>/, true ], [ new RegExp("^</?(" + html_blocks.join("|") + ")(?=(\\s|/?>|$))", "i"), /^$/, true ], [ new RegExp(HTML_OPEN_CLOSE_TAG_RE$1.source + "\\s*$"), /^$/, false ] ];
-  var html_block = function html_block(state, startLine, endLine, silent) {
-    var i, nextLine, token, lineText, pos = state.bMarks[startLine] + state.tShift[startLine], max = state.eMarks[startLine];
-    // if it's indented more than 3 spaces, it should be a code block
-        if (state.sCount[startLine] - state.blkIndent >= 4) {
-      return false;
-    }
-    if (!state.md.options.html) {
-      return false;
-    }
-    if (state.src.charCodeAt(pos) !== 60 /* < */) {
-      return false;
-    }
-    lineText = state.src.slice(pos, max);
-    for (i = 0; i < HTML_SEQUENCES.length; i++) {
-      if (HTML_SEQUENCES[i][0].test(lineText)) {
-        break;
-      }
-    }
-    if (i === HTML_SEQUENCES.length) {
-      return false;
-    }
-    if (silent) {
-      // true if this sequence can be a terminator, false otherwise
-      return HTML_SEQUENCES[i][2];
-    }
-    nextLine = startLine + 1;
-    // If we are here - we detected HTML block.
-    // Let's roll down till block end.
-        if (!HTML_SEQUENCES[i][1].test(lineText)) {
-      for (;nextLine < endLine; nextLine++) {
-        if (state.sCount[nextLine] < state.blkIndent) {
-          break;
-        }
-        pos = state.bMarks[nextLine] + state.tShift[nextLine];
-        max = state.eMarks[nextLine];
-        lineText = state.src.slice(pos, max);
-        if (HTML_SEQUENCES[i][1].test(lineText)) {
-          if (lineText.length !== 0) {
-            nextLine++;
-          }
-          break;
-        }
-      }
-    }
-    state.line = nextLine;
-    token = state.push("html_block", "", 0);
-    token.map = [ startLine, nextLine ];
-    token.content = state.getLines(startLine, nextLine, state.blkIndent, true);
-    return true;
-  };
   // Paragraph
     var paragraph = function paragraph(state, startLine /*, endLine*/) {
     var content, terminate, i, l, token, oldParentType, nextLine = startLine + 1, terminatorRules = state.md.block.ruler.getRules("paragraph"), endLine = state.lineMax;
@@ -5391,7 +5406,7 @@
     state.parentType = oldParentType;
     return true;
   };
-  var isSpace$6 = utils.isSpace;
+  var isSpace$4 = utils.isSpace;
   function StateBlock(src, md, env, tokens) {
     var ch, s, start, pos, len, indent, offset, indent_found;
     this.src = src;
@@ -5448,7 +5463,7 @@
     for (start = pos = indent = offset = 0, len = s.length; pos < len; pos++) {
       ch = s.charCodeAt(pos);
       if (!indent_found) {
-        if (isSpace$6(ch)) {
+        if (isSpace$4(ch)) {
           indent++;
           if (ch === 9) {
             offset += 4 - offset % 4;
@@ -5513,7 +5528,7 @@
     var ch;
     for (var max = this.src.length; pos < max; pos++) {
       ch = this.src.charCodeAt(pos);
-      if (!isSpace$6(ch)) {
+      if (!isSpace$4(ch)) {
         break;
       }
     }
@@ -5525,7 +5540,7 @@
       return pos;
     }
     while (pos > min) {
-      if (!isSpace$6(this.src.charCodeAt(--pos))) {
+      if (!isSpace$4(this.src.charCodeAt(--pos))) {
         return pos + 1;
       }
     }
@@ -5570,7 +5585,7 @@
       }
       while (first < last && lineIndent < indent) {
         ch = this.src.charCodeAt(first);
-        if (isSpace$6(ch)) {
+        if (isSpace$4(ch)) {
           if (ch === 9) {
             lineIndent += 4 - (lineIndent + this.bsCount[line]) % 4;
           } else {
@@ -5600,7 +5615,7 @@
   var _rules$1 = [ 
   // First 2 params - rule name & source. Secondary array - list of rules,
   // which can be terminated by this one.
-  [ "table", table, [ "paragraph", "reference" ] ], [ "code", code ], [ "fence", fence, [ "paragraph", "reference", "blockquote", "list" ] ], [ "blockquote", blockquote, [ "paragraph", "reference", "blockquote", "list" ] ], [ "hr", hr, [ "paragraph", "reference", "blockquote", "list" ] ], [ "list", list, [ "paragraph", "reference", "blockquote" ] ], [ "reference", reference ], [ "heading", heading, [ "paragraph", "reference", "blockquote" ] ], [ "lheading", lheading ], [ "html_block", html_block, [ "paragraph", "reference", "blockquote" ] ], [ "paragraph", paragraph ] ];
+  [ "table", table, [ "paragraph", "reference" ] ], [ "code", code ], [ "fence", fence, [ "paragraph", "reference", "blockquote", "list" ] ], [ "blockquote", blockquote, [ "paragraph", "reference", "blockquote", "list" ] ], [ "hr", hr, [ "paragraph", "reference", "blockquote", "list" ] ], [ "list", list, [ "paragraph", "reference", "blockquote" ] ], [ "reference", reference ], [ "html_block", html_block, [ "paragraph", "reference", "blockquote" ] ], [ "heading", heading, [ "paragraph", "reference", "blockquote" ] ], [ "lheading", lheading ], [ "paragraph", paragraph ] ];
   /**
 	 * new ParserBlock()
 	 **/  function ParserBlock() {
@@ -5728,7 +5743,7 @@
     state.pos = pos;
     return true;
   };
-  var isSpace$7 = utils.isSpace;
+  var isSpace$3 = utils.isSpace;
   var newline = function newline(state, silent) {
     var pmax, max, pos = state.pos;
     if (state.src.charCodeAt(pos) !== 10 /* \n */) {
@@ -5755,13 +5770,13 @@
     }
     pos++;
     // skip heading spaces for next line
-        while (pos < max && isSpace$7(state.src.charCodeAt(pos))) {
+        while (pos < max && isSpace$3(state.src.charCodeAt(pos))) {
       pos++;
     }
     state.pos = pos;
     return true;
   };
-  var isSpace$8 = utils.isSpace;
+  var isSpace$2 = utils.isSpace;
   var ESCAPED = [];
   for (var i = 0; i < 256; i++) {
     ESCAPED.push(0);
@@ -5792,7 +5807,7 @@
         // skip leading whitespaces from next line
                 while (pos < max) {
           ch = state.src.charCodeAt(pos);
-          if (!isSpace$8(ch)) {
+          if (!isSpace$2(ch)) {
             break;
           }
           pos++;
@@ -5858,7 +5873,7 @@
   // ~~strike through~~
   // Insert each marker as a separate text token, and add it to delimiter list
   
-    var tokenize = function strikethrough(state, silent) {
+    var tokenize$1 = function strikethrough(state, silent) {
     var i, scanned, token, len, ch, start = state.pos, marker = state.src.charCodeAt(start);
     if (silent) {
       return false;
@@ -5895,7 +5910,7 @@
     state.pos += scanned.length;
     return true;
   };
-  function postProcess(state, delimiters) {
+  function postProcess$1(state, delimiters) {
     var i, j, startDelim, endDelim, token, loneMarkers = [], max = delimiters.length;
     for (i = 0; i < max; i++) {
       startDelim = delimiters[i];
@@ -5944,23 +5959,23 @@
   }
   // Walk through delimiter list and replace text tokens with tags
   
-    var postProcess_1 = function strikethrough(state) {
+    var postProcess_1$1 = function strikethrough(state) {
     var curr, tokens_meta = state.tokens_meta, max = state.tokens_meta.length;
-    postProcess(state, state.delimiters);
+    postProcess$1(state, state.delimiters);
     for (curr = 0; curr < max; curr++) {
       if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
-        postProcess(state, tokens_meta[curr].delimiters);
+        postProcess$1(state, tokens_meta[curr].delimiters);
       }
     }
   };
   var strikethrough = {
-    tokenize: tokenize,
-    postProcess: postProcess_1
+    tokenize: tokenize$1,
+    postProcess: postProcess_1$1
   };
   // Process *this* and _that_
   // Insert each marker as a separate text token, and add it to delimiter list
   
-    var tokenize$1 = function emphasis(state, silent) {
+    var tokenize = function emphasis(state, silent) {
     var i, scanned, token, start = state.pos, marker = state.src.charCodeAt(start);
     if (silent) {
       return false;
@@ -5997,7 +6012,7 @@
     state.pos += scanned.length;
     return true;
   };
-  function postProcess$1(state, delimiters) {
+  function postProcess(state, delimiters) {
     var i, startDelim, endDelim, token, ch, isStrong, max = delimiters.length;
     for (i = max - 1; i >= 0; i--) {
       startDelim = delimiters[i];
@@ -6037,21 +6052,21 @@
   }
   // Walk through delimiter list and replace text tokens with tags
   
-    var postProcess_1$1 = function emphasis(state) {
+    var postProcess_1 = function emphasis(state) {
     var curr, tokens_meta = state.tokens_meta, max = state.tokens_meta.length;
-    postProcess$1(state, state.delimiters);
+    postProcess(state, state.delimiters);
     for (curr = 0; curr < max; curr++) {
       if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
-        postProcess$1(state, tokens_meta[curr].delimiters);
+        postProcess(state, tokens_meta[curr].delimiters);
       }
     }
   };
   var emphasis = {
-    tokenize: tokenize$1,
-    postProcess: postProcess_1$1
+    tokenize: tokenize,
+    postProcess: postProcess_1
   };
   var normalizeReference$1 = utils.normalizeReference;
-  var isSpace$9 = utils.isSpace;
+  var isSpace$1 = utils.isSpace;
   var link = function link(state, silent) {
     var attrs, code, label, labelEnd, labelStart, pos, res, ref, token, href = "", title = "", oldPos = state.pos, max = state.posMax, start = state.pos, parseReference = true;
     if (state.src.charCodeAt(state.pos) !== 91 /* [ */) {
@@ -6073,7 +6088,7 @@
             pos++;
       for (;pos < max; pos++) {
         code = state.src.charCodeAt(pos);
-        if (!isSpace$9(code) && code !== 10) {
+        if (!isSpace$1(code) && code !== 10) {
           break;
         }
       }
@@ -6096,7 +6111,7 @@
                 start = pos;
         for (;pos < max; pos++) {
           code = state.src.charCodeAt(pos);
-          if (!isSpace$9(code) && code !== 10) {
+          if (!isSpace$1(code) && code !== 10) {
             break;
           }
         }
@@ -6110,7 +6125,7 @@
           //                         ^^ skipping these spaces
                     for (;pos < max; pos++) {
             code = state.src.charCodeAt(pos);
-            if (!isSpace$9(code) && code !== 10) {
+            if (!isSpace$1(code) && code !== 10) {
               break;
             }
           }
@@ -6170,8 +6185,8 @@
     state.posMax = max;
     return true;
   };
-  var normalizeReference$2 = utils.normalizeReference;
-  var isSpace$a = utils.isSpace;
+  var normalizeReference = utils.normalizeReference;
+  var isSpace = utils.isSpace;
   var image = function image(state, silent) {
     var attrs, code, content, label, labelEnd, labelStart, pos, ref, res, title, token, tokens, start, href = "", oldPos = state.pos, max = state.posMax;
     if (state.src.charCodeAt(state.pos) !== 33 /* ! */) {
@@ -6194,7 +6209,7 @@
       pos++;
       for (;pos < max; pos++) {
         code = state.src.charCodeAt(pos);
-        if (!isSpace$a(code) && code !== 10) {
+        if (!isSpace(code) && code !== 10) {
           break;
         }
       }
@@ -6218,7 +6233,7 @@
             start = pos;
       for (;pos < max; pos++) {
         code = state.src.charCodeAt(pos);
-        if (!isSpace$a(code) && code !== 10) {
+        if (!isSpace(code) && code !== 10) {
           break;
         }
       }
@@ -6232,7 +6247,7 @@
         //                         ^^ skipping these spaces
                 for (;pos < max; pos++) {
           code = state.src.charCodeAt(pos);
-          if (!isSpace$a(code) && code !== 10) {
+          if (!isSpace(code) && code !== 10) {
             break;
           }
         }
@@ -6265,7 +6280,7 @@
             if (!label) {
         label = state.src.slice(labelStart, labelEnd);
       }
-      ref = state.env.references[normalizeReference$2(label)];
+      ref = state.env.references[normalizeReference(label)];
       if (!ref) {
         state.pos = oldPos;
         return false;
@@ -6349,7 +6364,7 @@
     }
     return false;
   };
-  var HTML_TAG_RE$1 = html_re.HTML_TAG_RE;
+  var HTML_TAG_RE = html_re.HTML_TAG_RE;
   function isLetter(ch) {
     /*eslint no-bitwise:0*/
     var lc = ch | 32;
@@ -6371,7 +6386,7 @@
     if (ch !== 33 /* ! */ && ch !== 63 /* ? */ && ch !== 47 /* / */ && !isLetter(ch)) {
       return false;
     }
-    match = state.src.slice(pos).match(HTML_TAG_RE$1);
+    match = state.src.slice(pos).match(HTML_TAG_RE);
     if (!match) {
       return false;
     }
@@ -6522,9 +6537,9 @@
       tokens.length = last;
     }
   };
-  var isWhiteSpace$1 = utils.isWhiteSpace;
-  var isPunctChar$1 = utils.isPunctChar;
-  var isMdAsciiPunct$1 = utils.isMdAsciiPunct;
+  var isWhiteSpace = utils.isWhiteSpace;
+  var isPunctChar = utils.isPunctChar;
+  var isMdAsciiPunct = utils.isMdAsciiPunct;
   function StateInline(src, md, env, outTokens) {
     this.src = src;
     this.env = env;
@@ -6602,10 +6617,10 @@
     count = pos - start;
     // treat end of the line as a whitespace
         nextChar = pos < max ? this.src.charCodeAt(pos) : 32;
-    isLastPunctChar = isMdAsciiPunct$1(lastChar) || isPunctChar$1(String.fromCharCode(lastChar));
-    isNextPunctChar = isMdAsciiPunct$1(nextChar) || isPunctChar$1(String.fromCharCode(nextChar));
-    isLastWhiteSpace = isWhiteSpace$1(lastChar);
-    isNextWhiteSpace = isWhiteSpace$1(nextChar);
+    isLastPunctChar = isMdAsciiPunct(lastChar) || isPunctChar(String.fromCharCode(lastChar));
+    isNextPunctChar = isMdAsciiPunct(nextChar) || isPunctChar(String.fromCharCode(nextChar));
+    isLastWhiteSpace = isWhiteSpace(lastChar);
+    isNextWhiteSpace = isWhiteSpace(nextChar);
     if (isNextWhiteSpace) {
       left_flanking = false;
     } else if (isNextPunctChar) {
@@ -6638,7 +6653,7 @@
   var state_inline = StateInline;
   ////////////////////////////////////////////////////////////////////////////////
   // Parser rules
-    var _rules$2 = [ [ "text", text ], [ "newline", newline ], [ "escape", _escape ], [ "backticks", backticks ], [ "strikethrough", strikethrough.tokenize ], [ "emphasis", emphasis.tokenize ], [ "link", link ], [ "image", image ], [ "autolink", autolink ], [ "html_inline", html_inline ], [ "entity", entity ] ];
+    var _rules = [ [ "text", text ], [ "newline", newline ], [ "escape", _escape ], [ "backticks", backticks ], [ "strikethrough", strikethrough.tokenize ], [ "emphasis", emphasis.tokenize ], [ "link", link ], [ "image", image ], [ "autolink", autolink ], [ "html_inline", html_inline ], [ "entity", entity ] ];
   var _rules2 = [ [ "balance_pairs", balance_pairs ], [ "strikethrough", strikethrough.postProcess ], [ "emphasis", emphasis.postProcess ], [ "text_collapse", text_collapse ] ];
   /**
 	 * new ParserInline()
@@ -6649,8 +6664,8 @@
 	   *
 	   * [[Ruler]] instance. Keep configuration of inline rules.
 	   **/    this.ruler = new ruler;
-    for (i = 0; i < _rules$2.length; i++) {
-      this.ruler.push(_rules$2[i][0], _rules$2[i][1]);
+    for (i = 0; i < _rules.length; i++) {
+      this.ruler.push(_rules[i][0], _rules[i][1]);
     }
     /**
 	   * ParserInline#ruler2 -> Ruler
@@ -6747,10 +6762,10 @@
   var re = function(opts) {
     var re = {};
     // Use direct extract instead of `regenerate` to reduse browserified size
-        re.src_Any = regex$1.source;
+        re.src_Any = regex$3.source;
     re.src_Cc = regex$2.source;
-    re.src_Z = regex$4.source;
-    re.src_P = regex.source;
+    re.src_Z = regex.source;
+    re.src_P = regex$4.source;
     // \p{\Z\P\Cc\CF} (white spaces + control + format + punctuation)
         re.src_ZPCc = [ re.src_Z, re.src_P, re.src_Cc ].join("|");
     // \p{\Z\Cc} (white spaces + control)
@@ -6823,7 +6838,7 @@
   // Helpers
   // Merge objects
   
-    function assign$1(obj /*from1, from2, from3, ...*/) {
+    function assign(obj /*from1, from2, from3, ...*/) {
     var sources = Array.prototype.slice.call(arguments, 1);
     sources.forEach((function(source) {
       if (!source) {
@@ -7127,14 +7142,14 @@
         schemas = {};
       }
     }
-    this.__opts__ = assign$1({}, defaultOptions, options);
+    this.__opts__ = assign({}, defaultOptions, options);
     // Cache last tested result. Used to skip repeating steps on next `match` call.
         this.__index__ = -1;
     this.__last_index__ = -1;
  // Next scan position
         this.__schema__ = "";
     this.__text_cache__ = "";
-    this.__schemas__ = assign$1({}, defaultSchemas, schemas);
+    this.__schemas__ = assign({}, defaultSchemas, schemas);
     this.__compiled__ = {};
     this.__tlds__ = tlds_default;
     this.__tlds_replaced__ = false;
@@ -7158,7 +7173,7 @@
 	 *
 	 * Set recognition options for links without schema.
 	 **/  LinkifyIt.prototype.set = function set(options) {
-    this.__opts__ = assign$1(this.__opts__, options);
+    this.__opts__ = assign(this.__opts__, options);
     return this;
   };
   /**
@@ -7511,7 +7526,7 @@
 	 * @memberOf punycode
 	 * @param {String} input The Punycode string of ASCII-only symbols.
 	 * @returns {String} The resulting string of Unicode symbols.
-	 */  function decode$2(input) {
+	 */  function decode(input) {
     // Don't use UCS-2
     var output = [], inputLength = input.length, out, i = 0, n = initialN, bias = initialBias, basic, j, index, oldi, w, k, digit, t, 
     /** Cached calculation results */
@@ -7577,7 +7592,7 @@
 	 * @memberOf punycode
 	 * @param {String} input The string of Unicode symbols.
 	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-	 */  function encode$2(input) {
+	 */  function encode(input) {
     var n, delta, handledCPCount, basicLength, bias, j, m, q, k, t, currentValue, output = [], 
     /** `inputLength` will hold the number of code points in `input`. */
     inputLength, 
@@ -7663,7 +7678,7 @@
 	 * string.
 	 */  function toUnicode(input) {
     return mapDomain(input, (function(string) {
-      return regexPunycode.test(string) ? decode$2(string.slice(4).toLowerCase()) : string;
+      return regexPunycode.test(string) ? decode(string.slice(4).toLowerCase()) : string;
     }));
   }
   /**
@@ -7678,7 +7693,7 @@
 	 * email address.
 	 */  function toASCII(input) {
     return mapDomain(input, (function(string) {
-      return regexNonASCII.test(string) ? "xn--" + encode$2(string) : string;
+      return regexNonASCII.test(string) ? "xn--" + encode(string) : string;
     }));
   }
   var version = "1.4.1";
@@ -7692,23 +7707,23 @@
     decode: ucs2decode,
     encode: ucs2encode
   };
-  var punycode = {
+  var punycode$1 = {
     version: version,
     ucs2: ucs2,
     toASCII: toASCII,
     toUnicode: toUnicode,
-    encode: encode$2,
-    decode: decode$2
+    encode: encode,
+    decode: decode
   };
-  var punycode$1 =  Object.freeze({
+  var punycode$2 =  Object.freeze({
     __proto__: null,
-    decode: decode$2,
-    encode: encode$2,
+    decode: decode,
+    encode: encode,
     toUnicode: toUnicode,
     toASCII: toASCII,
     version: version,
     ucs2: ucs2,
-    default: punycode
+    default: punycode$1
   });
   // markdown-it default options
     var _default = {
@@ -7826,7 +7841,7 @@
       }
     }
   };
-  var punycode$2 =  getAugmentedNamespace(punycode$1);
+  var punycode =  getAugmentedNamespace(punycode$2);
   var config = {
     default: _default,
     zero: zero,
@@ -7858,7 +7873,7 @@
       // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
       if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
         try {
-          parsed.hostname = punycode$2.toASCII(parsed.hostname);
+          parsed.hostname = punycode.toASCII(parsed.hostname);
         } catch (er) {}
       }
     }
@@ -7873,7 +7888,7 @@
       // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
       if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
         try {
-          parsed.hostname = punycode$2.toUnicode(parsed.hostname);
+          parsed.hostname = punycode.toUnicode(parsed.hostname);
         } catch (er) {}
       }
     }
