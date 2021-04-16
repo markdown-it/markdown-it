@@ -1,4 +1,4 @@
-/*! markdown-it 12.0.5 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.0.6 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -3285,6 +3285,8 @@
         result += tokens[i].content;
       } else if (tokens[i].type === "image") {
         result += this.renderInlineAsText(tokens[i].children, options, env);
+      } else if (tokens[i].type === "softbreak") {
+        result += "\n";
       }
     }
     return result;
