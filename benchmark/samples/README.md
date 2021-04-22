@@ -18,14 +18,20 @@ __v4.+ changed internals! Plugins need update. See [migration details](https://g
 
 __Table of content__
 
-- [Install](#install)
-- [Usage examples](#usage-examples)
-- [API](#api)
-- [Syntax extensions](#syntax-extensions)
-- [Benchmark](#benchmark)
-- [Authors](#authors)
-- [References / Thanks](#references--thanks)
-- [License](#license)
+- [markdown-it](#markdown-it)
+  - [Install](#install)
+  - [Usage examples](#usage-examples)
+    - [Simple](#simple)
+    - [Init with presets and options](#init-with-presets-and-options)
+    - [Plugins load](#plugins-load)
+    - [Syntax highlighting](#syntax-highlighting)
+  - [API](#api)
+  - [Syntax extensions](#syntax-extensions)
+    - [Manage rules](#manage-rules)
+  - [Benchmark](#benchmark)
+  - [Authors](#authors)
+  - [References / Thanks](#references--thanks)
+  - [License](#license)
 
 ## Install
 
@@ -142,7 +148,7 @@ var md = require('markdown-it')({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return hljs.highlight(lang, str).value;
+        return hljs.highlight(str, { language: lang }).value;
       } catch (__) {}
     }
 

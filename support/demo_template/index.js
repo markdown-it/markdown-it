@@ -91,7 +91,7 @@ defaults.highlight = function (str, lang) {
     if (lang && lang !== 'auto' && hljs.getLanguage(lang)) {
 
       return '<pre class="hljs language-' + esc(lang.toLowerCase()) + '"><code>' +
-             hljs.highlight(lang, str, true).value +
+             hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
              '</code></pre>';
 
     } else if (lang === 'auto') {
@@ -183,7 +183,7 @@ function mdInit() {
 
 function setHighlightedlContent(selector, content, lang) {
   if (window.hljs) {
-    $(selector).html(window.hljs.highlight(lang, content).value);
+    $(selector).html(window.hljs.highlight(content, { language: lang }).value);
   } else {
     $(selector).text(content);
   }
