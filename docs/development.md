@@ -67,7 +67,7 @@ The result will be: `text` + `link_open` + `text` + `link_close` + `text`.
 See implementations of [linkify](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/linkify.js) and [emoji](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/replace.js) - those do text token splits.
 
 __Note.__ Don't try to replace text with HTML markup! That's not secure.
-
+ 
 
 #### Why my inline rule is not executed?
 
