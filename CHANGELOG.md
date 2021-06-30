@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [12.1.0] - WIP
+### Changed
+- Updated CM spec compatibility to 0.30.
+
+
 ## [12.0.6] - 2021-04-16
 ### Fixed
 - Newline in `alt` should be rendered, #775.
@@ -562,6 +567,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed presets folder (configs -> presets).
 
 
+[12.1.0]: https://github.com/markdown-it/markdown-it/compare/12.0.6...12.1.0
 [12.0.6]: https://github.com/markdown-it/markdown-it/compare/12.0.5...12.0.6
 [12.0.5]: https://github.com/markdown-it/markdown-it/compare/12.0.4...12.0.5
 [12.0.4]: https://github.com/markdown-it/markdown-it/compare/12.0.3...12.0.4
