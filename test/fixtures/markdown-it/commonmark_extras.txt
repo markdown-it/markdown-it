@@ -1,3 +1,10 @@
+Issue commonmark/cmark#383:
+.
+*****Hello*world****
+.
+<p>**<em><strong>Hello<em>world</em></strong></em></p>
+.
+
 Issue #246.  Double escaping in ALT
 .
 ![&](#)
