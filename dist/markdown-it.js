@@ -1,4 +1,4 @@
-/*! markdown-it 12.0.6 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.1.0 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -5205,7 +5205,7 @@
   // An array of opening and corresponding closing sequences for html tags,
   // last argument defines whether it can terminate a paragraph or not
   
-    var HTML_SEQUENCES = [ [ /^<(script|pre|style)(?=(\s|>|$))/i, /<\/(script|pre|style)>/i, true ], [ /^<!--/, /-->/, true ], [ /^<\?/, /\?>/, true ], [ /^<![A-Z]/, />/, true ], [ /^<!\[CDATA\[/, /\]\]>/, true ], [ new RegExp("^</?(" + html_blocks.join("|") + ")(?=(\\s|/?>|$))", "i"), /^$/, true ], [ new RegExp(HTML_OPEN_CLOSE_TAG_RE.source + "\\s*$"), /^$/, false ] ];
+    var HTML_SEQUENCES = [ [ /^<(script|pre|style|textarea)(?=(\s|>|$))/i, /<\/(script|pre|style|textarea)>/i, true ], [ /^<!--/, /-->/, true ], [ /^<\?/, /\?>/, true ], [ /^<![A-Z]/, />/, true ], [ /^<!\[CDATA\[/, /\]\]>/, true ], [ new RegExp("^</?(" + html_blocks.join("|") + ")(?=(\\s|/?>|$))", "i"), /^$/, true ], [ new RegExp(HTML_OPEN_CLOSE_TAG_RE.source + "\\s*$"), /^$/, false ] ];
   var html_block = function html_block(state, startLine, endLine, silent) {
     var i, nextLine, token, lineText, pos = state.bMarks[startLine] + state.tShift[startLine], max = state.eMarks[startLine];
     // if it's indented more than 3 spaces, it should be a code block
@@ -6452,11 +6452,13 @@
             closer.length = closer.length || 0;
       if (!closer.close) continue;
       // Previously calculated lower bounds (previous fails)
-      // for each marker and each delimiter length modulo 3.
+      // for each marker, each delimiter length modulo 3,
+      // and for whether this closer can be an opener;
+      // https://github.com/commonmark/cmark/commit/34250e12ccebdc6372b8b49c44fab57c72443460
             if (!openersBottom.hasOwnProperty(closer.marker)) {
-        openersBottom[closer.marker] = [ -1, -1, -1 ];
+        openersBottom[closer.marker] = [ -1, -1, -1, -1, -1, -1 ];
       }
-      minOpenerIdx = openersBottom[closer.marker][closer.length % 3];
+      minOpenerIdx = openersBottom[closer.marker][(closer.open ? 3 : 0) + closer.length % 3];
       openerIdx = closerIdx - closer.jump - 1;
       // avoid crash if `closer.jump` is pointing outside of the array, see #742
             if (openerIdx < -1) openerIdx = -1;
@@ -6501,7 +6503,7 @@
         // complexity.
         // See details here:
         // https://github.com/commonmark/cmark/issues/178#issuecomment-270417442
-        openersBottom[closer.marker][(closer.length || 0) % 3] = newMinOpenerIdx;
+        openersBottom[closer.marker][(closer.open ? 3 : 0) + (closer.length || 0) % 3] = newMinOpenerIdx;
       }
     }
   }
@@ -7998,7 +8000,7 @@
 	 *   highlight: function (str, lang) {
 	 *     if (lang && hljs.getLanguage(lang)) {
 	 *       try {
-	 *         return hljs.highlight(lang, str, true).value;
+	 *         return hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
 	 *       } catch (__) {}
 	 *     }
 	 *
@@ -8018,7 +8020,7 @@
 	 *     if (lang && hljs.getLanguage(lang)) {
 	 *       try {
 	 *         return '<pre class="hljs"><code>' +
-	 *                hljs.highlight(lang, str, true).value +
+	 *                hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
 	 *                '</code></pre>';
 	 *       } catch (__) {}
 	 *     }
