@@ -362,6 +362,41 @@ describe('smartquotes', function () {
 });
 
 
+describe('Ordered list info', function () {
+  var md = markdownit();
+
+  function type_filter(tokens, type) {
+    return tokens.filter(function (t) { return t.type === type; });
+  }
+
+  it('Should mark ordered list item tokens with info', function () {
+    var tokens = md.parse('1. Foo\n2. Bar\n20. Fuzz');
+    assert.strictEqual(type_filter(tokens, 'ordered_list_open').length, 1);
+    tokens = type_filter(tokens, 'list_item_open');
+    assert.strictEqual(tokens.length, 3);
+    assert.strictEqual(tokens[0].info, '1');
+    assert.strictEqual(tokens[0].markup, '.');
+    assert.strictEqual(tokens[1].info, '2');
+    assert.strictEqual(tokens[1].markup, '.');
+    assert.strictEqual(tokens[2].info, '20');
+    assert.strictEqual(tokens[2].markup, '.');
+
+    tokens = md.parse(' 1. Foo\n2. Bar\n  20. Fuzz\n 199. Flp');
+    assert.strictEqual(type_filter(tokens, 'ordered_list_open').length, 1);
+    tokens = type_filter(tokens, 'list_item_open');
+    assert.strictEqual(tokens.length, 4);
+    assert.strictEqual(tokens[0].info, '1');
+    assert.strictEqual(tokens[0].markup, '.');
+    assert.strictEqual(tokens[1].info, '2');
+    assert.strictEqual(tokens[1].markup, '.');
+    assert.strictEqual(tokens[2].info, '20');
+    assert.strictEqual(tokens[2].markup, '.');
+    assert.strictEqual(tokens[3].info, '199');
+    assert.strictEqual(tokens[3].markup, '.');
+  });
+});
+
+
 describe('Token attributes', function () {
   it('.attrJoin', function () {
     var md = markdownit();
