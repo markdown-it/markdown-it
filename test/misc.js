@@ -182,6 +182,9 @@ describe('Misc', function () {
 
     assert.strictEqual(md.render('123'), '<p>123</p>\n');
     assert.strictEqual(md.render('123\n'), '<p>123</p>\n');
+
+    assert.strictEqual(md.render('    codeblock'), '<pre><code>codeblock\n</code></pre>\n');
+    assert.strictEqual(md.render('    codeblock\n'), '<pre><code>codeblock\n</code></pre>\n');
   });
 
   it('Should quickly exit on empty string', function () {
