@@ -81,6 +81,10 @@ describe('Pathological sequences speed', () => {
       await test_pattern('*a_ '.repeat(50000));
     });
 
+    it('commonmark/cmark#389', async () => {
+      await test_pattern('*a '.repeat(20000) + '_a*_ '.repeat(20000));
+    });
+
     it('openers and closers multiple of 3', async () => {
       await test_pattern('a**b' + ('c* '.repeat(50000)));
     });
