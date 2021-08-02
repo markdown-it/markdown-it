@@ -1,4 +1,4 @@
-/*! markdown-it 12.1.0 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.2.0 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -4064,6 +4064,7 @@
 	   *
 	   * - Info string for "fence" tokens
 	   * - The value "auto" for autolink "link_open" and "link_close" tokens
+	   * - The string value of the item marker for ordered-list "list_item_open" tokens
 	   **/    this.info = "";
     /**
 	   * Token#meta -> Object
@@ -4398,7 +4399,7 @@
     }
     state.line = last;
     token = state.push("code_block", "code", 0);
-    token.content = state.getLines(startLine, last, 4 + state.blkIndent, true);
+    token.content = state.getLines(startLine, last, 4 + state.blkIndent, false) + "\n";
     token.map = [ startLine, state.line ];
     return true;
   };
@@ -4836,7 +4837,7 @@
         if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
       isOrdered = true;
       start = state.bMarks[startLine] + state.tShift[startLine];
-      markerValue = Number(state.src.substr(start, posAfterMarker - start - 1));
+      markerValue = Number(state.src.slice(start, posAfterMarker - 1));
       // If we're starting a new ordered list right after
       // a paragraph, it should start with 1.
             if (isTerminatingParagraph && markerValue !== 1) return false;
@@ -4910,6 +4911,9 @@
             token = state.push("list_item_open", "li", 1);
       token.markup = String.fromCharCode(markerCharCode);
       token.map = itemLines = [ startLine, 0 ];
+      if (isOrdered) {
+        token.info = state.src.slice(start, posAfterMarker - 1);
+      }
       // change current state, then restore it after parser subcall
             oldTight = state.tight;
       oldTShift = state.tShift[startLine];
@@ -4982,6 +4986,7 @@
         if (posAfterMarker < 0) {
           break;
         }
+        start = state.bMarks[nextLine] + state.tShift[nextLine];
       } else {
         posAfterMarker = skipBulletListMarker(state, nextLine);
         if (posAfterMarker < 0) {
