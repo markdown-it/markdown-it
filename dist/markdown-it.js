@@ -3252,7 +3252,7 @@
   };
   /**
 	 * Renderer.renderInline(tokens, options, env) -> String
-	 * - tokens (Array): list on block tokens to renter
+	 * - tokens (Array): list on block tokens to render
 	 * - options (Object): params of parser instance
 	 * - env (Object): additional data from parsed input (references, for example)
 	 *
@@ -3271,7 +3271,7 @@
   };
   /** internal
 	 * Renderer.renderInlineAsText(tokens, options, env) -> String
-	 * - tokens (Array): list on block tokens to renter
+	 * - tokens (Array): list on block tokens to render
 	 * - options (Object): params of parser instance
 	 * - env (Object): additional data from parsed input (references, for example)
 	 *
@@ -3293,7 +3293,7 @@
   };
   /**
 	 * Renderer.render(tokens, options, env) -> String
-	 * - tokens (Array): list on block tokens to renter
+	 * - tokens (Array): list on block tokens to render
 	 * - options (Object): params of parser instance
 	 * - env (Object): additional data from parsed input (references, for example)
 	 *
