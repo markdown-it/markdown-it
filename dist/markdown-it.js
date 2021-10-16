@@ -3252,7 +3252,7 @@
   };
   /**
 	 * Renderer.renderInline(tokens, options, env) -> String
-	 * - tokens (Array): list on block tokens to renter
+	 * - tokens (Array): list on block tokens to render
 	 * - options (Object): params of parser instance
 	 * - env (Object): additional data from parsed input (references, for example)
 	 *
@@ -3271,7 +3271,7 @@
   };
   /** internal
 	 * Renderer.renderInlineAsText(tokens, options, env) -> String
-	 * - tokens (Array): list on block tokens to renter
+	 * - tokens (Array): list on block tokens to render
 	 * - options (Object): params of parser instance
 	 * - env (Object): additional data from parsed input (references, for example)
 	 *
@@ -3293,7 +3293,7 @@
   };
   /**
 	 * Renderer.render(tokens, options, env) -> String
-	 * - tokens (Array): list on block tokens to renter
+	 * - tokens (Array): list on block tokens to render
 	 * - options (Object): params of parser instance
 	 * - env (Object): additional data from parsed input (references, for example)
 	 *
@@ -6794,7 +6794,7 @@
         re.src_auth = "(?:(?:(?!" + re.src_ZCc + "|[@/\\[\\]()]).)+@)?";
     re.src_port = "(?::(?:6(?:[0-4]\\d{3}|5(?:[0-4]\\d{2}|5(?:[0-2]\\d|3[0-5])))|[1-5]?\\d{1,4}))?";
     re.src_host_terminator = "(?=$|" + text_separators + "|" + re.src_ZPCc + ")(?!-|_|:\\d|\\.-|\\.(?!$|" + re.src_ZPCc + "))";
-    re.src_path = "(?:" + "[/?#]" + "(?:" + "(?!" + re.src_ZCc + "|" + text_separators + "|[()[\\]{}.,\"'?!\\-]).|" + "\\[(?:(?!" + re.src_ZCc + "|\\]).)*\\]|" + "\\((?:(?!" + re.src_ZCc + "|[)]).)*\\)|" + "\\{(?:(?!" + re.src_ZCc + "|[}]).)*\\}|" + '\\"(?:(?!' + re.src_ZCc + '|["]).)+\\"|' + "\\'(?:(?!" + re.src_ZCc + "|[']).)+\\'|" + "\\'(?=" + re.src_pseudo_letter + "|[-]).|" + // allow `I'm_king` if no pair found
+    re.src_path = "(?:" + "[/?#]" + "(?:" + "(?!" + re.src_ZCc + "|" + text_separators + "|[()[\\]{}.,\"'?!\\-;]).|" + "\\[(?:(?!" + re.src_ZCc + "|\\]).)*\\]|" + "\\((?:(?!" + re.src_ZCc + "|[)]).)*\\)|" + "\\{(?:(?!" + re.src_ZCc + "|[}]).)*\\}|" + '\\"(?:(?!' + re.src_ZCc + '|["]).)+\\"|' + "\\'(?:(?!" + re.src_ZCc + "|[']).)+\\'|" + "\\'(?=" + re.src_pseudo_letter + "|[-]).|" + // allow `I'm_king` if no pair found
     "\\.{2,}[a-zA-Z0-9%/&]|" + // google has many dots in "google search" links (#66, #81).
     // github has ... in commit range links,
     // Restrict to
@@ -6803,7 +6803,8 @@
     // - parts of file path
     // - params separator
     // until more examples found.
-    "\\.(?!" + re.src_ZCc + "|[.]).|" + (opts && opts["---"] ? "\\-(?!--(?:[^-]|$))(?:-*)|" : "\\-+|") + "\\,(?!" + re.src_ZCc + ").|" + // allow `,,,` in paths
+    "\\.(?!" + re.src_ZCc + "|[.]).|" + (opts && opts["---"] ? "\\-(?!--(?:[^-]|$))(?:-*)|" : "\\-+|") + ",(?!" + re.src_ZCc + ").|" + // allow `,,,` in paths
+    ";(?!" + re.src_ZCc + ").|" + // allow `;` if not followed by space-like char
     "\\!+(?!" + re.src_ZCc + "|[!]).|" + // allow `!!!` in paths, but not at the end
     "\\?(?!" + re.src_ZCc + "|[?])." + ")+" + "|\\/" + ")?";
     // Allow anything in markdown spec, forbid quote (") at the first position
