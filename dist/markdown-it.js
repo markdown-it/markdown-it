@@ -1,4 +1,4 @@
-/*! markdown-it 12.2.0 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.3.0 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -5906,8 +5906,6 @@
         marker: marker,
         length: 0,
         // disable "rule of 3" length checks meant for emphasis
-        jump: i / 2,
-        // for `~~` 1 marker = 2 characters
         token: state.tokens.length - 1,
         end: -1,
         open: scanned.can_open,
@@ -5999,12 +5997,6 @@
         marker: marker,
         // Total length of these series of delimiters.
         length: scanned.length,
-        // An amount of characters before this one that's equivalent to
-        // current one. In plain English: if this delimiter does not open
-        // an emphasis, neither do previous `jump` characters.
-        // Used to skip sequences like "*****" in one step, for 1st asterisk
-        // value will be 0, for 2nd it's 1 and so on.
-        jump: i,
         // A position of the token this delimiter corresponds to.
         token: state.tokens.length - 1,
         // If this delimiter is matched as a valid opener, `end` will be
@@ -6036,7 +6028,11 @@
       
       // `<em><em>whatever</em></em>` -> `<strong>whatever</strong>`
       
-            isStrong = i > 0 && delimiters[i - 1].end === startDelim.end + 1 && delimiters[i - 1].token === startDelim.token - 1 && delimiters[startDelim.end + 1].token === endDelim.token + 1 && delimiters[i - 1].marker === startDelim.marker;
+            isStrong = i > 0 && delimiters[i - 1].end === startDelim.end + 1 && 
+      // check that first two markers match and adjacent
+      delimiters[i - 1].marker === startDelim.marker && delimiters[i - 1].token === startDelim.token - 1 && 
+      // check that last two markers are adjacent (we can safely assume they match)
+      delimiters[startDelim.end + 1].token === endDelim.token + 1;
       ch = String.fromCharCode(startDelim.marker);
       token = state.tokens[startDelim.token];
       token.type = isStrong ? "strong_open" : "em_open";
@@ -6448,8 +6444,23 @@
   // For each opening emphasis-like marker find a matching closing one
     function processDelimiters(state, delimiters) {
     var closerIdx, openerIdx, closer, opener, minOpenerIdx, newMinOpenerIdx, isOddMatch, lastJump, openersBottom = {}, max = delimiters.length;
+    if (!max) return;
+    // headerIdx is the first delimiter of the current (where closer is) delimiter run
+        var headerIdx = 0;
+    var lastTokenIdx = -2;
+ // needs any value lower than -1
+        var jumps = [];
     for (closerIdx = 0; closerIdx < max; closerIdx++) {
       closer = delimiters[closerIdx];
+      jumps.push(0);
+      // markers belong to same delimiter run if:
+      //  - they have adjacent tokens
+      //  - AND markers are the same
+      
+            if (delimiters[headerIdx].marker !== closer.marker || lastTokenIdx !== closer.token - 1) {
+        headerIdx = closerIdx;
+      }
+      lastTokenIdx = closer.token;
       // Length is only used for emphasis-specific "rule of 3",
       // if it's not defined (in strikethrough or 3rd party plugins),
       // we can default it to 0 to disable those checks.
@@ -6464,11 +6475,9 @@
         openersBottom[closer.marker] = [ -1, -1, -1, -1, -1, -1 ];
       }
       minOpenerIdx = openersBottom[closer.marker][(closer.open ? 3 : 0) + closer.length % 3];
-      openerIdx = closerIdx - closer.jump - 1;
-      // avoid crash if `closer.jump` is pointing outside of the array, see #742
-            if (openerIdx < -1) openerIdx = -1;
+      openerIdx = headerIdx - jumps[headerIdx] - 1;
       newMinOpenerIdx = openerIdx;
-      for (;openerIdx > minOpenerIdx; openerIdx -= opener.jump + 1) {
+      for (;openerIdx > minOpenerIdx; openerIdx -= jumps[openerIdx] + 1) {
         opener = delimiters[openerIdx];
         if (opener.marker !== closer.marker) continue;
         if (opener.open && opener.end < 0) {
@@ -6491,13 +6500,16 @@
             // If previous delimiter cannot be an opener, we can safely skip
             // the entire sequence in future checks. This is required to make
             // sure algorithm has linear complexity (see *_*_*_*_*_... case).
-            lastJump = openerIdx > 0 && !delimiters[openerIdx - 1].open ? delimiters[openerIdx - 1].jump + 1 : 0;
-            closer.jump = closerIdx - openerIdx + lastJump;
+            lastJump = openerIdx > 0 && !delimiters[openerIdx - 1].open ? jumps[openerIdx - 1] + 1 : 0;
+            jumps[closerIdx] = closerIdx - openerIdx + lastJump;
+            jumps[openerIdx] = lastJump;
             closer.open = false;
             opener.end = closerIdx;
-            opener.jump = lastJump;
             opener.close = false;
             newMinOpenerIdx = -1;
+            // treat next token as start of run,
+            // it optimizes skips in **<...>**a**<...>** pathological case
+                        lastTokenIdx = -2;
             break;
           }
         }
@@ -6794,7 +6806,7 @@
         re.src_auth = "(?:(?:(?!" + re.src_ZCc + "|[@/\\[\\]()]).)+@)?";
     re.src_port = "(?::(?:6(?:[0-4]\\d{3}|5(?:[0-4]\\d{2}|5(?:[0-2]\\d|3[0-5])))|[1-5]?\\d{1,4}))?";
     re.src_host_terminator = "(?=$|" + text_separators + "|" + re.src_ZPCc + ")(?!-|_|:\\d|\\.-|\\.(?!$|" + re.src_ZPCc + "))";
-    re.src_path = "(?:" + "[/?#]" + "(?:" + "(?!" + re.src_ZCc + "|" + text_separators + "|[()[\\]{}.,\"'?!\\-]).|" + "\\[(?:(?!" + re.src_ZCc + "|\\]).)*\\]|" + "\\((?:(?!" + re.src_ZCc + "|[)]).)*\\)|" + "\\{(?:(?!" + re.src_ZCc + "|[}]).)*\\}|" + '\\"(?:(?!' + re.src_ZCc + '|["]).)+\\"|' + "\\'(?:(?!" + re.src_ZCc + "|[']).)+\\'|" + "\\'(?=" + re.src_pseudo_letter + "|[-]).|" + // allow `I'm_king` if no pair found
+    re.src_path = "(?:" + "[/?#]" + "(?:" + "(?!" + re.src_ZCc + "|" + text_separators + "|[()[\\]{}.,\"'?!\\-;]).|" + "\\[(?:(?!" + re.src_ZCc + "|\\]).)*\\]|" + "\\((?:(?!" + re.src_ZCc + "|[)]).)*\\)|" + "\\{(?:(?!" + re.src_ZCc + "|[}]).)*\\}|" + '\\"(?:(?!' + re.src_ZCc + '|["]).)+\\"|' + "\\'(?:(?!" + re.src_ZCc + "|[']).)+\\'|" + "\\'(?=" + re.src_pseudo_letter + "|[-]).|" + // allow `I'm_king` if no pair found
     "\\.{2,}[a-zA-Z0-9%/&]|" + // google has many dots in "google search" links (#66, #81).
     // github has ... in commit range links,
     // Restrict to
@@ -6803,7 +6815,8 @@
     // - parts of file path
     // - params separator
     // until more examples found.
-    "\\.(?!" + re.src_ZCc + "|[.]).|" + (opts && opts["---"] ? "\\-(?!--(?:[^-]|$))(?:-*)|" : "\\-+|") + "\\,(?!" + re.src_ZCc + ").|" + // allow `,,,` in paths
+    "\\.(?!" + re.src_ZCc + "|[.]).|" + (opts && opts["---"] ? "\\-(?!--(?:[^-]|$))(?:-*)|" : "\\-+|") + ",(?!" + re.src_ZCc + ").|" + // allow `,,,` in paths
+    ";(?!" + re.src_ZCc + ").|" + // allow `;` if not followed by space-like char
     "\\!+(?!" + re.src_ZCc + "|[!]).|" + // allow `!!!` in paths, but not at the end
     "\\?(?!" + re.src_ZCc + "|[?])." + ")+" + "|\\/" + ")?";
     // Allow anything in markdown spec, forbid quote (") at the first position
