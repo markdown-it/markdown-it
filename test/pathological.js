@@ -57,6 +57,10 @@ describe('Pathological sequences speed', () => {
       );
     });
 
+    it('nested inlines', async () => {
+      await test_pattern('*'.repeat(60000) + 'a' + '*'.repeat(60000));
+    });
+
     it('nested strong emph', async () => {
       await test_pattern('*a **a '.repeat(5000) + 'b' + ' a** a*'.repeat(5000));
     });

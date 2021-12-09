@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [12.3.0] - WIP
+### Changed
+- `StateInline.delimiters[].jump` is removed.
+
+### Fixed
+- Fixed quadratic complexity in pathological `***<10k stars>***a***<10k stars>***` case.
+
+
 ## [12.2.0] - 2021-08-02
 ### Added
 - Ordered lists: add order value to token info.
@@ -575,6 +583,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed presets folder (configs -> presets).
 
 
+[12.3.0]: https://github.com/markdown-it/markdown-it/compare/12.2.0...12.3.0
 [12.2.0]: https://github.com/markdown-it/markdown-it/compare/12.1.0...12.2.0
 [12.1.0]: https://github.com/markdown-it/markdown-it/compare/12.0.6...12.1.0
 [12.0.6]: https://github.com/markdown-it/markdown-it/compare/12.0.5...12.0.6
