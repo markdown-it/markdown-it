@@ -15,7 +15,7 @@ __[Live demo](https://markdown-it.github.io)__
 - [Safe](https://github.com/markdown-it/markdown-it/tree/master/docs/security.md) by default.
 - Community-written __[plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)__ and [other packages](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
-__Table of content__
+## Table of content
 
 - [Install](#install)
 - [Usage examples](#usage-examples)
@@ -45,7 +45,6 @@ npm install markdown-it --save
 - [jsDeliver CDN](http://www.jsdelivr.com/#!markdown-it "jsDelivr CDN")
 - [cdnjs.com CDN](https://cdnjs.com/libraries/markdown-it "cdnjs.com")
 
-
 ## Usage examples
 
 See also:
@@ -54,7 +53,6 @@ See also:
   info and examples.
 - [Development info](https://github.com/markdown-it/markdown-it/tree/master/docs) -
   for plugins writers.
-
 
 ### Simple
 
@@ -80,7 +78,6 @@ Single line rendering, without paragraph wrap:
 var md = require('markdown-it')();
 var result = md.renderInline('__markdown-it__ rulezz!');
 ```
-
 
 ### Init with presets and options
 
@@ -139,7 +136,6 @@ var md = require('markdown-it')()
             .use(plugin3);
 ```
 
-
 ### Syntax highlighting
 
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
@@ -191,14 +187,12 @@ configure linkify-it, access the linkify instance through `md.linkify`:
 md.linkify.set({ fuzzyEmail: false });  // disables converting email to link
 ```
 
-
 ## API
 
 __[API documentation](https://markdown-it.github.io/markdown-it/)__
 
 If you are going to write plugins - take a look at
 [Development info](https://github.com/markdown-it/markdown-it/tree/master/docs).
-
 
 ## Syntax extensions
 
@@ -219,7 +213,6 @@ Via plugins:
 - [insert](https://github.com/markdown-it/markdown-it-ins)
 - [mark](https://github.com/markdown-it/markdown-it-mark)
 - ... and [others](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
-
 
 ### Manage rules
 
@@ -244,7 +237,6 @@ md = require('markdown-it')({
 You can find all rules in sources:
 [parser_core.js](lib/parser_core.js), [parser_block](lib/parser_block.js),
 [parser_inline](lib/parser_inline.js).
-
 
 ## Benchmark
 
@@ -271,13 +263,11 @@ As you can see, `markdown-it` doesn't pay with speed for it's flexibility.
 Slowdown of "full" version caused by additional features not available in
 other implementations.
 
-
 ## markdown-it for enterprise
 
 Available as part of the Tidelift Subscription.
 
 The maintainers of `markdown-it` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/npm-markdown-it?utm_source=npm-markdown-it&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
-
 
 ## Authors
 
@@ -296,12 +286,12 @@ during this project's development.
 
 **Related Links:**
 
-- https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
+- <https://github.com/jgm/CommonMark> - reference CommonMark implementations in C & JS,
   also contains latest spec & online demo.
-- http://talk.commonmark.org - CommonMark forum, good place to collaborate
+- <http://talk.commonmark.org> - CommonMark forum, good place to collaborate
   developers' efforts.
 
-**Ports**
+## Ports
 
 - [motion-markdown-it](https://github.com/digitalmoksha/motion-markdown-it) - Ruby/RubyMotion
 - [markdown-it-py](https://github.com/ExecutableBookProject/markdown-it-py)- Python
