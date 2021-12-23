@@ -9,7 +9,7 @@ assignees: ''
 
 <!--
 
-Note, we have some time constrains, but we always try to help developers, who write plugins. So:
+Note, we have some time constraints, but we always try to help developers, who write plugins. So:
 
 - Please, avoid generic programming questions.
 - Avoid questions about markdown. Use CommonMark resources for that https://commonmark.org/.
