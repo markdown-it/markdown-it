@@ -166,6 +166,27 @@ Regression test (code block + regular paragraph)
 </blockquote>
 .
 
+Regression test (tabs in lists, #830)
+.
+1. asd
+    2. asd
+
+---
+
+1. asd
+	2. asd
+.
+<ol>
+<li>asd
+2. asd</li>
+</ol>
+<hr>
+<ol>
+<li>asd
+2. asd</li>
+</ol>
+.
+
 Blockquotes inside indented lists should terminate correctly
 .
    - a
