@@ -1,4 +1,4 @@
-/*! markdown-it 12.3.0 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.3.1 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -4829,7 +4829,7 @@
       // Next list item should still terminate previous list item;
       // This code can fail if plugins use blkIndent as well as lists,
       // but I hope the spec gets fixed long before that happens.
-      if (state.tShift[startLine] >= state.blkIndent) {
+      if (state.sCount[startLine] >= state.blkIndent) {
         isTerminatingParagraph = true;
       }
     }
