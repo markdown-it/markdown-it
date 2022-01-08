@@ -138,5 +138,9 @@ describe('Pathological sequences speed', () => {
     it('autolinks <<<<...<<> pattern', async () => {
       await test_pattern('<'.repeat(400000) + '>');
     });
+
+    it('hardbreak whitespaces pattern', async () => {
+      await test_pattern('x' + ' '.repeat(150000) + 'x  \nx');
+    });
   });
 });
