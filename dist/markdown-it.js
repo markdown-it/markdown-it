@@ -1,4 +1,4 @@
-/*! markdown-it 12.3.1 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 12.3.2 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -5752,7 +5752,7 @@
   };
   var isSpace$3 = utils.isSpace;
   var newline = function newline(state, silent) {
-    var pmax, max, pos = state.pos;
+    var pmax, max, ws, pos = state.pos;
     if (state.src.charCodeAt(pos) !== 10 /* \n */) {
       return false;
     }
@@ -5765,7 +5765,10 @@
         if (!silent) {
       if (pmax >= 0 && state.pending.charCodeAt(pmax) === 32) {
         if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 32) {
-          state.pending = state.pending.replace(/ +$/, "");
+          // Find whitespaces tail of pending chars.
+          ws = pmax - 1;
+          while (ws >= 1 && state.pending.charCodeAt(ws - 1) === 32) ws--;
+          state.pending = state.pending.slice(0, ws);
           state.push("hardbreak", "br", 0);
         } else {
           state.pending = state.pending.slice(0, -1);
