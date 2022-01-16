@@ -32,6 +32,6 @@ jobs:
       run: npm run report-coveralls
 
     - name: Upload coverage report to coveralls.io
-      uses: coverallsapp/github-action@v1.1.2
+      uses: coverallsapp/github-action@1.1.3
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
