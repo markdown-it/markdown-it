@@ -1,6 +1,6 @@
 'use strict';
 
-var md = require('../../../')({
+let md = require('../../../')({
   html: true,
   linkify: true,
   typographer: true

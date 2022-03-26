@@ -7,12 +7,12 @@
 'use strict';
 
 
-var fs        = require('fs');
-var util      = require('util');
-var argparse  = require('argparse');
+let fs        = require('fs');
+let util      = require('util');
+let argparse  = require('argparse');
 
 
-var cli = new argparse.ArgumentParser({
+let cli = new argparse.ArgumentParser({
   add_help: true
 });
 
@@ -32,7 +32,7 @@ cli.add_argument('-o', '--output', {
   default: '-'
 });
 
-var options = cli.parse_args();
+let options = cli.parse_args();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -46,7 +46,7 @@ function readFile(filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
 
-    var chunks = [];
+    let chunks = [];
 
     process.stdin.on('data', function (chunk) {
       chunks.push(chunk);
@@ -64,7 +64,7 @@ function readFile(filename, encoding, callback) {
 ////////////////////////////////////////////////////////////////////////////////
 
 readFile(options.spec, 'utf8', function (error, input) {
-  var good = [], bad = [],
+  let good = [], bad = [],
       markdown = require('..')('commonmark');
 
   if (error) {
@@ -85,11 +85,11 @@ readFile(options.spec, 'utf8', function (error, input) {
               token.info.trim() === 'example';
     })
     .forEach(function (token) {
-      var arr  = token.content.split(/^\.\s*?$/m, 2);
-      var md   = arr[0];
-      var html = arr[1].replace(/^\n/, '');
+      let arr  = token.content.split(/^\.\s*?$/m, 2);
+      let md   = arr[0];
+      let html = arr[1].replace(/^\n/, '');
 
-      var result = {
+      let result = {
         md:   md,
         html: html,
         line: token.map[0],
@@ -109,12 +109,12 @@ readFile(options.spec, 'utf8', function (error, input) {
       }
     });
 
-  var out = [];
+  let out = [];
 
   if (!options.type) {
     out.push(util.format('CM spec stat: passed samples - %s, failed samples - %s', good.length, bad.length));
   } else {
-    var data = options.type === 'good' ? good : bad;
+    let data = options.type === 'good' ? good : bad;
 
     data.forEach(function (sample) {
       out.push(util.format(

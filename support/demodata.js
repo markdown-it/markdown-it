@@ -5,8 +5,8 @@
 /*eslint-disable no-console*/
 'use strict';
 
-var fs   = require('fs');
-var path = require('path');
+let fs   = require('fs');
+let path = require('path');
 
 console.log(JSON.stringify({
   self: {

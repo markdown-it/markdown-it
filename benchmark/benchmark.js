@@ -3,21 +3,21 @@
 
 'use strict';
 
-var path      = require('path');
-var fs        = require('fs');
-var util      = require('util');
-var Benchmark = require('benchmark');
-var ansi      = require('ansi');
-var cursor    = ansi(process.stdout);
+let path      = require('path');
+let fs        = require('fs');
+let util      = require('util');
+let Benchmark = require('benchmark');
+let ansi      = require('ansi');
+let cursor    = ansi(process.stdout);
 
-var IMPLS_DIRECTORY = path.join(__dirname, 'implementations');
-var IMPLS_PATHS = {};
-var IMPLS = [];
+let IMPLS_DIRECTORY = path.join(__dirname, 'implementations');
+let IMPLS_PATHS = {};
+let IMPLS = [];
 
 
 fs.readdirSync(IMPLS_DIRECTORY).sort().forEach(function (name) {
-  var file = path.join(IMPLS_DIRECTORY, name);
-  var code = require(file);
+  let file = path.join(IMPLS_DIRECTORY, name);
+  let code = require(file);
 
   IMPLS_PATHS[name] = file;
   IMPLS.push({
@@ -27,26 +27,26 @@ fs.readdirSync(IMPLS_DIRECTORY).sort().forEach(function (name) {
 });
 
 
-var SAMPLES_DIRECTORY = path.join(__dirname, 'samples');
-var SAMPLES = [];
+let SAMPLES_DIRECTORY = path.join(__dirname, 'samples');
+let SAMPLES = [];
 
 fs.readdirSync(SAMPLES_DIRECTORY).sort().forEach(function (sample) {
-  var filepath = path.join(SAMPLES_DIRECTORY, sample),
+  let filepath = path.join(SAMPLES_DIRECTORY, sample),
       extname  = path.extname(filepath),
       basename = path.basename(filepath, extname);
 
-  var content = {};
+  let content = {};
 
   content.string = fs.readFileSync(filepath, 'utf8');
 
-  var title    = util.format('(%d bytes)', content.string.length);
+  let title    = util.format('(%d bytes)', content.string.length);
 
   function onComplete() {
     cursor.write('\n');
   }
 
 
-  var suite = new Benchmark.Suite(title, {
+  let suite = new Benchmark.Suite(title, {
 
     onStart: function onStart() {
       console.log('\nSample: %s %s', sample, title);
@@ -86,7 +86,7 @@ fs.readdirSync(SAMPLES_DIRECTORY).sort().forEach(function (sample) {
 
 
 function select(patterns) {
-  var result = [];
+  let result = [];
 
   if (!(patterns instanceof Array)) {
     patterns = [ patterns ];
@@ -109,7 +109,7 @@ function select(patterns) {
 
 
 function run(files) {
-  var selected = select(files);
+  let selected = select(files);
 
   if (selected.length > 0) {
     console.log('Selected samples: (%d of %d)', selected.length, SAMPLES.length);

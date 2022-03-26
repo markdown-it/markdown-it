@@ -1,8 +1,8 @@
 'use strict';
 
 
-var assert     = require('chai').assert;
-var markdownit = require('../');
+let assert     = require('chai').assert;
+let markdownit = require('../');
 
 
 describe('API', function () {
@@ -13,12 +13,12 @@ describe('API', function () {
     });
 
     // options should override preset
-    var md = markdownit('commonmark', { html: false });
+    let md = markdownit('commonmark', { html: false });
     assert.strictEqual(md.render('<!-- -->'), '<p>&lt;!-- --&gt;</p>\n');
   });
 
   it('configure coverage', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     // conditions coverage
     md.configure({});
@@ -30,11 +30,11 @@ describe('API', function () {
   });
 
   it('plugin', function () {
-    var succeeded = false;
+    let succeeded = false;
 
     function plugin(slf, opts) { if (opts === 'bar') { succeeded = true; } }
 
-    var md = markdownit();
+    let md = markdownit();
 
     md.use(plugin, 'foo');
     assert.strictEqual(succeeded, false);
@@ -43,7 +43,7 @@ describe('API', function () {
   });
 
   it('highlight', function () {
-    var md = markdownit({
+    let md = markdownit({
       highlight: function (str) {
         return '<pre><code>==' + str + '==</code></pre>';
       }
@@ -53,7 +53,7 @@ describe('API', function () {
   });
 
   it('highlight escape by default', function () {
-    var md = markdownit({
+    let md = markdownit({
       highlight: function () {
         return '';
       }
@@ -63,7 +63,7 @@ describe('API', function () {
   });
 
   it('highlight arguments', function () {
-    var md = markdownit({
+    let md = markdownit({
       highlight: function (str, lang, attrs) {
         assert.strictEqual(lang, 'a');
         assert.strictEqual(attrs, 'b  c  d');
@@ -75,7 +75,7 @@ describe('API', function () {
   });
 
   it('force hardbreaks', function () {
-    var md = markdownit({ breaks: true });
+    let md = markdownit({ breaks: true });
 
     assert.strictEqual(md.render('a\nb'), '<p>a<br>\nb</p>\n');
     md.set({ xhtmlOut: true });
@@ -83,7 +83,7 @@ describe('API', function () {
   });
 
   it('xhtmlOut enabled', function () {
-    var md = markdownit({ xhtmlOut: true });
+    let md = markdownit({ xhtmlOut: true });
 
     assert.strictEqual(md.render('---'), '<hr />\n');
     assert.strictEqual(md.render('![]()'), '<p><img src="" alt="" /></p>\n');
@@ -91,7 +91,7 @@ describe('API', function () {
   });
 
   it('xhtmlOut disabled', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.strictEqual(md.render('---'), '<hr>\n');
     assert.strictEqual(md.render('![]()'), '<p><img src="" alt=""></p>\n');
@@ -99,9 +99,9 @@ describe('API', function () {
   });
 
   it('bulk enable/disable rules in different chains', function () {
-    var md = markdownit();
+    let md = markdownit();
 
-    var was = {
+    let was = {
       core: md.core.ruler.getRules('').length,
       block: md.block.ruler.getRules('').length,
       inline: md.inline.ruler.getRules('').length
@@ -110,7 +110,7 @@ describe('API', function () {
     // Disable 2 rule in each chain & compare result
     md.disable([ 'block', 'inline', 'code', 'fence', 'emphasis', 'entity' ]);
 
-    var now = {
+    let now = {
       core: md.core.ruler.getRules('').length + 2,
       block: md.block.ruler.getRules('').length + 2,
       inline: md.inline.ruler.getRules('').length + 2
@@ -121,7 +121,7 @@ describe('API', function () {
     // Enable the same rules back
     md.enable([ 'block', 'inline', 'code', 'fence', 'emphasis', 'entity' ]);
 
-    var back = {
+    let back = {
       core: md.core.ruler.getRules('').length,
       block: md.block.ruler.getRules('').length,
       inline: md.inline.ruler.getRules('').length
@@ -131,7 +131,7 @@ describe('API', function () {
   });
 
   it('bulk enable/disable with errors control', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.throws(function () {
       md.enable([ 'link', 'code', 'invalid' ]);
@@ -148,7 +148,7 @@ describe('API', function () {
   });
 
   it('bulk enable/disable should understand strings', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     md.disable('emphasis');
     assert(md.renderInline('_foo_'), '_foo_');
@@ -158,7 +158,7 @@ describe('API', function () {
   });
 
   it('input type check', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.throws(
       function () { md.render(null); },
@@ -172,13 +172,13 @@ describe('API', function () {
 describe('Misc', function () {
 
   it('Should replace NULL characters', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.strictEqual(md.render('foo\u0000bar'), '<p>foo\uFFFDbar</p>\n');
   });
 
   it('Should correctly parse strings without tailing \\n', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.strictEqual(md.render('123'), '<p>123</p>\n');
     assert.strictEqual(md.render('123\n'), '<p>123</p>\n');
@@ -188,19 +188,19 @@ describe('Misc', function () {
   });
 
   it('Should quickly exit on empty string', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.strictEqual(md.render(''), '');
   });
 
   it('Should parse inlines only', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.strictEqual(md.renderInline('a *b* c'), 'a <em>b</em> c');
   });
 
   it('Renderer should have pluggable inline and block rules', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     md.renderer.rules.em_open = function () { return '<it>'; };
     md.renderer.rules.em_close = function () { return '</it>'; };
@@ -211,7 +211,7 @@ describe('Misc', function () {
   });
 
   it('Zero preset should disable everything', function () {
-    var md = markdownit('zero');
+    let md = markdownit('zero');
 
     assert.strictEqual(md.render('___foo___'), '<p>___foo___</p>\n');
     assert.strictEqual(md.renderInline('___foo___'), '___foo___');
@@ -223,13 +223,13 @@ describe('Misc', function () {
   });
 
   it('Should correctly check block termination rules when those are disabled (#13)', function () {
-    var md = markdownit('zero');
+    let md = markdownit('zero');
 
     assert.strictEqual(md.render('foo\nbar'), '<p>foo\nbar</p>\n');
   });
 
   it('Should render link target attr', function () {
-    var md = markdownit()
+    let md = markdownit()
       .use(require('markdown-it-for-inline'), 'target', 'link_open', function (tokens, idx) {
         tokens[idx].attrs.push([ 'target', '_blank' ]);
       });
@@ -238,7 +238,7 @@ describe('Misc', function () {
   });
 
   it('Should normalize CR to LF', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.strictEqual(
       md.render('# test\r\r - hello\r - world\r'),
@@ -247,7 +247,7 @@ describe('Misc', function () {
   });
 
   it('Should normalize CR+LF to LF', function () {
-    var md = markdownit();
+    let md = markdownit();
 
     assert.strictEqual(
       md.render('# test\r\n\r\n - hello\r\n - world\r\n'),
@@ -260,7 +260,7 @@ describe('Misc', function () {
 describe('Url normalization', function () {
 
   it('Should be overridable', function () {
-    var md = markdownit({ linkify: true });
+    let md = markdownit({ linkify: true });
 
     md.normalizeLink = function (url) {
       assert(url.match(/example\.com/), 'wrong url passed');
@@ -285,7 +285,7 @@ describe('Url normalization', function () {
 describe('Links validation', function () {
 
   it('Override validator, disable everything', function () {
-    var md = markdownit({ linkify: true });
+    let md = markdownit({ linkify: true });
 
     md.validateLink = function () { return false; };
 
@@ -303,7 +303,7 @@ describe('Links validation', function () {
 describe('maxNesting', function () {
 
   it('Block parser should not nest above limit', function () {
-    var md = markdownit({ maxNesting: 2 });
+    let md = markdownit({ maxNesting: 2 });
     assert.strictEqual(
       md.render('>foo\n>>bar\n>>>baz'),
       '<blockquote>\n<p>foo</p>\n<blockquote></blockquote>\n</blockquote>\n'
@@ -311,7 +311,7 @@ describe('maxNesting', function () {
   });
 
   it('Inline parser should not nest above limit', function () {
-    var md = markdownit({ maxNesting: 1 });
+    let md = markdownit({ maxNesting: 1 });
     assert.strictEqual(
       md.render('[`foo`]()'),
       '<p><a href="">`foo`</a></p>\n'
@@ -319,7 +319,7 @@ describe('maxNesting', function () {
   });
 
   it('Inline nesting coverage', function () {
-    var md = markdownit({ maxNesting: 2 });
+    let md = markdownit({ maxNesting: 2 });
     assert.strictEqual(
       md.render('[[[[[[[[[[[[[[[[[[foo]()'),
       '<p>[[[[[[[[[[[[[[[[[[foo]()</p>\n'
@@ -330,7 +330,7 @@ describe('maxNesting', function () {
 
 
 describe('smartquotes', function () {
-  var md = markdownit({
+  let md = markdownit({
     typographer: true,
 
     // all strings have different length to make sure
@@ -363,14 +363,14 @@ describe('smartquotes', function () {
 
 
 describe('Ordered list info', function () {
-  var md = markdownit();
+  let md = markdownit();
 
   function type_filter(tokens, type) {
     return tokens.filter(function (t) { return t.type === type; });
   }
 
   it('Should mark ordered list item tokens with info', function () {
-    var tokens = md.parse('1. Foo\n2. Bar\n20. Fuzz');
+    let tokens = md.parse('1. Foo\n2. Bar\n20. Fuzz');
     assert.strictEqual(type_filter(tokens, 'ordered_list_open').length, 1);
     tokens = type_filter(tokens, 'list_item_open');
     assert.strictEqual(tokens.length, 3);
@@ -399,9 +399,9 @@ describe('Ordered list info', function () {
 
 describe('Token attributes', function () {
   it('.attrJoin', function () {
-    var md = markdownit();
+    let md = markdownit();
 
-    var tokens = md.parse('```'),
+    let tokens = md.parse('```'),
         t = tokens[0];
 
     t.attrJoin('class', 'foo');
@@ -414,9 +414,9 @@ describe('Token attributes', function () {
   });
 
   it('.attrSet', function () {
-    var md = markdownit();
+    let md = markdownit();
 
-    var tokens = md.parse('```'),
+    let tokens = md.parse('```'),
         t = tokens[0];
 
     t.attrSet('class', 'foo');
@@ -435,9 +435,9 @@ describe('Token attributes', function () {
   });
 
   it('.attrGet', function () {
-    var md = markdownit();
+    let md = markdownit();
 
-    var tokens = md.parse('```'),
+    let tokens = md.parse('```'),
         t = tokens[0];
 
     assert.strictEqual(t.attrGet('myattr'), null);

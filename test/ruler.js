@@ -1,19 +1,19 @@
 'use strict';
 
 
-var assert = require('chai').assert;
-var Ruler  = require('../lib/ruler');
+let assert = require('chai').assert;
+let Ruler  = require('../lib/ruler');
 
 describe('Ruler', function () {
 
   it('should replace rule (.at)', function () {
-    var ruler = new Ruler();
-    var res = 0;
+    let ruler = new Ruler();
+    let res = 0;
 
     ruler.push('test', function foo() { res = 1; });
     ruler.at('test', function bar() { res = 2; });
 
-    var rules = ruler.getRules('');
+    let rules = ruler.getRules('');
 
     assert.strictEqual(rules.length, 1);
     rules[0]();
@@ -22,14 +22,14 @@ describe('Ruler', function () {
 
 
   it('should inject before/after rule', function () {
-    var ruler = new Ruler();
-    var res = 0;
+    let ruler = new Ruler();
+    let res = 0;
 
     ruler.push('test', function foo() { res = 1; });
     ruler.before('test', 'before_test', function fooBefore() { res = -10; });
     ruler.after('test', 'after_test', function fooAfter() { res = 10; });
 
-    var rules = ruler.getRules('');
+    let rules = ruler.getRules('');
 
     assert.strictEqual(rules.length, 3);
     rules[0]();
@@ -42,7 +42,7 @@ describe('Ruler', function () {
 
 
   it('should enable/disable rule', function () {
-    var rules, ruler = new Ruler();
+    let rules, ruler = new Ruler();
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {});
@@ -67,7 +67,7 @@ describe('Ruler', function () {
 
 
   it('should enable/disable multiple rule', function () {
-    var rules, ruler = new Ruler();
+    let rules, ruler = new Ruler();
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {});
@@ -82,7 +82,7 @@ describe('Ruler', function () {
 
 
   it('should enable rules by whitelist', function () {
-    var rules, ruler = new Ruler();
+    let rules, ruler = new Ruler();
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {});
@@ -94,7 +94,7 @@ describe('Ruler', function () {
 
 
   it('should support multiple chains', function () {
-    var rules, ruler = new Ruler();
+    let rules, ruler = new Ruler();
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {}, { alt: [ 'alt1' ] });
@@ -110,7 +110,7 @@ describe('Ruler', function () {
 
 
   it('should fail on invalid rule name', function () {
-    var ruler = new Ruler();
+    let ruler = new Ruler();
 
     ruler.push('test', function foo() {});
 
@@ -133,7 +133,7 @@ describe('Ruler', function () {
 
 
   it('should not fail on invalid rule name in silent mode', function () {
-    var ruler = new Ruler();
+    let ruler = new Ruler();
 
     ruler.push('test', function foo() {});
 

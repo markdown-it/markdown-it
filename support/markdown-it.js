@@ -4,13 +4,13 @@
 'use strict';
 
 
-var fs = require('fs');
-var argparse = require('argparse');
+let fs = require('fs');
+let argparse = require('argparse');
 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-var cli = new argparse.ArgumentParser({
+let cli = new argparse.ArgumentParser({
   add_help: true
 });
 
@@ -20,14 +20,14 @@ cli.add_argument('file', {
   default: '-'
 });
 
-var options = cli.parse_args();
+let options = cli.parse_args();
 
 
 function readFile(filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
 
-    var chunks = [];
+    let chunks = [];
 
     process.stdin.on('data', function (chunk) {
       chunks.push(chunk);
@@ -45,7 +45,7 @@ function readFile(filename, encoding, callback) {
 ////////////////////////////////////////////////////////////////////////////////
 
 readFile(options.file, 'utf8', function (err, input) {
-  var output, md;
+  let output, md;
 
   if (err) {
     if (err.code === 'ENOENT') {
