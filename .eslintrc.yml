@@ -1,7 +1,7 @@
 env:
   node:     true
   browser:  false
-  es6:      false
+  es6:      true
 
 ignorePatterns:
   - coverage/
@@ -13,6 +13,7 @@ ignorePatterns:
   - rollup.config.js
 
 rules:
+  no-var:                 2
   accessor-pairs:         2
   array-bracket-spacing:  [ 2, "always", { "singleValue": true, "objectsInArrays": true, "arraysInArrays": true } ]
   block-scoped-var:       2
