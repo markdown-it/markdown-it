@@ -227,7 +227,7 @@ By default all rules are enabled, but can be restricted by options. On plugin
 load all its rules are enabled automatically.
 
 ```js
-// Activate/deactivate rules, with curring
+// Activate/deactivate rules, with currying
 var md = require('markdown-it')()
             .disable([ 'link', 'image' ])
             .enable([ 'link' ])
