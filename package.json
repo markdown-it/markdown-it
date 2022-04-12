@@ -12,10 +12,12 @@
   "repository": "markdown-it/markdown-it",
   "license": "MIT",
   "main": "index.js",
+  "module": "dist/esm/markdown-it.mjs",
   "bin": {
     "markdown-it": "bin/markdown-it.js"
   },
   "scripts": {
+    "build": "rollup -c support/rollup.config.js",
     "lint": "eslint .",
     "test": "npm run lint && nyc mocha && node support/specsplit.js",
     "coverage": "npm run test && nyc report --reporter html",

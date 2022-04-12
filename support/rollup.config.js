@@ -5,6 +5,28 @@ import nodePolyfills from 'rollup-plugin-node-polyfills';
 import pkg from '../package.json';
 import { terser } from 'rollup-plugin-terser';
 
+const unminifiedPlugins = [
+  // Here terser is used only to force ascii output
+  terser({
+    mangle: false,
+    compress: false,
+    format: {
+      comments: 'all',
+      beautify: true,
+      ascii_only: true,
+      indent_level: 2
+    }
+  })
+];
+
+const minifiedPlugins = [
+  terser({
+    format: {
+      ascii_only: true,
+    }
+  })
+];
+
 export default {
   input: 'index.js',
   output: [
@@ -12,31 +34,25 @@ export default {
       file: 'dist/markdown-it.js',
       format: 'umd',
       name: 'markdownit',
-      plugins: [
-        // Here terser is used only to force ascii output
-        terser({
-          mangle: false,
-          compress: false,
-          format: {
-            comments: 'all',
-            beautify: true,
-            ascii_only: true,
-            indent_level: 2
-          }
-        })
-      ]
+      plugins: unminifiedPlugins,
     },
     {
       file: 'dist/markdown-it.min.js',
       format: 'umd',
       name: 'markdownit',
-      plugins: [
-        terser({
-          format: {
-            ascii_only: true,
-          }
-        })
-      ]
+      plugins: minifiedPlugins,
+    },
+    {
+      file: 'dist/esm/markdown-it.mjs',
+      format: 'es',
+      name: 'markdownit',
+      plugins: unminifiedPlugins,
+    },
+    {
+      file: 'dist/esm/markdown-it.min.mjs',
+      format: 'es',
+      name: 'markdownit',
+      plugins: minifiedPlugins,
     }
   ],
   plugins: [
