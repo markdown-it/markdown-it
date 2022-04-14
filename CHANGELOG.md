@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [13.0.0] - WIP
+### Added
+- Added a new token type `text_special` to store escaped characters, same as `text` but
+  unaffected by replacement plugins (smartquotes, typographer, linkifier, etc.).
+- Added a new rule `text_join` in `core` ruler. Text replacement plugins may choose to
+  insert themselves before it.
+
+### Changed
+- `text_collapse` rule is renamed to `fragments_join`.
+
+### Fixed
+- Smartquotes, typographic replacements and plain text links can now be escaped
+  with backslash (e.g. `\(c)` or `google\.com` are no longer replaced).
+
+
 ## [12.3.2] - 2022-01-08
 ### Security
 - Fix possible ReDOS in newline rule. Thanks to @MakeNowJust.
@@ -592,6 +608,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed presets folder (configs -> presets).
 
 
+[13.0.0]: https://github.com/markdown-it/markdown-it/compare/12.3.2...13.0.0
 [12.3.2]: https://github.com/markdown-it/markdown-it/compare/12.3.1...12.3.2
 [12.3.1]: https://github.com/markdown-it/markdown-it/compare/12.3.0...12.3.1
 [12.3.0]: https://github.com/markdown-it/markdown-it/compare/12.2.0...12.3.0

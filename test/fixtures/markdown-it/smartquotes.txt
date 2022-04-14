@@ -164,3 +164,16 @@ Should parse quotes adjacent to inline html, #677:
 <p>“test <br>”</p>
 <p>“<br> test”</p>
 .
+
+Should be escapable:
+.
+"foo"
+
+\"foo"
+
+"foo\"
+.
+<p>“foo”</p>
+<p>&quot;foo&quot;</p>
+<p>&quot;foo&quot;</p>
+.

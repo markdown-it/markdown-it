@@ -254,6 +254,14 @@ describe('Misc', function () {
       md.render('# test\n\n - hello\n - world\n')
     );
   });
+
+  it('Should escape surrogate pairs (coverage)', function () {
+    var md = markdownit();
+
+    assert.strictEqual(md.render('\\\uD835\uDC9C'), '<p>\\\uD835\uDC9C</p>\n');
+    assert.strictEqual(md.render('\\\uD835x'), '<p>\\\uD835x</p>\n');
+    assert.strictEqual(md.render('\\\uD835'), '<p>\\\uD835</p>\n');
+  });
 });
 
 
