@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Smartquotes, typographic replacements and plain text links can now be escaped
   with backslash (e.g. `\(c)` or `google\.com` are no longer replaced).
+- Fixed collision of emphasis and linkifier (so `http://example.org/foo._bar_-_baz`
+  is now a single link, not emphasized). Emails and fuzzy links are not affected by this.
 
 
 ## [12.3.2] - 2022-01-08
