@@ -177,3 +177,16 @@ Should be escapable:
 <p>&quot;foo&quot;</p>
 <p>&quot;foo&quot;</p>
 .
+
+Should not replace entities:
+.
+&quot;foo&quot;
+
+&quot;foo"
+
+"foo&quot;
+.
+<p>&quot;foo&quot;</p>
+<p>&quot;foo&quot;</p>
+<p>&quot;foo&quot;</p>
+.

@@ -67,6 +67,13 @@ copyright should be escapable
 <p>(c)</p>
 .
 
+shouldn't replace entities
+.
+&#40;c) (c&#41; (c)
+.
+<p>(c) (c) ©</p>
+.
+
 
 dashes
 .
