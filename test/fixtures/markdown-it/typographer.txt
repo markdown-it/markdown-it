@@ -29,14 +29,6 @@ trademark
 .
 
 
-paragraph
-.
-(p) (P)
-.
-<p>§ §</p>
-.
-
-
 plus-minus
 .
 +-5

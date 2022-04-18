@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   insert themselves before it.
 
 ### Changed
+- `(p)` is no longer replaced with § by typographer (conflicts with ℗), #763.
 - `text_collapse` rule is renamed to `fragments_join`.
 
 ### Fixed
