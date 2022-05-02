@@ -30,6 +30,11 @@ cli.add_argument('-l', '--linkify', {
   action: 'store_true'
 });
 
+cli.add_argument('-x', '--xhtml', {
+  help:   'Output XHTML',
+  action: 'store_true'
+});
+
 cli.add_argument('-t', '--typographer', {
   help:   'Enable smartquotes and other typographic replacements',
   action: 'store_true'
@@ -91,7 +96,7 @@ readFile(options.file, 'utf8', function (err, input) {
 
   md = require('..')({
     html: !options.no_html,
-    xhtmlOut: false,
+    xhtmlOut: options.xhtml,
     typographer: options.typographer,
     linkify: options.linkify
   });
