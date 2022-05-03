@@ -1,4 +1,4 @@
-/*! markdown-it 13.0.0 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 13.0.1 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -7436,11 +7436,10 @@
     var m = this.re.schema_at_start.exec(text);
     if (!m) return null;
     var len = this.testSchemaAt(text, m[2], m[0].length);
-    if (len) {
-      this.__schema__ = m[2];
-      this.__index__ = m.index + m[1].length;
-      this.__last_index__ = m.index + m[0].length + len;
-    }
+    if (!len) return null;
+    this.__schema__ = m[2];
+    this.__index__ = m.index + m[1].length;
+    this.__last_index__ = m.index + m[0].length + len;
     return createMatch(this, 0);
   };
   /** chainable
