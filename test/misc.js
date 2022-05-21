@@ -169,6 +169,45 @@ describe('API', function () {
 });
 
 
+describe('Plugins', function () {
+
+  it('should not loop infinitely if all rules are disabled', function () {
+    var md = markdownit();
+
+    md.inline.ruler.enableOnly([]);
+    md.inline.ruler2.enableOnly([]);
+    md.block.ruler.enableOnly([]);
+
+    assert.throws(() => md.render(' - *foo*\n - `bar`'), /none of the block rules matched/);
+  });
+
+  it('should not loop infinitely if inline rule doesn\'t increment pos', function () {
+    var md = markdownit();
+
+    md.inline.ruler.after('text', 'custom', function (state/*, silent*/) {
+      if (state.src.charCodeAt(state.pos) !== 0x40/* @ */) return false;
+      return true;
+    });
+
+    assert.throws(() => md.render('foo@bar'), /inline rule didn't increment state.pos/);
+    assert.throws(() => md.render('[foo@bar]()'), /inline rule didn't increment state.pos/);
+  });
+
+  it('should not loop infinitely if block rule doesn\'t increment pos', function () {
+    var md = markdownit();
+
+    md.block.ruler.before('paragraph', 'custom', function (state, startLine/*, endLine, silent*/) {
+      var pos = state.bMarks[startLine] + state.tShift[startLine];
+      if (state.src.charCodeAt(pos) !== 0x40/* @ */) return false;
+      return true;
+    }, { alt: [ 'paragraph' ] });
+
+    assert.throws(() => md.render('foo\n@bar\nbaz'), /block rule didn't increment state.line/);
+    assert.throws(() => md.render('foo\n\n@bar\n\nbaz'), /block rule didn't increment state.line/);
+  });
+});
+
+
 describe('Misc', function () {
 
   it('Should replace NULL characters', function () {
