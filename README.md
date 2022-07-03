@@ -145,7 +145,7 @@ var md = require('markdown-it')()
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
 ```js
-var hljs = require('highlight.js'); // https://highlightjs.org/
+var hljs = require('highlight.js'); // https://highlightjs.org
 
 // Actual default values
 var md = require('markdown-it')({
@@ -164,7 +164,7 @@ var md = require('markdown-it')({
 Or with full wrapper override (if you need assign class to `<pre>`):
 
 ```js
-var hljs = require('highlight.js'); // https://highlightjs.org/
+var hljs = require('highlight.js'); // https://highlightjs.org
 
 // Actual default values
 var md = require('markdown-it')({
@@ -196,7 +196,7 @@ md.linkify.set({ fuzzyEmail: false });  // disables converting email to link
 
 __[API documentation](https://markdown-it.github.io/markdown-it/)__
 
-If you are going to write plugins - take a look at
+If you are going to write plugins, please take a look at
 [Development info](https://github.com/markdown-it/markdown-it/tree/master/docs).
 
 
@@ -242,8 +242,10 @@ md = require('markdown-it')({
 ```
 
 You can find all rules in sources:
-[parser_core.js](lib/parser_core.js), [parser_block](lib/parser_block.js),
-[parser_inline](lib/parser_inline.js).
+
+- [`parser_core.js`](lib/parser_core.js)
+- [`parser_block.js`](lib/parser_block.js)
+- [`parser_inline.js`](lib/parser_inline.js)
 
 
 ## Benchmark
@@ -265,9 +267,9 @@ Sample: README.md (7774 bytes)
 ```
 
 __Note.__ CommonMark version runs with [simplified link normalizers](https://github.com/markdown-it/markdown-it/blob/master/benchmark/implementations/current-commonmark/index.js)
-for more "honest" compare. Difference is ~ 1.5x.
+for more "honest" compare. Difference is ≈1.5×.
 
-As you can see, `markdown-it` doesn't pay with speed for it's flexibility.
+As you can see, `markdown-it` doesn't pay with speed for its flexibility.
 Slowdown of "full" version caused by additional features not available in
 other implementations.
 
