@@ -107,7 +107,7 @@ defaults.highlight = function (str, lang) {
     }
   } catch (__) { /**/ }
 
-  return '<pre class="hljs"><code>' + esc(str) + '</code></pre>';
+  return '<pre><code class="hljs">' + esc(str) + '</code></pre>';
 };
 
 function setOptionClass(name, val) {
