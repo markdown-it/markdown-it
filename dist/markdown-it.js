@@ -1,4 +1,4 @@
-/*! markdown-it 13.0.1 https://github.com/markdown-it/markdown-it @license MIT */
+/*! markdown-it 13.0.2 https://github.com/markdown-it/markdown-it @license MIT */
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, 
   global.markdownit = factory());
@@ -2698,9 +2698,9 @@
     var UNESCAPE_MD_RE = /\\([!"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~])/g;
     var ENTITY_RE = /&([a-z#][a-z0-9]{1,31});/gi;
     var UNESCAPE_ALL_RE = new RegExp(UNESCAPE_MD_RE.source + "|" + ENTITY_RE.source, "gi");
-    var DIGITAL_ENTITY_TEST_RE = /^#((?:x[a-f0-9]{1,8}|[0-9]{1,8}))/i;
+    var DIGITAL_ENTITY_TEST_RE = /^#((?:x[a-f0-9]{1,8}|[0-9]{1,8}))$/i;
     function replaceEntityPattern(match, name) {
-      var code = 0;
+      var code;
       if (has(entities, name)) {
         return entities[name];
       }
@@ -2951,8 +2951,8 @@
     return labelEnd;
   };
   var unescapeAll$2 = utils.unescapeAll;
-  var parse_link_destination = function parseLinkDestination(str, pos, max) {
-    var code, level, lines = 0, start = pos, result = {
+  var parse_link_destination = function parseLinkDestination(str, start, max) {
+    var code, level, pos = start, result = {
       ok: false,
       pos: 0,
       lines: 0,
@@ -3022,14 +3022,13 @@
       return result;
     }
     result.str = unescapeAll$2(str.slice(start, pos));
-    result.lines = lines;
     result.pos = pos;
     result.ok = true;
     return result;
   };
   var unescapeAll$1 = utils.unescapeAll;
-  var parse_link_title = function parseLinkTitle(str, pos, max) {
-    var code, marker, lines = 0, start = pos, result = {
+  var parse_link_title = function parseLinkTitle(str, start, max) {
+    var code, marker, lines = 0, pos = start, result = {
       ok: false,
       pos: 0,
       lines: 0,
@@ -3084,7 +3083,7 @@
     var default_rules = {};
   default_rules.code_inline = function(tokens, idx, options, env, slf) {
     var token = tokens[idx];
-    return "<code" + slf.renderAttrs(token) + ">" + escapeHtml(tokens[idx].content) + "</code>";
+    return "<code" + slf.renderAttrs(token) + ">" + escapeHtml(token.content) + "</code>";
   };
   default_rules.code_block = function(tokens, idx, options, env, slf) {
     var token = tokens[idx];
@@ -3306,7 +3305,7 @@
       if (type === "inline") {
         result += this.renderInline(tokens[i].children, options, env);
       } else if (typeof rules[type] !== "undefined") {
-        result += rules[tokens[i].type](tokens, i, options, env, this);
+        result += rules[type](tokens, i, options, env, this);
       } else {
         result += this.renderToken(tokens, i, options, env);
       }
@@ -4527,7 +4526,7 @@
       return false;
     }
     // check the block quote marker
-        if (state.src.charCodeAt(pos++) !== 62 /* > */) {
+        if (state.src.charCodeAt(pos) !== 62 /* > */) {
       return false;
     }
     // we know that it's going to be a valid blockquote,
@@ -4535,57 +4534,10 @@
         if (silent) {
       return true;
     }
-    // set offset past spaces and ">"
-        initial = offset = state.sCount[startLine] + 1;
-    // skip one optional space after '>'
-        if (state.src.charCodeAt(pos) === 32 /* space */) {
-      // ' >   test '
-      //     ^ -- position start of line here:
-      pos++;
-      initial++;
-      offset++;
-      adjustTab = false;
-      spaceAfterMarker = true;
-    } else if (state.src.charCodeAt(pos) === 9 /* tab */) {
-      spaceAfterMarker = true;
-      if ((state.bsCount[startLine] + offset) % 4 === 3) {
-        // '  >\t  test '
-        //       ^ -- position start of line here (tab has width===1)
-        pos++;
-        initial++;
-        offset++;
-        adjustTab = false;
-      } else {
-        // ' >\t  test '
-        //    ^ -- position start of line here + shift bsCount slightly
-        //         to make extra space appear
-        adjustTab = true;
-      }
-    } else {
-      spaceAfterMarker = false;
-    }
-    oldBMarks = [ state.bMarks[startLine] ];
-    state.bMarks[startLine] = pos;
-    while (pos < max) {
-      ch = state.src.charCodeAt(pos);
-      if (isSpace$9(ch)) {
-        if (ch === 9) {
-          offset += 4 - (offset + state.bsCount[startLine] + (adjustTab ? 1 : 0)) % 4;
-        } else {
-          offset++;
-        }
-      } else {
-        break;
-      }
-      pos++;
-    }
-    oldBSCount = [ state.bsCount[startLine] ];
-    state.bsCount[startLine] = state.sCount[startLine] + 1 + (spaceAfterMarker ? 1 : 0);
-    lastLineEmpty = pos >= max;
-    oldSCount = [ state.sCount[startLine] ];
-    state.sCount[startLine] = offset - initial;
-    oldTShift = [ state.tShift[startLine] ];
-    state.tShift[startLine] = pos - state.bMarks[startLine];
+    oldBMarks = [];
+    oldBSCount = [];
+    oldSCount = [];
+    oldTShift = [];
     terminatorRules = state.md.block.ruler.getRules("blockquote");
     oldParentType = state.parentType;
     state.parentType = "blockquote";
@@ -4607,7 +4559,7 @@
     //     > test
     //      - - -
     //     ```
-        for (nextLine = startLine + 1; nextLine < endLine; nextLine++) {
+        for (nextLine = startLine; nextLine < endLine; nextLine++) {
       // check if it's outdented, i.e. it's inside list item and indented
       // less than said list item:
       // ```
@@ -4625,24 +4577,22 @@
       if (state.src.charCodeAt(pos++) === 62 /* > */ && !isOutdented) {
         // This line is inside the blockquote.
         // set offset past spaces and ">"
-        initial = offset = state.sCount[nextLine] + 1;
+        initial = state.sCount[nextLine] + 1;
         // skip one optional space after '>'
                 if (state.src.charCodeAt(pos) === 32 /* space */) {
           // ' >   test '
           //     ^ -- position start of line here:
           pos++;
           initial++;
-          offset++;
           adjustTab = false;
           spaceAfterMarker = true;
         } else if (state.src.charCodeAt(pos) === 9 /* tab */) {
           spaceAfterMarker = true;
-          if ((state.bsCount[nextLine] + offset) % 4 === 3) {
+          if ((state.bsCount[nextLine] + initial) % 4 === 3) {
             // '  >\t  test '
             //       ^ -- position start of line here (tab has width===1)
             pos++;
             initial++;
-            offset++;
             adjustTab = false;
           } else {
             // ' >\t  test '
@@ -4653,6 +4603,7 @@
         } else {
           spaceAfterMarker = false;
         }
+        offset = initial;
         oldBMarks.push(state.bMarks[nextLine]);
         state.bMarks[nextLine] = pos;
         while (pos < max) {
@@ -4845,9 +4796,9 @@
     }
   }
   var list = function list(state, startLine, endLine, silent) {
-    var ch, contentStart, i, indent, indentAfterMarker, initial, isOrdered, itemLines, l, listLines, listTokIdx, markerCharCode, markerValue, max, nextLine, offset, oldListIndent, oldParentType, oldSCount, oldTShift, oldTight, pos, posAfterMarker, prevEmptyEnd, start, terminate, terminatorRules, token, isTerminatingParagraph = false, tight = true;
+    var ch, contentStart, i, indent, indentAfterMarker, initial, isOrdered, itemLines, l, listLines, listTokIdx, markerCharCode, markerValue, max, offset, oldListIndent, oldParentType, oldSCount, oldTShift, oldTight, pos, posAfterMarker, prevEmptyEnd, start, terminate, terminatorRules, token, nextLine = startLine, isTerminatingParagraph = false, tight = true;
     // if it's indented more than 3 spaces, it should be a code block
-        if (state.sCount[startLine] - state.blkIndent >= 4) {
+        if (state.sCount[nextLine] - state.blkIndent >= 4) {
       return false;
     }
     // Special case:
@@ -4856,7 +4807,7 @@
     //    - item 3
     //     - item 4
     //      - this one is a paragraph continuation
-        if (state.listIndent >= 0 && state.sCount[startLine] - state.listIndent >= 4 && state.sCount[startLine] < state.blkIndent) {
+        if (state.listIndent >= 0 && state.sCount[nextLine] - state.listIndent >= 4 && state.sCount[nextLine] < state.blkIndent) {
       return false;
     }
     // limit conditions when list can interrupt
@@ -4865,19 +4816,19 @@
       // Next list item should still terminate previous list item;
       // This code can fail if plugins use blkIndent as well as lists,
       // but I hope the spec gets fixed long before that happens.
-      if (state.sCount[startLine] >= state.blkIndent) {
+      if (state.sCount[nextLine] >= state.blkIndent) {
         isTerminatingParagraph = true;
       }
     }
     // Detect list type and position after marker
-        if ((posAfterMarker = skipOrderedListMarker(state, startLine)) >= 0) {
+        if ((posAfterMarker = skipOrderedListMarker(state, nextLine)) >= 0) {
       isOrdered = true;
-      start = state.bMarks[startLine] + state.tShift[startLine];
+      start = state.bMarks[nextLine] + state.tShift[nextLine];
       markerValue = Number(state.src.slice(start, posAfterMarker - 1));
       // If we're starting a new ordered list right after
       // a paragraph, it should start with 1.
             if (isTerminatingParagraph && markerValue !== 1) return false;
-    } else if ((posAfterMarker = skipBulletListMarker(state, startLine)) >= 0) {
+    } else if ((posAfterMarker = skipBulletListMarker(state, nextLine)) >= 0) {
       isOrdered = false;
     } else {
       return false;
@@ -4885,14 +4836,14 @@
     // If we're starting a new unordered list right after
     // a paragraph, first line should not be empty.
         if (isTerminatingParagraph) {
-      if (state.skipSpaces(posAfterMarker) >= state.eMarks[startLine]) return false;
+      if (state.skipSpaces(posAfterMarker) >= state.eMarks[nextLine]) return false;
     }
-    // We should terminate list on style change. Remember first one to compare.
-        markerCharCode = state.src.charCodeAt(posAfterMarker - 1);
     // For validation mode we can terminate immediately
         if (silent) {
       return true;
     }
+    // We should terminate list on style change. Remember first one to compare.
+        markerCharCode = state.src.charCodeAt(posAfterMarker - 1);
     // Start list
         listTokIdx = state.tokens.length;
     if (isOrdered) {
@@ -4903,20 +4854,19 @@
     } else {
       token = state.push("bullet_list_open", "ul", 1);
     }
-    token.map = listLines = [ startLine, 0 ];
+    token.map = listLines = [ nextLine, 0 ];
     token.markup = String.fromCharCode(markerCharCode);
     
     // Iterate list items
     
-        nextLine = startLine;
-    prevEmptyEnd = false;
+        prevEmptyEnd = false;
     terminatorRules = state.md.block.ruler.getRules("list");
     oldParentType = state.parentType;
     state.parentType = "list";
     while (nextLine < endLine) {
       pos = posAfterMarker;
       max = state.eMarks[nextLine];
-      initial = offset = state.sCount[nextLine] + posAfterMarker - (state.bMarks[startLine] + state.tShift[startLine]);
+      initial = offset = state.sCount[nextLine] + posAfterMarker - (state.bMarks[nextLine] + state.tShift[nextLine]);
       while (pos < max) {
         ch = state.src.charCodeAt(pos);
         if (ch === 9) {
@@ -4946,14 +4896,14 @@
       // Run subparser & write tokens
             token = state.push("list_item_open", "li", 1);
       token.markup = String.fromCharCode(markerCharCode);
-      token.map = itemLines = [ startLine, 0 ];
+      token.map = itemLines = [ nextLine, 0 ];
       if (isOrdered) {
         token.info = state.src.slice(start, posAfterMarker - 1);
       }
       // change current state, then restore it after parser subcall
             oldTight = state.tight;
-      oldTShift = state.tShift[startLine];
-      oldSCount = state.sCount[startLine];
+      oldTShift = state.tShift[nextLine];
+      oldSCount = state.sCount[nextLine];
       //  - example list
       // ^ listIndent position will be here
       //   ^ blkIndent position will be here
@@ -4962,9 +4912,9 @@
       state.listIndent = state.blkIndent;
       state.blkIndent = indent;
       state.tight = true;
-      state.tShift[startLine] = contentStart - state.bMarks[startLine];
-      state.sCount[startLine] = offset;
-      if (contentStart >= max && state.isEmpty(startLine + 1)) {
+      state.tShift[nextLine] = contentStart - state.bMarks[nextLine];
+      state.sCount[nextLine] = offset;
+      if (contentStart >= max && state.isEmpty(nextLine + 1)) {
         // workaround for this case
         // (list item is empty, list terminates before "foo"):
         // ~~~~~~~~
@@ -4973,7 +4923,7 @@
         // ~~~~~~~~
         state.line = Math.min(state.line + 2, endLine);
       } else {
-        state.md.block.tokenize(state, startLine, endLine, true);
+        state.md.block.tokenize(state, nextLine, endLine, true);
       }
       // If any of list item is tight, mark list as tight
             if (!state.tight || prevEmptyEnd) {
@@ -4981,17 +4931,16 @@
       }
       // Item become loose if finish with empty line,
       // but we should filter last element, because it means list finish
-            prevEmptyEnd = state.line - startLine > 1 && state.isEmpty(state.line - 1);
+            prevEmptyEnd = state.line - nextLine > 1 && state.isEmpty(state.line - 1);
       state.blkIndent = state.listIndent;
       state.listIndent = oldListIndent;
-      state.tShift[startLine] = oldTShift;
-      state.sCount[startLine] = oldSCount;
+      state.tShift[nextLine] = oldTShift;
+      state.sCount[nextLine] = oldSCount;
       state.tight = oldTight;
       token = state.push("list_item_close", "li", -1);
       token.markup = String.fromCharCode(markerCharCode);
-      nextLine = startLine = state.line;
+      nextLine = state.line;
       itemLines[1] = nextLine;
-      contentStart = state.bMarks[startLine];
       if (nextLine >= endLine) {
         break;
       }
@@ -5002,7 +4951,7 @@
         break;
       }
       // if it's indented more than 3 spaces, it should be a code block
-            if (state.sCount[startLine] - state.blkIndent >= 4) {
+            if (state.sCount[nextLine] - state.blkIndent >= 4) {
         break;
       }
       // fail if terminating block found
@@ -5410,8 +5359,8 @@
     return true;
   };
   // Paragraph
-    var paragraph = function paragraph(state, startLine /*, endLine*/) {
-    var content, terminate, i, l, token, oldParentType, nextLine = startLine + 1, terminatorRules = state.md.block.ruler.getRules("paragraph"), endLine = state.lineMax;
+    var paragraph = function paragraph(state, startLine, endLine) {
+    var content, terminate, i, l, token, oldParentType, nextLine = startLine + 1, terminatorRules = state.md.block.ruler.getRules("paragraph");
     oldParentType = state.parentType;
     state.parentType = "paragraph";
     // jump line-by-line until empty one or EOF
@@ -5677,7 +5626,7 @@
   // Generate tokens for input range
   
     ParserBlock.prototype.tokenize = function(state, startLine, endLine) {
-    var ok, i, rules = this.ruler.getRules(""), len = rules.length, line = startLine, hasEmptyLines = false, maxNesting = state.md.options.maxNesting;
+    var ok, i, prevLine, rules = this.ruler.getRules(""), len = rules.length, line = startLine, hasEmptyLines = false, maxNesting = state.md.options.maxNesting;
     while (line < endLine) {
       state.line = line = state.skipEmptyLines(line);
       if (line >= endLine) {
@@ -5700,12 +5649,18 @@
       // - update `state.line`
       // - update `state.tokens`
       // - return true
-            for (i = 0; i < len; i++) {
+            prevLine = state.line;
+      for (i = 0; i < len; i++) {
         ok = rules[i](state, line, endLine, false);
         if (ok) {
+          if (prevLine >= state.line) {
+            throw new Error("block rule didn't increment state.line");
+          }
           break;
         }
       }
+      // this can only happen if user disables paragraph rule
+            if (!ok) throw new Error("none of the block rules matched");
       // set state.tight if we had an empty line before current tag
       // i.e. latest empty line should not count
             state.tight = !hasEmptyLines;
@@ -5805,6 +5760,9 @@
     link = state.md.linkify.matchAtStart(state.src.slice(pos - proto.length));
     if (!link) return false;
     url = link.url;
+    // invalid link, but still detected by linkify somehow;
+    // need to check to prevent infinite loop below
+        if (url.length <= proto.length) return false;
     // disallow '*' at the end of the link (conflicts with emphasis)
         url = url.replace(/\*+$/, "");
     fullUrl = state.md.normalizeLink(url);
@@ -5931,7 +5889,7 @@
       state.pos += openerLength;
       return true;
     }
-    matchStart = matchEnd = pos;
+    matchEnd = pos;
     // Nothing found in the cache, scan until the end of the line (or until marker is found)
         while ((matchStart = state.src.indexOf("`", matchEnd)) !== -1) {
       matchEnd = matchStart + 1;
@@ -6485,7 +6443,7 @@
     }
     if (!silent) {
       token = state.push("html_inline", "", 0);
-      token.content = state.src.slice(pos, pos + match[0].length);
+      token.content = match[0];
       if (isLinkOpen(token.content)) state.linkLevel++;
       if (isLinkClose(token.content)) state.linkLevel--;
     }
@@ -6533,7 +6491,7 @@
     return false;
   };
   // For each opening emphasis-like marker find a matching closing one
-    function processDelimiters(state, delimiters) {
+    function processDelimiters(delimiters) {
     var closerIdx, openerIdx, closer, opener, minOpenerIdx, newMinOpenerIdx, isOddMatch, lastJump, openersBottom = {}, max = delimiters.length;
     if (!max) return;
     // headerIdx is the first delimiter of the current (where closer is) delimiter run
@@ -6617,10 +6575,10 @@
   }
   var balance_pairs = function link_pairs(state) {
     var curr, tokens_meta = state.tokens_meta, max = state.tokens_meta.length;
-    processDelimiters(state, state.delimiters);
+    processDelimiters(state.delimiters);
     for (curr = 0; curr < max; curr++) {
       if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
-        processDelimiters(state, tokens_meta[curr].delimiters);
+        processDelimiters(tokens_meta[curr].delimiters);
       }
     }
   };
@@ -6818,6 +6776,9 @@
         ok = rules[i](state, true);
         state.level--;
         if (ok) {
+          if (pos >= state.pos) {
+            throw new Error("inline rule didn't increment state.pos");
+          }
           break;
         }
       }
@@ -6839,17 +6800,21 @@
   // Generate tokens for input range
   
     ParserInline.prototype.tokenize = function(state) {
-    var ok, i, rules = this.ruler.getRules(""), len = rules.length, end = state.posMax, maxNesting = state.md.options.maxNesting;
+    var ok, i, prevPos, rules = this.ruler.getRules(""), len = rules.length, end = state.posMax, maxNesting = state.md.options.maxNesting;
     while (state.pos < end) {
       // Try all possible rules.
       // On success, rule should:
       // - update `state.pos`
       // - update `state.tokens`
       // - return true
+      prevPos = state.pos;
       if (state.level < maxNesting) {
         for (i = 0; i < len; i++) {
           ok = rules[i](state, false);
           if (ok) {
+            if (prevPos >= state.pos) {
+              throw new Error("inline rule didn't increment state.pos");
+            }
             break;
           }
         }
