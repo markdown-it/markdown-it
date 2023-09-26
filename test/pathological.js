@@ -101,6 +101,10 @@ describe('Pathological sequences speed', () => {
       await test_pattern('[ (]('.repeat(40000));
     });
 
+    it('pattern ![[]() repeated', async () => {
+      await test_pattern('![[]()'.repeat(20000));
+    });
+
     it('nested brackets', async () => {
       await test_pattern('['.repeat(20000) + 'a' + ']'.repeat(20000));
     });
@@ -123,6 +127,10 @@ describe('Pathological sequences speed', () => {
 
     it('unclosed links B', async () => {
       await test_pattern('[a](b'.repeat(30000));
+    });
+
+    it('unclosed <!--', async () => {
+      await test_pattern('</' + '<!--'.repeat(100000));
     });
   });
 
