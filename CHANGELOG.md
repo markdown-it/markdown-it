@@ -6,16 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [13.0.2] - WIP
+## [13.0.2] - 2023-09-26
+### Security
+- Fixed crash/infinite loop caused by linkify inline rule, #957.
+
 ### Fixed
 - Throw an error if 3rd party plugin doesn't increment `line` or `pos` counters
   (previously, markdown-it would likely go into infinite loop instead), #847.
-- Fixed crash/infinite loop caused by linkify inline rule, #957.
+
 
 ## [13.0.1] - 2022-05-03
 ### Fixed
 - Bumped `linkify-it` to 4.0.1. That should fix some hangs, caused by wrong
   data, returned from `linkify-it`.
+
 
 ## [13.0.0] - 2022-04-22
 ### Added
