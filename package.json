@@ -13,6 +13,17 @@
   "license": "MIT",
   "main": "index.js",
   "module": "dist/esm/markdown-it.mjs",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/markdown-it.mjs",
+      "require": "./index.js"
+    },
+    "./*": {
+      "require": "./*",
+      "import": "./*"
+    }
+  },
   "bin": {
     "markdown-it": "bin/markdown-it.js"
   },
