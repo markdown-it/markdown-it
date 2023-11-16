@@ -1,6 +1,6 @@
 'use strict';
 
-var commonmark = require('../../extra/lib/node_modules/commonmark');
+var commonmark = require('../../../node_modules/commonmark');
 var parser = new commonmark.Parser();
 var renderer = new commonmark.HtmlRenderer();
 
