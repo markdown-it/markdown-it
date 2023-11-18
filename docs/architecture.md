@@ -2,8 +2,8 @@
 
 ## Data flow
 
-Input data is parsed via nested chains of rules. There are 3 nested chains -
-`core`, `block` & `inline`:
+Input data is parsed via nested chains of rules. There are 3 nested chains --
+`core`, `block`, & `inline`:
 
 ```
 core
@@ -27,88 +27,87 @@ core
 
     core.ruleYY (applies to all tokens)
     ... (abbreviation, footnote, typographer, linkifier)
-
 ```
 
-The result of the parsing is a *list of tokens*, that will be passed to the `renderer` to generate the html content.
+The result of parsing is a token stream that will be passed to the renderer to generate HTML content.
 
-These tokens can be themselves parsed again to generate more tokens (ex: a `list token` can be divided into multiple `inline tokens`).
+These tokens can themselves be parsed again to generate more tokens (ex: a `list` token can be divided into multiple `inline` tokens).
 
-An `env` sandbox can be used alongside tokens to inject external variables for your parsers and renderers.
+An `env` object can be used alongside tokens to inject external variables into your parsers and renderers.
 
-Each chain (core / block / inline) uses an independent `state` object when parsing data, so that each parsing operation is independent and can be disabled on the fly.
+Each chain (`core`, `block`, & `inline`) uses an independent `state` object when parsing data so that each parsing operation is independent and can be disabled on the fly.
 
 
 ## Token stream
 
-Instead of traditional AST we use more low-level data representation - *tokens*.
+Instead of a traditional AST, we use more low-level data representation -- *tokens*.
 The difference is simple:
 
-- Tokens are a simple sequence (Array).
+- Tokens are a simple sequence (an array).
 - Opening and closing tags are separate.
-- There are special token objects, "inline containers", having nested tokens.
-  sequences with inline markup (bold, italic, text, ...).
+- There are special token objects, "inline containers", that have nested tokens.
+  These are sequences with inline markup, such as bold, italic, text, etc.
 
-See [token class](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
-for details about each token content.
+See the [`Token`](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js) class
+for details about each token's content.
 
 In total, a token stream is:
 
-- On the top level - array of paired or single "block" tokens:
-  - open/close for headers, lists, blockquotes, paragraphs, ...
-  - codes, fenced blocks, horizontal rules, html blocks, inlines containers
-- Each inline token have a `.children` property with a nested token stream for inline content:
-  - open/close for strong, em, link, code, ...
+- On the top level -- an array of paired or single "block" tokens:
+  - open/close for headers, lists, blockquotes, paragraphs, etc.
+  - code blocks, fenced blocks, horizontal rules, HTML blocks, inline containers
+- Each inline token has a `children` property with a nested token stream for inline content:
+  - open/close for bold, italic, links, inline code, etc.
   - text, line breaks
 
-Why not AST? Because it's not needed for our tasks. We follow KISS principle.
-If you wish - you can call a parser without a renderer and convert the token stream
-to an AST.
+Why not an AST? It's not needed for our tasks. We follow the KISS principle.
+If you wish, you can call a parser without a renderer and convert the token stream
+intoto an AST.
 
 More details about tokens:
 
-- [Renderer source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
-- [Token source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
-- [Live demo](https://markdown-it.github.io/) - type your text and click `debug` tab.
+- [`Renderer` source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
+- [`Token` source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
+- [Live demo](https://markdown-it.github.io/) - type your text and click the `debug` tab.
 
 
 ## Rules
 
-Rules are functions, doing "magic" with parser `state` objects. A rule is associated with one or more *chains* and is unique. For instance, a `blockquote` token is associated with `blockquote`, `paragraph`, `heading` and `list` chains.
+Rules are functions, doing "magic" with parser `state` objects. A rule is associated with one or more *chains* and is unique. For instance, a `blockquote` token is associated with the `blockquote`, `paragraph`, `heading`, and `list` chains.
 
-Rules are managed by names via [Ruler](https://markdown-it.github.io/markdown-it/#Ruler) instances and can be  `enabled` / `disabled` from the [MarkdownIt](https://markdown-it.github.io/markdown-it/#MarkdownIt) methods.
+Rules are managed by name via [`Ruler`](https://markdown-it.github.io/markdown-it/#Ruler) instances and can be enabled and disabled from [`MarkdownIt`](https://markdown-it.github.io/markdown-it/#MarkdownIt)'s methods.
 
-You can note, that some rules have a `validation mode` - in this mode rules do not
-modify the token stream, and only look ahead for the end of a token. It's one
-important design principle - a token stream is "write only" on block & inline parse stages.
+Note that some rules have a `validation mode` -- in this mode, rules do not
+modify the token stream and only look ahead for the end of a token. It's one
+important design principle -- a token stream is "write only" on the `block` & `inline` parse stages.
 
-Parsers are designed to keep rules independent of each other. You can safely enable/disable them, or
-add new ones. There are no universal recipes for how to create new rules - design of
-distributed state machines with good data isolation is a tricky business. But you
+Parsers are designed to keep rules independent of each other. You can safely enable/disable them or
+add new ones. There are no universal recipes for how to create new rules -- the design of
+distributed state machines with good data isolation is a tricky business. However, you
 can investigate existing rules & plugins to see possible approaches.
 
-Also, in complex cases you can try to ask for help in tracker. Condition is very
-simple - it should be clear from your ticket, that you studied docs, sources,
+In complex cases you can try to ask for help in the [issue tracker](https://github.com/markdown-it/markdown-it/issues).
+The condition is very simple -- it should be clear from your ticket that you studied the docs, sources,
 and tried to do something yourself. We never reject with help to real developers.
 
 
 ## Renderer
 
-After token stream is generated, it's passed to a [renderer](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js).
-It then plays all the tokens, passing each to a rule with the same name as token type.
+After the token stream is generated, it's passed to a [`Renderer`](https://markdown-it.github.io/markdown-it/#Renderer).
+It then iterates through all the tokens, passing each to a rule with the same name as its token type.
 
 Renderer rules are located in `md.renderer.rules[name]` and are simple functions
 with the same signature:
 
 ```js
 function (tokens, idx, options, env, renderer) {
-  //...
+  // ...
   return htmlResult;
 }
 ```
 
-In many cases that allows easy output change even without parser intrusion.
-For example, let's replace images with vimeo links to player's iframe:
+In many cases, that allows easy output changes even without parser intrusion.
+For example, let's convert every image that uses a Vimeo link into a player iframe:
 
 ```js
 var md = require('markdown-it')();
@@ -117,50 +116,42 @@ var defaultRender = md.renderer.rules.image,
     vimeoRE       = /^https?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
 
 md.renderer.rules.image = function (tokens, idx, options, env, self) {
-  var token = tokens[idx],
-      aIndex = token.attrIndex('src');
+  var src = tokens[idx].attrGet('src');
 
-  if (vimeoRE.test(token.attrs[aIndex][1])) {
-
-    var id = token.attrs[aIndex][1].match(vimeoRE)[2];
+  if (vimeoRE.test(src)) {
+    var id = src.match(vimeoRE)[2];
 
     return '<div class="embed-responsive embed-responsive-16by9">\n' +
            '  <iframe class="embed-responsive-item" src="//player.vimeo.com/video/' + id + '"></iframe>\n' +
            '</div>\n';
   }
 
-  // pass token to default renderer.
+  // Pass the token to the default renderer.
   return defaultRender(tokens, idx, options, env, self);
 };
 ```
 
-Here is another example, how to add `target="_blank"` to all links:
+Here is another example on how to add `target="_blank"` to all links:
 
 ```js
-// Remember old renderer, if overridden, or proxy to default renderer
-var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+// Remember the old renderer if overridden, or proxy to the default renderer.
+var defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
 };
 
 md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-  // If you are sure other plugins can't add `target` - drop check below
-  var aIndex = tokens[idx].attrIndex('target');
+  // Add a new `target` attribute, or replace the value of the existing one.
+  tokens[idx].attrSet('target', '_blank');
 
-  if (aIndex < 0) {
-    tokens[idx].attrPush(['target', '_blank']); // add new attribute
-  } else {
-    tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
-  }
-
-  // pass token to default renderer.
+  // Pass the token to the default renderer.
   return defaultRender(tokens, idx, options, env, self);
 };
 ```
 
-Note, if you need to add attributes, you can do things without renderer override.
-For example, you can update tokens in `core` chain. That is slower, than direct
-renderer override, but can be more simple. Let's use
-[markdown-for-inline](https://github.com/markdown-it/markdown-it-for-inline) plugin
+Note that if you need to add attributes, you can do so without a renderer override.
+For example, you can update tokens in the `core` chain. This is slower than a direct
+renderer override, but it can be more simple. Let's use the
+[`markdown-it-for-inline`](https://github.com/markdown-it/markdown-it-for-inline) plugin
 to do the same thing as in previous example:
 
 ```js
@@ -168,34 +159,28 @@ var iterator = require('markdown-it-for-inline');
 
 var md = require('markdown-it')()
             .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
-              var aIndex = tokens[idx].attrIndex('target');
-
-              if (aIndex < 0) {
-                tokens[idx].attrPush(['target', '_blank']);
-              } else {
-                tokens[idx].attrs[aIndex][1] = '_blank';
-              }
+              tokens[idx].attrSet('target', '_blank');
             });
 ```
 
-
-You also can write your own renderer to generate other formats than HTML, such as
-JSON/XML... You can even use it to generate AST.
+You also can write your own renderer to generate formats other than HTML, such as
+JSON and XML. You can even use it to generate an AST.
 
 
 ## Summary
 
-This was mentioned in [Data flow](#data-flow), but let's repeat sequence again:
+This was mentioned in [Data flow](#data-flow), but let's repeat the sequence again:
 
-1. Blocks are parsed, and top level of token stream filled with block tokens.
-2. Content on inline containers is parsed, filling `.children` properties.
+1. Blocks are parsed, and the top level of each token stream is filled with block tokens.
+2. Content in inline containers is parsed, filling their `children` properties.
 3. Rendering happens.
 
-And somewhere between you can apply additional transformations :) . Full content
-of each chain can be seen on the top of
-[parser_core.js](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_core.js),
-[parser_block.js](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_block.js) and
-[parser_inline.js](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_inline.js)
-files.
+And somewhere in between, you can apply additional transformations.
 
-Also you can change output directly in [renderer](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js) for many simple cases.
+Source code for each chain can be seen in the following files:
+
+- [`parser_core.js`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_core.js)
+- [`parser_block.js`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_block.js)
+- [`parser_inline.js`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_inline.js)
+
+Also, you can change output directly in a [`Renderer`](https://markdown-it.github.io/markdown-it/#Renderer) for many simple cases.
