@@ -479,6 +479,13 @@ describe('Token attributes', function () {
       md.renderer.render(tokens, md.options),
       '<pre><code class="bar"></code></pre>\n'
     );
+
+    t.attrSet('hidden');
+
+    assert.strictEqual(
+      md.renderer.render(tokens, md.options),
+      '<pre><code class="bar" hidden></code></pre>\n'
+    );
   });
 
   it('.attrGet', function () {
