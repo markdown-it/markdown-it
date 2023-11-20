@@ -15,18 +15,17 @@ async function test_pattern(str) {
   );
 
   let result;
+  const ac = new AbortController();
 
   try {
     result = await Promise.race([
       worker.render(str),
-
-      new Promise(function (resolve, reject){
-        setTimeout(() => { reject(new Error('Terminated (timeout exceeded)')); }, 3000);
-      })
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Terminated (timeout exceeded)')), 3000).unref())
     ]);
   } catch (e) {
     throw e;
   } finally {
+    ac.abort();
     await worker.end();
   }
 

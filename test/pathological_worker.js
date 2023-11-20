@@ -1,7 +1,5 @@
 'use strict';
 
-const markdownit = require('../');
-
-exports.render = (str) => {
-  return markdownit().render(str);
+exports.render = async (str) => {
+  return (await import('../index.mjs')).default().render(str);
 };

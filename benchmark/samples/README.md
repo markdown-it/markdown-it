@@ -217,7 +217,7 @@ md = require('markdown-it')('full', {
 Here is result of CommonMark spec parse at Core i5 2.4 GHz (i5-4258U):
 
 ```bash
-$ benchmark/benchmark.js spec
+$ benchmark/benchmark.mjs spec
 Selected samples: (1 of 27)
  > spec
 

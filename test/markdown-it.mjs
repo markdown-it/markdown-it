@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import generate from 'markdown-it-testgen';
-import markdownit from '../index.js';
+import markdownit from '../index.mjs';
 
 
 describe('markdown-it', function () {

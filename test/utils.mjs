@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import utils from '../lib/common/utils.js';
+import utils from '../lib/common/utils.mjs';
 
 
 describe('Utils', function () {

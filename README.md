@@ -253,8 +253,8 @@ You can find all rules in sources:
 Here is the result of readme parse at MB Pro Retina 2013 (2.4 GHz):
 
 ```bash
-make benchmark-deps
-benchmark/benchmark.js readme
+npm run benchmark-deps
+benchmark/benchmark.mjs readme
 
 Selected samples: (1 of 28)
  > README

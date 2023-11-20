@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import Token from '../lib/token.js';
+import Token from '../lib/token.mjs';
 
 
 describe('Token', function () {

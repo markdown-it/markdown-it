@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import markdownit from '../index.js';
+import markdownit from '../index.mjs';
 import forInline from 'markdown-it-for-inline';
 
 

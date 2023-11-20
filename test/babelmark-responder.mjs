@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 import { execFile } from 'child_process';
 import { readFileSync } from 'fs';
+import { setTimeout as sleep } from 'node:timers/promises';
 
 
 describe('babelmark responder app', function () {
@@ -9,14 +10,10 @@ describe('babelmark responder app', function () {
   var PORT    = 5005;
   var request = supertest('http://127.0.0.1:' + PORT);
 
-  function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   before(async () => {
     app = execFile(
       'node',
-      [ '../support/babelmark-responder.js' ],
+      [ '../support/babelmark-responder.mjs' ],
       {
         cwd: new URL('.', import.meta.url),
         env: Object.assign({}, process.env, { PORT: PORT })
@@ -29,7 +26,7 @@ describe('babelmark responder app', function () {
         await request.get('/').expect(200);
         break;
       } catch (e) {}
-      await timeout(100);
+      await sleep(100);
     }
   });
 

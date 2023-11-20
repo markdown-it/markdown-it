@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import Ruler from '../lib/ruler.js';
+import Ruler from '../lib/ruler.mjs';
 
 describe('Ruler', function () {
 

@@ -1,1 +1,1 @@
-web: node support/babelmark-responder.js
+web: node support/babelmark-responder.mjs

@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { relative } from 'node:path';
 import { load } from 'markdown-it-testgen';
-import markdownit from '../index.js';
+import markdownit from '../index.mjs';
 import { assert } from 'chai';
 
 
