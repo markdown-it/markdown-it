@@ -1,7 +1,5 @@
-'use strict';
-
-var assert = require('chai').assert;
-var Token  = require('../lib/token');
+import { assert } from 'chai';
+import Token from '../lib/token.js';
 
 
 describe('Token', function () {

@@ -1,7 +1,11 @@
 env:
   node:     true
-  browser:  false
-  es6:      false
+
+overrides:
+  -
+    files: [ '*.mjs' ]
+    parserOptions:
+      sourceType: module
 
 ignorePatterns:
   - coverage/

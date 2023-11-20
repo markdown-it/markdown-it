@@ -1,8 +1,5 @@
-'use strict';
-
-
-var assert = require('chai').assert;
-var Ruler  = require('../lib/ruler');
+import { assert } from 'chai';
+import Ruler from '../lib/ruler.js';
 
 describe('Ruler', function () {
 

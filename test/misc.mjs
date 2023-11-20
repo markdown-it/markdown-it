@@ -1,8 +1,6 @@
-'use strict';
-
-
-var assert     = require('chai').assert;
-var markdownit = require('../');
+import { assert } from 'chai';
+import markdownit from '../index.js';
+import forInline from 'markdown-it-for-inline';
 
 
 describe('API', function () {
@@ -269,7 +267,7 @@ describe('Misc', function () {
 
   it('Should render link target attr', function () {
     var md = markdownit()
-      .use(require('markdown-it-for-inline'), 'target', 'link_open', function (tokens, idx) {
+      .use(forInline, 'target', 'link_open', function (tokens, idx) {
         tokens[idx].attrs.push([ 'target', '_blank' ]);
       });
 

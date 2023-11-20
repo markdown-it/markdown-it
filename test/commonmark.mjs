@@ -1,9 +1,8 @@
-'use strict';
-
-
-var p      = require('path');
-var load   = require('markdown-it-testgen').load;
-var assert = require('chai').assert;
+import { fileURLToPath } from 'node:url';
+import { relative } from 'node:path';
+import { load } from 'markdown-it-testgen';
+import markdownit from '../index.js';
+import { assert } from 'chai';
 
 
 function normalize(text) {
@@ -15,7 +14,7 @@ function generate(path, md) {
   load(path, function (data) {
     data.meta = data.meta || {};
 
-    var desc = data.meta.desc || p.relative(path, data.file);
+    var desc = data.meta.desc || relative(path, data.file);
 
     (data.meta.skip ? describe.skip : describe)(desc, function () {
       data.fixtures.forEach(function (fixture) {
@@ -29,7 +28,7 @@ function generate(path, md) {
 
 
 describe('CommonMark', function () {
-  var md = require('../')('commonmark');
+  var md = markdownit('commonmark');
 
-  generate(p.join(__dirname, 'fixtures/commonmark/good.txt'), md);
+  generate(fileURLToPath(new URL('fixtures/commonmark/good.txt', import.meta.url)), md);
 });

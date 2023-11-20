@@ -1,22 +1,24 @@
-'use strict';
+import supertest from 'supertest';
+import { execFile } from 'child_process';
+import { readFileSync } from 'fs';
 
 
 describe('babelmark responder app', function () {
   var app;
 
   var PORT    = 5005;
-  var request = require('supertest')('http://127.0.0.1:' + PORT);
+  var request = supertest('http://127.0.0.1:' + PORT);
 
   function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   before(async () => {
-    app = require('child_process').execFile(
+    app = execFile(
       'node',
       [ '../support/babelmark-responder.js' ],
       {
-        cwd: __dirname,
+        cwd: new URL('.', import.meta.url),
         env: Object.assign({}, process.env, { PORT: PORT })
       }
     );
@@ -41,13 +43,15 @@ describe('babelmark responder app', function () {
 
 
   it('do request', () => {
+    const version = JSON.parse(readFileSync(new URL('../package.json', import.meta.url))).version;
+
     return request
       .get('/?text=foo')
       .expect(200)
       .expect({
         html: '<p>foo</p>\n',
         name: 'markdown-it',
-        version: require('../package.json').version
+        version
       });
   });
 
