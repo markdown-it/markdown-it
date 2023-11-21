@@ -19,7 +19,7 @@
     "test": "npm run lint && c8 mocha && node support/specsplit.mjs",
     "coverage": "npm run test && c8 report --reporter html",
     "report-coveralls": "c8 --reporter=lcov mocha",
-    "doc": "node support/build_doc.js",
+    "doc": "node support/build_doc.mjs",
     "gh-doc": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.js",
     "gh-demo": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git",
