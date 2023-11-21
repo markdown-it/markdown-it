@@ -5,14 +5,16 @@
 
 var mdurl = require('mdurl');
 
+var hljs = require('highlight.js');
 
+/*
 var hljs = require('highlight.js/lib/core');
 
 hljs.registerLanguage('actionscript', require('highlight.js/lib/languages/actionscript'));
 hljs.registerLanguage('apache',       require('highlight.js/lib/languages/apache'));
 hljs.registerLanguage('armasm',       require('highlight.js/lib/languages/armasm'));
 hljs.registerLanguage('xml',          require('highlight.js/lib/languages/xml'));
-hljs.registerLanguage('asciidoc',     require('highlight.js/lib//languages/asciidoc'));
+//hljs.registerLanguage('asciidoc',     require('highlight.js/lib//languages/asciidoc'));
 hljs.registerLanguage('avrasm',       require('highlight.js/lib/languages/avrasm'));
 hljs.registerLanguage('bash',         require('highlight.js/lib/languages/bash'));
 hljs.registerLanguage('clojure',      require('highlight.js/lib/languages/clojure'));
@@ -62,7 +64,7 @@ hljs.registerLanguage('typescript',   require('highlight.js/lib/languages/typesc
 hljs.registerLanguage('verilog',      require('highlight.js/lib/languages/verilog'));
 hljs.registerLanguage('vhdl',         require('highlight.js/lib/languages/vhdl'));
 hljs.registerLanguage('yaml',         require('highlight.js/lib/languages/yaml'));
-
+*/
 
 var mdHtml, mdSrc, permalink, scrollMap;
 

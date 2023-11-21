@@ -21,7 +21,7 @@
     "report-coveralls": "c8 --reporter=lcov mocha",
     "doc": "node support/build_doc.mjs",
     "gh-doc": "npm run doc && gh-pages -d apidoc -f",
-    "demo": "npm run lint && node support/build_demo.js",
+    "demo": "npm run lint && node support/build_demo.mjs",
     "gh-demo": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git",
     "browserify": "rollup -c support/rollup.config.js",
     "benchmark-deps": "npm install --prefix benchmark/extra/ -g marked@0.3.6 commonmark@0.26.0 markdown-it/markdown-it.git#2.2.1",
@@ -40,7 +40,7 @@
     "entities": "^4.4.0",
     "linkify-it": "^4.0.1",
     "mdurl": "^1.0.1",
-    "punycode": "^2.3.1",
+    "punycode.js": "^2.3.1",
     "uc.micro": "^1.0.5"
   },
   "devDependencies": {
@@ -49,7 +49,6 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "ansi": "^0.3.0",
-    "autoprefixer-stylus": "^1.0.0",
     "benchmark": "~2.1.0",
     "c8": "^8.0.1",
     "chai": "^4.2.0",
@@ -73,10 +72,8 @@
     "mocha": "^10.2.0",
     "ndoc": "^6.0.0",
     "needle": "^3.0.0",
-    "pug-cli": "^1.0.0-alpha6",
     "rollup": "^4.5.0",
     "shelljs": "^0.8.4",
-    "stylus": "^0.62.0",
     "supertest": "^6.0.1"
   },
   "mocha": {

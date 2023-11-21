@@ -22,7 +22,7 @@ const plugins = [
 
 export default [
   {
-    input: 'index.js',
+    input: 'index.mjs',
     output: {
       file: 'demo/markdown-it.js',
       format: 'umd',
