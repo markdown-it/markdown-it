@@ -31,7 +31,7 @@ export default [
     plugins: plugins
   },
   {
-    input: 'support/demo_template/index.js',
+    input: 'support/demo_template/index.mjs',
     output: {
       file: 'demo/index.js',
       format: 'iife',
