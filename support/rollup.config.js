@@ -1,9 +1,8 @@
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
-import nodePolyfills from 'rollup-plugin-node-polyfills';
 import pkg from '../package.json';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 
 export default {
   input: 'index.js',
@@ -43,7 +42,6 @@ export default {
     nodeResolve({ preferBuiltins: true }),
     commonjs(),
     json({ namedExports: false }),
-    nodePolyfills(),
     {
       banner() {
         return `/*! ${pkg.name} ${pkg.version} https://github.com/${pkg.repository} @license ${pkg.license} */`;
