@@ -18,9 +18,7 @@ ignorePatterns:
   - demo/
   - dist/
   - node_modules
-  - support/demo_template/sample.js
   - benchmark/extra/
-  - rollup.config.js
 
 rules:
   accessor-pairs:         2
