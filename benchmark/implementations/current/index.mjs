@@ -1,6 +1,6 @@
 import markdownit from '../../../index.mjs';
 
-var md = markdownit({
+const md = markdownit({
   html: true,
   linkify: true,
   typographer: true

@@ -5,7 +5,7 @@ import Token from '../lib/token.mjs';
 describe('Token', function () {
 
   it('attr', function () {
-    var t = new Token('test_token', 'tok', 1);
+    const t = new Token('test_token', 'tok', 1);
 
     assert.strictEqual(t.attrs, null);
     assert.equal(t.attrIndex('foo'), -1);

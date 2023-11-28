@@ -16,9 +16,9 @@ import md_sub from 'markdown-it-sub';
 import md_sup from 'markdown-it-sup';
 
 
-var mdHtml, mdSrc, permalink, scrollMap;
+let mdHtml, mdSrc, permalink, scrollMap;
 
-var defaults = {
+const defaults = {
   html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
@@ -33,7 +33,7 @@ var defaults = {
 };
 
 defaults.highlight = function (str, lang) {
-  var esc = mdHtml.utils.escapeHtml;
+  const esc = mdHtml.utils.escapeHtml;
 
   try {
     if (!defaults._highlight) {
@@ -48,7 +48,7 @@ defaults.highlight = function (str, lang) {
 
     } else if (lang === 'auto') {
 
-      var result = hljs.highlightAuto(str);
+      const result = hljs.highlightAuto(str);
 
       /*eslint-disable no-console*/
       console.log('highlight language: ' + result.language + ', relevance: ' + result.relevance);
@@ -121,7 +121,7 @@ function mdInit() {
   // - We track only headings and paragraphs on first level. That's enough.
   // - Footnotes content causes jumps. Level limit filter it automatically.
   function injectLineNumbers(tokens, idx, options, env, slf) {
-    var line;
+    let line;
     if (tokens[idx].map && tokens[idx].level === 0) {
       line = tokens[idx].map[0];
       tokens[idx].attrJoin('class', 'line');
@@ -142,7 +142,7 @@ function setHighlightedlContent(selector, content, lang) {
 }
 
 function updateResult() {
-  var source = $('.source').val();
+  const source = $('.source').val();
 
   // Update only active view to avoid slowdowns
   // (debug & src view with highlighting are a bit slow)
@@ -182,11 +182,9 @@ function updateResult() {
 // That's a bit dirty to process each line everytime, but ok for demo.
 // Optimizations are required only for big texts.
 function buildScrollMap() {
-  var i, offset, nonEmptyList, pos, a, b, lineHeightMap, linesCount,
-      acc, sourceLikeDiv, textarea = $('.source'),
-      _scrollMap;
+  const textarea = $('.source');
 
-  sourceLikeDiv = $('<div />').css({
+  const sourceLikeDiv = $('<div />').css({
     position: 'absolute',
     visibility: 'hidden',
     height: 'auto',
@@ -197,15 +195,13 @@ function buildScrollMap() {
     'white-space': textarea.css('white-space')
   }).appendTo('body');
 
-  offset = $('.result-html').scrollTop() - $('.result-html').offset().top;
-  _scrollMap = [];
-  nonEmptyList = [];
-  lineHeightMap = [];
+  const offset = $('.result-html').scrollTop() - $('.result-html').offset().top;
+  const _scrollMap = [];
+  const nonEmptyList = [];
+  const lineHeightMap = [];
 
-  acc = 0;
+  let acc = 0;
   textarea.val().split('\n').forEach(function (str) {
-    var h, lh;
-
     lineHeightMap.push(acc);
 
     if (str.length === 0) {
@@ -214,21 +210,22 @@ function buildScrollMap() {
     }
 
     sourceLikeDiv.text(str);
-    h = parseFloat(sourceLikeDiv.css('height'));
-    lh = parseFloat(sourceLikeDiv.css('line-height'));
+    const h = parseFloat(sourceLikeDiv.css('height'));
+    const lh = parseFloat(sourceLikeDiv.css('line-height'));
     acc += Math.round(h / lh);
   });
   sourceLikeDiv.remove();
   lineHeightMap.push(acc);
-  linesCount = acc;
+  const linesCount = acc;
 
-  for (i = 0; i < linesCount; i++) { _scrollMap.push(-1); }
+  for (let i = 0; i < linesCount; i++) { _scrollMap.push(-1); }
 
   nonEmptyList.push(0);
   _scrollMap[0] = 0;
 
   $('.line').each(function (n, el) {
-    var $el = $(el), t = $el.data('line');
+    const $el = $(el);
+    let t = $el.data('line');
     if (t === '') { return; }
     t = lineHeightMap[t];
     if (t !== 0) { nonEmptyList.push(t); }
@@ -238,15 +235,15 @@ function buildScrollMap() {
   nonEmptyList.push(linesCount);
   _scrollMap[linesCount] = $('.result-html')[0].scrollHeight;
 
-  pos = 0;
-  for (i = 1; i < linesCount; i++) {
+  let pos = 0;
+  for (let i = 1; i < linesCount; i++) {
     if (_scrollMap[i] !== -1) {
       pos++;
       continue;
     }
 
-    a = nonEmptyList[pos];
-    b = nonEmptyList[pos + 1];
+    const a = nonEmptyList[pos];
+    const b = nonEmptyList[pos + 1];
     _scrollMap[i] = Math.round((_scrollMap[b] * (i - a) + _scrollMap[a] * (b - i)) / (b - a));
   }
 
@@ -254,40 +251,36 @@ function buildScrollMap() {
 }
 
 // Synchronize scroll position from source to result
-var syncResultScroll = _.debounce(function () {
-  var textarea   = $('.source'),
-      lineHeight = parseFloat(textarea.css('line-height')),
-      lineNo, posTo;
+const syncResultScroll = _.debounce(function () {
+  const textarea   = $('.source');
+  const lineHeight = parseFloat(textarea.css('line-height'));
 
-  lineNo = Math.floor(textarea.scrollTop() / lineHeight);
+  const lineNo = Math.floor(textarea.scrollTop() / lineHeight);
   if (!scrollMap) { scrollMap = buildScrollMap(); }
-  posTo = scrollMap[lineNo];
+  const posTo = scrollMap[lineNo];
   $('.result-html').stop(true).animate({
     scrollTop: posTo
   }, 100, 'linear');
 }, 50, { maxWait: 50 });
 
 // Synchronize scroll position from result to source
-var syncSrcScroll = _.debounce(function () {
-  var resultHtml = $('.result-html'),
-      scrollTop  = resultHtml.scrollTop(),
-      textarea   = $('.source'),
-      lineHeight = parseFloat(textarea.css('line-height')),
-      lines,
-      i,
-      line;
+const syncSrcScroll = _.debounce(function () {
+  const resultHtml = $('.result-html');
+  const scrollTop  = resultHtml.scrollTop();
+  const textarea   = $('.source');
+  const lineHeight = parseFloat(textarea.css('line-height'));
 
   if (!scrollMap) { scrollMap = buildScrollMap(); }
 
-  lines = Object.keys(scrollMap);
+  const lines = Object.keys(scrollMap);
 
   if (lines.length < 1) {
     return;
   }
 
-  line = lines[0];
+  let line = lines[0];
 
-  for (i = 1; i < lines.length; i++) {
+  for (let i = 1; i < lines.length; i++) {
     if (scrollMap[lines[i]] < scrollTop) {
       line = lines[i];
       continue;
@@ -306,7 +299,7 @@ function loadPermalink() {
 
   if (!location.hash) { return; }
 
-  var cfg, opts;
+  let cfg;
 
   try {
 
@@ -330,7 +323,7 @@ function loadPermalink() {
     return;
   }
 
-  opts = _.isObject(cfg.defaults) ? cfg.defaults : {};
+  const opts = _.isObject(cfg.defaults) ? cfg.defaults : {};
 
   // copy config to defaults, but only if key exists
   // and value has the same type
@@ -376,16 +369,16 @@ $(function () {
   _.forOwn(defaults, function (val, key) {
     if (key === 'highlight') { return; }
 
-    var el = document.getElementById(key);
+    const el = document.getElementById(key);
 
     if (!el) { return; }
 
-    var $el = $(el);
+    const $el = $(el);
 
     if (_.isBoolean(val)) {
       $el.prop('checked', val);
       $el.on('change', function () {
-        var value = Boolean($el.prop('checked'));
+        const value = Boolean($el.prop('checked'));
         setOptionClass(key, value);
         defaults[key] = value;
         mdInit();
@@ -428,7 +421,7 @@ $(function () {
   });
 
   $(document).on('click', '[data-result-as]', function (event) {
-    var view = $(this).data('resultAs');
+    const view = $(this).data('resultAs');
     if (view) {
       setResultView(view);
       // only to update permalink

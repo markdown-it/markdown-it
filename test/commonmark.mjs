@@ -14,7 +14,7 @@ function generate(path, md) {
   load(path, function (data) {
     data.meta = data.meta || {};
 
-    var desc = data.meta.desc || relative(path, data.file);
+    const desc = data.meta.desc || relative(path, data.file);
 
     (data.meta.skip ? describe.skip : describe)(desc, function () {
       data.fixtures.forEach(function (fixture) {
@@ -28,7 +28,7 @@ function generate(path, md) {
 
 
 describe('CommonMark', function () {
-  var md = markdownit('commonmark');
+  const md = markdownit('commonmark');
 
   generate(fileURLToPath(new URL('fixtures/commonmark/good.txt', import.meta.url)), md);
 });

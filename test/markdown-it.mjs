@@ -4,7 +4,7 @@ import markdownit from '../index.mjs';
 
 
 describe('markdown-it', function () {
-  var md = markdownit({
+  const md = markdownit({
     html: true,
     langPrefix: '',
     typographer: true,

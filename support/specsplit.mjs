@@ -9,7 +9,7 @@ import argparse from 'argparse';
 import markdownit from '../index.mjs';
 
 
-var cli = new argparse.ArgumentParser({
+const cli = new argparse.ArgumentParser({
   add_help: true
 });
 
@@ -29,7 +29,7 @@ cli.add_argument('-o', '--output', {
   default: '-'
 });
 
-var options = cli.parse_args();
+const options = cli.parse_args();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,7 @@ function readFile(filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
 
-    var chunks = [];
+    const chunks = [];
 
     process.stdin.on('data', function (chunk) {
       chunks.push(chunk);
@@ -61,8 +61,8 @@ function readFile(filename, encoding, callback) {
 ////////////////////////////////////////////////////////////////////////////////
 
 readFile(options.spec, 'utf8', function (error, input) {
-  var good = [], bad = [],
-      markdown = markdownit('commonmark');
+  const good = [], bad = [],
+        markdown = markdownit('commonmark');
 
   if (error) {
     if (error.code === 'ENOENT') {
@@ -82,11 +82,11 @@ readFile(options.spec, 'utf8', function (error, input) {
               token.info.trim() === 'example';
     })
     .forEach(function (token) {
-      var arr  = token.content.split(/^\.\s*?$/m, 2);
-      var md   = arr[0];
-      var html = arr[1].replace(/^\n/, '');
+      const arr  = token.content.split(/^\.\s*?$/m, 2);
+      const md   = arr[0];
+      const html = arr[1].replace(/^\n/, '');
 
-      var result = {
+      const result = {
         md:   md,
         html: html,
         line: token.map[0],
@@ -106,12 +106,12 @@ readFile(options.spec, 'utf8', function (error, input) {
       }
     });
 
-  var out = [];
+  const out = [];
 
   if (!options.type) {
     out.push(`CM spec stat: passed samples - ${good.length}, failed samples - ${bad.length}`);
   } else {
-    var data = options.type === 'good' ? good : bad;
+    const data = options.type === 'good' ? good : bad;
 
     data.forEach(function (sample) {
       out.push(

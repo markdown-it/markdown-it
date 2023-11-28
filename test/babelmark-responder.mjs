@@ -5,10 +5,10 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 
 describe('babelmark responder app', function () {
-  var app;
+  let app;
 
-  var PORT    = 5005;
-  var request = supertest('http://127.0.0.1:' + PORT);
+  const PORT    = 5005;
+  const request = supertest('http://127.0.0.1:' + PORT);
 
   before(async () => {
     app = execFile(

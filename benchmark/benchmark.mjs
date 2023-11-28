@@ -4,13 +4,13 @@
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
-var fs        = require('fs');
-var util      = require('util');
-var Benchmark = require('benchmark');
-var ansi      = require('ansi');
-var cursor    = ansi(process.stdout);
+const fs        = require('fs');
+const util      = require('util');
+const Benchmark = require('benchmark');
+const ansi      = require('ansi');
+const cursor    = ansi(process.stdout);
 
-var IMPLS = [];
+const IMPLS = [];
 
 for (const name of fs.readdirSync(new URL('./implementations', import.meta.url)).sort()) {
   const filepath = new URL(`./implementations/${name}/index.mjs`, import.meta.url);
@@ -31,11 +31,11 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
 
   content.string = fs.readFileSync(filepath, 'utf8');
 
-  var title = `(${content.string.length} bytes)`;
+  const title = `(${content.string.length} bytes)`;
 
   function onComplete() { cursor.write('\n'); }
 
-  var suite = new Benchmark.Suite(
+  const suite = new Benchmark.Suite(
     title,
     {
       onStart: () => { console.log('\nSample: %s %s', sample, title); },
@@ -68,7 +68,7 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
 
 
 function select(patterns) {
-  var result = [];
+  const result = [];
 
   if (!(patterns instanceof Array)) {
     patterns = [ patterns ];
@@ -91,7 +91,7 @@ function select(patterns) {
 
 
 function run(files) {
-  var selected = select(files);
+  const selected = select(files);
 
   if (selected.length > 0) {
     console.log('Selected samples: (%d of %d)', selected.length, SAMPLES.length);

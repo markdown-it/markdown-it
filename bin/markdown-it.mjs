@@ -7,7 +7,7 @@ import markdownit from '../index.mjs';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-var cli = new argparse.ArgumentParser({
+const cli = new argparse.ArgumentParser({
   prog: 'markdown-it',
   add_help: true
 });
@@ -48,13 +48,13 @@ cli.add_argument('-o', '--output', {
   default: '-'
 });
 
-var options = cli.parse_args();
+const options = cli.parse_args();
 
 
 function readFile(filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
-    var chunks = [];
+    const chunks = [];
 
     process.stdin.on('data', function (chunk) { chunks.push(chunk); });
 
@@ -70,7 +70,7 @@ function readFile(filename, encoding, callback) {
 ////////////////////////////////////////////////////////////////////////////////
 
 readFile(options.file, 'utf8', function (err, input) {
-  var output, md;
+  let output;
 
   if (err) {
     if (err.code === 'ENOENT') {
@@ -86,7 +86,7 @@ readFile(options.file, 'utf8', function (err, input) {
     process.exit(1);
   }
 
-  md = markdownit({
+  const md = markdownit({
     html: !options.no_html,
     xhtmlOut: false,
     typographer: options.typographer,

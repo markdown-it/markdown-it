@@ -4,14 +4,14 @@
 import { readFileSync } from 'fs';
 import markdownit from '../index.mjs';
 
-var md = markdownit({
+const md = markdownit({
   html: true,
   linkify: false,
   typographer: false
 });
 
-var data = readFileSync(new URL('../test/fixtures/commonmark/spec.txt', import.meta.url), 'utf8');
+const data = readFileSync(new URL('../test/fixtures/commonmark/spec.txt', import.meta.url), 'utf8');
 
-for (var i = 0; i < 20; i++) {
+for (let i = 0; i < 20; i++) {
   md.render(data);
 }

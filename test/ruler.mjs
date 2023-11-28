@@ -4,13 +4,13 @@ import Ruler from '../lib/ruler.mjs';
 describe('Ruler', function () {
 
   it('should replace rule (.at)', function () {
-    var ruler = new Ruler();
-    var res = 0;
+    const ruler = new Ruler();
+    let res = 0;
 
     ruler.push('test', function foo() { res = 1; });
     ruler.at('test', function bar() { res = 2; });
 
-    var rules = ruler.getRules('');
+    const rules = ruler.getRules('');
 
     assert.strictEqual(rules.length, 1);
     rules[0]();
@@ -19,14 +19,14 @@ describe('Ruler', function () {
 
 
   it('should inject before/after rule', function () {
-    var ruler = new Ruler();
-    var res = 0;
+    const ruler = new Ruler();
+    let res = 0;
 
     ruler.push('test', function foo() { res = 1; });
     ruler.before('test', 'before_test', function fooBefore() { res = -10; });
     ruler.after('test', 'after_test', function fooAfter() { res = 10; });
 
-    var rules = ruler.getRules('');
+    const rules = ruler.getRules('');
 
     assert.strictEqual(rules.length, 3);
     rules[0]();
@@ -39,7 +39,8 @@ describe('Ruler', function () {
 
 
   it('should enable/disable rule', function () {
-    var rules, ruler = new Ruler();
+    const ruler = new Ruler();
+    let rules;
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {});
@@ -64,7 +65,8 @@ describe('Ruler', function () {
 
 
   it('should enable/disable multiple rule', function () {
-    var rules, ruler = new Ruler();
+    const ruler = new Ruler();
+    let rules;
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {});
@@ -79,19 +81,20 @@ describe('Ruler', function () {
 
 
   it('should enable rules by whitelist', function () {
-    var rules, ruler = new Ruler();
+    const ruler = new Ruler();
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {});
 
     ruler.enableOnly('test');
-    rules = ruler.getRules('');
+    const rules = ruler.getRules('');
     assert.strictEqual(rules.length, 1);
   });
 
 
   it('should support multiple chains', function () {
-    var rules, ruler = new Ruler();
+    const ruler = new Ruler();
+    let rules;
 
     ruler.push('test', function foo() {});
     ruler.push('test2', function bar() {}, { alt: [ 'alt1' ] });
@@ -107,7 +110,7 @@ describe('Ruler', function () {
 
 
   it('should fail on invalid rule name', function () {
-    var ruler = new Ruler();
+    const ruler = new Ruler();
 
     ruler.push('test', function foo() {});
 
@@ -130,7 +133,7 @@ describe('Ruler', function () {
 
 
   it('should not fail on invalid rule name in silent mode', function () {
-    var ruler = new Ruler();
+    const ruler = new Ruler();
 
     ruler.push('test', function foo() {});
 
