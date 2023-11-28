@@ -61,8 +61,9 @@ function readFile (filename, encoding, callback) {
 ////////////////////////////////////////////////////////////////////////////////
 
 readFile(options.spec, 'utf8', function (error, input) {
-  const good = [], bad = [],
-        markdown = markdownit('commonmark')
+  const good = []
+  const bad = []
+  const markdown = markdownit('commonmark')
 
   if (error) {
     if (error.code === 'ENOENT') {

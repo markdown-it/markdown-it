@@ -446,8 +446,8 @@ describe('Token attributes', function () {
   it('.attrJoin', function () {
     const md = markdownit()
 
-    const tokens = md.parse('```'),
-          t = tokens[0]
+    const tokens = md.parse('```')
+    const t = tokens[0]
 
     t.attrJoin('class', 'foo')
     t.attrJoin('class', 'bar')
@@ -461,8 +461,8 @@ describe('Token attributes', function () {
   it('.attrSet', function () {
     const md = markdownit()
 
-    const tokens = md.parse('```'),
-          t = tokens[0]
+    const tokens = md.parse('```')
+    const t = tokens[0]
 
     t.attrSet('class', 'foo')
 
@@ -482,8 +482,8 @@ describe('Token attributes', function () {
   it('.attrGet', function () {
     const md = markdownit()
 
-    const tokens = md.parse('```'),
-          t = tokens[0]
+    const tokens = md.parse('```')
+    const t = tokens[0]
 
     assert.strictEqual(t.attrGet('myattr'), null)
 

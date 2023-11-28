@@ -142,6 +142,7 @@ rules:
   no-void:                2
   no-with:                2
   object-curly-spacing:   [ 2, always, { "objectsInObjects": true, "arraysInObjects": true } ]
+  one-var:                [ 2, { initialized: 'never' } ]
   operator-assignment:    1
   # Postponed
   #operator-linebreak:     [ 2, after ]
