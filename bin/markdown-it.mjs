@@ -51,7 +51,7 @@ cli.add_argument('-o', '--output', {
 const options = cli.parse_args()
 
 
-function readFile(filename, encoding, callback) {
+function readFile (filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
     const chunks = []

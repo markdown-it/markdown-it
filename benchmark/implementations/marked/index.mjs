@@ -3,6 +3,6 @@ const require = createRequire(import.meta.url)
 
 const marked = require('../../extra/lib/node_modules/marked')
 
-export function run(data) {
+export function run (data) {
   return marked(data)
 }

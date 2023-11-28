@@ -33,7 +33,7 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
 
   const title = `(${content.string.length} bytes)`
 
-  function onComplete() { cursor.write('\n') }
+  function onComplete () { cursor.write('\n') }
 
   const suite = new Benchmark.Suite(
     title,
@@ -47,7 +47,7 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
     suite.add(
       impl.name,
       {
-        onCycle: function onCycle(event) {
+        onCycle: function onCycle (event) {
           cursor.horizontalAbsolute()
           cursor.eraseLine()
           cursor.write(' > ' + event.target)
@@ -67,14 +67,14 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
 })
 
 
-function select(patterns) {
+function select (patterns) {
   const result = []
 
   if (!(patterns instanceof Array)) {
     patterns = [ patterns ]
   }
 
-  function checkName(name) {
+  function checkName (name) {
     return patterns.length === 0 || patterns.some(function (regexp) {
       return regexp.test(name)
     })
@@ -90,7 +90,7 @@ function select(patterns) {
 }
 
 
-function run(files) {
+function run (files) {
   const selected = select(files)
 
   if (selected.length > 0) {

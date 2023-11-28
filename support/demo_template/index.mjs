@@ -62,7 +62,7 @@ defaults.highlight = function (str, lang) {
   return '<pre><code class="hljs">' + esc(str) + '</code></pre>'
 }
 
-function setOptionClass(name, val) {
+function setOptionClass (name, val) {
   if (val) {
     $('body').addClass('opt_' + name)
   } else {
@@ -70,7 +70,7 @@ function setOptionClass(name, val) {
   }
 }
 
-function setResultView(val) {
+function setResultView (val) {
   $('body').removeClass('result-as-html')
   $('body').removeClass('result-as-src')
   $('body').removeClass('result-as-debug')
@@ -78,7 +78,7 @@ function setResultView(val) {
   defaults._view = val
 }
 
-function mdInit() {
+function mdInit () {
   if (defaults._strict) {
     mdHtml = window.markdownit('commonmark')
     mdSrc = window.markdownit('commonmark')
@@ -120,7 +120,7 @@ function mdInit() {
   //
   // - We track only headings and paragraphs on first level. That's enough.
   // - Footnotes content causes jumps. Level limit filter it automatically.
-  function injectLineNumbers(tokens, idx, options, env, slf) {
+  function injectLineNumbers (tokens, idx, options, env, slf) {
     let line
     if (tokens[idx].map && tokens[idx].level === 0) {
       line = tokens[idx].map[0]
@@ -133,7 +133,7 @@ function mdInit() {
   mdHtml.renderer.rules.paragraph_open = mdHtml.renderer.rules.heading_open = injectLineNumbers
 }
 
-function setHighlightedlContent(selector, content, lang) {
+function setHighlightedlContent (selector, content, lang) {
   if (window.hljs) {
     $(selector).html(window.hljs.highlight(content, { language: lang }).value)
   } else {
@@ -141,7 +141,7 @@ function setHighlightedlContent(selector, content, lang) {
   }
 }
 
-function updateResult() {
+function updateResult () {
   const source = $('.source').val()
 
   // Update only active view to avoid slowdowns
@@ -181,7 +181,7 @@ function updateResult() {
 // Build offsets for each line (lines can be wrapped)
 // That's a bit dirty to process each line everytime, but ok for demo.
 // Optimizations are required only for big texts.
-function buildScrollMap() {
+function buildScrollMap () {
   const textarea = $('.source')
 
   const sourceLikeDiv = $('<div />').css({
@@ -295,7 +295,7 @@ const syncSrcScroll = _.debounce(function () {
 }, 50, { maxWait: 50 })
 
 
-function loadPermalink() {
+function loadPermalink () {
 
   if (!location.hash) { return }
 

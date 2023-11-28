@@ -33,13 +33,13 @@ const options = cli.parse_args()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function normalize(text) {
+function normalize (text) {
   return text.replace(/<blockquote>\n<\/blockquote>/g, '<blockquote></blockquote>')
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function readFile(filename, encoding, callback) {
+function readFile (filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
 

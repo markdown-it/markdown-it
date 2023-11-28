@@ -6,6 +6,6 @@ const md = markdownit({
   typographer: true
 })
 
-export function run(data) {
+export function run (data) {
   return md.render(data)
 }

@@ -7,8 +7,8 @@ describe('Ruler', function () {
     const ruler = new Ruler()
     let res = 0
 
-    ruler.push('test', function foo() { res = 1 })
-    ruler.at('test', function bar() { res = 2 })
+    ruler.push('test', function foo () { res = 1 })
+    ruler.at('test', function bar () { res = 2 })
 
     const rules = ruler.getRules('')
 
@@ -22,9 +22,9 @@ describe('Ruler', function () {
     const ruler = new Ruler()
     let res = 0
 
-    ruler.push('test', function foo() { res = 1 })
-    ruler.before('test', 'before_test', function fooBefore() { res = -10 })
-    ruler.after('test', 'after_test', function fooAfter() { res = 10 })
+    ruler.push('test', function foo () { res = 1 })
+    ruler.before('test', 'before_test', function fooBefore () { res = -10 })
+    ruler.after('test', 'after_test', function fooAfter () { res = 10 })
 
     const rules = ruler.getRules('')
 
@@ -42,8 +42,8 @@ describe('Ruler', function () {
     const ruler = new Ruler()
     let rules
 
-    ruler.push('test', function foo() {})
-    ruler.push('test2', function bar() {})
+    ruler.push('test', function foo () {})
+    ruler.push('test2', function bar () {})
 
     rules = ruler.getRules('')
     assert.strictEqual(rules.length, 2)
@@ -68,8 +68,8 @@ describe('Ruler', function () {
     const ruler = new Ruler()
     let rules
 
-    ruler.push('test', function foo() {})
-    ruler.push('test2', function bar() {})
+    ruler.push('test', function foo () {})
+    ruler.push('test2', function bar () {})
 
     ruler.disable([ 'test', 'test2' ])
     rules = ruler.getRules('')
@@ -83,8 +83,8 @@ describe('Ruler', function () {
   it('should enable rules by whitelist', function () {
     const ruler = new Ruler()
 
-    ruler.push('test', function foo() {})
-    ruler.push('test2', function bar() {})
+    ruler.push('test', function foo () {})
+    ruler.push('test2', function bar () {})
 
     ruler.enableOnly('test')
     const rules = ruler.getRules('')
@@ -96,9 +96,9 @@ describe('Ruler', function () {
     const ruler = new Ruler()
     let rules
 
-    ruler.push('test', function foo() {})
-    ruler.push('test2', function bar() {}, { alt: [ 'alt1' ] })
-    ruler.push('test2', function bar() {}, { alt: [ 'alt1', 'alt2' ] })
+    ruler.push('test', function foo () {})
+    ruler.push('test2', function bar () {}, { alt: [ 'alt1' ] })
+    ruler.push('test2', function bar () {}, { alt: [ 'alt1', 'alt2' ] })
 
     rules = ruler.getRules('')
     assert.strictEqual(rules.length, 3)
@@ -112,16 +112,16 @@ describe('Ruler', function () {
   it('should fail on invalid rule name', function () {
     const ruler = new Ruler()
 
-    ruler.push('test', function foo() {})
+    ruler.push('test', function foo () {})
 
     assert.throws(function () {
-      ruler.at('invalid name', function bar() {})
+      ruler.at('invalid name', function bar () {})
     })
     assert.throws(function () {
-      ruler.before('invalid name', function bar() {})
+      ruler.before('invalid name', function bar () {})
     })
     assert.throws(function () {
-      ruler.after('invalid name', function bar() {})
+      ruler.after('invalid name', function bar () {})
     })
     assert.throws(function () {
       ruler.enable('invalid name')
@@ -135,7 +135,7 @@ describe('Ruler', function () {
   it('should not fail on invalid rule name in silent mode', function () {
     const ruler = new Ruler()
 
-    ruler.push('test', function foo() {})
+    ruler.push('test', function foo () {})
 
     assert.doesNotThrow(function () {
       ruler.enable('invalid name', true)

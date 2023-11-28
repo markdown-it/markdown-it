@@ -5,12 +5,12 @@ import markdownit from '../index.mjs'
 import { assert } from 'chai'
 
 
-function normalize(text) {
+function normalize (text) {
   return text.replace(/<blockquote>\n<\/blockquote>/g, '<blockquote></blockquote>')
 }
 
 
-function generate(path, md) {
+function generate (path, md) {
   load(path, function (data) {
     data.meta = data.meta || {}
 

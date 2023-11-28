@@ -43,7 +43,7 @@ export default {
     nodeResolve({ preferBuiltins: true }),
     commonjs(),
     {
-      banner() {
+      banner () {
         return `/*! ${pkg.name} ${pkg.version} https://github.com/${pkg.repository} @license ${pkg.license} */`
       }
     }

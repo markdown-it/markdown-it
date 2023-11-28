@@ -30,7 +30,7 @@ describe('API', function () {
   it('plugin', function () {
     let succeeded = false
 
-    function plugin(slf, opts) { if (opts === 'bar') { succeeded = true } }
+    function plugin (slf, opts) { if (opts === 'bar') { succeeded = true } }
 
     const md = markdownit()
 
@@ -410,7 +410,7 @@ describe('smartquotes', function () {
 describe('Ordered list info', function () {
   const md = markdownit()
 
-  function type_filter(tokens, type) {
+  function type_filter (tokens, type) {
     return tokens.filter(function (t) { return t.type === type })
   }
 

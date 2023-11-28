@@ -5,7 +5,7 @@ import { Worker as JestWorker } from 'jest-worker'
 import { readFileSync } from 'fs'
 
 
-async function test_pattern(str) {
+async function test_pattern (str) {
   const worker = new JestWorker(
     new URL('./pathological_worker.js', import.meta.url),
     {

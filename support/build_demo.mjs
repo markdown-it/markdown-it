@@ -3,7 +3,7 @@
 import shell from 'shelljs'
 import { readFileSync, writeFileSync } from 'fs'
 
-function escape(input) {
+function escape (input) {
   return input
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
