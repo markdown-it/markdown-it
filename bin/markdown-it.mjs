@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-/*eslint no-console:0*/
+/* eslint no-console:0 */
 
 import fs from 'node:fs'
 import argparse from 'argparse'
 import markdownit from '../index.mjs'
 
-////////////////////////////////////////////////////////////////////////////////
 
 const cli = new argparse.ArgumentParser({
   prog: 'markdown-it',
@@ -66,8 +65,6 @@ function readFile (filename, encoding, callback) {
   }
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
 
 readFile(options.file, 'utf8', function (err, input) {
   let output

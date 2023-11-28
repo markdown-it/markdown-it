@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/*eslint no-console:0*/
+/* eslint no-console:0 */
 
 // Fixtures generator from commonmark specs. Split spec to working / not working
 // examples, or show total stat.
@@ -31,13 +31,11 @@ cli.add_argument('-o', '--output', {
 
 const options = cli.parse_args()
 
-////////////////////////////////////////////////////////////////////////////////
 
 function normalize (text) {
   return text.replace(/<blockquote>\n<\/blockquote>/g, '<blockquote></blockquote>')
 }
 
-////////////////////////////////////////////////////////////////////////////////
 
 function readFile (filename, encoding, callback) {
   if (options.file === '-') {
@@ -57,8 +55,6 @@ function readFile (filename, encoding, callback) {
   }
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
 
 readFile(options.spec, 'utf8', function (error, input) {
   const good = []

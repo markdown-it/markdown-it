@@ -182,7 +182,7 @@ describe('Plugins', function () {
   it('should not loop infinitely if inline rule doesn\'t increment pos', function () {
     const md = markdownit()
 
-    md.inline.ruler.after('text', 'custom', function (state/*, silent*/) {
+    md.inline.ruler.after('text', 'custom', function (state/*, silent */) {
       if (state.src.charCodeAt(state.pos) !== 0x40/* @ */) return false
       return true
     })
@@ -194,7 +194,7 @@ describe('Plugins', function () {
   it('should not loop infinitely if block rule doesn\'t increment pos', function () {
     const md = markdownit()
 
-    md.block.ruler.before('paragraph', 'custom', function (state, startLine/*, endLine, silent*/) {
+    md.block.ruler.before('paragraph', 'custom', function (state, startLine/*, endLine, silent */) {
       const pos = state.bMarks[startLine] + state.tShift[startLine]
       if (state.src.charCodeAt(pos) !== 0x40/* @ */) return false
       return true

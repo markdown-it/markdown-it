@@ -9,7 +9,7 @@ function escape (input) {
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
-    //.replaceAll("'", '&#039;');
+    // .replaceAll("'", '&#039;');
 }
 
 shell.rm('-rf', 'demo')

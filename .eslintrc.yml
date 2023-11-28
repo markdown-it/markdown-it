@@ -153,7 +153,10 @@ rules:
   space-infix-ops:        2
   space-unary-ops:        2
   # Postponed
-  #spaced-comment:         [ 1, always, { exceptions: [ '/', '=' ] } ]
+  spaced-comment:         [ 2, 'always', {
+      line: { markers: ['*package', '!', '/', ',', '='] },
+      block: { balanced: true, markers: ['*package', '!', ',', ':', '::', 'flow-include'], exceptions: ['*'] }
+    }]
   strict:                 [ 2, global ]
   quotes:                 [ 2, single, avoid-escape ]
   quote-props:            [ 1, 'as-needed' ]

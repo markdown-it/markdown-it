@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/*eslint no-console:0*/
+/* eslint no-console:0 */
 
 import { readFileSync } from 'fs'
 import markdownit from '../index.mjs'

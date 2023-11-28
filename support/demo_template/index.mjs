@@ -1,5 +1,5 @@
-/*eslint-env browser*/
-/*global $, _*/
+/* eslint-env browser */
+/* global $, _ */
 
 import mdurl from 'mdurl'
 import hljs from 'highlight.js'
@@ -50,7 +50,7 @@ defaults.highlight = function (str, lang) {
 
       const result = hljs.highlightAuto(str)
 
-      /*eslint-disable no-console*/
+      /* eslint-disable no-console */
       console.log('highlight language: ' + result.language + ', relevance: ' + result.relevance)
 
       return '<pre class="hljs language-' + esc(result.language) + '"><code>' +
@@ -156,7 +156,7 @@ function updateResult () {
       'json'
     )
 
-  } else { /*defaults._view === 'html'*/
+  } else { /* defaults._view === 'html' */
     $('.result-html').html(mdHtml.render(source))
   }
 
@@ -349,7 +349,6 @@ function loadPermalink () {
 }
 
 
-//////////////////////////////////////////////////////////////////////////////
 // Init on page load
 //
 $(function () {

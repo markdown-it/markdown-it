@@ -25,7 +25,7 @@ describe('Utils', function () {
     assert.strictEqual(isValidEntityCode(0x7F), false)
   })
 
-  /*it('replaceEntities', function () {
+  /* it('replaceEntities', function () {
     var replaceEntities = utils.replaceEntities;
 
     assert.strictEqual(replaceEntities('&amp;'), '&');
@@ -35,7 +35,7 @@ describe('Utils', function () {
 
     assert.strictEqual(replaceEntities('&am;'), '&am;');
     assert.strictEqual(replaceEntities('&#00;'), '&#00;');
-  });*/
+  }); */
 
   it('assign', function () {
     const assign = utils.assign

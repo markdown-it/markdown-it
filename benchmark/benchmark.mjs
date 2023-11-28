@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/*eslint no-console:0*/
+/* eslint no-console:0 */
 
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
