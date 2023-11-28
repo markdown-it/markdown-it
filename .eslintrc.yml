@@ -145,7 +145,7 @@ rules:
   operator-assignment:    1
   # Postponed
   #operator-linebreak:     [ 2, after ]
-  semi:                   2
+  semi:                   [ 2, never ]
   semi-spacing:           2
   space-before-function-paren: [ 2, { "anonymous": "always", "named": "never" } ]
   space-in-parens:        [ 2, never ]

@@ -1,7 +1,7 @@
-import nodeResolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
-import terser from '@rollup/plugin-terser';
+import nodeResolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+import terser from '@rollup/plugin-terser'
 
 const plugins = [
   nodeResolve({ preferBuiltins: true }),
@@ -18,7 +18,7 @@ const plugins = [
       indent_level: 2
     }
   })
-];
+]
 
 export default [
   {
@@ -39,4 +39,4 @@ export default [
     },
     plugins: plugins
   }
-];
+]
