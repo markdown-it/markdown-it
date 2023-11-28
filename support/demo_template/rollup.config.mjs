@@ -28,7 +28,7 @@ export default [
       format: 'umd',
       name: 'markdownit'
     },
-    plugins: plugins
+    plugins
   },
   {
     input: 'support/demo_template/index.mjs',
@@ -37,6 +37,6 @@ export default [
       format: 'iife',
       name: 'demo'
     },
-    plugins: plugins
+    plugins
   }
 ]

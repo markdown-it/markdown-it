@@ -37,7 +37,7 @@ defaults.highlight = function (str, lang) {
 
   try {
     if (!defaults._highlight) {
-      throw 'highlighting disabled'
+      throw new Error('highlighting disabled')
     }
 
     if (lang && lang !== 'auto' && hljs.getLanguage(lang)) {
@@ -167,7 +167,7 @@ function updateResult () {
     if (source) {
       // serialize state - source and options
       permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
-        source: source,
+        source,
         defaults: _.omit(defaults, 'highlight')
       }), '-_.!~', false)
     } else {

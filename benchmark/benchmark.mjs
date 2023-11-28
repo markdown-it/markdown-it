@@ -16,10 +16,7 @@ for (const name of fs.readdirSync(new URL('./implementations', import.meta.url))
   const filepath = new URL(`./implementations/${name}/index.mjs`, import.meta.url)
   const code = (await import(filepath))
 
-  IMPLS.push({
-    name: name,
-    code: code
-  })
+  IMPLS.push({ name, code })
 }
 
 const SAMPLES = []
@@ -39,7 +36,7 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
     title,
     {
       onStart: () => { console.log('\nSample: %s %s', sample, title) },
-      onComplete: onComplete
+      onComplete
     }
   )
 
@@ -52,18 +49,13 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
           cursor.eraseLine()
           cursor.write(' > ' + event.target)
         },
-        onComplete: onComplete,
+        onComplete,
         fn: function () { impl.code.run(content.string) }
       }
     )
   })
 
-  SAMPLES.push({
-    name: sample.split('.')[0],
-    title: title,
-    content: content,
-    suite: suite
-  })
+  SAMPLES.push({ name: sample.split('.')[0], title, content, suite })
 })
 
 

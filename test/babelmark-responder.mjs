@@ -16,7 +16,7 @@ describe('babelmark responder app', function () {
       ['../support/babelmark-responder.mjs'],
       {
         cwd: new URL('.', import.meta.url),
-        env: Object.assign({}, process.env, { PORT: PORT })
+        env: Object.assign({}, process.env, { PORT })
       }
     )
 

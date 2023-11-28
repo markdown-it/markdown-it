@@ -65,6 +65,7 @@
     "c8": "^8.0.1",
     "chai": "^4.2.0",
     "eslint": "^8.4.1",
+    "eslint-config-standard": "^17.1.0",
     "express": "^4.14.0",
     "gh-pages": "^6.1.0",
     "highlight.js": "^11.9.0",

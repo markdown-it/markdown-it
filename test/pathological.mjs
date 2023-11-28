@@ -20,10 +20,10 @@ async function test_pattern (str) {
   try {
     result = await Promise.race([
       worker.render(str),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Terminated (timeout exceeded)')), 3000).unref())
+      new Promise((resolve, reject) => {
+        setTimeout(() => reject(new Error('Terminated (timeout exceeded)')), 3000).unref()
+      })
     ])
-  } catch (e) {
-    throw e
   } finally {
     ac.abort()
     await worker.end()

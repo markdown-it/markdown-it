@@ -84,22 +84,17 @@ readFile(options.spec, 'utf8', function (error, input) {
       const html = arr[1].replace(/^\n/, '')
 
       const result = {
-        md:   md,
-        html: html,
+        md,
+        html,
         line: token.map[0],
-        err:  ''
+        err: ''
       }
 
-      try {
-        if (markdown.render(md) === normalize(html)) {
-          good.push(result)
-        } else {
-          result.err = markdown.render(md)
-          bad.push(result)
-        }
-      } catch (___) {
-        // bad.push(result);
-        throw ___
+      if (markdown.render(md) === normalize(html)) {
+        good.push(result)
+      } else {
+        result.err = markdown.render(md)
+        bad.push(result)
       }
     })
 
