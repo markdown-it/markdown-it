@@ -1,6 +1,7 @@
 import nodeResolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import terser from '@rollup/plugin-terser'
+import { babel } from '@rollup/plugin-babel'
 import { readFileSync } from 'fs'
 
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)))
@@ -42,6 +43,7 @@ export default {
   plugins: [
     nodeResolve({ preferBuiltins: true }),
     commonjs(),
+    babel({ babelHelpers: 'bundled' }),
     {
       banner () {
         return `/*! ${pkg.name} ${pkg.version} https://github.com/${pkg.repository} @license ${pkg.license} */`
