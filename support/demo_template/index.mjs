@@ -343,7 +343,7 @@ function loadPermalink () {
   })
 
   // sanitize for sure
-  if ([ 'html', 'src', 'debug' ].indexOf(defaults._view) === -1) {
+  if (['html', 'src', 'debug'].indexOf(defaults._view) === -1) {
     defaults._view = 'html'
   }
 }

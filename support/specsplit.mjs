@@ -16,7 +16,7 @@ const cli = new argparse.ArgumentParser({
 cli.add_argument('type', {
   help: 'type of examples to filter',
   nargs: '?',
-  choices: [ 'good', 'bad' ]
+  choices: ['good', 'bad']
 })
 
 cli.add_argument('-s', '--spec', {

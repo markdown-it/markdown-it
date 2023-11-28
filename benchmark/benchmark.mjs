@@ -71,7 +71,7 @@ function select (patterns) {
   const result = []
 
   if (!(patterns instanceof Array)) {
-    patterns = [ patterns ]
+    patterns = [patterns]
   }
 
   function checkName (name) {

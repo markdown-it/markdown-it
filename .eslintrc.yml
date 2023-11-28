@@ -25,7 +25,7 @@ rules:
   prefer-const: 2
   no-const-assign: 2
   accessor-pairs:         2
-  array-bracket-spacing:  [ 2, "always", { "singleValue": true, "objectsInArrays": true, "arraysInArrays": true } ]
+  array-bracket-spacing:  [ 2, never ]
   block-scoped-var:       2
   block-spacing:          2
   brace-style:            [ 2, '1tbs', { allowSingleLine: true } ]

@@ -13,7 +13,7 @@ describe('babelmark responder app', function () {
   before(async () => {
     app = execFile(
       'node',
-      [ '../support/babelmark-responder.mjs' ],
+      ['../support/babelmark-responder.mjs'],
       {
         cwd: new URL('.', import.meta.url),
         env: Object.assign({}, process.env, { PORT: PORT })

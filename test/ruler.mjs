@@ -71,10 +71,10 @@ describe('Ruler', function () {
     ruler.push('test', function foo () {})
     ruler.push('test2', function bar () {})
 
-    ruler.disable([ 'test', 'test2' ])
+    ruler.disable(['test', 'test2'])
     rules = ruler.getRules('')
     assert.strictEqual(rules.length, 0)
-    ruler.enable([ 'test', 'test2' ])
+    ruler.enable(['test', 'test2'])
     rules = ruler.getRules('')
     assert.strictEqual(rules.length, 2)
   })
@@ -97,8 +97,8 @@ describe('Ruler', function () {
     let rules
 
     ruler.push('test', function foo () {})
-    ruler.push('test2', function bar () {}, { alt: [ 'alt1' ] })
-    ruler.push('test2', function bar () {}, { alt: [ 'alt1', 'alt2' ] })
+    ruler.push('test2', function bar () {}, { alt: ['alt1'] })
+    ruler.push('test2', function bar () {}, { alt: ['alt1', 'alt2'] })
 
     rules = ruler.getRules('')
     assert.strictEqual(rules.length, 3)

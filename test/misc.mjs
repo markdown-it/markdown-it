@@ -106,7 +106,7 @@ describe('API', function () {
     }
 
     // Disable 2 rule in each chain & compare result
-    md.disable([ 'block', 'inline', 'code', 'fence', 'emphasis', 'entity' ])
+    md.disable(['block', 'inline', 'code', 'fence', 'emphasis', 'entity'])
 
     const now = {
       core: md.core.ruler.getRules('').length + 2,
@@ -117,7 +117,7 @@ describe('API', function () {
     assert.deepEqual(was, now)
 
     // Enable the same rules back
-    md.enable([ 'block', 'inline', 'code', 'fence', 'emphasis', 'entity' ])
+    md.enable(['block', 'inline', 'code', 'fence', 'emphasis', 'entity'])
 
     const back = {
       core: md.core.ruler.getRules('').length,
@@ -132,16 +132,16 @@ describe('API', function () {
     const md = markdownit()
 
     assert.throws(function () {
-      md.enable([ 'link', 'code', 'invalid' ])
+      md.enable(['link', 'code', 'invalid'])
     })
     assert.throws(function () {
-      md.disable([ 'link', 'code', 'invalid' ])
+      md.disable(['link', 'code', 'invalid'])
     })
     assert.doesNotThrow(function () {
-      md.enable([ 'link', 'code' ])
+      md.enable(['link', 'code'])
     })
     assert.doesNotThrow(function () {
-      md.disable([ 'link', 'code' ])
+      md.disable(['link', 'code'])
     })
   })
 
@@ -198,7 +198,7 @@ describe('Plugins', function () {
       const pos = state.bMarks[startLine] + state.tShift[startLine]
       if (state.src.charCodeAt(pos) !== 0x40/* @ */) return false
       return true
-    }, { alt: [ 'paragraph' ] })
+    }, { alt: ['paragraph'] })
 
     assert.throws(() => md.render('foo\n@bar\nbaz'), /block rule didn't increment state.line/)
     assert.throws(() => md.render('foo\n\n@bar\n\nbaz'), /block rule didn't increment state.line/)
@@ -268,7 +268,7 @@ describe('Misc', function () {
   it('Should render link target attr', function () {
     const md = markdownit()
       .use(forInline, 'target', 'link_open', function (tokens, idx) {
-        tokens[idx].attrs.push([ 'target', '_blank' ])
+        tokens[idx].attrs.push(['target', '_blank'])
       })
 
     assert.strictEqual(md.render('[foo](bar)'), '<p><a href="bar" target="_blank">foo</a></p>\n')
@@ -380,7 +380,7 @@ describe('smartquotes', function () {
 
     // all strings have different length to make sure
     // we didn't accidentally count the wrong one
-    quotes: [ '[[[', ']]', '(((((', '))))' ]
+    quotes: ['[[[', ']]', '(((((', '))))']
   })
 
   it('Should support multi-character quotes', function () {
