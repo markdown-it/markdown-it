@@ -28,9 +28,6 @@ jobs:
     - name: Test
       run: npm test
 
-    - name: Create coverage report
-      run: npm run report-coveralls
-
     - name: Upload coverage report to coveralls.io
       uses: coverallsapp/github-action@master
       with:

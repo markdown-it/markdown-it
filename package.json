@@ -28,9 +28,7 @@
   },
   "scripts": {
     "lint": "eslint --ext js --ext mjs .",
-    "test": "npm run lint && c8 mocha && node support/specsplit.mjs",
-    "coverage": "npm run test && c8 report --reporter html",
-    "report-coveralls": "c8 --reporter=lcov mocha",
+    "test": "npm run lint && c8 -r text -r html -r lcov mocha && node support/specsplit.mjs",
     "doc": "node support/build_doc.mjs",
     "gh-doc": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.mjs",
