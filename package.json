@@ -40,7 +40,7 @@
     "argparse": "^2.0.1",
     "entities": "^4.4.0",
     "linkify-it": "^4.0.1",
-    "mdurl": "^1.0.1",
+    "mdurl": "^2.0.0",
     "uc.micro": "^1.0.5"
   },
   "devDependencies": {
