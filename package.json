@@ -33,15 +33,14 @@
     "gh-doc": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.mjs",
     "gh-demo": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git",
-    "browserify": "rollup -c support/rollup.config.mjs",
+    "build": "npm run lint && rollup -c support/rollup.config.mjs",
     "benchmark-deps": "npm install --prefix benchmark/extra/ -g marked@0.3.6 commonmark@0.26.0 markdown-it/markdown-it.git#2.2.1",
     "specsplit": "support/specsplit.mjs good -o test/fixtures/commonmark/good.txt && support/specsplit.mjs bad -o test/fixtures/commonmark/bad.txt && support/specsplit.mjs",
     "todo": "grep 'TODO' -n -r ./lib 2>/dev/null",
-    "prepublishOnly": "npm run gh-demo && npm run gh-doc"
+    "prepublishOnly": "npm run build && npm run gh-demo && npm run gh-doc"
   },
   "files": [
     "index.mjs",
-    "bin/",
     "lib/",
     "dist/"
   ],
