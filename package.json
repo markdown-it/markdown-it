@@ -48,10 +48,10 @@
   "dependencies": {
     "argparse": "^2.0.1",
     "entities": "^4.4.0",
-    "linkify-it": "^4.0.1",
-    "mdurl": "^1.0.1",
+    "linkify-it": "^5.0.0",
+    "mdurl": "^2.0.0",
     "punycode.js": "^2.3.1",
-    "uc.micro": "^1.0.5"
+    "uc.micro": "^2.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.4",

@@ -1,7 +1,7 @@
 /* eslint-env browser */
 /* global $, _ */
 
-import mdurl from 'mdurl'
+import * as mdurl from 'mdurl'
 import hljs from 'highlight.js'
 
 // plugins
