@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 /* eslint no-console:0 */
 
-import { createRequire } from 'node:module'
-const require = createRequire(import.meta.url)
-
-const fs        = require('fs')
-const util      = require('util')
-const Benchmark = require('benchmark')
-const ansi      = require('ansi')
+import fs from 'node:fs'
+import util from 'node:util'
+import Benchmark from 'benchmark'
+import ansi from 'ansi'
 const cursor    = ansi(process.stdout)
 
 const IMPLS = []
