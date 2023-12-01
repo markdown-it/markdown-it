@@ -41,7 +41,7 @@
     "entities": "^4.4.0",
     "linkify-it": "^4.0.1",
     "mdurl": "^1.0.1",
-    "uc.micro": "^1.0.5"
+    "uc.micro": "^2.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
