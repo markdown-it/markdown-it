@@ -19,5 +19,4 @@ ignorePatterns:
 
 rules:
   camelcase: 0
-  key-spacing: 0
   no-multi-spaces: 0

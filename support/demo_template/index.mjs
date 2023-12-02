@@ -18,17 +18,28 @@ import md_sup from 'markdown-it-sup'
 let mdHtml, mdSrc, permalink, scrollMap
 
 const defaults = {
-  html:         false,        // Enable HTML tags in source
-  xhtmlOut:     false,        // Use '/' to close single tags (<br />)
-  breaks:       false,        // Convert '\n' in paragraphs into <br>
-  langPrefix:   'language-',  // CSS language prefix for fenced blocks
-  linkify:      true,         // autoconvert URL-like texts to links
-  typographer:  true,         // Enable smartypants and other sweet transforms
+  // Enable HTML tags in source
+  html: false,
+
+  // Use '/' to close single tags (<br />)
+  xhtmlOut: false,
+
+  // Convert '\n' in paragraphs into <br>
+  breaks: false,
+
+  // CSS language prefix for fenced blocks
+  langPrefix: 'language-',
+
+  // autoconvert URL-like texts to links
+  linkify: true,
+
+  // Enable smartypants and other sweet transforms
+  typographer: true,
 
   // options below are for demo only
   _highlight: true,
   _strict: false,
-  _view: 'html'               // html / src / debug
+  _view: 'html' // html / src / debug
 }
 
 defaults.highlight = function (str, lang) {

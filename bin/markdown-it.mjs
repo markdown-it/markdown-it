@@ -16,22 +16,22 @@ cli.add_argument('-v', '--version', {
 })
 
 cli.add_argument('--no-html', {
-  help:   'Disable embedded HTML',
+  help: 'Disable embedded HTML',
   action: 'store_true'
 })
 
 cli.add_argument('-l', '--linkify', {
-  help:   'Autolink text',
+  help: 'Autolink text',
   action: 'store_true'
 })
 
 cli.add_argument('-t', '--typographer', {
-  help:   'Enable smartquotes and other typographic replacements',
+  help: 'Enable smartquotes and other typographic replacements',
   action: 'store_true'
 })
 
 cli.add_argument('--trace', {
-  help:   'Show stack trace on error',
+  help: 'Show stack trace on error',
   action: 'store_true'
 })
 
