@@ -15,7 +15,6 @@ import md_mark from 'markdown-it-mark'
 import md_sub from 'markdown-it-sub'
 import md_sup from 'markdown-it-sup'
 
-
 let mdHtml, mdSrc, permalink, scrollMap
 
 const defaults = {
@@ -41,13 +40,10 @@ defaults.highlight = function (str, lang) {
     }
 
     if (lang && lang !== 'auto' && hljs.getLanguage(lang)) {
-
       return '<pre class="hljs language-' + esc(lang.toLowerCase()) + '"><code>' +
              hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
              '</code></pre>'
-
     } else if (lang === 'auto') {
-
       const result = hljs.highlightAuto(str)
 
       /* eslint-disable no-console */
@@ -114,7 +110,6 @@ function mdInit () {
     return window.twemoji.parse(token[idx].content)
   }
 
-
   //
   // Inject line numbers for sync scroll. Notes:
   //
@@ -148,14 +143,12 @@ function updateResult () {
   // (debug & src view with highlighting are a bit slow)
   if (defaults._view === 'src') {
     setHighlightedlContent('.result-src-content', mdSrc.render(source), 'html')
-
   } else if (defaults._view === 'debug') {
     setHighlightedlContent(
       '.result-debug-content',
       JSON.stringify(mdSrc.parse(source, { references: {} }), null, 2),
       'json'
     )
-
   } else { /* defaults._view === 'html' */
     $('.result-html').html(mdHtml.render(source))
   }
@@ -294,24 +287,18 @@ const syncSrcScroll = _.debounce(function () {
   }, 100, 'linear')
 }, 50, { maxWait: 50 })
 
-
 function loadPermalink () {
-
   if (!location.hash) { return }
 
   let cfg
 
   try {
-
     if (/^#md3=/.test(location.hash)) {
       cfg = JSON.parse(mdurl.decode(location.hash.slice(5), mdurl.decode.componentChars))
-
     } else if (/^#md64=/.test(location.hash)) {
       cfg = JSON.parse(window.atob(location.hash.slice(6)))
-
     } else if (/^#md=/.test(location.hash)) {
       cfg = JSON.parse(decodeURIComponent(location.hash.slice(4)))
-
     } else {
       return
     }
@@ -348,7 +335,6 @@ function loadPermalink () {
   }
 }
 
-
 // Init on page load
 //
 $(function () {
@@ -384,7 +370,6 @@ $(function () {
         updateResult()
       })
       setOptionClass(key, val)
-
     } else {
       $(el).val(val)
       $el.on('change update keyup', function () {

@@ -1,9 +1,7 @@
 import { assert } from 'chai'
 import * as utils from '../lib/common/utils.mjs'
 
-
 describe('Utils', function () {
-
   it('fromCodePoint', function () {
     const fromCodePoint = utils.fromCodePoint
 
@@ -81,5 +79,4 @@ describe('Utils', function () {
       assert.strictEqual(unescapeMd('\\' + ch), ch)
     })
   })
-
 })

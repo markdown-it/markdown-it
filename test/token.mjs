@@ -1,9 +1,7 @@
 import { assert } from 'chai'
 import Token from '../lib/token.mjs'
 
-
 describe('Token', function () {
-
   it('attr', function () {
     const t = new Token('test_token', 'tok', 1)
 
@@ -17,5 +15,4 @@ describe('Token', function () {
     assert.equal(t.attrIndex('baz'), 1)
     assert.equal(t.attrIndex('none'), -1)
   })
-
 })

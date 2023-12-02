@@ -2,9 +2,7 @@ import { assert } from 'chai'
 import markdownit from '../index.mjs'
 import forInline from 'markdown-it-for-inline'
 
-
 describe('API', function () {
-
   it('constructor', function () {
     assert.throws(function () {
       markdownit('bad preset')
@@ -163,12 +161,9 @@ describe('API', function () {
       /Input data should be a String/
     )
   })
-
 })
 
-
 describe('Plugins', function () {
-
   it('should not loop infinitely if all rules are disabled', function () {
     const md = markdownit()
 
@@ -205,9 +200,7 @@ describe('Plugins', function () {
   })
 })
 
-
 describe('Misc', function () {
-
   it('Should replace NULL characters', function () {
     const md = markdownit()
 
@@ -301,9 +294,7 @@ describe('Misc', function () {
   })
 })
 
-
 describe('Url normalization', function () {
-
   it('Should be overridable', function () {
     const md = markdownit({ linkify: true })
 
@@ -323,12 +314,9 @@ describe('Url normalization', function () {
     assert.strictEqual(md.render('[test](http://example.com)'), '<p><a href="LINK">test</a></p>\n')
     assert.strictEqual(md.render('![test](http://example.com)'), '<p><img src="LINK" alt="test"></p>\n')
   })
-
 })
 
-
 describe('Links validation', function () {
-
   it('Override validator, disable everything', function () {
     const md = markdownit({ linkify: true })
 
@@ -341,12 +329,9 @@ describe('Links validation', function () {
     assert.strictEqual(md.render('[test](http://example.com)'), '<p>[test](http://example.com)</p>\n')
     assert.strictEqual(md.render('![test](http://example.com)'), '<p>![test](http://example.com)</p>\n')
   })
-
 })
 
-
 describe('maxNesting', function () {
-
   it('Block parser should not nest above limit', function () {
     const md = markdownit({ maxNesting: 2 })
     assert.strictEqual(
@@ -370,9 +355,7 @@ describe('maxNesting', function () {
       '<p>[[[[[[[[[[[[[[[[[[foo]()</p>\n'
     )
   })
-
 })
-
 
 describe('smartquotes', function () {
   const md = markdownit({
@@ -403,9 +386,7 @@ describe('smartquotes', function () {
       '<p>[[[a <em>b (((((c <em>d</em> e)))) f</em> g]]</p>\n'
     )
   })
-
 })
-
 
 describe('Ordered list info', function () {
   const md = markdownit()
@@ -440,7 +421,6 @@ describe('Ordered list info', function () {
     assert.strictEqual(tokens[3].markup, '.')
   })
 })
-
 
 describe('Token attributes', function () {
   it('.attrJoin', function () {

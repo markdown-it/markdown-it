@@ -2,7 +2,6 @@ import { fileURLToPath } from 'node:url'
 import generate from 'markdown-it-testgen'
 import markdownit from '../index.mjs'
 
-
 describe('markdown-it', function () {
   const md = markdownit({
     html: true,

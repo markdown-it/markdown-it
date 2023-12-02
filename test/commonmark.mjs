@@ -4,11 +4,9 @@ import { load } from 'markdown-it-testgen'
 import markdownit from '../index.mjs'
 import { assert } from 'chai'
 
-
 function normalize (text) {
   return text.replace(/<blockquote>\n<\/blockquote>/g, '<blockquote></blockquote>')
 }
-
 
 function generate (path, md) {
   load(path, function (data) {
@@ -25,7 +23,6 @@ function generate (path, md) {
     })
   })
 }
-
 
 describe('CommonMark', function () {
   const md = markdownit('commonmark')

@@ -5,7 +5,6 @@ import fs from 'node:fs'
 import argparse from 'argparse'
 import markdownit from '../index.mjs'
 
-
 const cli = new argparse.ArgumentParser({
   prog: 'markdown-it',
   add_help: true
@@ -49,7 +48,6 @@ cli.add_argument('-o', '--output', {
 
 const options = cli.parse_args()
 
-
 function readFile (filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
@@ -64,7 +62,6 @@ function readFile (filename, encoding, callback) {
     fs.readFile(filename, encoding, callback)
   }
 }
-
 
 readFile(options.file, 'utf8', function (err, input) {
   let output
@@ -92,7 +89,6 @@ readFile(options.file, 'utf8', function (err, input) {
 
   try {
     output = md.render(input)
-
   } catch (e) {
     console.error(
       (options.trace && e.stack) ||

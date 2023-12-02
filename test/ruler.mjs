@@ -2,7 +2,6 @@ import { assert } from 'chai'
 import Ruler from '../lib/ruler.mjs'
 
 describe('Ruler', function () {
-
   it('should replace rule (.at)', function () {
     const ruler = new Ruler()
     let res = 0
@@ -16,7 +15,6 @@ describe('Ruler', function () {
     rules[0]()
     assert.strictEqual(res, 2)
   })
-
 
   it('should inject before/after rule', function () {
     const ruler = new Ruler()
@@ -36,7 +34,6 @@ describe('Ruler', function () {
     rules[2]()
     assert.strictEqual(res, 10)
   })
-
 
   it('should enable/disable rule', function () {
     const ruler = new Ruler()
@@ -63,7 +60,6 @@ describe('Ruler', function () {
     assert.strictEqual(rules.length, 2)
   })
 
-
   it('should enable/disable multiple rule', function () {
     const ruler = new Ruler()
     let rules
@@ -79,7 +75,6 @@ describe('Ruler', function () {
     assert.strictEqual(rules.length, 2)
   })
 
-
   it('should enable rules by whitelist', function () {
     const ruler = new Ruler()
 
@@ -90,7 +85,6 @@ describe('Ruler', function () {
     const rules = ruler.getRules('')
     assert.strictEqual(rules.length, 1)
   })
-
 
   it('should support multiple chains', function () {
     const ruler = new Ruler()
@@ -107,7 +101,6 @@ describe('Ruler', function () {
     rules = ruler.getRules('alt2')
     assert.strictEqual(rules.length, 1)
   })
-
 
   it('should fail on invalid rule name', function () {
     const ruler = new Ruler()
@@ -131,7 +124,6 @@ describe('Ruler', function () {
     })
   })
 
-
   it('should not fail on invalid rule name in silent mode', function () {
     const ruler = new Ruler()
 
@@ -147,5 +139,4 @@ describe('Ruler', function () {
       ruler.disable('invalid name', true)
     })
   })
-
 })

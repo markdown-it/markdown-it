@@ -3,7 +3,6 @@ import { execFile } from 'child_process'
 import { readFileSync } from 'fs'
 import { setTimeout as sleep } from 'node:timers/promises'
 
-
 describe('babelmark responder app', function () {
   let app
 
@@ -30,14 +29,12 @@ describe('babelmark responder app', function () {
     }
   })
 
-
   it('ping root', () => {
     return request
       .get('/')
       .expect(200)
       .expect(/<!DOCTYPE html>/i)
   })
-
 
   it('do request', () => {
     const version = JSON.parse(readFileSync(new URL('../package.json', import.meta.url))).version
@@ -51,7 +48,6 @@ describe('babelmark responder app', function () {
         version
       })
   })
-
 
   after(() => {
     if (app) app.kill()

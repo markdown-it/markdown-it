@@ -4,7 +4,6 @@ import crypto from 'node:crypto'
 import { Worker as JestWorker } from 'jest-worker'
 import { readFileSync } from 'fs'
 
-
 async function test_pattern (str) {
   const worker = new JestWorker(
     new URL('./pathological_worker.js', import.meta.url),
@@ -32,9 +31,7 @@ async function test_pattern (str) {
   return result
 }
 
-
 describe('Pathological sequences speed', () => {
-
   it('Integrity check', async () => {
     assert.strictEqual(
       await test_pattern('foo'),
@@ -44,7 +41,6 @@ describe('Pathological sequences speed', () => {
 
   // Ported from cmark, https://github.com/commonmark/cmark/blob/master/test/pathological_tests.py
   describe('Cmark', () => {
-
     it('verify original source crc', async () => {
       /* eslint-disable  max-len */
       const src = await needle('get', 'https://raw.githubusercontent.com/commonmark/cmark/master/test/pathological_tests.py')

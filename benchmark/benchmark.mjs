@@ -55,7 +55,6 @@ fs.readdirSync(new URL('./samples', import.meta.url)).sort().forEach(sample => {
   SAMPLES.push({ name: sample.split('.')[0], title, content, suite })
 })
 
-
 function select (patterns) {
   const result = []
 
@@ -77,7 +76,6 @@ function select (patterns) {
 
   return result
 }
-
 
 function run (files) {
   const selected = select(files)
