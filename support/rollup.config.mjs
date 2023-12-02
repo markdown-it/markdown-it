@@ -1,12 +1,11 @@
-import nodeResolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
 import { babel } from '@rollup/plugin-babel'
 import { readFileSync } from 'fs'
 
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)))
 
-export default {
+const config_umd_full = {
   input: 'index.mjs',
   output: [
     {
@@ -18,12 +17,7 @@ export default {
         terser({
           mangle: false,
           compress: false,
-          format: {
-            comments: 'all',
-            beautify: true,
-            ascii_only: true,
-            indent_level: 2
-          }
+          format: { comments: 'all', beautify: true, ascii_only: true, indent_level: 2 }
         })
       ]
     },
@@ -33,16 +27,13 @@ export default {
       name: 'markdownit',
       plugins: [
         terser({
-          format: {
-            ascii_only: true
-          }
+          format: { ascii_only: true }
         })
       ]
     }
   ],
   plugins: [
-    nodeResolve({ preferBuiltins: true }),
-    commonjs(),
+    resolve(),
     babel({ babelHelpers: 'bundled' }),
     {
       banner () {
@@ -51,3 +42,25 @@ export default {
     }
   ]
 }
+
+const config_cjs_no_deps = {
+  input: 'index.mjs',
+  output: {
+    file: 'dist/markdown-it.cjs.js',
+    format: 'cjs'
+  },
+  external: Object.keys(pkg.dependencies),
+  plugins: [
+    resolve(),
+    babel({ babelHelpers: 'bundled' })
+  ]
+}
+
+let config = [
+  config_umd_full,
+  config_cjs_no_deps
+]
+
+if (process.env.CJS_ONLY) config = [config_cjs_no_deps]
+
+export default config
