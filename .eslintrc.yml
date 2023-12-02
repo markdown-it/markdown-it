@@ -1,19 +1,16 @@
 extends: standard
 
-env:
-  es6: true
-  node: true
-
-parserOptions:
-  ecmaVersion: 2022
-
 overrides:
   -
     files: [ '*.mjs' ]
-    parserOptions:
-      sourceType: module
     rules:
       no-restricted-globals: [ 2, require, __dirname ]
+  -
+    files: [ 'test/**' ]
+    env: { mocha: true }
+  -
+    files: [ 'lib/**' ]
+    parserOptions: { ecmaVersion: 2015 }
 
 ignorePatterns:
   - demo/
