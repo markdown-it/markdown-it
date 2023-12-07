@@ -11,12 +11,12 @@
   ],
   "repository": "markdown-it/markdown-it",
   "license": "MIT",
-  "main": "dist/markdown-it.cjs.js",
+  "main": "dist/index.cjs.js",
   "module": "index.mjs",
   "exports": {
     ".": {
       "import": "./index.mjs",
-      "require": "./dist/markdown-it.cjs.js"
+      "require": "./dist/index.cjs.js"
     },
     "./*": {
       "require": "./*",
@@ -55,7 +55,6 @@
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "ansi": "^0.3.0",

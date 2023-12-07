@@ -9,7 +9,7 @@ const config_umd_full = {
   input: 'index.mjs',
   output: [
     {
-      file: 'dist/markdown-it.js',
+      file: `dist/${pkg.name}.js`,
       format: 'umd',
       name: 'markdownit',
       plugins: [
@@ -22,7 +22,7 @@ const config_umd_full = {
       ]
     },
     {
-      file: 'dist/markdown-it.min.js',
+      file: `dist/${pkg.name}.min.js`,
       format: 'umd',
       name: 'markdownit',
       plugins: [
@@ -46,7 +46,7 @@ const config_umd_full = {
 const config_cjs_no_deps = {
   input: 'index.mjs',
   output: {
-    file: 'dist/markdown-it.cjs.js',
+    file: 'dist/index.cjs.js',
     format: 'cjs'
   },
   external: Object.keys(pkg.dependencies),
