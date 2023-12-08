@@ -37,7 +37,7 @@ __Table of content__
 **node.js**:
 
 ```bash
-npm install markdown-it --save
+npm install markdown-it
 ```
 
 **browser (CDN):**
