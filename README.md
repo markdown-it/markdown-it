@@ -59,26 +59,24 @@ See also:
 ### Simple
 
 ```js
-// node.js, "classic" way:
-var MarkdownIt = require('markdown-it'),
-    md = new MarkdownIt();
-var result = md.render('# markdown-it rulezz!');
+// node.js
+// can use `require('markdown-it')` for CJS
+import markdownit from 'markdown-it'
+const md = markdownit()
+const result = md.render('# markdown-it rulezz!');
 
-// node.js, the same, but with sugar:
-var md = require('markdown-it')();
-var result = md.render('# markdown-it rulezz!');
-
-// browser without AMD, added to "window" on script load
+// browser with UMD build, added to "window" on script load
 // Note, there is no dash in "markdownit".
-var md = window.markdownit();
-var result = md.render('# markdown-it rulezz!');
+const md = window.markdownit();
+const result = md.render('# markdown-it rulezz!');
 ```
 
 Single line rendering, without paragraph wrap:
 
 ```js
-var md = require('markdown-it')();
-var result = md.renderInline('__markdown-it__ rulezz!');
+import markdownit from 'markdown-it'
+const md = markdownit()
+const result = md.renderInline('__markdown-it__ rulezz!');
 ```
 
 
@@ -89,28 +87,39 @@ var result = md.renderInline('__markdown-it__ rulezz!');
 [API docs](https://markdown-it.github.io/markdown-it/#MarkdownIt.new) for more details.
 
 ```js
+import markdownit from 'markdown-it'
+
 // commonmark mode
-var md = require('markdown-it')('commonmark');
+const md = markdownit('commonmark')
 
 // default mode
-var md = require('markdown-it')();
+const md = markdownit()
 
 // enable everything
-var md = require('markdown-it')({
+const md = markdownit({
   html: true,
   linkify: true,
   typographer: true
-});
+})
 
 // full options list (defaults)
-var md = require('markdown-it')({
-  html:         false,        // Enable HTML tags in source
-  xhtmlOut:     false,        // Use '/' to close single tags (<br />).
-                              // This is only for full CommonMark compatibility.
-  breaks:       false,        // Convert '\n' in paragraphs into <br>
-  langPrefix:   'language-',  // CSS language prefix for fenced blocks. Can be
-                              // useful for external highlighters.
-  linkify:      false,        // Autoconvert URL-like text to links
+const md = markdownit({
+  // Enable HTML tags in source
+  html:         false,
+
+  // Use '/' to close single tags (<br />).
+  // This is only for full CommonMark compatibility.
+  xhtmlOut:     false,
+
+  // Convert '\n' in paragraphs into <br>
+  breaks:       false,
+
+  // CSS language prefix for fenced blocks. Can be
+  // useful for external highlighters.
+  langPrefix:   'language-',
+
+  // Autoconvert URL-like text to links
+  linkify:      false,
 
   // Enable some language-neutral replacement + quotes beautification
   // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js
@@ -133,10 +142,12 @@ var md = require('markdown-it')({
 ### Plugins load
 
 ```js
-var md = require('markdown-it')()
-            .use(plugin1)
-            .use(plugin2, opts, ...)
-            .use(plugin3);
+import markdownit from 'markdown-it'
+
+const md = markdownit
+  .use(plugin1)
+  .use(plugin2, opts, ...)
+  .use(plugin3);
 ```
 
 
@@ -145,10 +156,11 @@ var md = require('markdown-it')()
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
 ```js
-var hljs = require('highlight.js'); // https://highlightjs.org
+import markdownit from 'markdown-it'
+import hljs from 'highlight.js' // https://highlightjs.org
 
 // Actual default values
-var md = require('markdown-it')({
+const md = markdownit({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -164,10 +176,11 @@ var md = require('markdown-it')({
 Or with full wrapper override (if you need assign class to `<pre>` or `<code>`):
 
 ```js
-var hljs = require('highlight.js'); // https://highlightjs.org
+import markdownit from 'markdown-it'
+import hljs from 'highlight.js' // https://highlightjs.org
 
 // Actual default values
-var md = require('markdown-it')({
+const md = markdownit({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -227,14 +240,16 @@ By default all rules are enabled, but can be restricted by options. On plugin
 load all its rules are enabled automatically.
 
 ```js
+import markdownit from 'markdown-it'
+
 // Activate/deactivate rules, with currying
-var md = require('markdown-it')()
-            .disable([ 'link', 'image' ])
-            .enable([ 'link' ])
-            .enable('image');
+const md = markdownit()
+  .disable(['link', 'image'])
+  .enable(['link'])
+  .enable('image');
 
 // Enable everything
-md = require('markdown-it')({
+const md = markdownit({
   html: true,
   linkify: true,
   typographer: true,
