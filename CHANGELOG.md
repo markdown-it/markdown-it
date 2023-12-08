@@ -6,7 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [14.0.0] - WIP
+## [14.0.0] - 2023-12-08
+### Changed
+- Drop ancient browsers support (use `.fromCodePoint` and other features).
+- Rewrite to ESM (including all plugins/deps). CJS fallback still available.
+  No signatures changed, except `markdown-it-emoji` plugin.
+- Dropped `dist/` folder from repo, build on package publish.
+- Set `punicode.js` as external dependency.
+
 ### Fixed
 - Html tokens inside img alt are now rendered as their original text, #896.
 - Hardbreaks inside img alt are now rendered as newlines.
@@ -632,6 +639,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed presets folder (configs -> presets).
 
 
+[14.0.0]: https://github.com/markdown-it/markdown-it/compare/13.0.2...14.0.0
 [13.0.2]: https://github.com/markdown-it/markdown-it/compare/13.0.1...13.0.2
 [13.0.1]: https://github.com/markdown-it/markdown-it/compare/13.0.0...13.0.1
 [13.0.0]: https://github.com/markdown-it/markdown-it/compare/12.3.2...13.0.0
