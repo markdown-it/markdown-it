@@ -122,7 +122,7 @@ const md = markdownit({
   linkify:      false,
 
   // Enable some language-neutral replacement + quotes beautification
-  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js
+  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.mjs
   typographer:  false,
 
   // Double + single quotes replacement pairs, when typographer enabled,
@@ -258,9 +258,9 @@ const md = markdownit({
 
 You can find all rules in sources:
 
-- [`parser_core.js`](lib/parser_core.js)
-- [`parser_block.js`](lib/parser_block.js)
-- [`parser_inline.js`](lib/parser_inline.js)
+- [`parser_core.mjs`](lib/parser_core.mjs)
+- [`parser_block.mjs`](lib/parser_block.mjs)
+- [`parser_inline.mjs`](lib/parser_inline.mjs)
 
 
 ## Benchmark
@@ -281,7 +281,7 @@ Sample: README.md (7774 bytes)
  > marked x 1,587 ops/sec ±4.31% (93 runs sampled)
 ```
 
-__Note.__ CommonMark version runs with [simplified link normalizers](https://github.com/markdown-it/markdown-it/blob/master/benchmark/implementations/current-commonmark/index.js)
+__Note.__ CommonMark version runs with [simplified link normalizers](https://github.com/markdown-it/markdown-it/blob/master/benchmark/implementations/current-commonmark/index.mjs)
 for more "honest" compare. Difference is ≈1.5×.
 
 As you can see, `markdown-it` doesn't pay with speed for its flexibility.

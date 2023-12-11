@@ -48,7 +48,7 @@ The difference is simple:
 - There are special token objects, "inline containers", that have nested tokens.
   These are sequences with inline markup, such as bold, italic, text, etc.
 
-See the [`Token`](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js) class
+See the [`Token`](https://github.com/markdown-it/markdown-it/blob/master/lib/token.mjs) class
 for details about each token's content.
 
 In total, a token stream is:
@@ -66,8 +66,8 @@ intoto an AST.
 
 More details about tokens:
 
-- [`Renderer` source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js)
-- [`Token` source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.js)
+- [`Renderer` source](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.mjs)
+- [`Token` source](https://github.com/markdown-it/markdown-it/blob/master/lib/token.mjs)
 - [Live demo](https://markdown-it.github.io/) - type your text and click the `debug` tab.
 
 
@@ -179,8 +179,8 @@ And somewhere in between, you can apply additional transformations.
 
 Source code for each chain can be seen in the following files:
 
-- [`parser_core.js`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_core.js)
-- [`parser_block.js`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_block.js)
-- [`parser_inline.js`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_inline.js)
+- [`parser_core.mjs`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_core.mjs)
+- [`parser_block.mjs`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_block.mjs)
+- [`parser_inline.mjs`](https://github.com/markdown-it/markdown-it/blob/master/lib/parser_inline.mjs)
 
 Also, you can change output directly in a [`Renderer`](https://markdown-it.github.io/markdown-it/#Renderer) for many simple cases.

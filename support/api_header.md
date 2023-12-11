@@ -88,7 +88,7 @@ const md = markdownit({
   linkify:      false,
 
   // Enable some language-neutral replacement + quotes beautification
-  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js
+  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.mjs
   typographer:  false,
 
   // Double + single quotes replacement pairs, when typographer enabled,
