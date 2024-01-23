@@ -62,7 +62,7 @@ In total, a token stream is:
 
 Why not an AST? It's not needed for our tasks. We follow the KISS principle.
 If you wish, you can call a parser without a renderer and convert the token stream
-intoto an AST.
+intox an AST.
 
 More details about tokens:
 
