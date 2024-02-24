@@ -114,6 +114,10 @@ describe('Pathological sequences speed', () => {
       await test_pattern(Array(1000).fill(0).map(function (_, x) { return '  '.repeat(x) + '* a\n' }).join(''))
     })
 
+    it('U+0000 in input', async () => {
+      await test_pattern('abc\u0000de\u0000'.repeat(100000))
+    })
+
     it('backticks', async () => {
       await test_pattern(Array(3000).fill(0).map(function (_, x) { return 'e' + '`'.repeat(x) }).join(''))
     })
@@ -128,6 +132,18 @@ describe('Pathological sequences speed', () => {
 
     it('unclosed <!--', async () => {
       await test_pattern('</' + '<!--'.repeat(100000))
+    })
+
+    it('empty lines in deeply nested lists', async () => {
+      await test_pattern('- '.repeat(30000) + 'x' + '\n'.repeat(30000))
+    })
+
+    it('empty lines in deeply nested lists in blockquote', async () => {
+      await test_pattern('> ' + '- '.repeat(30000) + 'x\n' + '>\n'.repeat(30000))
+    })
+
+    it('emph in deep blockquote', async () => {
+      await test_pattern('>'.repeat(100000) + 'a*'.repeat(100000))
     })
   })
 
