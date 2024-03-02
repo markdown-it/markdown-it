@@ -1,9 +1,9 @@
 ---
 title: CommonMark Spec
 author: John MacFarlane
-version: 0.30
-date: '2021-06-19'
-license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
+version: '0.31.2'
+date: '2024-01-28'
+license: '[CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)'
 ...
 
 # Introduction
@@ -14,7 +14,7 @@ Markdown is a plain text format for writing structured documents,
 based on conventions for indicating formatting in email
 and usenet posts.  It was developed by John Gruber (with
 help from Aaron Swartz) and released in 2004 in the form of a
-[syntax description](http://daringfireball.net/projects/markdown/syntax)
+[syntax description](https://daringfireball.net/projects/markdown/syntax)
 and a Perl script (`Markdown.pl`) for converting Markdown to
 HTML.  In the next decade, dozens of implementations were
 developed in many languages.  Some extended the original
@@ -34,10 +34,10 @@ As Gruber writes:
 > Markdown-formatted document should be publishable as-is, as
 > plain text, without looking like it's been marked up with tags
 > or formatting instructions.
-> (<http://daringfireball.net/projects/markdown/>)
+> (<https://daringfireball.net/projects/markdown/>)
 
 The point can be illustrated by comparing a sample of
-[AsciiDoc](http://www.methods.co.nz/asciidoc/) with
+[AsciiDoc](https://asciidoc.org/) with
 an equivalent sample of Markdown.  Here is a sample of
 AsciiDoc from the AsciiDoc manual:
 
@@ -103,7 +103,7 @@ source, not just in the processed document.
 ## Why is a spec needed?
 
 John Gruber's [canonical description of Markdown's
-syntax](http://daringfireball.net/projects/markdown/syntax)
+syntax](https://daringfireball.net/projects/markdown/syntax)
 does not specify the syntax unambiguously.  Here are some examples of
 questions it does not answer:
 
@@ -114,7 +114,7 @@ questions it does not answer:
     not require that.  This is hardly a "corner case," and divergences
     between implementations on this issue often lead to surprises for
     users in real documents. (See [this comment by John
-    Gruber](http://article.gmane.org/gmane.text.markdown.general/1997).)
+    Gruber](https://web.archive.org/web/20170611172104/http://article.gmane.org/gmane.text.markdown.general/1997).)
 
 2.  Is a blank line needed before a block quote or heading?
     Most implementations do not require the blank line.  However,
@@ -122,7 +122,7 @@ questions it does not answer:
     also to ambiguities in parsing (note that some implementations
     put the heading inside the blockquote, while others do not).
     (John Gruber has also spoken [in favor of requiring the blank
-    lines](http://article.gmane.org/gmane.text.markdown.general/2146).)
+    lines](https://web.archive.org/web/20170611172104/http://article.gmane.org/gmane.text.markdown.general/2146).)
 
 3.  Is a blank line needed before an indented code block?
     (`Markdown.pl` requires it, but this is not mentioned in the
@@ -155,7 +155,7 @@ questions it does not answer:
     ```
 
     (There are some relevant comments by John Gruber
-    [here](http://article.gmane.org/gmane.text.markdown.general/2554).)
+    [here](https://web.archive.org/web/20170611172104/http://article.gmane.org/gmane.text.markdown.general/2554).)
 
 5.  Can list markers be indented?  Can ordered list markers be right-aligned?
 
@@ -316,9 +316,9 @@ A line containing no characters, or a line containing only spaces
 
 The following definitions of character classes will be used in this spec:
 
-A [Unicode whitespace character](@) is
-any code point in the Unicode `Zs` general category, or a tab (`U+0009`),
-line feed (`U+000A`), form feed (`U+000C`), or carriage return (`U+000D`).
+A [Unicode whitespace character](@) is a character in the Unicode `Zs` general
+category, or a tab (`U+0009`), line feed (`U+000A`), form feed (`U+000C`), or
+carriage return (`U+000D`).
 
 [Unicode whitespace](@) is a sequence of one or more
 [Unicode whitespace characters].
@@ -337,9 +337,8 @@ is `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`,
 `[`, `\`, `]`, `^`, `_`, `` ` `` (U+005B–0060), 
 `{`, `|`, `}`, or `~` (U+007B–007E).
 
-A [Unicode punctuation character](@) is an [ASCII
-punctuation character] or anything in
-the general Unicode categories  `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
+A [Unicode punctuation character](@) is a character in the Unicode `P`
+(puncuation) or `S` (symbol) general categories.
 
 ## Tabs
 
@@ -579,9 +578,9 @@ raw HTML:
 
 
 ```````````````````````````````` example
-<http://example.com?find=\*>
+<https://example.com?find=\*>
 .
-<p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
+<p><a href="https://example.com?find=%5C*">https://example.com?find=\*</a></p>
 ````````````````````````````````
 
 
@@ -1330,10 +1329,7 @@ interpretable as a [code fence], [ATX heading][ATX headings],
 
 A [setext heading underline](@) is a sequence of
 `=` characters or a sequence of `-` characters, with no more than 3
-spaces of indentation and any number of trailing spaces or tabs.  If a line
-containing a single `-` can be interpreted as an
-empty [list items], it should be interpreted this way
-and not as a [setext heading underline].
+spaces of indentation and any number of trailing spaces or tabs.
 
 The heading is a level 1 heading if `=` characters are used in
 the [setext heading underline], and a level 2 heading if `-`
@@ -1967,7 +1963,7 @@ has been found, the code block contains all of the lines after the
 opening code fence until the end of the containing block (or
 document).  (An alternative spec would require backtracking in the
 event that a closing code fence is not found.  But this makes parsing
-much less efficient, and there seems to be no real down side to the
+much less efficient, and there seems to be no real downside to the
 behavior described here.)
 
 A fenced code block may interrupt a paragraph, and does not require
@@ -2397,7 +2393,7 @@ followed by an ASCII letter.\
 `<![CDATA[`.\
 **End condition:** line contains the string `]]>`.
 
-6.  **Start condition:** line begins the string `<` or `</`
+6.  **Start condition:** line begins with the string `<` or `</`
 followed by one of the strings (case-insensitive) `address`,
 `article`, `aside`, `base`, `basefont`, `blockquote`, `body`,
 `caption`, `center`, `col`, `colgroup`, `dd`, `details`, `dialog`,
@@ -2406,7 +2402,7 @@ followed by one of the strings (case-insensitive) `address`,
 `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `head`, `header`, `hr`,
 `html`, `iframe`, `legend`, `li`, `link`, `main`, `menu`, `menuitem`,
 `nav`, `noframes`, `ol`, `optgroup`, `option`, `p`, `param`,
-`section`, `source`, `summary`, `table`, `tbody`, `td`,
+`search`, `section`, `summary`, `table`, `tbody`, `td`,
 `tfoot`, `th`, `thead`, `title`, `tr`, `track`, `ul`, followed
 by a space, a tab, the end of the line, the string `>`, or
 the string `/>`.\
@@ -4118,7 +4114,7 @@ The following rules define [list items]:
     blocks *Bs* starting with a character other than a space or tab, and *M* is
     a list marker of width *W* followed by 1 ≤ *N* ≤ 4 spaces of indentation,
     then the result of prepending *M* and the following spaces to the first line
-    of Ls*, and indenting subsequent lines of *Ls* by *W + N* spaces, is a
+    of *Ls*, and indenting subsequent lines of *Ls* by *W + N* spaces, is a
     list item with *Bs* as its contents.  The type of the list item
     (bullet or ordered) is determined by the type of its list marker.
     If the list item is ordered, then it is also assigned a start
@@ -4533,7 +4529,7 @@ inside the code block:
 
 Note that rules #1 and #2 only apply to two cases:  (a) cases
 in which the lines to be included in a list item begin with a
-characer other than a space or tab, and (b) cases in which
+character other than a space or tab, and (b) cases in which
 they begin with an indented code
 block.  In a case like the following, where the first block begins with
 three spaces of indentation, the rules do not allow us to form a list item by
@@ -5353,11 +5349,11 @@ by itself should be a paragraph followed by a nested sublist.
 Since it is well established Markdown practice to allow lists to
 interrupt paragraphs inside list items, the [principle of
 uniformity] requires us to allow this outside list items as
-well.  ([reStructuredText](http://docutils.sourceforge.net/rst.html)
+well.  ([reStructuredText](https://docutils.sourceforge.net/rst.html)
 takes a different approach, requiring blank lines before lists
 even inside other list items.)
 
-In order to solve of unwanted lists in paragraphs with
+In order to solve the problem of unwanted lists in paragraphs with
 hard-wrapped numerals, we allow only lists starting with `1` to
 interrupt paragraphs.  Thus,
 
@@ -6058,18 +6054,18 @@ But this is an HTML tag:
 And this is code:
 
 ```````````````````````````````` example
-`<http://foo.bar.`baz>`
+`<https://foo.bar.`baz>`
 .
-<p><code>&lt;http://foo.bar.</code>baz&gt;`</p>
+<p><code>&lt;https://foo.bar.</code>baz&gt;`</p>
 ````````````````````````````````
 
 
 But this is an autolink:
 
 ```````````````````````````````` example
-<http://foo.bar.`baz>`
+<https://foo.bar.`baz>`
 .
-<p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
+<p><a href="https://foo.bar.%60baz">https://foo.bar.`baz</a>`</p>
 ````````````````````````````````
 
 
@@ -6102,7 +6098,7 @@ closing backtick strings to be equal in length:
 ## Emphasis and strong emphasis
 
 John Gruber's original [Markdown syntax
-description](http://daringfireball.net/projects/markdown/syntax#em) says:
+description](https://daringfireball.net/projects/markdown/syntax#em) says:
 
 > Markdown treats asterisks (`*`) and underscores (`_`) as indicators of
 > emphasis. Text wrapped with one `*` or `_` will be wrapped with an HTML
@@ -6204,7 +6200,7 @@ Here are some examples of delimiter runs.
 (The idea of distinguishing left-flanking and right-flanking
 delimiter runs based on the character before and the character
 after comes from Roopesh Chander's
-[vfmd](http://www.vfmd.org/vfmd-spec/specification/#procedure-for-identifying-emphasis-tags).
+[vfmd](https://web.archive.org/web/20220608143320/http://www.vfmd.org/vfmd-spec/specification/#procedure-for-identifying-emphasis-tags).
 vfmd uses the terminology "emphasis indicator string" instead of "delimiter
 run," and its rules for distinguishing left- and right-flanking runs
 are a bit more complex than the ones given here.)
@@ -6343,6 +6339,21 @@ Unicode nonbreaking spaces count as whitespace, too:
 * a *
 .
 <p>* a *</p>
+````````````````````````````````
+
+
+Unicode symbols count as punctuation, too:
+
+```````````````````````````````` example
+*$*alpha.
+
+*£*bravo.
+
+*€*charlie.
+.
+<p>*$*alpha.</p>
+<p>*£*bravo.</p>
+<p>*€*charlie.</p>
 ````````````````````````````````
 
 
@@ -7431,16 +7442,16 @@ _a `_`_
 
 
 ```````````````````````````````` example
-**a<http://foo.bar/?q=**>
+**a<https://foo.bar/?q=**>
 .
-<p>**a<a href="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
+<p>**a<a href="https://foo.bar/?q=**">https://foo.bar/?q=**</a></p>
 ````````````````````````````````
 
 
 ```````````````````````````````` example
-__a<http://foo.bar/?q=__>
+__a<https://foo.bar/?q=__>
 .
-<p>__a<a href="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
+<p>__a<a href="https://foo.bar/?q=__">https://foo.bar/?q=__</a></p>
 ````````````````````````````````
 
 
@@ -7688,13 +7699,13 @@ A link can contain fragment identifiers and queries:
 ```````````````````````````````` example
 [link](#fragment)
 
-[link](http://example.com#fragment)
+[link](https://example.com#fragment)
 
-[link](http://example.com?foo=3#frag)
+[link](https://example.com?foo=3#frag)
 .
 <p><a href="#fragment">link</a></p>
-<p><a href="http://example.com#fragment">link</a></p>
-<p><a href="http://example.com?foo=3#frag">link</a></p>
+<p><a href="https://example.com#fragment">link</a></p>
+<p><a href="https://example.com?foo=3#frag">link</a></p>
 ````````````````````````````````
 
 
@@ -7938,9 +7949,9 @@ and autolinks over link grouping:
 
 
 ```````````````````````````````` example
-[foo<http://example.com/?search=](uri)>
+[foo<https://example.com/?search=](uri)>
 .
-<p>[foo<a href="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
+<p>[foo<a href="https://example.com/?search=%5D(uri)">https://example.com/?search=](uri)</a></p>
 ````````````````````````````````
 
 
@@ -8094,11 +8105,11 @@ and autolinks over link grouping:
 
 
 ```````````````````````````````` example
-[foo<http://example.com/?search=][ref]>
+[foo<https://example.com/?search=][ref]>
 
 [ref]: /uri
 .
-<p>[foo<a href="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
+<p>[foo<a href="https://example.com/?search=%5D%5Bref%5D">https://example.com/?search=][ref]</a></p>
 ````````````````````````````````
 
 
@@ -8298,7 +8309,7 @@ A [collapsed reference link](@)
 consists of a [link label] that [matches] a
 [link reference definition] elsewhere in the
 document, followed by the string `[]`.
-The contents of the first link label are parsed as inlines,
+The contents of the link label are parsed as inlines,
 which are used as the link's text.  The link's URI and title are
 provided by the matching reference link definition.  Thus,
 `[foo][]` is equivalent to `[foo][foo]`.
@@ -8351,7 +8362,7 @@ A [shortcut reference link](@)
 consists of a [link label] that [matches] a
 [link reference definition] elsewhere in the
 document and is not followed by `[]` or a link label.
-The contents of the first link label are parsed as inlines,
+The contents of the link label are parsed as inlines,
 which are used as the link's text.  The link's URI and title
 are provided by the matching link reference definition.
 Thus, `[foo]` is equivalent to `[foo][]`.
@@ -8438,7 +8449,7 @@ following closing bracket:
 ````````````````````````````````
 
 
-Full and compact references take precedence over shortcut
+Full and collapsed references take precedence over shortcut
 references:
 
 ```````````````````````````````` example
@@ -8754,7 +8765,7 @@ a link to the URI, with the URI as the link's label.
 
 An [absolute URI](@),
 for these purposes, consists of a [scheme] followed by a colon (`:`)
-followed by zero or more characters other [ASCII control
+followed by zero or more characters other than [ASCII control
 characters][ASCII control character], [space], `<`, and `>`.
 If the URI includes these characters, they must be percent-encoded
 (e.g. `%20` for a space).
@@ -8774,9 +8785,9 @@ Here are some valid autolinks:
 
 
 ```````````````````````````````` example
-<http://foo.bar.baz/test?q=hello&id=22&boolean>
+<https://foo.bar.baz/test?q=hello&id=22&boolean>
 .
-<p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
+<p><a href="https://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">https://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
 ````````````````````````````````
 
 
@@ -8816,9 +8827,9 @@ with their syntax:
 
 
 ```````````````````````````````` example
-<http://../>
+<https://../>
 .
-<p><a href="http://../">http://../</a></p>
+<p><a href="https://../">https://../</a></p>
 ````````````````````````````````
 
 
@@ -8832,18 +8843,18 @@ with their syntax:
 Spaces are not allowed in autolinks:
 
 ```````````````````````````````` example
-<http://foo.bar/baz bim>
+<https://foo.bar/baz bim>
 .
-<p>&lt;http://foo.bar/baz bim&gt;</p>
+<p>&lt;https://foo.bar/baz bim&gt;</p>
 ````````````````````````````````
 
 
 Backslash-escapes do not work inside autolinks:
 
 ```````````````````````````````` example
-<http://example.com/\[\>
+<https://example.com/\[\>
 .
-<p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
+<p><a href="https://example.com/%5C%5B%5C">https://example.com/\[\</a></p>
 ````````````````````````````````
 
 
@@ -8895,9 +8906,9 @@ These are not autolinks:
 
 
 ```````````````````````````````` example
-< http://foo.bar >
+< https://foo.bar >
 .
-<p>&lt; http://foo.bar &gt;</p>
+<p>&lt; https://foo.bar &gt;</p>
 ````````````````````````````````
 
 
@@ -8916,9 +8927,9 @@ These are not autolinks:
 
 
 ```````````````````````````````` example
-http://example.com
+https://example.com
 .
-<p>http://example.com</p>
+<p>https://example.com</p>
 ````````````````````````````````
 
 
@@ -8980,10 +8991,9 @@ A [closing tag](@) consists of the string `</`, a
 [tag name], optional spaces, tabs, and up to one line ending, and the character
 `>`.
 
-An [HTML comment](@) consists of `<!--` + *text* + `-->`,
-where *text* does not start with `>` or `->`, does not end with `-`,
-and does not contain `--`.  (See the
-[HTML5 spec](http://www.w3.org/TR/html5/syntax.html#comments).)
+An [HTML comment](@) consists of `<!-->`, `<!--->`, or  `<!--`, a string of
+characters not including the string `-->`, and `-->` (see the
+[HTML spec](https://html.spec.whatwg.org/multipage/parsing.html#markup-declaration-open-state)).
 
 A [processing instruction](@)
 consists of the string `<?`, a string
@@ -9122,30 +9132,20 @@ Illegal attributes in closing tag:
 Comments:
 
 ```````````````````````````````` example
-foo <!-- this is a
-comment - with hyphen -->
+foo <!-- this is a --
+comment - with hyphens -->
 .
-<p>foo <!-- this is a
-comment - with hyphen --></p>
+<p>foo <!-- this is a --
+comment - with hyphens --></p>
 ````````````````````````````````
-
-
-```````````````````````````````` example
-foo <!-- not a comment -- two hyphens -->
-.
-<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
-````````````````````````````````
-
-
-Not comments:
 
 ```````````````````````````````` example
 foo <!--> foo -->
 
-foo <!-- foo--->
+foo <!---> foo -->
 .
-<p>foo &lt;!--&gt; foo --&gt;</p>
-<p>foo &lt;!-- foo---&gt;</p>
+<p>foo <!--> foo --&gt;</p>
+<p>foo <!---> foo --&gt;</p>
 ````````````````````````````````
 
 
@@ -9674,7 +9674,7 @@ through the stack for an opening `[` or `![` delimiter.
   delimiter from the stack, and return a literal text node `]`.
 
 - If we find one and it's active, then we parse ahead to see if
-  we have an inline link/image, reference link/image, compact reference
+  we have an inline link/image, reference link/image, collapsed reference
   link/image, or shortcut reference link/image.
 
   + If we don't, then we remove the opening delimiter from the
