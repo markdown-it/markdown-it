@@ -29,7 +29,7 @@ foo <!--- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ->
 foo <!------------------------------------------------------------------->
 .
 <p>foo &lt;!— xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -&gt;</p>
-<p>foo &lt;!-------------------------------------------------------------------&gt;</p>
+<p>foo <!-------------------------------------------------------------------></p>
 .
 
 
