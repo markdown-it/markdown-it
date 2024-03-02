@@ -50,7 +50,7 @@
     "linkify-it": "^5.0.0",
     "mdurl": "^2.0.0",
     "punycode.js": "^2.3.1",
-    "uc.micro": "^2.0.0"
+    "uc.micro": "^2.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.4",
