@@ -33,3 +33,4 @@ always add prefixes to avoid DOM clobbering. See [discussion](https://github.com
 
 So, if you decide to use plugins that add extended class syntax or
 autogenerating header anchors - be careful.
+ 
