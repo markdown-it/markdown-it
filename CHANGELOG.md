@@ -345,7 +345,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed nesting limit check in inline blocks, #197.
-- Fixed posible tail loss in CLI ouput.
+- Fixed possible tail loss in CLI ouput.
 
 
 ## [5.1.0] - 2016-01-07
@@ -375,7 +375,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Internal API change. Due to new CM spec requirements, we had to update
   internals. That should not touch ordinary users, but can affect some external
-  plugins. If you are plugin developper - see migration guide:
+  plugins. If you are plugin developer - see migration guide:
   https://github.com/markdown-it/markdown-it/blob/master/docs/5.0_migration.md.
 - Updated CM spec compatibility to 0.22 (see list below).
 - Keep tabs (don't replace with spaces).
@@ -410,7 +410,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CM spec 0.20.
 
 ### Added
-- Added support for multichar substituition in smartquites, #115.
+- Added support for multichar substitution in smartquites, #115.
 
 ### Fixed
 - Fixed code block render inside blockquites, #116.
@@ -627,7 +627,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.1.2] - 2014-12-23
 ### Changed
 - Exposed helpers into parser instances (for plugins).
-- Removed utils from global export - been in instances seems enougth.
+- Removed utils from global export - been in instances seems enough.
 - Refactored demo & added markdown-it-emoji to it.
 
 
