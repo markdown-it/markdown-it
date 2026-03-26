@@ -1,4 +1,4 @@
-# Security
+# Safety
 
 Many people don't understand that markdown format does not care much about
 security. In many cases you have to pass output to sanitizers. `markdown-it`
