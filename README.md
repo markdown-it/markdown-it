@@ -144,7 +144,7 @@ const md = markdownit({
 ```js
 import markdownit from 'markdown-it'
 
-const md = markdownit
+const md = markdownit()
   .use(plugin1)
   .use(plugin2, opts, ...)
   .use(plugin3);
