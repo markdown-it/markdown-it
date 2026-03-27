@@ -740,3 +740,29 @@ Html in image description
 .
 <p><img src="image.png" alt="text &lt;textarea&gt; text"></p>
 .
+
+Issue #1144: HTML comment block in list item with blank line
+.
+1. item
+
+    para
+    <!--
+    a
+
+    b
+    -->
+    c
+.
+<ol>
+<li>
+<p>item</p>
+<p>para</p>
+ <!--
+ a
+
+ b
+ -->
+<p>c</p>
+</li>
+</ol>
+.
