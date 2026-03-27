@@ -28,7 +28,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "npm run lint && CJS_ONLY=1 npm run build && c8 --exclude dist --exclude test -r text -r html -r lcov mocha && node support/specsplit.mjs",
+    "test": "npm run lint && cross-env CJS_ONLY=1 npm run build && c8 --exclude dist --exclude test -r text -r html -r lcov mocha && node support/specsplit.mjs",
     "doc": "node support/build_doc.mjs",
     "gh-doc": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.mjs",
@@ -61,6 +61,7 @@
     "benchmark": "~2.1.0",
     "c8": "^8.0.1",
     "chai": "^4.2.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.4.1",
     "eslint-config-standard": "^17.1.0",
     "express": "^4.14.0",
