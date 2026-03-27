@@ -740,3 +740,19 @@ Html in image description
 .
 <p><img src="image.png" alt="text &lt;textarea&gt; text"></p>
 .
+
+
+https://github.com/commonmark/commonmark.js/pull/279
+
+.
+&parag;
+
+&para
+
+&para;
+.
+<p>&amp;parag;</p>
+<p>&amp;para</p>
+<p>¶</p>
+.
+
