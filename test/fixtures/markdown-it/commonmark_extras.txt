@@ -740,3 +740,18 @@ Html in image description
 .
 <p><img src="image.png" alt="text &lt;textarea&gt; text"></p>
 .
+
+
+Issue #1067. Don't trim non-ASCII whitespaces
+.
+# 　U+3000　  
+
+  　U+3000　  
+=
+
+  　U+3000　  
+.
+<h1>　U+3000　</h1>
+<h1>　U+3000　</h1>
+<p>　U+3000　</p>
+.
