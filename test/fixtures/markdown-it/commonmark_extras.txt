@@ -740,3 +740,25 @@ Html in image description
 .
 <p><img src="image.png" alt="text &lt;textarea&gt; text"></p>
 .
+
+Issue #1071. Recognize non-BMP punctuations and symbols
+.
+a*a∇*a
+
+a*∇a*a
+
+a*a𝜵*a
+
+a*𝜵a*a
+
+a*𐬼a*a
+
+a*a𐬼*a
+.
+<p>a*a∇*a</p>
+<p>a*∇a*a</p>
+<p>a*a𝜵*a</p>
+<p>a*𝜵a*a</p>
+<p>a*𐬼a*a</p>
+<p>a*a𐬼*a</p>
+.
