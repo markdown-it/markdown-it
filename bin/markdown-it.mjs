@@ -20,6 +20,11 @@ cli.add_argument('--no-html', {
   action: 'store_true'
 })
 
+cli.add_argument('--no-validate-link', {
+  help: 'Disable validate Link',
+  action: 'store_true'
+})
+
 cli.add_argument('-l', '--linkify', {
   help: 'Autolink text',
   action: 'store_true'
@@ -86,6 +91,10 @@ readFile(options.file, 'utf8', function (err, input) {
     typographer: options.typographer,
     linkify: options.linkify
   })
+
+  if (options.no_validate_link) {
+    md.validateLink = () => true
+  }
 
   try {
     output = md.render(input)
