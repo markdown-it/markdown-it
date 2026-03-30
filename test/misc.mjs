@@ -472,3 +472,93 @@ describe('Token attributes', function () {
     assert.strictEqual(t.attrGet('myattr'), 'myvalue')
   })
 })
+
+describe('Definition', function () {
+  function type_filter (tokens, type) {
+    return tokens.filter(function (t) { return t.type === type })
+  }
+
+  it('Should not render link reference definition', function () {
+    const md = markdownit()
+
+    assert.strictEqual(
+      md.render('[foo]: /url "title"\n\n[foo]', {}),
+      '<p><a href="/url" title="title">foo</a></p>\n'
+    )
+  })
+
+  it('Should not render newline after link reference definition', function () {
+    const md = markdownit()
+
+    assert.strictEqual(
+      md.render('[foo]: /url "title"\nbar', {}),
+      '<p>bar</p>\n'
+    )
+  })
+
+  it('Should add meta to link reference definition', function () {
+    const md = markdownit()
+
+    let tokens = md.parse('[foo]: /url "title"\n\n[foo]', {})
+    assert.strictEqual(type_filter(tokens, 'definition').length, 1)
+    tokens = type_filter(tokens, 'definition')
+    assert.deepEqual(
+      tokens[0].meta,
+      { label: 'foo', destination: '/url', title: 'title' }
+    )
+  })
+
+  it('Should add sourcemap info to link reference definition token', function () {
+    const md = markdownit()
+
+    let tokens = md.parse("[foo]: /url '\ntitle\nline1\nline2\n'\n\n[foo]", {})
+    assert.strictEqual(type_filter(tokens, 'definition').length, 1)
+    tokens = type_filter(tokens, 'definition')
+    assert.deepEqual(
+      tokens[0].map,
+      [0, 5]
+    )
+    assert.deepEqual(
+      tokens[0].meta,
+      { label: 'foo', destination: '/url', title: '\ntitle\nline1\nline2\n' }
+    )
+  })
+
+  it('Empty link destination should be empty string in the link reference definition token', function () {
+    const md = markdownit()
+
+    let tokens = md.parse('[foo]: <>\n\n[foo]', {})
+    assert.strictEqual(type_filter(tokens, 'definition').length, 1)
+    tokens = type_filter(tokens, 'definition')
+    assert.deepEqual(
+      tokens[0].map,
+      [0, 1]
+    )
+    assert.deepEqual(
+      tokens[0].meta,
+      { label: 'foo', destination: '', title: '' }
+    )
+  })
+
+  it('Should render nested link reference definition token', function () {
+    const md = markdownit()
+
+    assert.strictEqual(md.render('[foo]\n\n> [foo]: /url', {}), '<p><a href="/url">foo</a></p>\n<blockquote></blockquote>\n')
+
+    let tokens = md.parse('[foo]\n\n> [foo]: /url', {})
+    assert.strictEqual(type_filter(tokens, 'definition').length, 1)
+    tokens = type_filter(tokens, 'definition')
+    assert.deepEqual(
+      tokens[0].level,
+      1
+    )
+    assert.deepEqual(
+      tokens[0].map,
+      [2, 3]
+    )
+    assert.deepEqual(
+      tokens[0].meta,
+      { label: 'foo', destination: '/url', title: '' }
+    )
+  })
+})
