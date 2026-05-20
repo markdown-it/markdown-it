@@ -4,7 +4,7 @@ import crypto from 'node:crypto'
 import { Worker as JestWorker } from 'jest-worker'
 import { readFileSync } from 'fs'
 
-async function test_pattern (str) {
+async function test_pattern (str, mdOpts) {
   const worker = new JestWorker(
     new URL('./pathological_worker.js', import.meta.url),
     {
@@ -18,7 +18,7 @@ async function test_pattern (str) {
 
   try {
     result = await Promise.race([
-      worker.render(str),
+      worker.render(str, mdOpts),
       new Promise((resolve, reject) => {
         setTimeout(() => reject(new Error('Terminated (timeout exceeded)')), 3000).unref()
       })
@@ -162,6 +162,13 @@ describe('Pathological sequences speed', () => {
 
     it('hardbreak whitespaces pattern', async () => {
       await test_pattern('x' + ' '.repeat(150000) + 'x  \nx')
+    })
+
+    it('linkify-it wrapper trailing asterisks pattern', async () => {
+      await test_pattern(
+        'https://test.com?' + '*'.repeat(70000) + 'a',
+        { linkify: true }
+      )
     })
   })
 })
