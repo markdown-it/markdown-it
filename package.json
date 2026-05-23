@@ -64,7 +64,6 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.4.1",
     "eslint-config-standard": "^17.1.0",
-    "express": "^4.14.0",
     "gh-pages": "^6.1.0",
     "highlight.js": "^11.9.0",
     "jest-worker": "^29.7.0",
@@ -83,8 +82,7 @@
     "ndoc": "^6.0.0",
     "needle": "^3.0.0",
     "rollup": "^4.5.0",
-    "shelljs": "^0.8.4",
-    "supertest": "^6.0.1"
+    "shelljs": "^0.8.4"
   },
   "mocha": {
     "inline-diffs": true,
