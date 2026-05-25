@@ -472,4 +472,26 @@ describe('Token attributes', function () {
 
     assert.strictEqual(t.attrGet('myattr'), 'myvalue')
   })
+
+  it('disable code rule skips indented code block checks (#1014)', function () {
+    const md = markdownit()
+    md.disable('code')
+
+    const src = [
+      '# This renders a heading',
+      '',
+      '  # This also renders a heading',
+      '',
+      '    # This renders a heading too'
+    ].join('\n')
+
+    assert.strictEqual(
+      md.render(src),
+      [
+        '<h1>This renders a heading</h1>',
+        '<h1>This also renders a heading</h1>',
+        '<h1>This renders a heading too</h1>'
+      ].join('\n') + '\n'
+    )
+  })
 })
