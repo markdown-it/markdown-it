@@ -19,6 +19,13 @@ Strip markdown in ALT tags
 <p><img src="#" alt="strip markdown in alt"></p>
 .
 
+Issue #1142. Inline code in image alt
+.
+![foo *bar* `baz` bla](sample.png)
+.
+<p><img src="sample.png" alt="foo bar baz bla"></p>
+.
+
 Issue #55:
 .
 ![test]
