@@ -18,3 +18,14 @@ describe('CJS', () => {
     assert.ok(new MarkdownIt.Token('test', '', 0) instanceof MarkdownIt.Token)
   })
 })
+
+describe('UMD', () => {
+  it('export Token class for script tag bundle', () => {
+    const umd = require('../../dist/markdown-it.js')
+    const MarkdownIt = umd.default || umd
+
+    assert.ok(MarkdownIt.Token)
+    assert.strictEqual(typeof MarkdownIt.Token, 'function')
+    assert.ok(new MarkdownIt.Token('test', '', 0) instanceof MarkdownIt.Token)
+  })
+})
