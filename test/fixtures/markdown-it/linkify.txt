@@ -174,3 +174,11 @@ i.org[x[x][xx: htt://a.b://a
 .
 <p><a href="http://i.org">i.org</a>[x[x][xx: htt://a.b://a</p>
 .
+
+
+linkify escaped characters inside url
+.
+See https://git\-scm.com/docs/gitignore\#\_pattern\_format.
+.
+<p>See <a href="https://git-scm.com/docs/gitignore#_pattern_format">https://git-scm.com/docs/gitignore#_pattern_format</a>.</p>
+.
