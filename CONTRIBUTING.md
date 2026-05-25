@@ -1,7 +1,7 @@
 ### If you commit changes:
 
 1. Make sure all tests pass.
-2. Run `./benchmark/benchmark.mjs`, make sure that performance not degraded.
+2. Run `npm run benchmark-deps`, then `./benchmark/benchmark.mjs`, make sure that performance not degraded.
 3. DON'T include auto-generated browser files to commit.
 
 ### Other things:
