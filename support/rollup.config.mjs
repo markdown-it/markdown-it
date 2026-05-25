@@ -44,7 +44,7 @@ const config_umd_full = {
 }
 
 const config_cjs_no_deps = {
-  input: 'index.mjs',
+  input: 'lib/index.mjs',
   output: {
     file: 'dist/index.cjs.js',
     format: 'cjs'
