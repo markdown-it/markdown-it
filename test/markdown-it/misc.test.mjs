@@ -458,6 +458,13 @@ describe('Token attributes', function () {
       md.renderer.render(tokens, md.options),
       '<pre><code class="bar"></code></pre>\n'
     )
+
+    t.attrPush(['download', null])
+
+    assert.strictEqual(
+      md.renderer.render(tokens, md.options),
+      '<pre><code class="bar" download></code></pre>\n'
+    )
   })
 
   it('.attrGet', function () {
