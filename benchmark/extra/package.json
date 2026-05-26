@@ -2,7 +2,7 @@
   "private": true,
   "dependencies": {
     "commonmark": "^0.31.2",
-    "markdown-it": "2.2.1",
+    "markdown-it": "14.2.0",
     "marked": "^18.0.4"
   }
 }
