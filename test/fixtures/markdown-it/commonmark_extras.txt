@@ -868,3 +868,17 @@ foo
 <p>foo</p>
 <!bar baz>
 .
+
+Code span containing only spaces is not stripped (3 spaces)
+.
+`   `
+.
+<p><code>   </code></p>
+.
+
+Code span containing only spaces is not stripped (multiple backticks, 4 spaces)
+.
+``    ``
+.
+<p><code>    </code></p>
+.
