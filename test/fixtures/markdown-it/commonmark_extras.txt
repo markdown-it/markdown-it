@@ -834,3 +834,15 @@ b
 <p>c</p>
 </blockquote>
 .
+
+normalizeReference: non-ASCII whitespace (U+00A0) must be treated as regular character, not whitespace (CommonMark spec 6.6: only spaces/tabs/line-endings collapsed)
+.
+[foo bar]: /url1
+[foo bar]: /url2
+
+[foo bar]
+[foo bar]
+.
+<p><a href="/url1">foo bar</a>
+<a href="/url2">foo bar</a></p>
+.
