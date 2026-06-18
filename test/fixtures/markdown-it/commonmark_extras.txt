@@ -741,6 +741,27 @@ Html in image description
 <p><img src="image.png" alt="text &lt;textarea&gt; text"></p>
 .
 
+Code span in image description (content kept as plain text, same as cmark)
+.
+![foo *bar* `baz` bla](image.png)
+.
+<p><img src="image.png" alt="foo bar baz bla"></p>
+.
+
+Escaped characters in image description (kept as their literal value)
+.
+![5 \< 6 \& 7 \> 4 \* 9](image.png)
+.
+<p><img src="image.png" alt="5 &lt; 6 &amp; 7 &gt; 4 * 9"></p>
+.
+
+Entities in image description (decoded, then escaped for the attribute)
+.
+![AT&amp;T &copy; 2024](image.png)
+.
+<p><img src="image.png" alt="AT&amp;T © 2024"></p>
+.
+
 
 https://github.com/commonmark/commonmark.js/pull/279
 
