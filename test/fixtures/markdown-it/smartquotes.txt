@@ -190,3 +190,16 @@ Should not replace entities:
 <p>&quot;foo&quot;</p>
 <p>&quot;foo&quot;</p>
 .
+
+Recognize non-BMP punctuation and symbols when placing quotes (cf. #1072):
+.
+𝜵'x
+
+𝜵"x"
+
+"x"𝜵
+.
+<p>𝜵'x</p>
+<p>𝜵“x”</p>
+<p>“x”𝜵</p>
+.
