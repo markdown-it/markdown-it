@@ -156,11 +156,14 @@ describe('API', function () {
 
   it('input type check', function () {
     const md = markdownit()
+    const expectedError = {
+      name: 'Error',
+      message: 'Input data should be a String'
+    }
 
-    assert.throws(
-      function () { md.render(null) },
-      /Input data should be a String/
-    )
+    assert.throws(() => md.render(null), expectedError)
+    assert.throws(() => md.renderInline(null), expectedError)
+    assert.throws(() => md.parseInline(null, {}), expectedError)
   })
 })
 
