@@ -19,6 +19,13 @@ Strip markdown in ALT tags
 <p><img src="#" alt="strip markdown in alt"></p>
 .
 
+Issue #1142: keep code span content in ALT tags (as CommonMark reference does)
+.
+![foo `code` bar](#)
+.
+<p><img src="#" alt="foo code bar"></p>
+.
+
 Issue #55:
 .
 ![test]
