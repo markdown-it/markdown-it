@@ -380,6 +380,14 @@ function loadPermalink () {
 
   const opts = isObject(cfg.defaults) ? cfg.defaults : {}
 
+  // Presentation-only options that a permalink is allowed to set. These
+  // control display/formatting and cannot cause script execution. Notably
+  // `html` is excluded: it enables raw-HTML pass-through, whose output is
+  // written to innerHTML, so a permalink must never be able to set it.
+  const permalinkAllowed = [
+    '_view', '_strict', 'langPrefix', 'breaks', 'linkify', 'typographer', 'xhtmlOut'
+  ]
+
   // copy config to defaults, but only if key exists
   // and value has the same type
   Object.entries(opts).forEach(function ([key, val]) {
@@ -390,6 +398,8 @@ function loadPermalink () {
       defaults._view = val ? 'src' : 'html'
       return
     }
+
+    if (permalinkAllowed.indexOf(key) === -1) { return }
 
     if ((typeof defaults[key] === 'boolean' && typeof val === 'boolean') ||
         (typeof defaults[key] === 'string' && typeof val === 'string')) {
