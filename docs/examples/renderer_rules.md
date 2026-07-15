@@ -227,7 +227,7 @@ Output:
 Of course using string manipulation might get really messy for bigger changes. So consider using `markdown-it`s Token class instead:
 ```js
 const MarkdownIt = require('markdown-it');
-const Token = require('markdown-it/lib/token');
+const Token = require('markdown-it/src/token');
 const md = new MarkdownIt();
 
 const proxy = (tokens, idx, options, env, self) => self.renderToken(tokens, idx, options);

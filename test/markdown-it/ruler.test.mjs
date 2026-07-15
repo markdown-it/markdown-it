@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import Ruler from '../../lib/ruler.mjs'
+import Ruler from '../../src/ruler.mjs'
 
 describe('Ruler', function () {
   it('should replace rule (.at)', function () {

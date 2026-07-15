@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import markdownit from '../../index.mjs'
+import markdownit from '../../src/index.mjs'
 import forInline from 'markdown-it-for-inline'
 
 describe('API', function () {

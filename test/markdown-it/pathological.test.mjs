@@ -4,7 +4,7 @@ import { Worker, isMainThread, parentPort, workerData } from 'node:worker_thread
 import { fileURLToPath } from 'node:url'
 
 if (!isMainThread) {
-  const { default: md } = await import('../../index.mjs')
+  const { default: md } = await import('../../src/index.mjs')
   parentPort.postMessage(md(workerData.opts).render(workerData.str))
   process.exit(0)
 }

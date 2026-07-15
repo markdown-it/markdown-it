@@ -1,4 +1,4 @@
-import markdownit from '../../../index.mjs'
+import markdownit from '../../../src/index.mjs'
 
 const md = markdownit('commonmark')
 

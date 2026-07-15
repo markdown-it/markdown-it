@@ -124,12 +124,12 @@ function normalizeLinkText (url) {
  * MarkdownIt provides named presets as a convenience to quickly
  * enable/disable active syntax rules and options for common use cases.
  *
- * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/commonmark.mjs) -
+ * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/commonmark.mjs) -
  *   configures parser to strict [CommonMark](http://commonmark.org/) mode.
- * - [default](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/default.mjs) -
+ * - [default](https://github.com/markdown-it/markdown-it/blob/master/src/presets/default.mjs) -
  *   similar to GFM, used when no preset name given. Enables all available rules,
  *   but still without html, typographer & autolinker.
- * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/lib/presets/zero.mjs) -
+ * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/zero.mjs) -
  *   all rules disabled. Useful to quickly setup your config via `.enable()`.
  *   For example, when you need only `bold` and `italic` markup and nothing else.
  *
@@ -146,7 +146,7 @@ function normalizeLinkText (url) {
  *   Can be useful for external highlighters.
  * - __linkify__ - `false`. Set `true` to autoconvert URL-like text to links.
  * - __typographer__  - `false`. Set `true` to enable [some language-neutral
- *   replacement](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.mjs) +
+ *   replacement](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.mjs) +
  *   quotes beautification (smartquotes).
  * - __quotes__ - `“”‘’`, String or Array. Double + single quotes replacement
  *   pairs, when typographer enabled and smartquotes on. For example, you can
@@ -272,7 +272,7 @@ function MarkdownIt (presetName, options) {
    * md.renderer.rules['my_token'] = myToken
    * ```
    *
-   * See [[Renderer]] docs and [source code](https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.mjs).
+   * See [[Renderer]] docs and [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.mjs).
    **/
   this.renderer = new Renderer()
 
@@ -280,7 +280,7 @@ function MarkdownIt (presetName, options) {
    * MarkdownIt#linkify -> LinkifyIt
    *
    * [linkify-it](https://github.com/markdown-it/linkify-it) instance.
-   * Used by [linkify](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/linkify.mjs)
+   * Used by [linkify](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/linkify.mjs)
    * rule.
    **/
   this.linkify = new LinkifyIt()
@@ -323,7 +323,7 @@ function MarkdownIt (presetName, options) {
    * MarkdownIt#utils -> utils
    *
    * Assorted utility functions, useful to write plugins. See details
-   * [here](https://github.com/markdown-it/markdown-it/blob/master/lib/common/utils.mjs).
+   * [here](https://github.com/markdown-it/markdown-it/blob/master/src/common/utils.mjs).
    **/
   this.utils = utils
 
@@ -331,7 +331,7 @@ function MarkdownIt (presetName, options) {
    * MarkdownIt#helpers -> helpers
    *
    * Link components parser functions, useful to write plugins. See details
-   * [here](https://github.com/markdown-it/markdown-it/blob/master/lib/helpers).
+   * [here](https://github.com/markdown-it/markdown-it/blob/master/src/helpers).
    **/
   this.helpers = utils.assign({}, helpers)
 
@@ -370,7 +370,7 @@ MarkdownIt.prototype.set = function (options) {
  *
  * Batch load of all options and compenent settings. This is internal method,
  * and you probably will not need it. But if you will - see available presets
- * and data structure [here](https://github.com/markdown-it/markdown-it/tree/master/lib/presets)
+ * and data structure [here](https://github.com/markdown-it/markdown-it/tree/master/src/presets)
  *
  * We strongly recommend to use presets instead of direct config loads. That
  * will give better compatibility with next versions.

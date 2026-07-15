@@ -2,7 +2,7 @@
 /* eslint no-console:0 */
 
 import { readFileSync } from 'fs'
-import markdownit from '../index.mjs'
+import markdownit from '../src/index.mjs'
 
 const md = markdownit({
   html: true,

@@ -1,4 +1,4 @@
-import markdownit from '../../index.mjs'
+import markdownit from '../../src/index.mjs'
 import * as mdurl from 'mdurl'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.min.css'

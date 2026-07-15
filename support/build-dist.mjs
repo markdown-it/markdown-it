@@ -37,7 +37,7 @@ await build({
       }
     },
     lib: {
-      entry: 'index.mjs',
+      entry: 'src/index.mjs',
       name: 'markdownit',
       formats: ['umd'],
       fileName: () => 'markdown-it.js'
@@ -62,7 +62,7 @@ await build({
       }
     },
     lib: {
-      entry: 'index.mjs',
+      entry: 'src/index.mjs',
       name: 'markdownit',
       formats: ['umd'],
       fileName: () => 'markdown-it.min.js'
@@ -82,7 +82,7 @@ await build({
     ...common.build,
     minify: false,
     lib: {
-      entry: 'index.mjs',
+      entry: 'src/index.mjs',
       formats: ['cjs'],
       fileName: () => 'index.cjs.js'
     },

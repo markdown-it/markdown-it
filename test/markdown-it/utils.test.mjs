@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import * as utils from '../../lib/common/utils.mjs'
+import * as utils from '../../src/common/utils.mjs'
 
 describe('Utils', function () {
   it('fromCodePoint', function () {

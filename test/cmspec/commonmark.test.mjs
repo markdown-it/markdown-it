@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import markdownit from '../../index.mjs'
+import markdownit from '../../src/index.mjs'
 
 function normalize (text) {
   return text.replace(/<blockquote>\n<\/blockquote>/g, '<blockquote></blockquote>')

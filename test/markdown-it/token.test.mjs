@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import Token from '../../lib/token.mjs'
+import Token from '../../src/token.mjs'
 
 describe('Token', function () {
   it('attr', function () {

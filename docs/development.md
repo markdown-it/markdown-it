@@ -23,7 +23,7 @@ Before continuing, make sure you've read:
     passed on plugin load. See properties of main class and nested objects.
 2. Search existing
    [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
-   or [rules](https://github.com/markdown-it/markdown-it/tree/master/lib),
+   or [rules](https://github.com/markdown-it/markdown-it/tree/master/src),
    doing something similar. It can be more simple to modify existing code,
    instead of writing all from scratch.
 3. If you did all steps above, but still has questions - ask in
@@ -64,14 +64,14 @@ in a more convenient way.
 The right sequence is to split text to several tokens and add link tokens in between.
 The result will be: `text` + `link_open` + `text` + `link_close` + `text`.
 
-See implementations of [linkify](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/linkify.mjs) and [emoji](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/replace.mjs) - those do text token splits.
+See implementations of [linkify](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/linkify.mjs) and [emoji](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/replace.mjs) - those do text token splits.
 
 __Note.__ Don't try to replace text with HTML markup! That's not secure.
 
 
 #### Why my inline rule is not executed?
 
-The inline parser skips pieces of texts to optimize speed. It stops only on [a small set of chars](https://github.com/markdown-it/markdown-it/blob/master/lib/rules_inline/text.mjs), which can be tokens. We did not made this list extensible for performance reasons too.
+The inline parser skips pieces of texts to optimize speed. It stops only on [a small set of chars](https://github.com/markdown-it/markdown-it/blob/master/src/rules_inline/text.mjs), which can be tokens. We did not made this list extensible for performance reasons too.
 
 If you are absolutely sure that something important is missing there - create a
 ticket and we will consider adding it as a new charcode.

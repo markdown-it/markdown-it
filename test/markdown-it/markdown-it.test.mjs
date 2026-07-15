@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { describe } from 'node:test'
 import { generateTests } from '../helpers.mjs'
-import markdownit from '../../index.mjs'
+import markdownit from '../../src/index.mjs'
 
 const fixtures = [
   'commonmark_extras.txt',
