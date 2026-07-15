@@ -51,11 +51,25 @@ const options = cli.parse_args()
 function readFile (filename, encoding, callback) {
   if (options.file === '-') {
     // read from stdin
+    const MAX_INPUT_BYTES = 32 * 1024 * 1024
     const chunks = []
+    let size = 0
+    let done = false
 
-    process.stdin.on('data', function (chunk) { chunks.push(chunk) })
+    process.stdin.on('data', function (chunk) {
+      if (done) return
+      size += chunk.length
+      if (size > MAX_INPUT_BYTES) {
+        done = true
+        process.stdin.destroy()
+        return callback(new Error('input too large (max 32 MiB)'))
+      }
+      chunks.push(chunk)
+    })
 
     process.stdin.on('end', function () {
+      if (done) return
+      done = true
       return callback(null, Buffer.concat(chunks).toString(encoding))
     })
   } else {
