@@ -19,7 +19,8 @@
 /**
  * new Ruler()
  **/
-function Ruler () {
+class Ruler {
+  constructor () {
   // List of added rules. Each element is:
   //
   // {
@@ -29,61 +30,61 @@ function Ruler () {
   //   alt: [ name2, name3 ]
   // }
   //
-  this.__rules__ = []
+    this.__rules__ = []
 
-  // Cached rule chains.
-  //
-  // First level - chain name, '' for default.
-  // Second level - diginal anchor for fast filtering by charcodes.
-  //
-  this.__cache__ = null
-}
-
-// Helper methods, should not be used directly
-
-// Find rule index by name
-//
-Ruler.prototype.__find__ = function (name) {
-  for (let i = 0; i < this.__rules__.length; i++) {
-    if (this.__rules__[i].name === name) {
-      return i
-    }
+    // Cached rule chains.
+    //
+    // First level - chain name, '' for default.
+    // Second level - diginal anchor for fast filtering by charcodes.
+    //
+    this.__cache__ = null
   }
-  return -1
-}
 
-// Build rules lookup cache
-//
-Ruler.prototype.__compile__ = function () {
-  const self = this
-  const chains = ['']
+  // Helper methods, should not be used directly
 
-  // collect unique names
-  self.__rules__.forEach(function (rule) {
-    if (!rule.enabled) { return }
-
-    rule.alt.forEach(function (altName) {
-      if (chains.indexOf(altName) < 0) {
-        chains.push(altName)
+  // Find rule index by name
+  //
+  __find__ (name) {
+    for (let i = 0; i < this.__rules__.length; i++) {
+      if (this.__rules__[i].name === name) {
+        return i
       }
-    })
-  })
+    }
+    return -1
+  }
 
-  self.__cache__ = {}
+  // Build rules lookup cache
+  //
+  __compile__ () {
+    const self = this
+    const chains = ['']
 
-  chains.forEach(function (chain) {
-    self.__cache__[chain] = []
+    // collect unique names
     self.__rules__.forEach(function (rule) {
       if (!rule.enabled) { return }
 
-      if (chain && rule.alt.indexOf(chain) < 0) { return }
-
-      self.__cache__[chain].push(rule.fn)
+      rule.alt.forEach(function (altName) {
+        if (chains.indexOf(altName) < 0) {
+          chains.push(altName)
+        }
+      })
     })
-  })
-}
 
-/**
+    self.__cache__ = {}
+
+    chains.forEach(function (chain) {
+      self.__cache__[chain] = []
+      self.__rules__.forEach(function (rule) {
+        if (!rule.enabled) { return }
+
+        if (chain && rule.alt.indexOf(chain) < 0) { return }
+
+        self.__cache__[chain].push(rule.fn)
+      })
+    })
+  }
+
+  /**
  * Ruler.at(name, fn [, options])
  * - name (String): rule name to replace.
  * - fn (Function): new rule function.
@@ -108,18 +109,18 @@ Ruler.prototype.__compile__ = function () {
  * });
  * ```
  **/
-Ruler.prototype.at = function (name, fn, options) {
-  const index = this.__find__(name)
-  const opt = options || {}
+  at (name, fn, options) {
+    const index = this.__find__(name)
+    const opt = options || {}
 
-  if (index === -1) { throw new Error('Parser rule not found: ' + name) }
+    if (index === -1) { throw new Error('Parser rule not found: ' + name) }
 
-  this.__rules__[index].fn = fn
-  this.__rules__[index].alt = opt.alt || []
-  this.__cache__ = null
-}
+    this.__rules__[index].fn = fn
+    this.__rules__[index].alt = opt.alt || []
+    this.__cache__ = null
+  }
 
-/**
+  /**
  * Ruler.before(beforeName, ruleName, fn [, options])
  * - beforeName (String): new rule will be added before this one.
  * - ruleName (String): name of added rule.
@@ -143,23 +144,23 @@ Ruler.prototype.at = function (name, fn, options) {
  * });
  * ```
  **/
-Ruler.prototype.before = function (beforeName, ruleName, fn, options) {
-  const index = this.__find__(beforeName)
-  const opt = options || {}
+  before (beforeName, ruleName, fn, options) {
+    const index = this.__find__(beforeName)
+    const opt = options || {}
 
-  if (index === -1) { throw new Error('Parser rule not found: ' + beforeName) }
+    if (index === -1) { throw new Error('Parser rule not found: ' + beforeName) }
 
-  this.__rules__.splice(index, 0, {
-    name: ruleName,
-    enabled: true,
-    fn,
-    alt: opt.alt || []
-  })
+    this.__rules__.splice(index, 0, {
+      name: ruleName,
+      enabled: true,
+      fn,
+      alt: opt.alt || []
+    })
 
-  this.__cache__ = null
-}
+    this.__cache__ = null
+  }
 
-/**
+  /**
  * Ruler.after(afterName, ruleName, fn [, options])
  * - afterName (String): new rule will be added after this one.
  * - ruleName (String): name of added rule.
@@ -183,23 +184,23 @@ Ruler.prototype.before = function (beforeName, ruleName, fn, options) {
  * });
  * ```
  **/
-Ruler.prototype.after = function (afterName, ruleName, fn, options) {
-  const index = this.__find__(afterName)
-  const opt = options || {}
+  after (afterName, ruleName, fn, options) {
+    const index = this.__find__(afterName)
+    const opt = options || {}
 
-  if (index === -1) { throw new Error('Parser rule not found: ' + afterName) }
+    if (index === -1) { throw new Error('Parser rule not found: ' + afterName) }
 
-  this.__rules__.splice(index + 1, 0, {
-    name: ruleName,
-    enabled: true,
-    fn,
-    alt: opt.alt || []
-  })
+    this.__rules__.splice(index + 1, 0, {
+      name: ruleName,
+      enabled: true,
+      fn,
+      alt: opt.alt || []
+    })
 
-  this.__cache__ = null
-}
+    this.__cache__ = null
+  }
 
-/**
+  /**
  * Ruler.push(ruleName, fn [, options])
  * - ruleName (String): name of added rule.
  * - fn (Function): rule function.
@@ -222,20 +223,20 @@ Ruler.prototype.after = function (afterName, ruleName, fn, options) {
  * });
  * ```
  **/
-Ruler.prototype.push = function (ruleName, fn, options) {
-  const opt = options || {}
+  push (ruleName, fn, options) {
+    const opt = options || {}
 
-  this.__rules__.push({
-    name: ruleName,
-    enabled: true,
-    fn,
-    alt: opt.alt || []
-  })
+    this.__rules__.push({
+      name: ruleName,
+      enabled: true,
+      fn,
+      alt: opt.alt || []
+    })
 
-  this.__cache__ = null
-}
+    this.__cache__ = null
+  }
 
-/**
+  /**
  * Ruler.enable(list [, ignoreInvalid]) -> Array
  * - list (String|Array): list of rule names to enable.
  * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
@@ -247,28 +248,28 @@ Ruler.prototype.push = function (ruleName, fn, options) {
  *
  * See also [[Ruler.disable]], [[Ruler.enableOnly]].
  **/
-Ruler.prototype.enable = function (list, ignoreInvalid) {
-  if (!Array.isArray(list)) { list = [list] }
+  enable (list, ignoreInvalid) {
+    if (!Array.isArray(list)) { list = [list] }
 
-  const result = []
+    const result = []
 
-  // Search by name and enable
-  list.forEach(function (name) {
-    const idx = this.__find__(name)
+    // Search by name and enable
+    list.forEach(function (name) {
+      const idx = this.__find__(name)
 
-    if (idx < 0) {
-      if (ignoreInvalid) { return }
-      throw new Error('Rules manager: invalid rule name ' + name)
-    }
-    this.__rules__[idx].enabled = true
-    result.push(name)
-  }, this)
+      if (idx < 0) {
+        if (ignoreInvalid) { return }
+        throw new Error('Rules manager: invalid rule name ' + name)
+      }
+      this.__rules__[idx].enabled = true
+      result.push(name)
+    }, this)
 
-  this.__cache__ = null
-  return result
-}
+    this.__cache__ = null
+    return result
+  }
 
-/**
+  /**
  * Ruler.enableOnly(list [, ignoreInvalid])
  * - list (String|Array): list of rule names to enable (whitelist).
  * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
@@ -278,15 +279,15 @@ Ruler.prototype.enable = function (list, ignoreInvalid) {
  *
  * See also [[Ruler.disable]], [[Ruler.enable]].
  **/
-Ruler.prototype.enableOnly = function (list, ignoreInvalid) {
-  if (!Array.isArray(list)) { list = [list] }
+  enableOnly (list, ignoreInvalid) {
+    if (!Array.isArray(list)) { list = [list] }
 
-  this.__rules__.forEach(function (rule) { rule.enabled = false })
+    this.__rules__.forEach(function (rule) { rule.enabled = false })
 
-  this.enable(list, ignoreInvalid)
-}
+    this.enable(list, ignoreInvalid)
+  }
 
-/**
+  /**
  * Ruler.disable(list [, ignoreInvalid]) -> Array
  * - list (String|Array): list of rule names to disable.
  * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
@@ -298,28 +299,28 @@ Ruler.prototype.enableOnly = function (list, ignoreInvalid) {
  *
  * See also [[Ruler.enable]], [[Ruler.enableOnly]].
  **/
-Ruler.prototype.disable = function (list, ignoreInvalid) {
-  if (!Array.isArray(list)) { list = [list] }
+  disable (list, ignoreInvalid) {
+    if (!Array.isArray(list)) { list = [list] }
 
-  const result = []
+    const result = []
 
-  // Search by name and disable
-  list.forEach(function (name) {
-    const idx = this.__find__(name)
+    // Search by name and disable
+    list.forEach(function (name) {
+      const idx = this.__find__(name)
 
-    if (idx < 0) {
-      if (ignoreInvalid) { return }
-      throw new Error('Rules manager: invalid rule name ' + name)
-    }
-    this.__rules__[idx].enabled = false
-    result.push(name)
-  }, this)
+      if (idx < 0) {
+        if (ignoreInvalid) { return }
+        throw new Error('Rules manager: invalid rule name ' + name)
+      }
+      this.__rules__[idx].enabled = false
+      result.push(name)
+    }, this)
 
-  this.__cache__ = null
-  return result
-}
+    this.__cache__ = null
+    return result
+  }
 
-/**
+  /**
  * Ruler.getRules(chainName) -> Array
  *
  * Return array of active functions (rules) for given chain name. It analyzes
@@ -328,13 +329,14 @@ Ruler.prototype.disable = function (list, ignoreInvalid) {
  * Default chain name is `''` (empty string). It can't be skipped. That's
  * done intentionally, to keep signature monomorphic for high speed.
  **/
-Ruler.prototype.getRules = function (chainName) {
-  if (this.__cache__ === null) {
-    this.__compile__()
-  }
+  getRules (chainName) {
+    if (this.__cache__ === null) {
+      this.__compile__()
+    }
 
-  // Chain can be empty, if rules disabled. But we still have to return Array.
-  return this.__cache__[chainName] || []
+    // Chain can be empty, if rules disabled. But we still have to return Array.
+    return this.__cache__[chainName] || []
+  }
 }
 
 export default Ruler

@@ -31,32 +31,34 @@ const _rules = [
 /**
  * new Core()
  **/
-function Core () {
+class Core {
+  constructor () {
+    /**
+     * Core#ruler -> Ruler
+     *
+     * [[Ruler]] instance. Keep configuration of core rules.
+     **/
+    this.ruler = new Ruler()
+
+    for (let i = 0; i < _rules.length; i++) {
+      this.ruler.push(_rules[i][0], _rules[i][1])
+    }
+
+    this.State = StateCore
+  }
+
   /**
-   * Core#ruler -> Ruler
+   * Core.process(state)
    *
-   * [[Ruler]] instance. Keep configuration of core rules.
+   * Executes core chain rules.
    **/
-  this.ruler = new Ruler()
+  process (state) {
+    const rules = this.ruler.getRules('')
 
-  for (let i = 0; i < _rules.length; i++) {
-    this.ruler.push(_rules[i][0], _rules[i][1])
+    for (let i = 0, l = rules.length; i < l; i++) {
+      rules[i](state)
+    }
   }
 }
-
-/**
- * Core.process(state)
- *
- * Executes core chain rules.
- **/
-Core.prototype.process = function (state) {
-  const rules = this.ruler.getRules('')
-
-  for (let i = 0, l = rules.length; i < l; i++) {
-    rules[i](state)
-  }
-}
-
-Core.prototype.State = StateCore
 
 export default Core

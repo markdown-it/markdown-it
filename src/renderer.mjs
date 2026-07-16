@@ -111,7 +111,8 @@ default_rules.html_inline = function (tokens, idx /*, options, env */) {
  *
  * Creates new [[Renderer]] instance and fill [[Renderer#rules]] with defaults.
  **/
-function Renderer () {
+class Renderer {
+  constructor () {
   /**
    * Renderer#rules -> Object
    *
@@ -140,29 +141,29 @@ function Renderer () {
    * See [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.mjs)
    * for more details and examples.
    **/
-  this.rules = assign({}, default_rules)
-}
+    this.rules = assign({}, default_rules)
+  }
 
-/**
+  /**
  * Renderer.renderAttrs(token) -> String
  *
  * Render token attributes to string.
  **/
-Renderer.prototype.renderAttrs = function renderAttrs (token) {
-  let i, l, result
+  renderAttrs (token) {
+    let i, l, result
 
-  if (!token.attrs) { return '' }
+    if (!token.attrs) { return '' }
 
-  result = ''
+    result = ''
 
-  for (i = 0, l = token.attrs.length; i < l; i++) {
-    result += ' ' + escapeHtml(token.attrs[i][0]) + '="' + escapeHtml(token.attrs[i][1]) + '"'
+    for (i = 0, l = token.attrs.length; i < l; i++) {
+      result += ' ' + escapeHtml(token.attrs[i][0]) + '="' + escapeHtml(token.attrs[i][1]) + '"'
+    }
+
+    return result
   }
 
-  return result
-}
-
-/**
+  /**
  * Renderer.renderToken(tokens, idx, options) -> String
  * - tokens (Array): list of tokens
  * - idx (Numbed): token index to render
@@ -171,65 +172,65 @@ Renderer.prototype.renderAttrs = function renderAttrs (token) {
  * Default token renderer. Can be overriden by custom function
  * in [[Renderer#rules]].
  **/
-Renderer.prototype.renderToken = function renderToken (tokens, idx, options) {
-  const token = tokens[idx]
-  let result = ''
+  renderToken (tokens, idx, options) {
+    const token = tokens[idx]
+    let result = ''
 
-  // Tight list paragraphs
-  if (token.hidden) {
-    return ''
-  }
+    // Tight list paragraphs
+    if (token.hidden) {
+      return ''
+    }
 
-  // Insert a newline between hidden paragraph and subsequent opening
-  // block-level tag.
-  //
-  // For example, here we should insert a newline before blockquote:
-  //  - a
-  //    >
-  //
-  if (token.block && token.nesting !== -1 && idx && tokens[idx - 1].hidden) {
-    result += '\n'
-  }
+    // Insert a newline between hidden paragraph and subsequent opening
+    // block-level tag.
+    //
+    // For example, here we should insert a newline before blockquote:
+    //  - a
+    //    >
+    //
+    if (token.block && token.nesting !== -1 && idx && tokens[idx - 1].hidden) {
+      result += '\n'
+    }
 
-  // Add token name, e.g. `<img`
-  result += (token.nesting === -1 ? '</' : '<') + token.tag
+    // Add token name, e.g. `<img`
+    result += (token.nesting === -1 ? '</' : '<') + token.tag
 
-  // Encode attributes, e.g. `<img src="foo"`
-  result += this.renderAttrs(token)
+    // Encode attributes, e.g. `<img src="foo"`
+    result += this.renderAttrs(token)
 
-  // Add a slash for self-closing tags, e.g. `<img src="foo" /`
-  if (token.nesting === 0 && options.xhtmlOut) {
-    result += ' /'
-  }
+    // Add a slash for self-closing tags, e.g. `<img src="foo" /`
+    if (token.nesting === 0 && options.xhtmlOut) {
+      result += ' /'
+    }
 
-  // Check if we need to add a newline after this tag
-  let needLf = false
-  if (token.block) {
-    needLf = true
+    // Check if we need to add a newline after this tag
+    let needLf = false
+    if (token.block) {
+      needLf = true
 
-    if (token.nesting === 1) {
-      if (idx + 1 < tokens.length) {
-        const nextToken = tokens[idx + 1]
+      if (token.nesting === 1) {
+        if (idx + 1 < tokens.length) {
+          const nextToken = tokens[idx + 1]
 
-        if (nextToken.type === 'inline' || nextToken.hidden) {
+          if (nextToken.type === 'inline' || nextToken.hidden) {
           // Block-level tag containing an inline tag.
           //
-          needLf = false
-        } else if (nextToken.nesting === -1 && nextToken.tag === token.tag) {
+            needLf = false
+          } else if (nextToken.nesting === -1 && nextToken.tag === token.tag) {
           // Opening tag + closing tag of the same type. E.g. `<li></li>`.
           //
-          needLf = false
+            needLf = false
+          }
         }
       }
     }
+
+    result += needLf ? '>\n' : '>'
+
+    return result
   }
 
-  result += needLf ? '>\n' : '>'
-
-  return result
-}
-
-/**
+  /**
  * Renderer.renderInline(tokens, options, env) -> String
  * - tokens (Array): list on block tokens to render
  * - options (Object): params of parser instance
@@ -237,24 +238,24 @@ Renderer.prototype.renderToken = function renderToken (tokens, idx, options) {
  *
  * The same as [[Renderer.render]], but for single token of `inline` type.
  **/
-Renderer.prototype.renderInline = function (tokens, options, env) {
-  let result = ''
-  const rules = this.rules
+  renderInline (tokens, options, env) {
+    let result = ''
+    const rules = this.rules
 
-  for (let i = 0, len = tokens.length; i < len; i++) {
-    const type = tokens[i].type
+    for (let i = 0, len = tokens.length; i < len; i++) {
+      const type = tokens[i].type
 
-    if (typeof rules[type] !== 'undefined') {
-      result += rules[type](tokens, i, options, env, this)
-    } else {
-      result += this.renderToken(tokens, i, options)
+      if (typeof rules[type] !== 'undefined') {
+        result += rules[type](tokens, i, options, env, this)
+      } else {
+        result += this.renderToken(tokens, i, options)
+      }
     }
+
+    return result
   }
 
-  return result
-}
-
-/** internal
+  /** internal
  * Renderer.renderInlineAsText(tokens, options, env) -> String
  * - tokens (Array): list on block tokens to render
  * - options (Object): params of parser instance
@@ -264,34 +265,34 @@ Renderer.prototype.renderInline = function (tokens, options, env) {
  * Don't try to use it! Spec requires to show `alt` content with stripped markup,
  * instead of simple escaping.
  **/
-Renderer.prototype.renderInlineAsText = function (tokens, options, env) {
-  let result = ''
+  renderInlineAsText (tokens, options, env) {
+    let result = ''
 
-  for (let i = 0, len = tokens.length; i < len; i++) {
-    switch (tokens[i].type) {
-      case 'text':
-        result += tokens[i].content
-        break
-      case 'image':
-        result += this.renderInlineAsText(tokens[i].children, options, env)
-        break
-      case 'html_inline':
-      case 'html_block':
-        result += tokens[i].content
-        break
-      case 'softbreak':
-      case 'hardbreak':
-        result += '\n'
-        break
-      default:
+    for (let i = 0, len = tokens.length; i < len; i++) {
+      switch (tokens[i].type) {
+        case 'text':
+          result += tokens[i].content
+          break
+        case 'image':
+          result += this.renderInlineAsText(tokens[i].children, options, env)
+          break
+        case 'html_inline':
+        case 'html_block':
+          result += tokens[i].content
+          break
+        case 'softbreak':
+        case 'hardbreak':
+          result += '\n'
+          break
+        default:
         // all other tokens are skipped
+      }
     }
+
+    return result
   }
 
-  return result
-}
-
-/**
+  /**
  * Renderer.render(tokens, options, env) -> String
  * - tokens (Array): list on block tokens to render
  * - options (Object): params of parser instance
@@ -300,23 +301,24 @@ Renderer.prototype.renderInlineAsText = function (tokens, options, env) {
  * Takes token stream and generates HTML. Probably, you will never need to call
  * this method directly.
  **/
-Renderer.prototype.render = function (tokens, options, env) {
-  let result = ''
-  const rules = this.rules
+  render (tokens, options, env) {
+    let result = ''
+    const rules = this.rules
 
-  for (let i = 0, len = tokens.length; i < len; i++) {
-    const type = tokens[i].type
+    for (let i = 0, len = tokens.length; i < len; i++) {
+      const type = tokens[i].type
 
-    if (type === 'inline') {
-      result += this.renderInline(tokens[i].children, options, env)
-    } else if (typeof rules[type] !== 'undefined') {
-      result += rules[type](tokens, i, options, env, this)
-    } else {
-      result += this.renderToken(tokens, i, options, env)
+      if (type === 'inline') {
+        result += this.renderInline(tokens[i].children, options, env)
+      } else if (typeof rules[type] !== 'undefined') {
+        result += rules[type](tokens, i, options, env, this)
+      } else {
+        result += this.renderToken(tokens, i, options, env)
+      }
     }
-  }
 
-  return result
+    return result
+  }
 }
 
 export default Renderer
