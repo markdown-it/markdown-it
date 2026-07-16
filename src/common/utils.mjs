@@ -35,6 +35,23 @@ function assign (obj /* from1, from2, from3, ... */) {
   return obj
 }
 
+function callable (cls) {
+  const wrapper = function (...args) {
+    const newTarget =
+      new.target && new.target !== wrapper
+        ? new.target
+        : cls
+
+    return Reflect.construct(cls, args, newTarget)
+  }
+
+  Object.defineProperty(wrapper, 'name', { value: cls.name })
+  Object.setPrototypeOf(wrapper, cls)
+  wrapper.prototype = cls.prototype
+
+  return wrapper
+}
+
 // Remove element from array and put another array at those position.
 // Useful for some operations with tokens
 function arrayReplaceAt (src, pos, newElements) {
@@ -305,6 +322,7 @@ const lib = { mdurl, ucmicro }
 export {
   lib,
   assign,
+  callable,
   isString,
   has,
   unescapeMd,
