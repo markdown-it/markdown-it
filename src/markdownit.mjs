@@ -11,7 +11,7 @@ import ParserBlock from './parser_block.mjs'
 import StateBlock from './rules_block/state_block.mjs'
 import ParserInline from './parser_inline.mjs'
 import StateInline from './rules_inline/state_inline.mjs'
-import LinkifyIt from 'linkify-it'
+import { LinkifyIt } from 'linkify-it'
 import * as mdurl from 'mdurl'
 import punycode from 'punycode.js'
 

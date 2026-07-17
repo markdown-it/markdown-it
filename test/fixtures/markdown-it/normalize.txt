@@ -68,14 +68,6 @@ Don't encode domains in unknown schemas:
 <p><a href="skype:%CE%B3%CE%B3%CE%B3"></a></p>
 .
 
-Should auto-add protocol to autolinks:
-
-.
-test google.com foo
-.
-<p>test <a href="http://google.com">google.com</a> foo</p>
-.
-
 Should support IDN in autolinks:
 
 .
@@ -94,12 +86,6 @@ test http://☃.net/ foo
 test //xn--n3h.net/ foo
 .
 <p>test <a href="//xn--n3h.net/">//☃.net/</a> foo</p>
-.
-
-.
-test xn--n3h.net foo
-.
-<p>test <a href="http://xn--n3h.net">☃.net</a> foo</p>
 .
 
 .

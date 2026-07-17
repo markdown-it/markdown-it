@@ -19,7 +19,7 @@ export default function linkify (state) {
 
   for (let j = 0, l = blockTokens.length; j < l; j++) {
     if (blockTokens[j].type !== 'inline' ||
-        !state.md.linkify.pretest(blockTokens[j].content)) {
+        !state.md.linkify.test(blockTokens[j].content)) {
       continue
     }
 
