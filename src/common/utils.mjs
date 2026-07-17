@@ -3,7 +3,7 @@
 
 import * as mdurl from 'mdurl'
 import * as ucmicro from 'uc.micro'
-import { decodeHTML } from 'entities'
+import { decodeHTMLStrict } from 'entities'
 
 function _class (obj) { return Object.prototype.toString.call(obj) }
 
@@ -105,7 +105,7 @@ function replaceEntityPattern (match, name) {
     return match
   }
 
-  const decoded = decodeHTML(match)
+  const decoded = decodeHTMLStrict(match)
   if (decoded !== match) {
     return decoded
   }
