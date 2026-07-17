@@ -64,7 +64,7 @@
   ],
   "dependencies": {
     "argparse": "^3.0.0",
-    "entities": "^4.5.0",
+    "entities": "^8.0.0",
     "linkify-it": "^6.0.0",
     "mdurl": "^2.0.0",
     "punycode.js": "^2.3.1",
