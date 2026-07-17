@@ -1,5 +1,5 @@
 /** internal
- * class Core
+ * class ParserCore
  *
  * Top-level rules executor. Glues block/inline parsers and does intermediate
  * transformations.
@@ -29,12 +29,12 @@ const _rules = [
 ]
 
 /**
- * new Core()
+ * new ParserCore()
  **/
-class Core {
+class ParserCore {
   constructor () {
     /**
-     * Core#ruler -> Ruler
+     * ParserCore#ruler -> Ruler
      *
      * [[Ruler]] instance. Keep configuration of core rules.
      **/
@@ -48,7 +48,7 @@ class Core {
   }
 
   /**
-   * Core.process(state)
+   * ParserCore.process(state)
    *
    * Executes core chain rules.
    **/
@@ -61,4 +61,4 @@ class Core {
   }
 }
 
-export default Core
+export default ParserCore

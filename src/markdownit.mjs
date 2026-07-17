@@ -2,10 +2,15 @@
 
 import * as utils from './common/utils.mjs'
 import * as helpers from './helpers/index.mjs'
+import Token from './token.mjs'
+import Ruler from './ruler.mjs'
 import Renderer from './renderer.mjs'
 import ParserCore from './parser_core.mjs'
+import StateCore from './rules_core/state_core.mjs'
 import ParserBlock from './parser_block.mjs'
+import StateBlock from './rules_block/state_block.mjs'
 import ParserInline from './parser_inline.mjs'
+import StateInline from './rules_inline/state_inline.mjs'
 import LinkifyIt from 'linkify-it'
 import * as mdurl from 'mdurl'
 import punycode from 'punycode.js'
@@ -242,9 +247,9 @@ class MarkdownIt {
     this.block = new ParserBlock()
 
     /**
-   * MarkdownIt#core -> Core
+   * MarkdownIt#core -> ParserCore
    *
-   * Instance of [[Core]] chain executor. You may need it to add new rules when
+   * Instance of [[ParserCore]] chain executor. You may need it to add new rules when
    * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
    * [[MarkdownIt.enable]].
    **/
@@ -558,6 +563,16 @@ class MarkdownIt {
 
     return this.renderer.render(this.parseInline(src, env), this.options, env)
   }
+
+  static Token = Token
+  static Ruler = Ruler
+  static Renderer = Renderer
+  static ParserCore = ParserCore
+  static StateCore = StateCore
+  static ParserBlock = ParserBlock
+  static StateBlock = StateBlock
+  static ParserInline = ParserInline
+  static StateInline = StateInline
 }
 
 export default utils.callable(MarkdownIt)
