@@ -21,27 +21,29 @@
       "url": "https://github.com/sponsors/markdown-it"
     }
   ],
-  "main": "dist/index.cjs.js",
-  "module": "src/index.mjs",
+  "main": "./dist/markdown-it.cjs.js",
+  "module": "./dist/markdown-it.mjs",
   "exports": {
     ".": {
-      "import": "./src/index.mjs",
-      "require": "./dist/index.cjs.js"
+      "import": "./dist/markdown-it.mjs",
+      "require": "./dist/markdown-it.cjs.js"
     },
-    "./*": {
-      "require": "./*",
-      "import": "./*"
-    }
+    "./browser": {
+      "import": "./dist/browser/markdown-it.esm.min.mjs",
+      "require": "./dist/browser/markdown-it.umd.min.js",
+      "default": "./dist/browser/markdown-it.umd.min.js"
+    },
+    "./package.json": "./package.json"
   },
   "bin": {
     "markdown-it": "bin/markdown-it.mjs"
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "npm run lint && npm run test:cmspec && npm run test:markdown-it && npm run test:build",
+    "test": "npm run lint && npm run build && npm run test:cmspec && npm run test:markdown-it && npm run test:build",
     "test:cmspec": "node --test --test-reporter=dot test/cmspec/**/*.test.mjs",
     "test:markdown-it": "node --test test/markdown-it/**/*.test.mjs",
-    "test:build": "npm run build && node --test test/build/**/*.test.mjs",
+    "test:build": "node --test test/build/**/*.test.mjs",
     "pathological:track-ref": "node support/track-ref-pathological.mjs",
     "pathological:update-hash": "node support/track-ref-pathological.mjs --update",
     "coverage": "npm run build && c8 --include 'src/**' -r text -r html -r lcov node --test --test-reporter=dot",
@@ -57,7 +59,7 @@
     "postpublish": "npm run gh-demo && npm run gh-doc"
   },
   "files": [
-    "src/",
+    "bin/",
     "dist/"
   ],
   "dependencies": {
