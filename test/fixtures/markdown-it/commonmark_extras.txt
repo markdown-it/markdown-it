@@ -868,3 +868,16 @@ foo
 <p>foo</p>
 <!bar baz>
 .
+
+Code spans consisting only of spaces are not stripped
+.
+`   `
+
+` `
+
+``    ``
+.
+<p><code>   </code></p>
+<p><code> </code></p>
+<p><code>    </code></p>
+.
