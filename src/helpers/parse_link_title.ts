@@ -1,7 +1,7 @@
 // Parse link title
 //
 
-import { unescapeAll } from '../common/utils.mjs'
+import { unescapeAll } from '../common/utils.ts'
 
 // Parse link title within `str` in [start, max] range,
 // or continue previous parsing if `prev_state` is defined (equal to result of last execution).

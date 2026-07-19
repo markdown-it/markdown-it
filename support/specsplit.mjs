@@ -6,7 +6,7 @@
 
 import fs from 'node:fs'
 import argparse from 'argparse'
-import markdownit from '../src/index.mjs'
+import markdownit from '../src/index.ts'
 
 const cli = new argparse.ArgumentParser({
   add_help: true

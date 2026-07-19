@@ -6,7 +6,7 @@
  * rules if you create plugin and adds new token types.
  **/
 
-import { assign, unescapeAll, escapeHtml } from './common/utils.mjs'
+import { assign, unescapeAll, escapeHtml } from './common/utils.ts'
 
 const default_rules = {}
 
@@ -138,7 +138,7 @@ class Renderer {
    * }
    * ```
    *
-   * See [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.mjs)
+   * See [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts)
    * for more details and examples.
    **/
     this.rules = assign({}, default_rules)

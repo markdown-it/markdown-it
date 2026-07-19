@@ -40,6 +40,7 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "type-check": "tsc --noEmit",
     "test": "npm run lint && npm run build && npm run test:cmspec && npm run test:markdown-it && npm run test:build",
     "test:cmspec": "node --test --test-reporter=dot test/cmspec/**/*.test.mjs",
     "test:markdown-it": "node --test test/markdown-it/**/*.test.mjs",
@@ -88,6 +89,7 @@
     "ndoc": "^6.0.1",
     "neostandard": "^0.13.0",
     "tinybench": "^6.0.2",
+    "typescript": "^6.0.3",
     "vite": "^8.1.5",
     "vite-plugin-singlefile": "^2.3.3"
   }

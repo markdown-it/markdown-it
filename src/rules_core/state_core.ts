@@ -1,7 +1,7 @@
 // Core state object
 //
 
-import Token from '../token.mjs'
+import Token from '../token.ts'
 
 class StateCore {
   constructor (src, md, env) {

@@ -1,7 +1,7 @@
 // Convert straight quotation marks to typographic ones
 //
 
-import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.mjs'
+import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.ts'
 
 const QUOTE_TEST_RE = /['"]/
 const QUOTE_RE = /['"]/g

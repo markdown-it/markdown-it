@@ -1,7 +1,7 @@
 // Parse link destination
 //
 
-import { unescapeAll } from '../common/utils.mjs'
+import { unescapeAll } from '../common/utils.ts'
 
 export default function parseLinkDestination (str, start, max) {
   let code

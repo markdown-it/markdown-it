@@ -1,6 +1,6 @@
 // Process [link](<to> "stuff")
 
-import { normalizeReference, isSpace } from '../common/utils.mjs'
+import { normalizeReference, isSpace } from '../common/utils.ts'
 
 export default function link (state, silent) {
   let code, label, res, ref

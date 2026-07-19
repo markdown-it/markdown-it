@@ -1,6 +1,6 @@
 // GFM table, https://github.github.com/gfm/#tables-extension-
 
-import { isSpace } from '../common/utils.mjs'
+import { isSpace } from '../common/utils.ts'
 
 // Limit the amount of empty autocompleted cells in a table,
 // see https://github.com/markdown-it/markdown-it/issues/1000,

@@ -1,6 +1,6 @@
 // Horizontal rule
 
-import { isSpace } from '../common/utils.mjs'
+import { isSpace } from '../common/utils.ts'
 
 export default function hr (state, startLine, endLine, silent) {
   const max = state.eMarks[startLine]

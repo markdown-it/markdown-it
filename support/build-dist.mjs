@@ -26,7 +26,7 @@ await build({
     target: 'es2015',
     minify: false,
     lib: {
-      entry: 'src/index.mjs',
+      entry: 'src/index.ts',
       formats: ['cjs'],
       fileName: () => 'markdown-it.cjs.js'
     },
@@ -47,7 +47,7 @@ await build({
     target: 'es2018',
     minify: false,
     lib: {
-      entry: 'src/index.mjs',
+      entry: 'src/index.ts',
       formats: ['es'],
       fileName: () => 'markdown-it.mjs'
     },
@@ -68,7 +68,7 @@ await build({
     outDir: 'dist/browser',
     minify: true,
     lib: {
-      entry: 'src/index.mjs',
+      entry: 'src/index.ts',
       name: 'markdownit',
       formats: ['umd'],
       fileName: () => 'markdown-it.umd.min.js'
@@ -91,7 +91,7 @@ await build({
     outDir: 'dist/browser',
     minify: true,
     lib: {
-      entry: 'src/index.mjs',
+      entry: 'src/index.ts',
       formats: ['es'],
       fileName: () => 'markdown-it.esm.min.mjs'
     },

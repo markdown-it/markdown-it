@@ -123,7 +123,7 @@ const md = markdownit({
   linkify:      false,
 
   // Enable some language-neutral replacement + quotes beautification
-  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.mjs
+  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.ts
   typographer:  false,
 
   // Double + single quotes replacement pairs, when typographer enabled,

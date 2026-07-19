@@ -1,4 +1,4 @@
-import markdownit from '../../../src/index.mjs'
+import markdownit from '../../../src/index.ts'
 
 const md = markdownit({
   html: true,

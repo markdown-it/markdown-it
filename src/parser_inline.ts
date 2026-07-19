@@ -4,24 +4,24 @@
  * Tokenizes paragraph content.
  **/
 
-import Ruler from './ruler.mjs'
-import StateInline from './rules_inline/state_inline.mjs'
+import Ruler from './ruler.ts'
+import StateInline from './rules_inline/state_inline.ts'
 
-import r_text from './rules_inline/text.mjs'
-import r_linkify from './rules_inline/linkify.mjs'
-import r_newline from './rules_inline/newline.mjs'
-import r_escape from './rules_inline/escape.mjs'
-import r_backticks from './rules_inline/backticks.mjs'
-import r_strikethrough from './rules_inline/strikethrough.mjs'
-import r_emphasis from './rules_inline/emphasis.mjs'
-import r_link from './rules_inline/link.mjs'
-import r_image from './rules_inline/image.mjs'
-import r_autolink from './rules_inline/autolink.mjs'
-import r_html_inline from './rules_inline/html_inline.mjs'
-import r_entity from './rules_inline/entity.mjs'
+import r_text from './rules_inline/text.ts'
+import r_linkify from './rules_inline/linkify.ts'
+import r_newline from './rules_inline/newline.ts'
+import r_escape from './rules_inline/escape.ts'
+import r_backticks from './rules_inline/backticks.ts'
+import r_strikethrough from './rules_inline/strikethrough.ts'
+import r_emphasis from './rules_inline/emphasis.ts'
+import r_link from './rules_inline/link.ts'
+import r_image from './rules_inline/image.ts'
+import r_autolink from './rules_inline/autolink.ts'
+import r_html_inline from './rules_inline/html_inline.ts'
+import r_entity from './rules_inline/entity.ts'
 
-import r_balance_pairs from './rules_inline/balance_pairs.mjs'
-import r_fragments_join from './rules_inline/fragments_join.mjs'
+import r_balance_pairs from './rules_inline/balance_pairs.ts'
+import r_fragments_join from './rules_inline/fragments_join.ts'
 
 // Parser rules
 

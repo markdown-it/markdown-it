@@ -1,7 +1,7 @@
 // HTML block
 
-import block_names from '../common/html_blocks.mjs'
-import { HTML_OPEN_CLOSE_TAG_RE } from '../common/html_re.mjs'
+import block_names from '../common/html_blocks.ts'
+import { HTML_OPEN_CLOSE_TAG_RE } from '../common/html_re.ts'
 
 // An array of opening and corresponding closing sequences for html tags,
 // last argument defines whether it can terminate a paragraph or not

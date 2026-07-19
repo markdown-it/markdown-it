@@ -1,4 +1,4 @@
-import { isSpace, normalizeReference } from '../common/utils.mjs'
+import { isSpace, normalizeReference } from '../common/utils.ts'
 
 export default function reference (state, startLine, _endLine, silent) {
   let pos = state.bMarks[startLine] + state.tShift[startLine]

@@ -1,6 +1,6 @@
 // Paragraph
 
-import { asciiTrim } from '../common/utils.mjs'
+import { asciiTrim } from '../common/utils.ts'
 
 export default function paragraph (state, startLine, endLine) {
   const terminatorRules = state.md.block.ruler.getRules('paragraph')

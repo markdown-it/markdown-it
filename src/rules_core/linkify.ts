@@ -3,7 +3,7 @@
 // Currently restricted by `md.validateLink()` to http/https/ftp
 //
 
-import { arrayReplaceAt } from '../common/utils.mjs'
+import { arrayReplaceAt } from '../common/utils.ts'
 
 function isLinkOpen (str) {
   return /^<a[>\s]/i.test(str)

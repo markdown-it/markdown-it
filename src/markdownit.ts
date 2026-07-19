@@ -1,23 +1,23 @@
 // Main parser class
 
-import * as utils from './common/utils.mjs'
-import * as helpers from './helpers/index.mjs'
-import Token from './token.mjs'
-import Ruler from './ruler.mjs'
-import Renderer from './renderer.mjs'
-import ParserCore from './parser_core.mjs'
-import StateCore from './rules_core/state_core.mjs'
-import ParserBlock from './parser_block.mjs'
-import StateBlock from './rules_block/state_block.mjs'
-import ParserInline from './parser_inline.mjs'
-import StateInline from './rules_inline/state_inline.mjs'
+import * as utils from './common/utils.ts'
+import * as helpers from './helpers/index.ts'
+import Token from './token.ts'
+import Ruler from './ruler.ts'
+import Renderer from './renderer.ts'
+import ParserCore from './parser_core.ts'
+import StateCore from './rules_core/state_core.ts'
+import ParserBlock from './parser_block.ts'
+import StateBlock from './rules_block/state_block.ts'
+import ParserInline from './parser_inline.ts'
+import StateInline from './rules_inline/state_inline.ts'
 import { LinkifyIt } from 'linkify-it'
 import * as mdurl from 'mdurl'
 import punycode from 'punycode.js'
 
-import cfg_default from './presets/default.mjs'
-import cfg_zero from './presets/zero.mjs'
-import cfg_commonmark from './presets/commonmark.mjs'
+import cfg_default from './presets/default.ts'
+import cfg_zero from './presets/zero.ts'
+import cfg_commonmark from './presets/commonmark.ts'
 
 const config = {
   default: cfg_default,
@@ -129,12 +129,12 @@ function normalizeLinkText (url) {
  * MarkdownIt provides named presets as a convenience to quickly
  * enable/disable active syntax rules and options for common use cases.
  *
- * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/commonmark.mjs) -
+ * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/commonmark.ts) -
  *   configures parser to strict [CommonMark](http://commonmark.org/) mode.
- * - [default](https://github.com/markdown-it/markdown-it/blob/master/src/presets/default.mjs) -
+ * - [default](https://github.com/markdown-it/markdown-it/blob/master/src/presets/default.ts) -
  *   similar to GFM, used when no preset name given. Enables all available rules,
  *   but still without html, typographer & autolinker.
- * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/zero.mjs) -
+ * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/zero.ts) -
  *   all rules disabled. Useful to quickly setup your config via `.enable()`.
  *   For example, when you need only `bold` and `italic` markup and nothing else.
  *
@@ -151,7 +151,7 @@ function normalizeLinkText (url) {
  *   Can be useful for external highlighters.
  * - __linkify__ - `false`. Set `true` to autoconvert URL-like text to links.
  * - __typographer__  - `false`. Set `true` to enable [some language-neutral
- *   replacement](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.mjs) +
+ *   replacement](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.ts) +
  *   quotes beautification (smartquotes).
  * - __quotes__ - `“”‘’`, String or Array. Double + single quotes replacement
  *   pairs, when typographer enabled and smartquotes on. For example, you can
@@ -274,7 +274,7 @@ class MarkdownIt {
    * md.renderer.rules['my_token'] = myToken
    * ```
    *
-   * See [[Renderer]] docs and [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.mjs).
+   * See [[Renderer]] docs and [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts).
    **/
     this.renderer = new Renderer()
 
@@ -282,7 +282,7 @@ class MarkdownIt {
    * MarkdownIt#linkify -> LinkifyIt
    *
    * [linkify-it](https://github.com/markdown-it/linkify-it) instance.
-   * Used by [linkify](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/linkify.mjs)
+   * Used by [linkify](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/linkify.ts)
    * rule.
    **/
     this.linkify = new LinkifyIt()
@@ -325,7 +325,7 @@ class MarkdownIt {
    * MarkdownIt#utils -> utils
    *
    * Assorted utility functions, useful to write plugins. See details
-   * [here](https://github.com/markdown-it/markdown-it/blob/master/src/common/utils.mjs).
+   * [here](https://github.com/markdown-it/markdown-it/blob/master/src/common/utils.ts).
    **/
     this.utils = utils
 

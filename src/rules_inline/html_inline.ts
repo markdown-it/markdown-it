@@ -1,6 +1,6 @@
 // Process html tags
 
-import { HTML_TAG_RE } from '../common/html_re.mjs'
+import { HTML_TAG_RE } from '../common/html_re.ts'
 
 function isLinkOpen (str) {
   return /^<a[>\s]/i.test(str)

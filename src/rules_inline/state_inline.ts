@@ -1,7 +1,7 @@
 // Inline parser state
 
-import Token from '../token.mjs'
-import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.mjs'
+import Token from '../token.ts'
+import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.ts'
 
 class StateInline {
   constructor (src, md, env, outTokens) {

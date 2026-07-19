@@ -1,6 +1,6 @@
 // Proceess '\n'
 
-import { isSpace } from '../common/utils.mjs'
+import { isSpace } from '../common/utils.ts'
 
 export default function newline (state, silent) {
   let pos = state.pos

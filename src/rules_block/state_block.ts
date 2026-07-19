@@ -1,7 +1,7 @@
 // Parser state class
 
-import Token from '../token.mjs'
-import { isSpace } from '../common/utils.mjs'
+import Token from '../token.ts'
+import { isSpace } from '../common/utils.ts'
 
 class StateBlock {
   constructor (src, md, env, tokens) {

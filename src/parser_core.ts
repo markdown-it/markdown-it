@@ -5,16 +5,16 @@
  * transformations.
  **/
 
-import Ruler from './ruler.mjs'
-import StateCore from './rules_core/state_core.mjs'
+import Ruler from './ruler.ts'
+import StateCore from './rules_core/state_core.ts'
 
-import r_normalize from './rules_core/normalize.mjs'
-import r_block from './rules_core/block.mjs'
-import r_inline from './rules_core/inline.mjs'
-import r_linkify from './rules_core/linkify.mjs'
-import r_replacements from './rules_core/replacements.mjs'
-import r_smartquotes from './rules_core/smartquotes.mjs'
-import r_text_join from './rules_core/text_join.mjs'
+import r_normalize from './rules_core/normalize.ts'
+import r_block from './rules_core/block.ts'
+import r_inline from './rules_core/inline.ts'
+import r_linkify from './rules_core/linkify.ts'
+import r_replacements from './rules_core/replacements.ts'
+import r_smartquotes from './rules_core/smartquotes.ts'
+import r_text_join from './rules_core/text_join.ts'
 
 const _rules = [
   ['normalize', r_normalize],

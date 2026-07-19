@@ -4,20 +4,20 @@
  * Block-level tokenizer.
  **/
 
-import Ruler from './ruler.mjs'
-import StateBlock from './rules_block/state_block.mjs'
+import Ruler from './ruler.ts'
+import StateBlock from './rules_block/state_block.ts'
 
-import r_table from './rules_block/table.mjs'
-import r_code from './rules_block/code.mjs'
-import r_fence from './rules_block/fence.mjs'
-import r_blockquote from './rules_block/blockquote.mjs'
-import r_hr from './rules_block/hr.mjs'
-import r_list from './rules_block/list.mjs'
-import r_reference from './rules_block/reference.mjs'
-import r_html_block from './rules_block/html_block.mjs'
-import r_heading from './rules_block/heading.mjs'
-import r_lheading from './rules_block/lheading.mjs'
-import r_paragraph from './rules_block/paragraph.mjs'
+import r_table from './rules_block/table.ts'
+import r_code from './rules_block/code.ts'
+import r_fence from './rules_block/fence.ts'
+import r_blockquote from './rules_block/blockquote.ts'
+import r_hr from './rules_block/hr.ts'
+import r_list from './rules_block/list.ts'
+import r_reference from './rules_block/reference.ts'
+import r_html_block from './rules_block/html_block.ts'
+import r_heading from './rules_block/heading.ts'
+import r_lheading from './rules_block/lheading.ts'
+import r_paragraph from './rules_block/paragraph.ts'
 
 const _rules = [
   // First 2 params - rule name & source. Secondary array - list of rules,

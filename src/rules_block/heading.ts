@@ -1,6 +1,6 @@
 // heading (#, ##, ...)
 
-import { isSpace, asciiTrim } from '../common/utils.mjs'
+import { isSpace, asciiTrim } from '../common/utils.ts'
 
 export default function heading (state, startLine, endLine, silent) {
   let pos = state.bMarks[startLine] + state.tShift[startLine]

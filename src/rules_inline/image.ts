@@ -1,6 +1,6 @@
 // Process ![image](<src> "title")
 
-import { normalizeReference, isSpace } from '../common/utils.mjs'
+import { normalizeReference, isSpace } from '../common/utils.ts'
 
 export default function image (state, silent) {
   let code, content, label, pos, ref, res, title, start

@@ -1,6 +1,6 @@
 // Process escaped chars and hardbreaks
 
-import { isSpace } from '../common/utils.mjs'
+import { isSpace } from '../common/utils.ts'
 
 const ESCAPED = []
 

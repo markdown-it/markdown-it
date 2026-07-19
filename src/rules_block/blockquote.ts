@@ -1,6 +1,6 @@
 // Block quotes
 
-import { isSpace } from '../common/utils.mjs'
+import { isSpace } from '../common/utils.ts'
 
 export default function blockquote (state, startLine, endLine, silent) {
   let pos = state.bMarks[startLine] + state.tShift[startLine]
