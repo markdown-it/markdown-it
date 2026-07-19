@@ -5,36 +5,6 @@ import * as mdurl from 'mdurl'
 import * as ucmicro from 'uc.micro'
 import { decodeHTMLStrict } from 'entities'
 
-function _class (obj) { return Object.prototype.toString.call(obj) }
-
-function isString (obj) { return _class(obj) === '[object String]' }
-
-const _hasOwnProperty = Object.prototype.hasOwnProperty
-
-function has (object, key) {
-  return _hasOwnProperty.call(object, key)
-}
-
-// Merge objects
-//
-function assign (obj /* from1, from2, from3, ... */) {
-  const sources = Array.prototype.slice.call(arguments, 1)
-
-  sources.forEach(function (source) {
-    if (!source) { return }
-
-    if (typeof source !== 'object') {
-      throw new TypeError(source + 'must be object')
-    }
-
-    Object.keys(source).forEach(function (key) {
-      obj[key] = source[key]
-    })
-  })
-
-  return obj
-}
-
 function callable (cls) {
   const wrapper = function (...args) {
     const newTarget =
@@ -321,10 +291,7 @@ const lib = { mdurl, ucmicro }
 
 export {
   lib,
-  assign,
   callable,
-  isString,
-  has,
   unescapeMd,
   unescapeAll,
   isValidEntityCode,

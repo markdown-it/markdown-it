@@ -222,7 +222,7 @@ function normalizeLinkText (url) {
 class MarkdownIt {
   constructor (presetName, options) {
     if (!options) {
-      if (!utils.isString(presetName)) {
+      if (typeof presetName !== 'string') {
         options = presetName || {}
         presetName = 'default'
       }
@@ -335,7 +335,7 @@ class MarkdownIt {
    * Link components parser functions, useful to write plugins. See details
    * [here](https://github.com/markdown-it/markdown-it/blob/master/src/helpers).
    **/
-    this.helpers = utils.assign({}, helpers)
+    this.helpers = Object.assign({}, helpers)
 
     this.options = {}
     this.configure(presetName)
@@ -363,7 +363,7 @@ class MarkdownIt {
  * config.
  **/
   set (options) {
-    utils.assign(this.options, options)
+    Object.assign(this.options, options)
     return this
   }
 
@@ -380,7 +380,7 @@ class MarkdownIt {
   configure (presets) {
     const self = this
 
-    if (utils.isString(presets)) {
+    if (typeof presets === 'string') {
       const presetName = presets
       presets = config[presetName]
       if (!presets) { throw new Error('Wrong `markdown-it` preset "' + presetName + '", check name') }
