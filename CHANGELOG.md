@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Exposed parser internals classes as static properties on `markdownit`.
+- Added the `markdown-it/browser` export with bundled ESM and UMD builds.
+- Added colored CLI help on supported terminals via `argparse` 3.
+
+### Changed
+- [breaking] `linkify-it` => v6
+  - No fuzzy links by default.
+  - No auth part check by default.
+  - Unicode punctuation terminates the link by default (should help with CJK).
+  - See [linkify-it changelog](https://github.com/markdown-it/linkify-it/blob/master/CHANGELOG.md)
+    for other changes.
+- Package root now resolves to prebuilt ESM and CJS files instead of raw
+  sources. Distribution files were reorganized under `dist/` and
+  `dist/browser/`.
+- Migrated to Typescript.
+- `entities` => v8. Can be rolled back to v7 if compatibility issues happen.
+
+### Removed
+- [breaking] Removed package-internal subpath exports (`markdown-it/lib/*` and similar).
+  Use the static classes exposed on `markdownit` instead.
+
+### Fixed
+- Preserve a literal backslash before a terminating space in link destinations,
+  matching CommonMark 6.3, #1188.
+- Recognize lowercase declarations as HTML blocks, matching CommonMark 4.6,
+  #1189.
+- Require semicolons for named entities in all decoding paths, completing the
+  fix for #1096.
+
+
 ## [14.3.0] - 2026-07-02
 
 ### Changed
