@@ -32,19 +32,19 @@ const _rules = [
  * new ParserCore()
  **/
 class ParserCore {
-  constructor () {
-    /**
-     * ParserCore#ruler -> Ruler
-     *
-     * [[Ruler]] instance. Keep configuration of core rules.
-     **/
-    this.ruler = new Ruler()
+  /**
+   * ParserCore#ruler -> Ruler
+   *
+   * [[Ruler]] instance. Keep configuration of core rules.
+   **/
+  ruler = new Ruler()
 
+  State = StateCore
+
+  constructor () {
     for (let i = 0; i < _rules.length; i++) {
       this.ruler.push(_rules[i][0], _rules[i][1])
     }
-
-    this.State = StateCore
   }
 
   /**
@@ -52,7 +52,7 @@ class ParserCore {
    *
    * Executes core chain rules.
    **/
-  process (state) {
+  process (state: StateCore): void {
     const rules = this.ruler.getRules('')
 
     for (let i = 0, l = rules.length; i < l; i++) {

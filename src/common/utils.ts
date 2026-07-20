@@ -5,8 +5,13 @@ import * as mdurl from 'mdurl'
 import * as ucmicro from 'uc.micro'
 import { decodeHTMLStrict } from 'entities'
 
-function callable (cls) {
-  const wrapper = function (...args) {
+type Constructor = new (...args: never[]) => object
+
+function callable<T extends Constructor> (
+  cls: T
+): T & ((...args: ConstructorParameters<T>) => InstanceType<T>)
+function callable<T extends Constructor> (cls: T) {
+  const wrapper = function (...args: ConstructorParameters<T>) {
     const newTarget =
       new.target && new.target !== wrapper
         ? new.target
@@ -24,11 +29,11 @@ function callable (cls) {
 
 // Remove element from array and put another array at those position.
 // Useful for some operations with tokens
-function arrayReplaceAt (src, pos, newElements) {
-  return [].concat(src.slice(0, pos), newElements, src.slice(pos + 1))
+function arrayReplaceAt<T> (src: T[], pos: number, newElements: T[]): T[] {
+  return ([] as T[]).concat(src.slice(0, pos), newElements, src.slice(pos + 1))
 }
 
-function isValidEntityCode (c) {
+function isValidEntityCode (c: number) {
   // broken sequence
   if (c >= 0xD800 && c <= 0xDFFF) { return false }
   // never used
@@ -44,7 +49,7 @@ function isValidEntityCode (c) {
   return true
 }
 
-function fromCodePoint (c) {
+function fromCodePoint (c: number) {
   /* eslint no-bitwise:0 */
   if (c > 0xffff) {
     c -= 0x10000
@@ -62,7 +67,7 @@ const UNESCAPE_ALL_RE = new RegExp(UNESCAPE_MD_RE.source + '|' + ENTITY_RE.sourc
 
 const DIGITAL_ENTITY_TEST_RE = /^#((?:x[a-f0-9]{1,8}|[0-9]{1,8}))$/i
 
-function replaceEntityPattern (match, name) {
+function replaceEntityPattern (match: string, name: string) {
   if (name.charCodeAt(0) === 0x23/* # */ && DIGITAL_ENTITY_TEST_RE.test(name)) {
     const code = name[1].toLowerCase() === 'x'
       ? parseInt(name.slice(2), 16)
@@ -83,12 +88,12 @@ function replaceEntityPattern (match, name) {
   return match
 }
 
-function unescapeMd (str) {
+function unescapeMd (str: string) {
   if (str.indexOf('\\') < 0) { return str }
   return str.replace(UNESCAPE_MD_RE, '$1')
 }
 
-function unescapeAll (str) {
+function unescapeAll (str: string) {
   if (str.indexOf('\\') < 0 && str.indexOf('&') < 0) { return str }
 
   return str.replace(UNESCAPE_ALL_RE, function (match, escaped, entity) {
@@ -106,11 +111,11 @@ const HTML_REPLACEMENTS = {
   '"': '&quot;'
 }
 
-function replaceUnsafeChar (ch) {
-  return HTML_REPLACEMENTS[ch]
+function replaceUnsafeChar (ch: string): string {
+  return HTML_REPLACEMENTS[ch as keyof typeof HTML_REPLACEMENTS]
 }
 
-function escapeHtml (str) {
+function escapeHtml (str: string) {
   if (HTML_ESCAPE_TEST_RE.test(str)) {
     return str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar)
   }
@@ -119,11 +124,11 @@ function escapeHtml (str) {
 
 const REGEXP_ESCAPE_RE = /[.?*+^$[\]\\(){}|-]/g
 
-function escapeRE (str) {
+function escapeRE (str: string) {
   return str.replace(REGEXP_ESCAPE_RE, '\\$&')
 }
 
-function isSpace (code) {
+function isSpace (code: number) {
   switch (code) {
     case 0x09:
     case 0x20:
@@ -133,7 +138,7 @@ function isSpace (code) {
 }
 
 // Zs (unicode class) || [\t\f\v\r\n]
-function isWhiteSpace (code) {
+function isWhiteSpace (code: number) {
   if (code >= 0x2000 && code <= 0x200A) { return true }
   switch (code) {
     case 0x09: // \t
@@ -153,11 +158,11 @@ function isWhiteSpace (code) {
 }
 
 // Currently without astral characters support.
-function isPunctChar (ch) {
+function isPunctChar (ch: string) {
   return ucmicro.P.test(ch) || ucmicro.S.test(ch)
 }
 
-function isPunctCharCode (code) {
+function isPunctCharCode (code: number) {
   return isPunctChar(fromCodePoint(code))
 }
 
@@ -168,7 +173,7 @@ function isPunctCharCode (code) {
 //
 // Don't confuse with unicode punctuation !!! It lacks some chars in ascii range.
 //
-function isMdAsciiPunct (ch) {
+function isMdAsciiPunct (ch: number) {
   switch (ch) {
     case 0x21/* ! */:
     case 0x22/* " */:
@@ -210,7 +215,7 @@ function isMdAsciiPunct (ch) {
 
 // Hepler to unify [reference labels].
 //
-function normalizeReference (str) {
+function normalizeReference (str: string) {
   // Trim and collapse whitespace
   //
   str = str.trim().replace(/\s+/g, ' ')
@@ -261,13 +266,13 @@ function normalizeReference (str) {
   return str.toLowerCase().toUpperCase()
 }
 
-function isAsciiTrimmable (c) {
+function isAsciiTrimmable (c: number) {
   return c === 0x20 || c === 0x09 || c === 0x0a || c === 0x0d
 }
 
 // "Light" .trim() for blocks (headers, paragraphs), where unicode spaces
 // should be preserved.
-function asciiTrim (str) {
+function asciiTrim (str: string) {
   let start = 0
   for (; start < str.length; start++) {
     if (!isAsciiTrimmable(str.charCodeAt(start))) {

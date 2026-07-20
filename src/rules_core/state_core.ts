@@ -2,17 +2,25 @@
 //
 
 import Token from '../token.ts'
+import type MarkdownItConstructor from '../markdownit.ts'
+import type { Env } from '../types.ts'
+
+type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 class StateCore {
-  constructor (src, md, env) {
+  declare src: string
+  declare env: Env
+  tokens: Token[] = []
+  inlineMode = false
+  declare md: MarkdownIt
+
+  // re-export Token class to use in core rules
+  Token = Token
+
+  constructor (src: string, md: MarkdownIt, env: Env) {
     this.src = src
     this.env = env
-    this.tokens = []
-    this.inlineMode = false
     this.md = md // link to parser instance
-
-    // re-export Token class to use in core rules
-    this.Token = Token
   }
 }
 

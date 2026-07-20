@@ -2,46 +2,92 @@
 
 import Token from '../token.ts'
 import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.ts'
+import type MarkdownItConstructor from '../markdownit.ts'
+import type { Env } from '../types.ts'
+
+type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
+
+interface ScannedDelimiters {
+  can_open: boolean
+  can_close: boolean
+  length: number
+}
+
+interface Delimiter {
+  /** Char code of the starting marker. */
+  marker: number
+
+  /** Total length of this series of delimiters. */
+  length?: number
+
+  /** A position of the token this delimiter corresponds to. */
+  token: number
+
+  /**
+   * If this delimiter is matched as a valid opener, `end` will be
+   * equal to its position, otherwise it's `-1`.
+   */
+  end: number
+
+  /** Whether this delimiter can open an emphasis. */
+  open: boolean
+
+  /** Whether this delimiter can close an emphasis. */
+  close: boolean
+
+  /** One delimiter represents two characters. */
+  jump?: number
+}
+
+type StateTokenMeta = Record<string, unknown>
 
 class StateInline {
-  constructor (src, md, env, outTokens) {
+  declare src: string
+  declare env: Env
+  declare md: MarkdownIt
+  declare tokens: Token[]
+  declare tokens_meta: Array<StateTokenMeta | undefined>
+
+  pos = 0
+  declare posMax: number
+  level = 0
+  pending = ''
+  pendingLevel = 0
+
+  // Stores { start: end } pairs. Useful for backtrack
+  // optimization of pairs parse (emphasis, strikes).
+  cache: Record<number, number> = {}
+
+  // backtick length => last seen position
+  backticks: Record<number, number> = {}
+  backticksScanned = false
+
+  // Counter used to disable inline linkify-it execution
+  // inside <a> and markdown links
+  linkLevel = 0
+
+  // List of emphasis-like delimiters for current tag
+  delimiters: Delimiter[] = []
+
+  // Stack of delimiter lists for upper level tags
+  _prev_delimiters: Delimiter[][] = []
+
+  // re-export Token class to use in block rules
+  Token = Token
+
+  constructor (src: string, md: MarkdownIt, env: Env, outTokens: Token[]) {
     this.src = src
     this.env = env
     this.md = md
     this.tokens = outTokens
     this.tokens_meta = Array(outTokens.length)
 
-    this.pos = 0
     this.posMax = this.src.length
-    this.level = 0
-    this.pending = ''
-    this.pendingLevel = 0
-
-    // Stores { start: end } pairs. Useful for backtrack
-    // optimization of pairs parse (emphasis, strikes).
-    this.cache = {}
-
-    // List of emphasis-like delimiters for current tag
-    this.delimiters = []
-
-    // Stack of delimiter lists for upper level tags
-    this._prev_delimiters = []
-
-    // backtick length => last seen position
-    this.backticks = {}
-    this.backticksScanned = false
-
-    // Counter used to disable inline linkify-it execution
-    // inside <a> and markdown links
-    this.linkLevel = 0
-
-    // re-export Token class to use in block rules
-    this.Token = Token
   }
 
   // Flush pending text
   //
-  pushPending () {
+  pushPending (): Token {
     const token = new Token('text', '', 0)
     token.content = this.pending
     token.level = this.pendingLevel
@@ -53,18 +99,18 @@ class StateInline {
   // Push new token to "stream".
   // If pending text exists - flush it as text token
   //
-  push (type, tag, nesting) {
+  push (type: string, tag: string, nesting: -1 | 0 | 1): Token {
     if (this.pending) {
       this.pushPending()
     }
 
     const token = new Token(type, tag, nesting)
-    let token_meta = null
+    let token_meta = undefined
 
     if (nesting < 0) {
       // closing tag
       this.level--
-      this.delimiters = this._prev_delimiters.pop()
+      this.delimiters = this._prev_delimiters.pop()!
     }
 
     token.level = this.level
@@ -89,7 +135,7 @@ class StateInline {
   //  - start - position to scan from (it should point at a valid marker);
   //  - canSplitWord - determine if these markers can be found inside a word
   //
-  scanDelims (start, canSplitWord) {
+  scanDelims (start: number, canSplitWord: boolean): ScannedDelimiters {
     const max = this.posMax
     const marker = this.src.charCodeAt(start)
 

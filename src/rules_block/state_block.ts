@@ -2,9 +2,55 @@
 
 import Token from '../token.ts'
 import { isSpace } from '../common/utils.ts'
+import type MarkdownItConstructor from '../markdownit.ts'
+import type { Env } from '../types.ts'
+
+type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 class StateBlock {
-  constructor (src, md, env, tokens) {
+  declare src: string
+  declare md: MarkdownIt
+  declare env: Env
+  declare tokens: Token[]
+
+  bMarks: number[] = [] // line begin offsets for fast jumps
+  eMarks: number[] = [] // line end offsets for fast jumps
+  tShift: number[] = [] // offsets of the first non-space characters (tabs not expanded)
+  sCount: number[] = [] // indents for each line (tabs expanded)
+
+  // An amount of virtual spaces (tabs expanded) between beginning
+  // of each line (bMarks) and real beginning of that line.
+  //
+  // It exists only as a hack because blockquotes override bMarks
+  // losing information in the process.
+  //
+  // It's used only when expanding tabs, you can think about it as
+  // an initial tab length, e.g. bsCount=21 applied to string `\t123`
+  // means first tab should be expanded to 4-21%4 === 3 spaces.
+  //
+  bsCount: number[] = []
+
+  // block parser variables
+
+  // required block content indent (for example, if we are
+  // inside a list, it would be positioned after list marker)
+  blkIndent = 0
+  line = 0 // line index in src
+  lineMax = 0 // lines count
+  tight = false // loose/tight mode for lists
+  ddIndent = -1 // indent of the current dd block (-1 if there isn't any)
+  listIndent = -1 // indent of the current list block (-1 if there isn't any)
+
+  // can be 'blockquote', 'list', 'root', 'paragraph' or 'reference'
+  // used in lists to determine if they interrupt a paragraph
+  parentType = 'root'
+
+  level = 0
+
+  // re-export Token class to use in block rules
+  Token = Token
+
+  constructor (src: string, md: MarkdownIt, env: Env, tokens: Token[]) {
     this.src = src
 
     // link to parser instance
@@ -17,40 +63,6 @@ class StateBlock {
     //
 
     this.tokens = tokens
-
-    this.bMarks = []  // line begin offsets for fast jumps
-    this.eMarks = []  // line end offsets for fast jumps
-    this.tShift = []  // offsets of the first non-space characters (tabs not expanded)
-    this.sCount = []  // indents for each line (tabs expanded)
-
-    // An amount of virtual spaces (tabs expanded) between beginning
-    // of each line (bMarks) and real beginning of that line.
-    //
-    // It exists only as a hack because blockquotes override bMarks
-    // losing information in the process.
-    //
-    // It's used only when expanding tabs, you can think about it as
-    // an initial tab length, e.g. bsCount=21 applied to string `\t123`
-    // means first tab should be expanded to 4-21%4 === 3 spaces.
-    //
-    this.bsCount = []
-
-    // block parser variables
-
-    // required block content indent (for example, if we are
-    // inside a list, it would be positioned after list marker)
-    this.blkIndent = 0
-    this.line = 0 // line index in src
-    this.lineMax = 0 // lines count
-    this.tight = false  // loose/tight mode for lists
-    this.ddIndent = -1 // indent of the current dd block (-1 if there isn't any)
-    this.listIndent = -1 // indent of the current list block (-1 if there isn't any)
-
-    // can be 'blockquote', 'list', 'root', 'paragraph' or 'reference'
-    // used in lists to determine if they interrupt a paragraph
-    this.parentType = 'root'
-
-    this.level = 0
 
     // Create caches
     // Generate markers.
@@ -97,14 +109,11 @@ class StateBlock {
     this.bsCount.push(0)
 
     this.lineMax = this.bMarks.length - 1 // don't count last fake line
-
-    // re-export Token class to use in block rules
-    this.Token = Token
   }
 
   // Push new token to "stream".
   //
-  push (type, tag, nesting) {
+  push (type: string, tag: string, nesting: -1 | 0 | 1): Token {
     const token = new Token(type, tag, nesting)
     token.block = true
 
@@ -116,11 +125,11 @@ class StateBlock {
     return token
   }
 
-  isEmpty (line) {
+  isEmpty (line: number): boolean {
     return this.bMarks[line] + this.tShift[line] >= this.eMarks[line]
   }
 
-  skipEmptyLines (from) {
+  skipEmptyLines (from: number): number {
     for (let max = this.lineMax; from < max; from++) {
       if (this.bMarks[from] + this.tShift[from] < this.eMarks[from]) {
         break
@@ -130,7 +139,7 @@ class StateBlock {
   }
 
   // Skip spaces from given position.
-  skipSpaces (pos) {
+  skipSpaces (pos: number): number {
     for (let max = this.src.length; pos < max; pos++) {
       const ch = this.src.charCodeAt(pos)
       if (!isSpace(ch)) { break }
@@ -139,7 +148,7 @@ class StateBlock {
   }
 
   // Skip spaces from given position in reverse.
-  skipSpacesBack (pos, min) {
+  skipSpacesBack (pos: number, min: number): number {
     if (pos <= min) { return pos }
 
     while (pos > min) {
@@ -149,7 +158,7 @@ class StateBlock {
   }
 
   // Skip char codes from given position
-  skipChars (pos, code) {
+  skipChars (pos: number, code: number): number {
     for (let max = this.src.length; pos < max; pos++) {
       if (this.src.charCodeAt(pos) !== code) { break }
     }
@@ -157,7 +166,7 @@ class StateBlock {
   }
 
   // Skip char codes reverse from given position - 1
-  skipCharsBack (pos, code, min) {
+  skipCharsBack (pos: number, code: number, min: number): number {
     if (pos <= min) { return pos }
 
     while (pos > min) {
@@ -167,7 +176,7 @@ class StateBlock {
   }
 
   // cut lines range from source.
-  getLines (begin, end, indent, keepLastLF) {
+  getLines (begin: number, end: number, indent: number, keepLastLF: boolean): string {
     if (begin >= end) {
       return ''
     }

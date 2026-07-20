@@ -6,6 +6,9 @@
 
 import Ruler from './ruler.ts'
 import StateInline from './rules_inline/state_inline.ts'
+import type Token from './token.ts'
+import type MarkdownItConstructor from './markdownit.ts'
+import type { Env } from './types.ts'
 
 import r_text from './rules_inline/text.ts'
 import r_linkify from './rules_inline/linkify.ts'
@@ -22,6 +25,8 @@ import r_entity from './rules_inline/entity.ts'
 
 import r_balance_pairs from './rules_inline/balance_pairs.ts'
 import r_fragments_join from './rules_inline/fragments_join.ts'
+
+type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 // Parser rules
 
@@ -58,37 +63,37 @@ const _rules2 = [
  * new ParserInline()
  **/
 class ParserInline {
-  constructor () {
-    /**
-     * ParserInline#ruler -> Ruler
-     *
-     * [[Ruler]] instance. Keep configuration of inline rules.
-     **/
-    this.ruler = new Ruler()
+  /**
+   * ParserInline#ruler -> Ruler
+   *
+   * [[Ruler]] instance. Keep configuration of inline rules.
+   **/
+  ruler = new Ruler()
 
+  /**
+   * ParserInline#ruler2 -> Ruler
+   *
+   * [[Ruler]] instance. Second ruler used for post-processing
+   * (e.g. in emphasis-like rules).
+   **/
+  ruler2 = new Ruler()
+
+  State = StateInline
+
+  constructor () {
     for (let i = 0; i < _rules.length; i++) {
       this.ruler.push(_rules[i][0], _rules[i][1])
     }
 
-    /**
-     * ParserInline#ruler2 -> Ruler
-     *
-     * [[Ruler]] instance. Second ruler used for post-processing
-     * (e.g. in emphasis-like rules).
-     **/
-    this.ruler2 = new Ruler()
-
     for (let i = 0; i < _rules2.length; i++) {
       this.ruler2.push(_rules2[i][0], _rules2[i][1])
     }
-
-    this.State = StateInline
   }
 
   // Skip single token by running all rules in validation mode;
   // returns `true` if any rule reported success
   //
-  skipToken (state) {
+  skipToken (state: StateInline): void {
     const pos = state.pos
     const rules = this.ruler.getRules('')
     const len = rules.length
@@ -138,7 +143,7 @@ class ParserInline {
 
   // Generate tokens for input range
   //
-  tokenize (state) {
+  tokenize (state: StateInline): void {
     const rules = this.ruler.getRules('')
     const len = rules.length
     const end = state.posMax
@@ -182,7 +187,7 @@ class ParserInline {
    *
    * Process input string and push inline tokens into `outTokens`
    **/
-  parse (str, md, env, outTokens) {
+  parse (str: string, md: MarkdownIt, env: Env, outTokens: Token[]): void {
     const state = new this.State(str, md, env, outTokens)
 
     this.tokenize(state)

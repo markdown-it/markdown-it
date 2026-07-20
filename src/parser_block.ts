@@ -6,6 +6,9 @@
 
 import Ruler from './ruler.ts'
 import StateBlock from './rules_block/state_block.ts'
+import type Token from './token.ts'
+import type MarkdownItConstructor from './markdownit.ts'
+import type { Env } from './types.ts'
 
 import r_table from './rules_block/table.ts'
 import r_code from './rules_block/code.ts'
@@ -18,6 +21,8 @@ import r_html_block from './rules_block/html_block.ts'
 import r_heading from './rules_block/heading.ts'
 import r_lheading from './rules_block/lheading.ts'
 import r_paragraph from './rules_block/paragraph.ts'
+
+type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 const _rules = [
   // First 2 params - rule name & source. Secondary array - list of rules,
@@ -39,24 +44,24 @@ const _rules = [
  * new ParserBlock()
  **/
 class ParserBlock {
-  constructor () {
-    /**
-     * ParserBlock#ruler -> Ruler
-     *
-     * [[Ruler]] instance. Keep configuration of block rules.
-     **/
-    this.ruler = new Ruler()
+  /**
+   * ParserBlock#ruler -> Ruler
+   *
+   * [[Ruler]] instance. Keep configuration of block rules.
+   **/
+  ruler = new Ruler()
 
+  State = StateBlock
+
+  constructor () {
     for (let i = 0; i < _rules.length; i++) {
       this.ruler.push(_rules[i][0], _rules[i][1], { alt: (_rules[i][2] || []).slice() })
     }
-
-    this.State = StateBlock
   }
 
   // Generate tokens for input range
   //
-  tokenize (state, startLine, endLine) {
+  tokenize (state: StateBlock, startLine: number, endLine: number): void {
     const rules = this.ruler.getRules('')
     const len = rules.length
     const maxNesting = state.md.options.maxNesting
@@ -124,7 +129,7 @@ class ParserBlock {
    *
    * Process input string and push block tokens into `outTokens`
    **/
-  parse (src, md, env, outTokens) {
+  parse (src: string, md: MarkdownIt, env: Env, outTokens: Token[]): void {
     if (!src) { return }
 
     const state = new this.State(src, md, env, outTokens)

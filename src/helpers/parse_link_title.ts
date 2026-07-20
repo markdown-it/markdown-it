@@ -3,10 +3,23 @@
 
 import { unescapeAll } from '../common/utils.ts'
 
+interface ParseLinkTitleResult {
+  ok: boolean
+  can_continue: boolean
+  pos: number
+  str: string
+  marker: number
+}
+
 // Parse link title within `str` in [start, max] range,
 // or continue previous parsing if `prev_state` is defined (equal to result of last execution).
 //
-export default function parseLinkTitle (str, start, max, prev_state) {
+export default function parseLinkTitle (
+  str: string,
+  start: number,
+  max: number,
+  prev_state?: ParseLinkTitleResult
+): ParseLinkTitleResult {
   let code
   let pos = start
 

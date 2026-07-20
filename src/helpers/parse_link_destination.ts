@@ -3,7 +3,7 @@
 
 import { unescapeAll } from '../common/utils.ts'
 
-export default function parseLinkDestination (str, start, max) {
+export default function parseLinkDestination (str: string, start: number, max: number) {
   let code
   let pos = start
 

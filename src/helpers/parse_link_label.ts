@@ -4,7 +4,9 @@
 // returns the end of the label
 //
 
-export default function parseLinkLabel (state, start, disableNested) {
+import type StateInline from '../rules_inline/state_inline.ts'
+
+export default function parseLinkLabel (state: StateInline, start: number, disableNested?: boolean): number {
   let level, found, marker, prevPos
 
   const max = state.posMax
