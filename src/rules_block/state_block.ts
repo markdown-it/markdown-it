@@ -2,10 +2,8 @@
 
 import Token from '../token.ts'
 import { isSpace } from '../common/utils.ts'
-import type MarkdownItConstructor from '../markdownit.ts'
+import type MarkdownIt from '../markdownit.ts'
 import type { Env } from '../types.ts'
-
-type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 class StateBlock {
   declare src: string

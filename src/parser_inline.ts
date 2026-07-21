@@ -7,7 +7,7 @@
 import Ruler from './ruler.ts'
 import StateInline from './rules_inline/state_inline.ts'
 import type Token from './token.ts'
-import type MarkdownItConstructor from './markdownit.ts'
+import type MarkdownIt from './markdownit.ts'
 import type { Env } from './types.ts'
 
 import r_text from './rules_inline/text.ts'
@@ -25,8 +25,6 @@ import r_entity from './rules_inline/entity.ts'
 
 import r_balance_pairs from './rules_inline/balance_pairs.ts'
 import r_fragments_join from './rules_inline/fragments_join.ts'
-
-type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 // Parser rules
 

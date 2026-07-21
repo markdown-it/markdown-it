@@ -575,4 +575,4 @@ class MarkdownIt {
   static StateInline = StateInline
 }
 
-export default utils.callable(MarkdownIt)
+export default MarkdownIt

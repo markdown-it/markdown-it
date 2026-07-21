@@ -2,10 +2,8 @@
 //
 
 import Token from '../token.ts'
-import type MarkdownItConstructor from '../markdownit.ts'
+import type MarkdownIt from '../markdownit.ts'
 import type { Env } from '../types.ts'
-
-type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 class StateCore {
   declare src: string

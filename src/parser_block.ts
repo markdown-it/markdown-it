@@ -7,7 +7,7 @@
 import Ruler from './ruler.ts'
 import StateBlock from './rules_block/state_block.ts'
 import type Token from './token.ts'
-import type MarkdownItConstructor from './markdownit.ts'
+import type MarkdownIt from './markdownit.ts'
 import type { Env } from './types.ts'
 
 import r_table from './rules_block/table.ts'
@@ -21,8 +21,6 @@ import r_html_block from './rules_block/html_block.ts'
 import r_heading from './rules_block/heading.ts'
 import r_lheading from './rules_block/lheading.ts'
 import r_paragraph from './rules_block/paragraph.ts'
-
-type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 const _rules: Array<[
   name: string,
