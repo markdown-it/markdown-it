@@ -20,7 +20,6 @@
  * new Ruler()
  **/
 class Ruler {
-  constructor () {
   // List of added rules. Each element is:
   //
   // {
@@ -30,15 +29,14 @@ class Ruler {
   //   alt: [ name2, name3 ]
   // }
   //
-    this.__rules__ = []
+  __rules__ = []
 
-    // Cached rule chains.
-    //
-    // First level - chain name, '' for default.
-    // Second level - diginal anchor for fast filtering by charcodes.
-    //
-    this.__cache__ = null
-  }
+  // Cached rule chains.
+  //
+  // First level - chain name, '' for default.
+  // Second level - diginal anchor for fast filtering by charcodes.
+  //
+  __cache__ = null
 
   // Helper methods, should not be used directly
 
@@ -56,30 +54,32 @@ class Ruler {
   // Build rules lookup cache
   //
   __compile__ () {
-    const self = this
-    const chains = ['']
+    const chains = new Set()
 
     // collect unique names
-    self.__rules__.forEach(function (rule) {
-      if (!rule.enabled) { return }
-
-      rule.alt.forEach(function (altName) {
-        if (chains.indexOf(altName) < 0) {
-          chains.push(altName)
-        }
+    this.__rules__.forEach(rule => {
+      if (!rule.enabled) return
+      rule.alt.forEach(altName => {
+        if (altName) chains.add(altName)
       })
     })
 
-    self.__cache__ = {}
+    this.__cache__ = Object.create(null)
 
-    chains.forEach(function (chain) {
-      self.__cache__[chain] = []
-      self.__rules__.forEach(function (rule) {
-        if (!rule.enabled) { return }
+    // Collect default chain
+    this.__cache__[''] = []
+    this.__rules__.forEach(rule => {
+      if (rule.enabled) this.__cache__[''].push(rule.fn)
+    })
 
-        if (chain && rule.alt.indexOf(chain) < 0) { return }
+    // Collect alt chains
+    chains.forEach(chain => {
+      this.__cache__[chain] = []
 
-        self.__cache__[chain].push(rule.fn)
+      this.__rules__.forEach(rule => {
+        if (rule.enabled && rule.alt.indexOf(chain) >= 0) {
+          this.__cache__[chain].push(rule.fn)
+        }
       })
     })
   }
@@ -109,14 +109,13 @@ class Ruler {
  * });
  * ```
  **/
-  at (name, fn, options) {
+  at (name, fn, options = {}) {
     const index = this.__find__(name)
-    const opt = options || {}
 
     if (index === -1) { throw new Error('Parser rule not found: ' + name) }
 
     this.__rules__[index].fn = fn
-    this.__rules__[index].alt = opt.alt || []
+    this.__rules__[index].alt = options.alt || []
     this.__cache__ = null
   }
 
@@ -144,9 +143,8 @@ class Ruler {
  * });
  * ```
  **/
-  before (beforeName, ruleName, fn, options) {
+  before (beforeName, ruleName, fn, options = {}) {
     const index = this.__find__(beforeName)
-    const opt = options || {}
 
     if (index === -1) { throw new Error('Parser rule not found: ' + beforeName) }
 
@@ -154,7 +152,7 @@ class Ruler {
       name: ruleName,
       enabled: true,
       fn,
-      alt: opt.alt || []
+      alt: options.alt || []
     })
 
     this.__cache__ = null
@@ -184,9 +182,8 @@ class Ruler {
  * });
  * ```
  **/
-  after (afterName, ruleName, fn, options) {
+  after (afterName, ruleName, fn, options = {}) {
     const index = this.__find__(afterName)
-    const opt = options || {}
 
     if (index === -1) { throw new Error('Parser rule not found: ' + afterName) }
 
@@ -194,7 +191,7 @@ class Ruler {
       name: ruleName,
       enabled: true,
       fn,
-      alt: opt.alt || []
+      alt: options.alt || []
     })
 
     this.__cache__ = null
@@ -223,14 +220,12 @@ class Ruler {
  * });
  * ```
  **/
-  push (ruleName, fn, options) {
-    const opt = options || {}
-
+  push (ruleName, fn, options = {}) {
     this.__rules__.push({
       name: ruleName,
       enabled: true,
       fn,
-      alt: opt.alt || []
+      alt: options.alt || []
     })
 
     this.__cache__ = null
@@ -248,13 +243,13 @@ class Ruler {
  *
  * See also [[Ruler.disable]], [[Ruler.enableOnly]].
  **/
-  enable (list, ignoreInvalid) {
+  enable (list, ignoreInvalid = false) {
     if (!Array.isArray(list)) { list = [list] }
 
     const result = []
 
     // Search by name and enable
-    list.forEach(function (name) {
+    list.forEach(name => {
       const idx = this.__find__(name)
 
       if (idx < 0) {
@@ -263,7 +258,7 @@ class Ruler {
       }
       this.__rules__[idx].enabled = true
       result.push(name)
-    }, this)
+    })
 
     this.__cache__ = null
     return result
@@ -279,10 +274,10 @@ class Ruler {
  *
  * See also [[Ruler.disable]], [[Ruler.enable]].
  **/
-  enableOnly (list, ignoreInvalid) {
+  enableOnly (list, ignoreInvalid = false) {
     if (!Array.isArray(list)) { list = [list] }
 
-    this.__rules__.forEach(function (rule) { rule.enabled = false })
+    this.__rules__.forEach(rule => { rule.enabled = false })
 
     this.enable(list, ignoreInvalid)
   }
@@ -299,13 +294,13 @@ class Ruler {
  *
  * See also [[Ruler.enable]], [[Ruler.enableOnly]].
  **/
-  disable (list, ignoreInvalid) {
+  disable (list, ignoreInvalid = false) {
     if (!Array.isArray(list)) { list = [list] }
 
     const result = []
 
     // Search by name and disable
-    list.forEach(function (name) {
+    list.forEach(name => {
       const idx = this.__find__(name)
 
       if (idx < 0) {
@@ -314,7 +309,7 @@ class Ruler {
       }
       this.__rules__[idx].enabled = false
       result.push(name)
-    }, this)
+    })
 
     this.__cache__ = null
     return result
@@ -330,9 +325,7 @@ class Ruler {
  * done intentionally, to keep signature monomorphic for high speed.
  **/
   getRules (chainName) {
-    if (this.__cache__ === null) {
-      this.__compile__()
-    }
+    if (!this.__cache__) this.__compile__()
 
     // Chain can be empty, if rules disabled. But we still have to return Array.
     return this.__cache__[chainName] || []
