@@ -18,11 +18,30 @@ import punycode from 'punycode.js'
 import cfg_default from './presets/default.ts'
 import cfg_zero from './presets/zero.ts'
 import cfg_commonmark from './presets/commonmark.ts'
+import type { Env, MarkdownItOptions } from './types.ts'
 
 const config = {
   default: cfg_default,
   zero: cfg_zero,
   commonmark: cfg_commonmark
+}
+
+type MarkdownItPresetName = keyof typeof config
+
+interface MarkdownItPreset {
+  options?: MarkdownItOptions
+  components?: {
+    core?: {
+      rules?: string[]
+    }
+    block?: {
+      rules?: string[]
+    }
+    inline?: {
+      rules?: string[]
+      rules2?: string[]
+    }
+  }
 }
 
 //
@@ -36,7 +55,7 @@ const config = {
 const BAD_PROTO_RE = /^(vbscript|javascript|file|data):/
 const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/
 
-function validateLink (url) {
+function validateLink (url: string): boolean {
   // url should be normalized at this point, and existing entities are decoded
   const str = url.trim().toLowerCase()
 
@@ -45,7 +64,7 @@ function validateLink (url) {
 
 const RECODE_HOSTNAME_FOR = ['http:', 'https:', 'mailto:']
 
-function normalizeLink (url) {
+function normalizeLink (url: string): string {
   const parsed = mdurl.parse(url, true)
 
   if (parsed.hostname) {
@@ -65,7 +84,7 @@ function normalizeLink (url) {
   return mdurl.encode(mdurl.format(parsed))
 }
 
-function normalizeLinkText (url) {
+function normalizeLinkText (url: string): string {
   const parsed = mdurl.parse(url, true)
 
   if (parsed.hostname) {
@@ -220,42 +239,34 @@ function normalizeLinkText (url) {
  *
  **/
 class MarkdownIt {
-  constructor (presetName, options) {
-    if (!options) {
-      if (typeof presetName !== 'string') {
-        options = presetName || {}
-        presetName = 'default'
-      }
-    }
-
-    /**
+  /**
    * MarkdownIt#inline -> ParserInline
    *
    * Instance of [[ParserInline]]. You may need it to add new rules when
    * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
    * [[MarkdownIt.enable]].
    **/
-    this.inline = new ParserInline()
+  inline = new ParserInline()
 
-    /**
+  /**
    * MarkdownIt#block -> ParserBlock
    *
    * Instance of [[ParserBlock]]. You may need it to add new rules when
    * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
    * [[MarkdownIt.enable]].
    **/
-    this.block = new ParserBlock()
+  block = new ParserBlock()
 
-    /**
+  /**
    * MarkdownIt#core -> ParserCore
    *
    * Instance of [[ParserCore]] chain executor. You may need it to add new rules when
    * writing plugins. For simple rules control use [[MarkdownIt.disable]] and
    * [[MarkdownIt.enable]].
    **/
-    this.core = new ParserCore()
+  core = new ParserCore()
 
-    /**
+  /**
    * MarkdownIt#renderer -> Renderer
    *
    * Instance of [[Renderer]]. Use it to modify output look. Or to add rendering
@@ -276,18 +287,18 @@ class MarkdownIt {
    *
    * See [[Renderer]] docs and [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts).
    **/
-    this.renderer = new Renderer()
+  renderer = new Renderer()
 
-    /**
+  /**
    * MarkdownIt#linkify -> LinkifyIt
    *
    * [linkify-it](https://github.com/markdown-it/linkify-it) instance.
    * Used by [linkify](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/linkify.ts)
    * rule.
    **/
-    this.linkify = new LinkifyIt()
+  linkify = new LinkifyIt()
 
-    /**
+  /**
    * MarkdownIt#validateLink(url) -> Boolean
    *
    * Link validation function. CommonMark allows too much in links. By default
@@ -302,45 +313,58 @@ class MarkdownIt {
    * md.validateLink = function () { return true; }
    * ```
    **/
-    this.validateLink = validateLink
+  validateLink = validateLink
 
-    /**
+  /**
    * MarkdownIt#normalizeLink(url) -> String
    *
    * Function used to encode link url to a machine-readable format,
    * which includes url-encoding, punycode, etc.
    **/
-    this.normalizeLink = normalizeLink
+  normalizeLink = normalizeLink
 
-    /**
+  /**
    * MarkdownIt#normalizeLinkText(url) -> String
    *
    * Function used to decode link url to a human-readable format`
    **/
-    this.normalizeLinkText = normalizeLinkText
+  normalizeLinkText = normalizeLinkText
 
-    // Expose utils & helpers for easy acces from plugins
+  // Expose utils & helpers for easy acces from plugins
 
-    /**
+  /**
    * MarkdownIt#utils -> utils
    *
    * Assorted utility functions, useful to write plugins. See details
    * [here](https://github.com/markdown-it/markdown-it/blob/master/src/common/utils.ts).
    **/
-    this.utils = utils
+  utils = utils
 
-    /**
+  /**
    * MarkdownIt#helpers -> helpers
    *
    * Link components parser functions, useful to write plugins. See details
    * [here](https://github.com/markdown-it/markdown-it/blob/master/src/helpers).
    **/
-    this.helpers = Object.assign({}, helpers)
+  helpers = Object.assign({}, helpers)
 
-    this.options = {}
-    this.configure(presetName)
+  declare options: MarkdownItOptions
 
-    if (options) { this.set(options) }
+  constructor (
+    ...args:
+      | []
+      | [options: Partial<MarkdownItOptions>]
+      | [presetName: MarkdownItPresetName, options?: Partial<MarkdownItOptions>]
+  ) {
+    const [presetNameOrOptions, options] = args
+
+    if (typeof presetNameOrOptions === 'string') {
+      this.configure(presetNameOrOptions)
+      if (options) { this.set(options) }
+    } else {
+      this.configure('default')
+      this.set(presetNameOrOptions || {})
+    }
   }
 
   /** chainable
@@ -362,7 +386,7 @@ class MarkdownIt {
  * it's best to create multiple instances and initialize each with separate
  * config.
  **/
-  set (options) {
+  set (options: Partial<MarkdownItOptions>): this {
     Object.assign(this.options, options)
     return this
   }
@@ -377,26 +401,28 @@ class MarkdownIt {
  * We strongly recommend to use presets instead of direct config loads. That
  * will give better compatibility with next versions.
  **/
-  configure (presets) {
-    const self = this
+  configure (presets: MarkdownItPresetName | MarkdownItPreset): this {
+    let p: MarkdownItPreset
 
     if (typeof presets === 'string') {
       const presetName = presets
-      presets = config[presetName]
-      if (!presets) { throw new Error('Wrong `markdown-it` preset "' + presetName + '", check name') }
+      p = config[presetName]
+      if (!p) { throw new Error(`Wrong 'markdown-it' preset "${presetName}", check name`) }
+    } else {
+      p = presets
     }
 
-    if (!presets) { throw new Error('Wrong `markdown-it` preset, can\'t be empty') }
+    if (!p) { throw new Error('Wrong `markdown-it` preset, can\'t be empty') }
 
-    if (presets.options) { self.set(presets.options) }
+    if (p.options) { this.options = { ...p.options } }
 
-    if (presets.components) {
-      Object.keys(presets.components).forEach(function (name) {
-        if (presets.components[name].rules) {
-          self[name].ruler.enableOnly(presets.components[name].rules)
+    if (p.components) {
+      Object.keys(p.components).forEach((name) => {
+        if (p.components[name].rules) {
+          this[name].ruler.enableOnly(p.components[name].rules)
         }
-        if (presets.components[name].rules2) {
-          self[name].ruler2.enableOnly(presets.components[name].rules2)
+        if (p.components[name].rules2) {
+          this[name].ruler2.enableOnly(p.components[name].rules2)
         }
       })
     }
@@ -420,18 +446,18 @@ class MarkdownIt {
  *             .disable('smartquotes');
  * ```
  **/
-  enable (list, ignoreInvalid) {
+  enable (list: string | string[], ignoreInvalid = false): this {
     let result = []
 
     if (!Array.isArray(list)) { list = [list] }
 
-    ['core', 'block', 'inline'].forEach(function (chain) {
+    ['core', 'block', 'inline'].forEach((chain) => {
       result = result.concat(this[chain].ruler.enable(list, true))
-    }, this)
+    })
 
     result = result.concat(this.inline.ruler2.enable(list, true))
 
-    const missed = list.filter(function (name) { return result.indexOf(name) < 0 })
+    const missed = list.filter((name) => result.indexOf(name) < 0)
 
     if (missed.length && !ignoreInvalid) {
       throw new Error('MarkdownIt. Failed to enable unknown rule(s): ' + missed)
@@ -447,18 +473,18 @@ class MarkdownIt {
  *
  * The same as [[MarkdownIt.enable]], but turn specified rules off.
  **/
-  disable (list, ignoreInvalid) {
+  disable (list: string | string[], ignoreInvalid = false): this {
     let result = []
 
     if (!Array.isArray(list)) { list = [list] }
 
-    ['core', 'block', 'inline'].forEach(function (chain) {
+    ['core', 'block', 'inline'].forEach((chain) => {
       result = result.concat(this[chain].ruler.disable(list, true))
-    }, this)
+    })
 
     result = result.concat(this.inline.ruler2.disable(list, true))
 
-    const missed = list.filter(function (name) { return result.indexOf(name) < 0 })
+    const missed = list.filter((name) => result.indexOf(name) < 0)
 
     if (missed.length && !ignoreInvalid) {
       throw new Error('MarkdownIt. Failed to disable unknown rule(s): ' + missed)
@@ -482,9 +508,11 @@ class MarkdownIt {
  *             });
  * ```
  **/
-  use (plugin /*, params, ... */) {
-    const args = [this].concat(Array.prototype.slice.call(arguments, 1))
-    plugin.apply(plugin, args)
+  use<Params extends unknown[]> (
+    plugin: (md: this, ...params: Params) => void,
+    ...params: Params
+  ): this {
+    plugin.apply(plugin, [this, ...params])
     return this
   }
 
@@ -503,7 +531,7 @@ class MarkdownIt {
  * inject data in specific cases. Usually, you will be ok to pass `{}`,
  * and then pass updated object to renderer.
  **/
-  parse (src, env) {
+  parse (src: string, env: Env): Token[] {
     if (typeof src !== 'string') {
       throw new Error('Input data should be a String')
     }
@@ -526,9 +554,7 @@ class MarkdownIt {
  * But you will not need it with high probability. See also comment
  * in [[MarkdownIt.parse]].
  **/
-  render (src, env) {
-    env = env || {}
-
+  render (src: string, env: Env = {}): string {
     return this.renderer.render(this.parse(src, env), this.options, env)
   }
 
@@ -541,7 +567,7 @@ class MarkdownIt {
  * block tokens list with the single `inline` element, containing parsed inline
  * tokens in `children` property. Also updates `env` object.
  **/
-  parseInline (src, env) {
+  parseInline (src: string, env: Env): Token[] {
     const state = new this.core.State(src, this, env)
 
     state.inlineMode = true
@@ -558,9 +584,7 @@ class MarkdownIt {
  * Similar to [[MarkdownIt.render]] but for single paragraph content. Result
  * will NOT be wrapped into `<p>` tags.
  **/
-  renderInline (src, env) {
-    env = env || {}
-
+  renderInline (src: string, env: Env = {}): string {
     return this.renderer.render(this.parseInline(src, env), this.options, env)
   }
 

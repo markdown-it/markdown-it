@@ -5,7 +5,7 @@ import * as mdurl from 'mdurl'
 import * as ucmicro from 'uc.micro'
 import { decodeHTMLStrict } from 'entities'
 
-type Constructor = new (...args: never[]) => object
+type Constructor = new (...args: any[]) => object
 
 function callable<T extends Constructor> (
   cls: T
