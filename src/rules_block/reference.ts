@@ -1,6 +1,7 @@
 import { isSpace, normalizeReference } from '../common/utils.ts'
+import type StateBlock from './state_block.ts'
 
-export default function reference (state, startLine, _endLine, silent) {
+export default function reference (state: StateBlock, startLine: number, _endLine: number, silent: boolean): boolean {
   let pos = state.bMarks[startLine] + state.tShift[startLine]
   let max = state.eMarks[startLine]
   let nextLine = startLine + 1

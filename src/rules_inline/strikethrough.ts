@@ -1,9 +1,11 @@
 // ~~strike through~~
 //
 
+import type StateInline from './state_inline.ts'
+
 // Insert each marker as a separate text token, and add it to delimiter list
 //
-function strikethrough_tokenize (state, silent) {
+function strikethrough_tokenize (state: StateInline, silent: boolean): boolean {
   const start = state.pos
   const marker = state.src.charCodeAt(start)
 
@@ -108,7 +110,7 @@ function postProcess (state, delimiters) {
 
 // Walk through delimiter list and replace text tokens with tags
 //
-function strikethrough_postProcess (state) {
+function strikethrough_postProcess (state: StateInline): void {
   const tokens_meta = state.tokens_meta
   const max = state.tokens_meta.length
 

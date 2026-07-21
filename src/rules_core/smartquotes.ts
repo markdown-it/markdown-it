@@ -2,6 +2,7 @@
 //
 
 import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.ts'
+import type StateCore from './state_core.ts'
 
 const QUOTE_TEST_RE = /['"]/
 const QUOTE_RE = /['"]/g
@@ -194,7 +195,7 @@ function process_inlines (tokens, state) {
   })
 }
 
-export default function smartquotes (state) {
+export default function smartquotes (state: StateCore): void {
   /* eslint max-depth:0 */
   if (!state.md.options.typographer) { return }
 

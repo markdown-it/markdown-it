@@ -1,8 +1,9 @@
 // Block quotes
 
 import { isSpace } from '../common/utils.ts'
+import type StateBlock from './state_block.ts'
 
-export default function blockquote (state, startLine, endLine, silent) {
+export default function blockquote (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean {
   let pos = state.bMarks[startLine] + state.tShift[startLine]
   let max = state.eMarks[startLine]
 

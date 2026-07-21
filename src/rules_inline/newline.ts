@@ -1,8 +1,9 @@
 // Proceess '\n'
 
 import { isSpace } from '../common/utils.ts'
+import type StateInline from './state_inline.ts'
 
-export default function newline (state, silent) {
+export default function newline (state: StateInline, silent: boolean): boolean {
   let pos = state.pos
 
   if (state.src.charCodeAt(pos) !== 0x0A/* \n */) { return false }

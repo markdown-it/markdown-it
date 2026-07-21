@@ -1,8 +1,9 @@
 // Process [link](<to> "stuff")
 
 import { normalizeReference, isSpace } from '../common/utils.ts'
+import type StateInline from './state_inline.ts'
 
-export default function link (state, silent) {
+export default function link (state: StateInline, silent: boolean): boolean {
   let code, label, res, ref
   let href = ''
   let title = ''

@@ -1,8 +1,9 @@
 // lheading (---, ===)
 
 import { asciiTrim } from '../common/utils.ts'
+import type StateBlock from './state_block.ts'
 
-export default function lheading (state, startLine, endLine/*, silent */) {
+export default function lheading (state: StateBlock, startLine: number, endLine: number/*, silent */): boolean {
   const terminatorRules = state.md.block.ruler.getRules('paragraph')
 
   // if it's indented more than 3 spaces, it should be a code block

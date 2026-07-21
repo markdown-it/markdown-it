@@ -2,11 +2,12 @@
 
 import { decodeHTMLStrict } from 'entities'
 import { isValidEntityCode, fromCodePoint } from '../common/utils.ts'
+import type StateInline from './state_inline.ts'
 
 const DIGITAL_RE = /^&#((?:x[a-f0-9]{1,6}|[0-9]{1,7}));/i
 const NAMED_RE = /^&([a-z][a-z0-9]{1,31});/i
 
-export default function entity (state, silent) {
+export default function entity (state: StateInline, silent: boolean): boolean {
   const pos = state.pos
   const max = state.posMax
 

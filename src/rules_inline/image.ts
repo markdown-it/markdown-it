@@ -1,8 +1,9 @@
 // Process ![image](<src> "title")
 
 import { normalizeReference, isSpace } from '../common/utils.ts'
+import type StateInline from './state_inline.ts'
 
-export default function image (state, silent) {
+export default function image (state: StateInline, silent: boolean): boolean {
   let code, content, label, pos, ref, res, title, start
   let href = ''
   const oldPos = state.pos

@@ -1,6 +1,8 @@
 // Skip text characters for text token, place those to pending buffer
 // and increment current pos
 
+import type StateInline from './state_inline.ts'
+
 // Rule to skip pure text
 // '{}$%@~+=:' reserved for extentions
 
@@ -39,7 +41,7 @@ function isTerminatorChar (ch) {
   }
 }
 
-export default function text (state, silent) {
+export default function text (state: StateInline, silent: boolean): boolean {
   let pos = state.pos
 
   while (pos < state.posMax && !isTerminatorChar(state.src.charCodeAt(pos))) {

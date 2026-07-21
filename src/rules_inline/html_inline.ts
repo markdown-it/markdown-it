@@ -1,6 +1,7 @@
 // Process html tags
 
 import { HTML_TAG_RE } from '../common/html_re.ts'
+import type StateInline from './state_inline.ts'
 
 function isLinkOpen (str) {
   return /^<a[>\s]/i.test(str)
@@ -15,7 +16,7 @@ function isLetter (ch) {
   return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */)
 }
 
-export default function html_inline (state, silent) {
+export default function html_inline (state: StateInline, silent: boolean): boolean {
   if (!state.md.options.html) { return false }
 
   // Check start

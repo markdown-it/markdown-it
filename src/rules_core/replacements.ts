@@ -13,6 +13,8 @@
 // - fractionals 1/2, 1/4, 3/4 -> ½, ¼, ¾
 // - multiplications 2 x 4 -> 2 × 4
 
+import type StateCore from './state_core.ts'
+
 const RARE_RE = /\+-|\.\.|\?\?\?\?|!!!!|,,|--/
 
 // Workaround for phantomjs - need regex without /g flag,
@@ -82,7 +84,7 @@ function replace_rare (inlineTokens) {
   }
 }
 
-export default function replace (state) {
+export default function replace (state: StateCore): void {
   let blkIdx
 
   if (!state.md.options.typographer) { return }

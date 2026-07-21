@@ -1,6 +1,7 @@
 // Lists
 
 import { isSpace } from '../common/utils.ts'
+import type StateBlock from './state_block.ts'
 
 // Search `[-+*][\n ]`, returns next pos after marker on success
 // or -1 on fail.
@@ -87,7 +88,7 @@ function markTightParagraphs (state, idx) {
   }
 }
 
-export default function list (state, startLine, endLine, silent) {
+export default function list (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean {
   let max, pos, start, token
   let nextLine = startLine
   let tight = true

@@ -1,11 +1,13 @@
 // Process autolinks '<protocol:...>'
 
+import type StateInline from './state_inline.ts'
+
 /* eslint max-len:0 */
 const EMAIL_RE = /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)$/
 /* eslint-disable-next-line no-control-regex */
 const AUTOLINK_RE = /^([a-zA-Z][a-zA-Z0-9+.-]{1,31}):([^<>\x00-\x20]*)$/
 
-export default function autolink (state, silent) {
+export default function autolink (state: StateInline, silent: boolean): boolean {
   let pos = state.pos
 
   if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false }

@@ -1,6 +1,8 @@
 // Code block (4 spaces padded)
 
-export default function code (state, startLine, endLine/*, silent */) {
+import type StateBlock from './state_block.ts'
+
+export default function code (state: StateBlock, startLine: number, endLine: number/*, silent */): boolean {
   if (state.sCount[startLine] - state.blkIndent < 4) { return false }
 
   let nextLine = startLine + 1

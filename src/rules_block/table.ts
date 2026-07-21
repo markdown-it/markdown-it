@@ -1,6 +1,7 @@
 // GFM table, https://github.github.com/gfm/#tables-extension-
 
 import { isSpace } from '../common/utils.ts'
+import type StateBlock from './state_block.ts'
 
 // Limit the amount of empty autocompleted cells in a table,
 // see https://github.com/markdown-it/markdown-it/issues/1000,
@@ -52,7 +53,7 @@ function escapedSplit (str) {
   return result
 }
 
-export default function table (state, startLine, endLine, silent) {
+export default function table (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean {
   // should have at least two lines
   if (startLine + 2 > endLine) { return false }
 

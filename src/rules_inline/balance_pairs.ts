@@ -1,6 +1,8 @@
 // For each opening emphasis-like marker find a matching closing one
 //
 
+import type StateInline from './state_inline.ts'
+
 function processDelimiters (delimiters) {
   const openersBottom = {}
   const max = delimiters.length
@@ -110,7 +112,7 @@ function processDelimiters (delimiters) {
   }
 }
 
-export default function link_pairs (state) {
+export default function link_pairs (state: StateInline): void {
   const tokens_meta = state.tokens_meta
   const max = state.tokens_meta.length
 

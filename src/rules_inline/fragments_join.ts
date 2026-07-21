@@ -7,7 +7,9 @@
 // into opening/closing tags (which messes up levels inside).
 //
 
-export default function fragments_join (state) {
+import type StateInline from './state_inline.ts'
+
+export default function fragments_join (state: StateInline): void {
   let curr, last
   let level = 0
   const tokens = state.tokens

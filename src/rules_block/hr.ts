@@ -1,8 +1,9 @@
 // Horizontal rule
 
 import { isSpace } from '../common/utils.ts'
+import type StateBlock from './state_block.ts'
 
-export default function hr (state, startLine, endLine, silent) {
+export default function hr (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean {
   const max = state.eMarks[startLine]
   // if it's indented more than 3 spaces, it should be a code block
   if (state.sCount[startLine] - state.blkIndent >= 4) { return false }
