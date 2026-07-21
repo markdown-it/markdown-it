@@ -30,7 +30,10 @@ type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
 // Parser rules
 
-const _rules = [
+const _rules: Array<[
+  name: string,
+  rule: (state: StateInline, silent: boolean) => boolean
+]> = [
   ['text', r_text],
   ['linkify', r_linkify],
   ['newline', r_newline],
@@ -50,7 +53,10 @@ const _rules = [
 //
 // Don't use this for anything except pairs (plugins working with `balance_pairs`).
 //
-const _rules2 = [
+const _rules2: Array<[
+  name: string,
+  rule: (state: StateInline) => void
+]> = [
   ['balance_pairs', r_balance_pairs],
   ['strikethrough', r_strikethrough.postProcess],
   ['emphasis', r_emphasis.postProcess],
@@ -68,7 +74,7 @@ class ParserInline {
    *
    * [[Ruler]] instance. Keep configuration of inline rules.
    **/
-  ruler = new Ruler()
+  ruler = new Ruler<[StateInline, boolean], boolean>()
 
   /**
    * ParserInline#ruler2 -> Ruler
@@ -76,7 +82,7 @@ class ParserInline {
    * [[Ruler]] instance. Second ruler used for post-processing
    * (e.g. in emphasis-like rules).
    **/
-  ruler2 = new Ruler()
+  ruler2 = new Ruler<[StateInline], void>()
 
   State = StateInline
 

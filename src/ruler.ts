@@ -19,7 +19,9 @@
 /**
  * new Ruler()
  **/
-class Ruler {
+type RuleOptions = { alt?: string[] }
+
+class Ruler<Args extends unknown[], Result> {
   // List of added rules. Each element is:
   //
   // {
@@ -29,20 +31,25 @@ class Ruler {
   //   alt: [ name2, name3 ]
   // }
   //
-  __rules__ = []
+  __rules__: Array<{
+    name: string
+    enabled: boolean
+    fn: (...args: Args) => Result
+    alt: string[]
+  }> = []
 
   // Cached rule chains.
   //
   // First level - chain name, '' for default.
   // Second level - diginal anchor for fast filtering by charcodes.
   //
-  __cache__ = null
+  __cache__: Record<string, Array<(...args: Args) => Result>> | null = null
 
   // Helper methods, should not be used directly
 
   // Find rule index by name
   //
-  __find__ (name) {
+  __find__ (name: string): number {
     for (let i = 0; i < this.__rules__.length; i++) {
       if (this.__rules__[i].name === name) {
         return i
@@ -53,8 +60,8 @@ class Ruler {
 
   // Build rules lookup cache
   //
-  __compile__ () {
-    const chains = new Set()
+  __compile__ (): void {
+    const chains = new Set<string>()
 
     // collect unique names
     this.__rules__.forEach(rule => {
@@ -109,7 +116,7 @@ class Ruler {
  * });
  * ```
  **/
-  at (name, fn, options = {}) {
+  at (name: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(name)
 
     if (index === -1) { throw new Error('Parser rule not found: ' + name) }
@@ -143,7 +150,7 @@ class Ruler {
  * });
  * ```
  **/
-  before (beforeName, ruleName, fn, options = {}) {
+  before (beforeName: string, ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(beforeName)
 
     if (index === -1) { throw new Error('Parser rule not found: ' + beforeName) }
@@ -182,7 +189,7 @@ class Ruler {
  * });
  * ```
  **/
-  after (afterName, ruleName, fn, options = {}) {
+  after (afterName: string, ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(afterName)
 
     if (index === -1) { throw new Error('Parser rule not found: ' + afterName) }
@@ -220,7 +227,7 @@ class Ruler {
  * });
  * ```
  **/
-  push (ruleName, fn, options = {}) {
+  push (ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     this.__rules__.push({
       name: ruleName,
       enabled: true,
@@ -243,7 +250,7 @@ class Ruler {
  *
  * See also [[Ruler.disable]], [[Ruler.enableOnly]].
  **/
-  enable (list, ignoreInvalid = false) {
+  enable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }
 
     const result = []
@@ -274,7 +281,7 @@ class Ruler {
  *
  * See also [[Ruler.disable]], [[Ruler.enable]].
  **/
-  enableOnly (list, ignoreInvalid = false) {
+  enableOnly (list: string | string[], ignoreInvalid = false): void {
     if (!Array.isArray(list)) { list = [list] }
 
     this.__rules__.forEach(rule => { rule.enabled = false })
@@ -294,7 +301,7 @@ class Ruler {
  *
  * See also [[Ruler.enable]], [[Ruler.enableOnly]].
  **/
-  disable (list, ignoreInvalid = false) {
+  disable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }
 
     const result = []
@@ -324,7 +331,7 @@ class Ruler {
  * Default chain name is `''` (empty string). It can't be skipped. That's
  * done intentionally, to keep signature monomorphic for high speed.
  **/
-  getRules (chainName) {
+  getRules (chainName: string): Array<(...args: Args) => Result> {
     if (!this.__cache__) this.__compile__()
 
     // Chain can be empty, if rules disabled. But we still have to return Array.

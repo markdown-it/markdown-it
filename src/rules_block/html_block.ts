@@ -6,7 +6,11 @@ import { HTML_OPEN_CLOSE_TAG_RE } from '../common/html_re.ts'
 // An array of opening and corresponding closing sequences for html tags,
 // last argument defines whether it can terminate a paragraph or not
 //
-const HTML_SEQUENCES = [
+const HTML_SEQUENCES: Array<[
+  open: RegExp,
+  close: RegExp,
+  canTerminateParagraph: boolean
+]> = [
   [/^<(script|pre|style|textarea)(?=(\s|>|$))/i, /<\/(script|pre|style|textarea)>/i, true],
   [/^<!--/, /-->/, true],
   [/^<\?/, /\?>/, true],

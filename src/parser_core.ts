@@ -16,7 +16,10 @@ import r_replacements from './rules_core/replacements.ts'
 import r_smartquotes from './rules_core/smartquotes.ts'
 import r_text_join from './rules_core/text_join.ts'
 
-const _rules = [
+const _rules: Array<[
+  name: string,
+  rule: (state: StateCore) => void
+]> = [
   ['normalize', r_normalize],
   ['block', r_block],
   ['inline', r_inline],
@@ -37,7 +40,7 @@ class ParserCore {
    *
    * [[Ruler]] instance. Keep configuration of core rules.
    **/
-  ruler = new Ruler()
+  ruler = new Ruler<[StateCore], void>()
 
   State = StateCore
 

@@ -24,7 +24,11 @@ import r_paragraph from './rules_block/paragraph.ts'
 
 type MarkdownIt = InstanceType<typeof MarkdownItConstructor>
 
-const _rules = [
+const _rules: Array<[
+  name: string,
+  rule: (state: StateBlock, startLine: number, endLine: number, silent: boolean) => boolean,
+  alt?: string[]
+]> = [
   // First 2 params - rule name & source. Secondary array - list of rules,
   // which can be terminated by this one.
   ['table', r_table, ['paragraph', 'reference']],
@@ -49,7 +53,7 @@ class ParserBlock {
    *
    * [[Ruler]] instance. Keep configuration of block rules.
    **/
-  ruler = new Ruler()
+  ruler = new Ruler<[StateBlock, number, number, boolean], boolean>()
 
   State = StateBlock
 
