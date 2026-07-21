@@ -1,4 +1,38 @@
-export type Env = Record<string, unknown>
+export interface Reference {
+  title: string
+  href: string
+}
+
+export interface Env {
+  [key: string]: unknown
+  references?: Record<string, Reference>
+}
+
+export interface Delimiter {
+  /** Char code of the starting marker. */
+  marker: number
+
+  /** Total length of this series of delimiters. */
+  length?: number
+
+  /** A position of the token this delimiter corresponds to. */
+  token: number
+
+  /**
+   * If this delimiter is matched as a valid opener, `end` will be
+   * equal to its position, otherwise it's `-1`.
+   */
+  end: number
+
+  /** Whether this delimiter can open an emphasis. */
+  open: boolean
+
+  /** Whether this delimiter can close an emphasis. */
+  close: boolean
+
+  /** One delimiter represents two characters. */
+  jump?: number
+}
 
 export interface MarkdownItOptions {
   /** Enable HTML tags in source. */

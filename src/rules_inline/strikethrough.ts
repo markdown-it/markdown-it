@@ -1,6 +1,7 @@
 // ~~strike through~~
 //
 
+import type { Delimiter } from '../types.ts'
 import type StateInline from './state_inline.ts'
 
 // Insert each marker as a separate text token, and add it to delimiter list
@@ -46,7 +47,7 @@ function strikethrough_tokenize (state: StateInline, silent: boolean): boolean {
   return true
 }
 
-function postProcess (state, delimiters) {
+function postProcess (state: StateInline, delimiters: Delimiter[]) {
   let token
   const loneMarkers = []
   const max = delimiters.length
@@ -91,7 +92,7 @@ function postProcess (state, delimiters) {
   // So, we have to move all those markers after subsequent s_close tags.
   //
   while (loneMarkers.length) {
-    const i = loneMarkers.pop()
+    const i = loneMarkers.pop()!
     let j = i + 1
 
     while (j < state.tokens.length && state.tokens[j].type === 's_close') {
@@ -117,8 +118,9 @@ function strikethrough_postProcess (state: StateInline): void {
   postProcess(state, state.delimiters)
 
   for (let curr = 0; curr < max; curr++) {
-    if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
-      postProcess(state, tokens_meta[curr].delimiters)
+    const delimiters = tokens_meta[curr]?.delimiters
+    if (delimiters) {
+      postProcess(state, delimiters)
     }
   }
 }

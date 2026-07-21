@@ -11,14 +11,14 @@ import type StateBlock from './state_block.ts'
 // (256x256 square is 1.8kB expanded into 650kB).
 const MAX_AUTOCOMPLETED_CELLS = 0x10000
 
-function getLine (state, line) {
+function getLine (state: StateBlock, line: number) {
   const pos = state.bMarks[line] + state.tShift[line]
   const max = state.eMarks[line]
 
   return state.src.slice(pos, max)
 }
 
-function escapedSplit (str) {
+function escapedSplit (str: string) {
   const result = []
   const max = str.length
 

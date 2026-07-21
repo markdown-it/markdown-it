@@ -2,13 +2,26 @@
 //
 
 import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.ts'
+import type Token from '../token.ts'
 import type StateCore from './state_core.ts'
 
 const QUOTE_TEST_RE = /['"]/
 const QUOTE_RE = /['"]/g
 const APOSTROPHE = '\u2019' /* ’ */
 
-function addReplacement (replacements, tokenIdx, pos, ch) {
+interface Replacement {
+  pos: number
+  ch: string
+}
+
+type ReplacementMap = Record<string, Replacement[]>
+
+function addReplacement (
+  replacements: ReplacementMap,
+  tokenIdx: number,
+  pos: number,
+  ch: string
+) {
   if (!replacements[tokenIdx]) {
     replacements[tokenIdx] = []
   }
@@ -16,7 +29,7 @@ function addReplacement (replacements, tokenIdx, pos, ch) {
   replacements[tokenIdx].push({ pos, ch })
 }
 
-function applyReplacements (str, replacements) {
+function applyReplacements (str: string, replacements: Replacement[]) {
   let result = ''
   let lastPos = 0
 
@@ -32,12 +45,12 @@ function applyReplacements (str, replacements) {
   return result + str.slice(lastPos)
 }
 
-function process_inlines (tokens, state) {
+function process_inlines (tokens: Token[], state: StateCore) {
   let j
 
   const stack = []
   // token index -> list of replacements in the original token content
-  const replacements = {}
+  const replacements: ReplacementMap = {}
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]
@@ -191,7 +204,8 @@ function process_inlines (tokens, state) {
   }
 
   Object.keys(replacements).forEach(function (tokenIdx) {
-    tokens[tokenIdx].content = applyReplacements(tokens[tokenIdx].content, replacements[tokenIdx])
+    const idx = Number(tokenIdx)
+    tokens[idx].content = applyReplacements(tokens[idx].content, replacements[tokenIdx])
   })
 }
 
@@ -205,6 +219,6 @@ export default function smartquotes (state: StateCore): void {
       continue
     }
 
-    process_inlines(state.tokens[blkIdx].children, state)
+    process_inlines(state.tokens[blkIdx].children!, state)
   }
 }

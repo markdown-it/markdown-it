@@ -3,7 +3,7 @@
 import Token from '../token.ts'
 import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.ts'
 import type MarkdownIt from '../markdownit.ts'
-import type { Env } from '../types.ts'
+import type { Delimiter, Env } from '../types.ts'
 
 interface ScannedDelimiters {
   can_open: boolean
@@ -11,33 +11,9 @@ interface ScannedDelimiters {
   length: number
 }
 
-interface Delimiter {
-  /** Char code of the starting marker. */
-  marker: number
-
-  /** Total length of this series of delimiters. */
-  length?: number
-
-  /** A position of the token this delimiter corresponds to. */
-  token: number
-
-  /**
-   * If this delimiter is matched as a valid opener, `end` will be
-   * equal to its position, otherwise it's `-1`.
-   */
-  end: number
-
-  /** Whether this delimiter can open an emphasis. */
-  open: boolean
-
-  /** Whether this delimiter can close an emphasis. */
-  close: boolean
-
-  /** One delimiter represents two characters. */
-  jump?: number
+type StateTokenMeta = Record<string, unknown> & {
+  delimiters?: Delimiter[]
 }
-
-type StateTokenMeta = Record<string, unknown>
 
 class StateInline {
   declare src: string

@@ -10,7 +10,7 @@ import type StateInline from './state_inline.ts'
 
 // !!!! Don't confuse with "Markdown ASCII Punctuation" chars
 // http://spec.commonmark.org/0.15/#ascii-punctuation-character
-function isTerminatorChar (ch) {
+function isTerminatorChar (ch: number) {
   switch (ch) {
     case 0x0A/* \n */:
     case 0x21/* ! */:

@@ -16,7 +16,7 @@ export default function text_join (state: StateCore): void {
   for (let j = 0; j < l; j++) {
     if (blockTokens[j].type !== 'inline') continue
 
-    const tokens = blockTokens[j].children
+    const tokens = blockTokens[j].children!
     const max = tokens.length
 
     for (curr = 0; curr < max; curr++) {

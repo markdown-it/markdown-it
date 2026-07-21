@@ -1,6 +1,7 @@
 // Process *this* and _that_
 //
 
+import type { Delimiter } from '../types.ts'
 import type StateInline from './state_inline.ts'
 
 // Insert each marker as a separate text token, and add it to delimiter list
@@ -50,7 +51,7 @@ function emphasis_tokenize (state: StateInline, silent: boolean): boolean {
   return true
 }
 
-function postProcess (state, delimiters) {
+function postProcess (state: StateInline, delimiters: Delimiter[]) {
   const max = delimiters.length
 
   for (let i = max - 1; i >= 0; i--) {
@@ -113,8 +114,9 @@ function emphasis_post_process (state: StateInline): void {
   postProcess(state, state.delimiters)
 
   for (let curr = 0; curr < max; curr++) {
-    if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
-      postProcess(state, tokens_meta[curr].delimiters)
+    const delimiters = tokens_meta[curr]?.delimiters
+    if (delimiters) {
+      postProcess(state, delimiters)
     }
   }
 }

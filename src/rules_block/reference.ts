@@ -11,7 +11,7 @@ export default function reference (state: StateBlock, startLine: number, _endLin
 
   if (state.src.charCodeAt(pos) !== 0x5B/* [ */) { return false }
 
-  function getNextLine (nextLine) {
+  function getNextLine (nextLine: number) {
     const endLine = state.lineMax
 
     if (nextLine >= endLine || state.isEmpty(nextLine)) {

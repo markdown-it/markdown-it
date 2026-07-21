@@ -167,7 +167,7 @@ class Token {
     if (idx < 0) {
       this.attrPush(attrData)
     } else {
-      this.attrs[idx] = attrData
+      this.attrs![idx] = attrData
     }
   }
 
@@ -180,7 +180,7 @@ class Token {
     const idx = this.attrIndex(name)
     let value = null
     if (idx >= 0) {
-      value = this.attrs[idx][1]
+      value = this.attrs![idx][1]
     }
     return value
   }
@@ -197,7 +197,7 @@ class Token {
     if (idx < 0) {
       this.attrPush([name, value])
     } else {
-      this.attrs[idx][1] = this.attrs[idx][1] + ' ' + value
+      this.attrs![idx][1] = this.attrs![idx][1] + ' ' + value
     }
   }
 }

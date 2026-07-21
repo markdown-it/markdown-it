@@ -44,6 +44,8 @@ interface MarkdownItPreset {
   }
 }
 
+type MarkdownItComponentName = keyof NonNullable<MarkdownItPreset['components']>
+
 //
 // This validator can prohibit more than really needed to prevent XSS. It's a
 // tradeoff to keep code simple and to be secure by default.
@@ -416,15 +418,20 @@ class MarkdownIt {
 
     if (p.options) { this.options = { ...p.options } }
 
-    if (p.components) {
-      Object.keys(p.components).forEach((name) => {
-        if (p.components[name].rules) {
-          this[name].ruler.enableOnly(p.components[name].rules)
-        }
-        if (p.components[name].rules2) {
-          this[name].ruler2.enableOnly(p.components[name].rules2)
+    const components = p.components
+    if (components) {
+      const componentNames: MarkdownItComponentName[] = ['core', 'block', 'inline']
+      componentNames.forEach((name) => {
+        const rules = components[name]?.rules
+        if (rules) {
+          this[name].ruler.enableOnly(rules)
         }
       })
+
+      const rules2 = components.inline?.rules2
+      if (rules2) {
+        this.inline.ruler2.enableOnly(rules2)
+      }
     }
     return this
   }
@@ -447,11 +454,12 @@ class MarkdownIt {
  * ```
  **/
   enable (list: string | string[], ignoreInvalid = false): this {
-    let result = []
+    let result: string[] = []
 
     if (!Array.isArray(list)) { list = [list] }
 
-    ['core', 'block', 'inline'].forEach((chain) => {
+    const chains: MarkdownItComponentName[] = ['core', 'block', 'inline']
+    chains.forEach((chain) => {
       result = result.concat(this[chain].ruler.enable(list, true))
     })
 
@@ -474,11 +482,12 @@ class MarkdownIt {
  * The same as [[MarkdownIt.enable]], but turn specified rules off.
  **/
   disable (list: string | string[], ignoreInvalid = false): this {
-    let result = []
+    let result: string[] = []
 
     if (!Array.isArray(list)) { list = [list] }
 
-    ['core', 'block', 'inline'].forEach((chain) => {
+    const chains: MarkdownItComponentName[] = ['core', 'block', 'inline']
+    chains.forEach((chain) => {
       result = result.concat(this[chain].ruler.disable(list, true))
     })
 

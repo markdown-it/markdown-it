@@ -3,14 +3,14 @@
 import { HTML_TAG_RE } from '../common/html_re.ts'
 import type StateInline from './state_inline.ts'
 
-function isLinkOpen (str) {
+function isLinkOpen (str: string) {
   return /^<a[>\s]/i.test(str)
 }
-function isLinkClose (str) {
+function isLinkClose (str: string) {
   return /^<\/a\s*>/i.test(str)
 }
 
-function isLetter (ch) {
+function isLetter (ch: number) {
   /* eslint no-bitwise:0 */
   const lc = ch | 0x20 // to lower case
   return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */)

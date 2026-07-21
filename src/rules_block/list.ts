@@ -5,7 +5,7 @@ import type StateBlock from './state_block.ts'
 
 // Search `[-+*][\n ]`, returns next pos after marker on success
 // or -1 on fail.
-function skipBulletListMarker (state, startLine) {
+function skipBulletListMarker (state: StateBlock, startLine: number) {
   const max = state.eMarks[startLine]
   let pos = state.bMarks[startLine] + state.tShift[startLine]
 
@@ -31,7 +31,7 @@ function skipBulletListMarker (state, startLine) {
 
 // Search `\d+[.)][\n ]`, returns next pos after marker on success
 // or -1 on fail.
-function skipOrderedListMarker (state, startLine) {
+function skipOrderedListMarker (state: StateBlock, startLine: number) {
   const start = state.bMarks[startLine] + state.tShift[startLine]
   const max = state.eMarks[startLine]
   let pos = start
@@ -76,7 +76,7 @@ function skipOrderedListMarker (state, startLine) {
   return pos
 }
 
-function markTightParagraphs (state, idx) {
+function markTightParagraphs (state: StateBlock, idx: number) {
   const level = state.level + 2
 
   for (let i = idx + 2, l = state.tokens.length - 2; i < l; i++) {
@@ -159,13 +159,13 @@ export default function list (state: StateBlock, startLine: number, endLine: num
   if (isOrdered) {
     token = state.push('ordered_list_open', 'ol', 1)
     if (markerValue !== 1) {
-      token.attrs = [['start', markerValue]]
+      token.attrs = [['start', markerValue!]]
     }
   } else {
     token = state.push('bullet_list_open', 'ul', 1)
   }
 
-  const listLines = [nextLine, 0]
+  const listLines: [number, number] = [nextLine, 0]
   token.map = listLines
   token.markup = String.fromCharCode(markerCharCode)
 
@@ -221,7 +221,7 @@ export default function list (state: StateBlock, startLine: number, endLine: num
     // Run subparser & write tokens
     token = state.push('list_item_open', 'li', 1)
     token.markup = String.fromCharCode(markerCharCode)
-    const itemLines = [nextLine, 0]
+    const itemLines: [number, number] = [nextLine, 0]
     token.map = itemLines
     if (isOrdered) {
       token.info = state.src.slice(start, posAfterMarker - 1)

@@ -3,7 +3,7 @@
 import { isSpace } from '../common/utils.ts'
 import type StateInline from './state_inline.ts'
 
-const ESCAPED = []
+const ESCAPED: number[] = []
 
 for (let i = 0; i < 256; i++) { ESCAPED.push(0) }
 

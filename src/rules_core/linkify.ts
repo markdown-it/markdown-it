@@ -6,10 +6,10 @@
 import { arrayReplaceAt } from '../common/utils.ts'
 import type StateCore from './state_core.ts'
 
-function isLinkOpen (str) {
+function isLinkOpen (str: string) {
   return /^<a[>\s]/i.test(str)
 }
-function isLinkClose (str) {
+function isLinkClose (str: string) {
   return /^<\/a\s*>/i.test(str)
 }
 
@@ -24,7 +24,7 @@ export default function linkify (state: StateCore): void {
       continue
     }
 
-    let tokens = blockTokens[j].children
+    let tokens = blockTokens[j].children!
 
     let htmlLinkLevel = 0
 
@@ -55,7 +55,7 @@ export default function linkify (state: StateCore): void {
 
       if (currentToken.type === 'text' && state.md.linkify.test(currentToken.content)) {
         const text = currentToken.content
-        let links = state.md.linkify.match(text)
+        let links = state.md.linkify.match(text)!
 
         // Now split string to nodes
         const nodes = []

@@ -1,6 +1,7 @@
 // Process ![image](<src> "title")
 
 import { normalizeReference, isSpace } from '../common/utils.ts'
+import type Token from '../token.ts'
 import type StateInline from './state_inline.ts'
 
 export default function image (state: StateInline, silent: boolean): boolean {
@@ -114,7 +115,7 @@ export default function image (state: StateInline, silent: boolean): boolean {
   if (!silent) {
     content = state.src.slice(labelStart, labelEnd)
 
-    const tokens = []
+    const tokens: Token[] = []
     state.md.inline.parse(
       content,
       state.md,

@@ -74,18 +74,18 @@ class Ruler<Args extends unknown[], Result> {
     this.__cache__ = Object.create(null)
 
     // Collect default chain
-    this.__cache__[''] = []
+    this.__cache__![''] = []
     this.__rules__.forEach(rule => {
-      if (rule.enabled) this.__cache__[''].push(rule.fn)
+      if (rule.enabled) this.__cache__![''].push(rule.fn)
     })
 
     // Collect alt chains
     chains.forEach(chain => {
-      this.__cache__[chain] = []
+      this.__cache__![chain] = []
 
       this.__rules__.forEach(rule => {
         if (rule.enabled && rule.alt.indexOf(chain) >= 0) {
-          this.__cache__[chain].push(rule.fn)
+          this.__cache__![chain].push(rule.fn)
         }
       })
     })
@@ -253,7 +253,7 @@ class Ruler<Args extends unknown[], Result> {
   enable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }
 
-    const result = []
+    const result: string[] = []
 
     // Search by name and enable
     list.forEach(name => {
@@ -304,7 +304,7 @@ class Ruler<Args extends unknown[], Result> {
   disable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }
 
-    const result = []
+    const result: string[] = []
 
     // Search by name and disable
     list.forEach(name => {
@@ -335,7 +335,7 @@ class Ruler<Args extends unknown[], Result> {
     if (!this.__cache__) this.__compile__()
 
     // Chain can be empty, if rules disabled. But we still have to return Array.
-    return this.__cache__[chainName] || []
+    return this.__cache__![chainName] || []
   }
 }
 

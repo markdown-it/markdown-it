@@ -1,10 +1,11 @@
 // For each opening emphasis-like marker find a matching closing one
 //
 
+import type { Delimiter } from '../types.ts'
 import type StateInline from './state_inline.ts'
 
-function processDelimiters (delimiters) {
-  const openersBottom = {}
+function processDelimiters (delimiters: Delimiter[]) {
+  const openersBottom: Record<number, number[]> = {}
   const max = delimiters.length
 
   if (!max) return
@@ -12,7 +13,7 @@ function processDelimiters (delimiters) {
   // headerIdx is the first delimiter of the current (where closer is) delimiter run
   let headerIdx = 0
   let lastTokenIdx = -2 // needs any value lower than -1
-  const jumps = []
+  const jumps: number[] = []
 
   for (let closerIdx = 0; closerIdx < max; closerIdx++) {
     const closer = delimiters[closerIdx]
@@ -68,8 +69,8 @@ function processDelimiters (delimiters) {
         // are multiples of 3.
         //
         if (opener.close || closer.open) {
-          if ((opener.length + closer.length) % 3 === 0) {
-            if (opener.length % 3 !== 0 || closer.length % 3 !== 0) {
+          if ((opener.length! + closer.length) % 3 === 0) {
+            if (opener.length! % 3 !== 0 || closer.length % 3 !== 0) {
               isOddMatch = true
             }
           }
@@ -119,8 +120,9 @@ export default function link_pairs (state: StateInline): void {
   processDelimiters(state.delimiters)
 
   for (let curr = 0; curr < max; curr++) {
-    if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
-      processDelimiters(tokens_meta[curr].delimiters)
+    const delimiters = tokens_meta[curr]?.delimiters
+    if (delimiters) {
+      processDelimiters(delimiters)
     }
   }
 }
