@@ -7,10 +7,26 @@
  **/
 
 import { unescapeAll, escapeHtml } from './common/utils.ts'
+import type Token from './token.ts'
+import type { Env, MarkdownItOptions } from './types.ts'
 
-const default_rules = {}
+type RendererRule = (
+  tokens: Token[],
+  idx: number,
+  options: MarkdownItOptions,
+  env: Env | undefined,
+  renderer: Renderer
+) => string
 
-default_rules.code_inline = function (tokens, idx, options, env, slf) {
+const default_rules: Record<string, RendererRule> = {}
+
+default_rules.code_inline = function (
+  tokens: Token[],
+  idx: number,
+  options: MarkdownItOptions,
+  env: Env | undefined,
+  slf: Renderer
+): string {
   const token = tokens[idx]
 
   return '<code' + slf.renderAttrs(token) + '>' +
@@ -18,7 +34,13 @@ default_rules.code_inline = function (tokens, idx, options, env, slf) {
           '</code>'
 }
 
-default_rules.code_block = function (tokens, idx, options, env, slf) {
+default_rules.code_block = function (
+  tokens: Token[],
+  idx: number,
+  options: MarkdownItOptions,
+  env: Env | undefined,
+  slf: Renderer
+): string {
   const token = tokens[idx]
 
   return '<pre' + slf.renderAttrs(token) + '><code>' +
@@ -26,7 +48,13 @@ default_rules.code_block = function (tokens, idx, options, env, slf) {
           '</code></pre>\n'
 }
 
-default_rules.fence = function (tokens, idx, options, env, slf) {
+default_rules.fence = function (
+  tokens: Token[],
+  idx: number,
+  options: MarkdownItOptions,
+  env: Env | undefined,
+  slf: Renderer
+): string {
   const token = tokens[idx]
   const info = token.info ? unescapeAll(token.info).trim() : ''
   let langName = ''
@@ -59,7 +87,7 @@ default_rules.fence = function (tokens, idx, options, env, slf) {
     if (i < 0) {
       tmpAttrs.push(['class', options.langPrefix + langName])
     } else {
-      tmpAttrs[i] = tmpAttrs[i].slice()
+      tmpAttrs[i] = [tmpAttrs[i][0], tmpAttrs[i][1]] // shallow clone
       tmpAttrs[i][1] += ' ' + options.langPrefix + langName
     }
 
@@ -74,7 +102,13 @@ default_rules.fence = function (tokens, idx, options, env, slf) {
   return `<pre><code${slf.renderAttrs(token)}>${highlighted}</code></pre>\n`
 }
 
-default_rules.image = function (tokens, idx, options, env, slf) {
+default_rules.image = function (
+  tokens: Token[],
+  idx: number,
+  options: MarkdownItOptions,
+  env: Env | undefined,
+  slf: Renderer
+): string {
   const token = tokens[idx]
 
   // "alt" attr MUST be set, even if empty. Because it's mandatory and
@@ -88,21 +122,29 @@ default_rules.image = function (tokens, idx, options, env, slf) {
   return slf.renderToken(tokens, idx, options)
 }
 
-default_rules.hardbreak = function (tokens, idx, options /*, env */) {
+default_rules.hardbreak = function (
+  tokens: Token[],
+  idx: number,
+  options: MarkdownItOptions
+): string {
   return options.xhtmlOut ? '<br />\n' : '<br>\n'
 }
-default_rules.softbreak = function (tokens, idx, options /*, env */) {
+default_rules.softbreak = function (
+  tokens: Token[],
+  idx: number,
+  options: MarkdownItOptions
+): string {
   return options.breaks ? (options.xhtmlOut ? '<br />\n' : '<br>\n') : '\n'
 }
 
-default_rules.text = function (tokens, idx /*, options, env */) {
+default_rules.text = function (tokens: Token[], idx: number): string {
   return escapeHtml(tokens[idx].content)
 }
 
-default_rules.html_block = function (tokens, idx /*, options, env */) {
+default_rules.html_block = function (tokens: Token[], idx: number): string {
   return tokens[idx].content
 }
-default_rules.html_inline = function (tokens, idx /*, options, env */) {
+default_rules.html_inline = function (tokens: Token[], idx: number): string {
   return tokens[idx].content
 }
 
@@ -112,7 +154,6 @@ default_rules.html_inline = function (tokens, idx /*, options, env */) {
  * Creates new [[Renderer]] instance and fill [[Renderer#rules]] with defaults.
  **/
 class Renderer {
-  constructor () {
   /**
    * Renderer#rules -> Object
    *
@@ -141,15 +182,14 @@ class Renderer {
    * See [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts)
    * for more details and examples.
    **/
-    this.rules = Object.assign({}, default_rules)
-  }
+  rules: Record<string, RendererRule> = Object.assign({}, default_rules)
 
   /**
  * Renderer.renderAttrs(token) -> String
  *
  * Render token attributes to string.
  **/
-  renderAttrs (token) {
+  renderAttrs (token: Pick<Token, 'attrs'>): string {
     let i, l, result
 
     if (!token.attrs) { return '' }
@@ -157,7 +197,7 @@ class Renderer {
     result = ''
 
     for (i = 0, l = token.attrs.length; i < l; i++) {
-      result += ' ' + escapeHtml(token.attrs[i][0]) + '="' + escapeHtml(token.attrs[i][1]) + '"'
+      result += ' ' + escapeHtml(token.attrs[i][0]) + '="' + escapeHtml(String(token.attrs[i][1])) + '"'
     }
 
     return result
@@ -172,7 +212,7 @@ class Renderer {
  * Default token renderer. Can be overriden by custom function
  * in [[Renderer#rules]].
  **/
-  renderToken (tokens, idx, options) {
+  renderToken (tokens: Token[], idx: number, options: MarkdownItOptions): string {
     const token = tokens[idx]
     let result = ''
 
@@ -238,7 +278,7 @@ class Renderer {
  *
  * The same as [[Renderer.render]], but for single token of `inline` type.
  **/
-  renderInline (tokens, options, env) {
+  renderInline (tokens: Token[], options: MarkdownItOptions, env: Env | undefined): string {
     let result = ''
     const rules = this.rules
 
@@ -265,7 +305,7 @@ class Renderer {
  * Don't try to use it! Spec requires to show `alt` content with stripped markup,
  * instead of simple escaping.
  **/
-  renderInlineAsText (tokens, options, env) {
+  renderInlineAsText (tokens: Token[], options: MarkdownItOptions, env: Env | undefined): string {
     let result = ''
 
     for (let i = 0, len = tokens.length; i < len; i++) {
@@ -301,7 +341,7 @@ class Renderer {
  * Takes token stream and generates HTML. Probably, you will never need to call
  * this method directly.
  **/
-  render (tokens, options, env) {
+  render (tokens: Token[], options: MarkdownItOptions, env?: Env): string {
     let result = ''
     const rules = this.rules
 
@@ -313,7 +353,7 @@ class Renderer {
       } else if (typeof rules[type] !== 'undefined') {
         result += rules[type](tokens, i, options, env, this)
       } else {
-        result += this.renderToken(tokens, i, options, env)
+        result += this.renderToken(tokens, i, options)
       }
     }
 

@@ -140,7 +140,7 @@ export default function table (state: StateBlock, startLine: number, endLine: nu
   const terminatorRules = state.md.block.ruler.getRules('blockquote')
 
   const token_to = state.push('table_open', 'table', 1)
-  const tableLines = [startLine, 0]
+  const tableLines: [number, number] = [startLine, 0]
   token_to.map = tableLines
 
   const token_tho = state.push('thead_open', 'thead', 1)
@@ -165,7 +165,7 @@ export default function table (state: StateBlock, startLine: number, endLine: nu
   state.push('tr_close', 'tr', -1)
   state.push('thead_close', 'thead', -1)
 
-  let tbodyLines
+  let tbodyLines: [number, number] | undefined
   let autocompletedCells = 0
 
   for (nextLine = startLine + 2; nextLine < endLine; nextLine++) {

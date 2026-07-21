@@ -123,7 +123,7 @@ export default function image (state: StateInline, silent: boolean): boolean {
     )
 
     const token = state.push('image', 'img', 0)
-    const attrs = [['src', href], ['alt', '']]
+    const attrs: Array<[string, string]> = [['src', href], ['alt', '']]
     token.attrs = attrs
     token.children = tokens
     token.content = content
