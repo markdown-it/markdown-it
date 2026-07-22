@@ -67,9 +67,9 @@
     "argparse": "^3.0.0",
     "entities": "^8.0.0",
     "linkify-it": "^6.0.0",
-    "mdurl": "^2.0.0",
+    "mdurl": "^2.1.0",
     "punycode.js": "^2.3.1",
-    "uc.micro": "^2.1.0"
+    "uc.micro": "^3.0.0"
   },
   "devDependencies": {
     "c8": "^12.0.0",
@@ -79,7 +79,7 @@
     "markdown-it-abbr": "^2.0.0",
     "markdown-it-container": "^4.0.0",
     "markdown-it-deflist": "^3.0.1",
-    "markdown-it-emoji": "^3.0.0",
+    "markdown-it-emoji": "^3.1.0",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-for-inline": "^2.0.1",
     "markdown-it-ins": "^4.0.0",
