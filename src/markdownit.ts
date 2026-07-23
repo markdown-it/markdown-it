@@ -228,13 +228,11 @@ function normalizeLinkText (url: string): string {
  *   highlight: function (str, lang) {
  *     if (lang && hljs.getLanguage(lang)) {
  *       try {
- *         return '<pre><code class="hljs">' +
- *                hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
- *                '</code></pre>';
+ *         return `<pre><code class="hljs">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
  *       } catch (__) {}
  *     }
  *
- *     return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
+ *     return `<pre><code class="hljs">${md.utils.escapeHtml(str)}</code></pre>`;
  *   }
  * });
  * ```
@@ -468,7 +466,7 @@ class MarkdownIt {
     const missed = list.filter((name) => result.indexOf(name) < 0)
 
     if (missed.length && !ignoreInvalid) {
-      throw new Error('MarkdownIt. Failed to enable unknown rule(s): ' + missed)
+      throw new Error(`MarkdownIt. Failed to enable unknown rule(s): ${missed}`)
     }
 
     return this
@@ -496,7 +494,7 @@ class MarkdownIt {
     const missed = list.filter((name) => result.indexOf(name) < 0)
 
     if (missed.length && !ignoreInvalid) {
-      throw new Error('MarkdownIt. Failed to disable unknown rule(s): ' + missed)
+      throw new Error(`MarkdownIt. Failed to disable unknown rule(s): ${missed}`)
     }
     return this
   }

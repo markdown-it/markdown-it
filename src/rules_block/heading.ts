@@ -36,7 +36,7 @@ export default function heading (state: StateBlock, startLine: number, endLine: 
 
   state.line = startLine + 1
 
-  const token_o = state.push('heading_open', 'h' + String(level), 1)
+  const token_o = state.push('heading_open', `h${level}`, 1)
   token_o.markup = '########'.slice(0, level)
   token_o.map = [startLine, state.line]
 
@@ -45,7 +45,7 @@ export default function heading (state: StateBlock, startLine: number, endLine: 
   token_i.map = [startLine, state.line]
   token_i.children = []
 
-  const token_c = state.push('heading_close', 'h' + String(level), -1)
+  const token_c = state.push('heading_close', `h${level}`, -1)
   token_c.markup = '########'.slice(0, level)
 
   return true

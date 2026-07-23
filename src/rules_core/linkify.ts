@@ -84,9 +84,9 @@ export default function linkify (state: StateCore): void {
           // and remove it afterwards.
           //
           if (!links[ln].schema) {
-            urlText = state.md.normalizeLinkText('http://' + urlText).replace(/^http:\/\//, '')
+            urlText = state.md.normalizeLinkText(`http://${urlText}`).replace(/^http:\/\//, '')
           } else if (links[ln].schema === 'mailto:' && !/^mailto:/i.test(urlText)) {
-            urlText = state.md.normalizeLinkText('mailto:' + urlText).replace(/^mailto:/, '')
+            urlText = state.md.normalizeLinkText(`mailto:${urlText}`).replace(/^mailto:/, '')
           } else {
             urlText = state.md.normalizeLinkText(urlText)
           }

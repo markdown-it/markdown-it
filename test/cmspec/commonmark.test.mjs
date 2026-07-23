@@ -31,7 +31,7 @@ function loadSpecExamples (path, md) {
 function generate (path, md) {
   describe('spec.txt', function () {
     loadSpecExamples(path, md).forEach(function (fixture) {
-      it('line ' + fixture.line, function () {
+      it(`line ${fixture.line}`, function () {
         assert.strictEqual(md.render(fixture.md), normalize(fixture.html))
       })
     })

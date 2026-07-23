@@ -197,7 +197,7 @@ class Token {
     if (idx < 0) {
       this.attrPush([name, value])
     } else {
-      this.attrs![idx][1] = this.attrs![idx][1] + ' ' + value
+      this.attrs![idx][1] = `${this.attrs![idx][1]} ${value}`
     }
   }
 }

@@ -59,7 +59,7 @@ readFile(options.spec, 'utf8', function (error, input) {
 
   if (error) {
     if (error.code === 'ENOENT') {
-      process.stderr.write('File not found: ' + options.spec)
+      process.stderr.write(`File not found: ${options.spec}`)
       process.exit(2)
     }
 
@@ -102,10 +102,7 @@ readFile(options.spec, 'utf8', function (error, input) {
     const data = options.type === 'good' ? good : bad
 
     data.forEach(function (sample) {
-      out.push(
-        '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
-        `src line: ${sample.line}\n\n.\n${sample.md}.\n${sample.html}.\n`
-      )
+      out.push(`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nsrc line: ${sample.line}\n\n.\n${sample.md}.\n${sample.html}.\n`)
       if (sample.err) {
         out.push(`error:\n\n${sample.err}\n`)
       }

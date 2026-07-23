@@ -119,7 +119,7 @@ class Ruler<Args extends unknown[], Result> {
   at (name: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(name)
 
-    if (index === -1) { throw new Error('Parser rule not found: ' + name) }
+    if (index === -1) { throw new Error(`Parser rule not found: ${name}`) }
 
     this.__rules__[index].fn = fn
     this.__rules__[index].alt = options.alt || []
@@ -153,7 +153,7 @@ class Ruler<Args extends unknown[], Result> {
   before (beforeName: string, ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(beforeName)
 
-    if (index === -1) { throw new Error('Parser rule not found: ' + beforeName) }
+    if (index === -1) { throw new Error(`Parser rule not found: ${beforeName}`) }
 
     this.__rules__.splice(index, 0, {
       name: ruleName,
@@ -192,7 +192,7 @@ class Ruler<Args extends unknown[], Result> {
   after (afterName: string, ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(afterName)
 
-    if (index === -1) { throw new Error('Parser rule not found: ' + afterName) }
+    if (index === -1) { throw new Error(`Parser rule not found: ${afterName}`) }
 
     this.__rules__.splice(index + 1, 0, {
       name: ruleName,
@@ -261,7 +261,7 @@ class Ruler<Args extends unknown[], Result> {
 
       if (idx < 0) {
         if (ignoreInvalid) { return }
-        throw new Error('Rules manager: invalid rule name ' + name)
+        throw new Error(`Rules manager: invalid rule name ${name}`)
       }
       this.__rules__[idx].enabled = true
       result.push(name)
@@ -312,7 +312,7 @@ class Ruler<Args extends unknown[], Result> {
 
       if (idx < 0) {
         if (ignoreInvalid) { return }
-        throw new Error('Rules manager: invalid rule name ' + name)
+        throw new Error(`Rules manager: invalid rule name ${name}`)
       }
       this.__rules__[idx].enabled = false
       result.push(name)

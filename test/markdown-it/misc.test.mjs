@@ -42,7 +42,7 @@ describe('API', function () {
   it('highlight', function () {
     const md = markdownit({
       highlight: function (str) {
-        return '<pre><code>==' + str + '==</code></pre>'
+        return `<pre><code>==${str}==</code></pre>`
       }
     })
 
@@ -64,7 +64,7 @@ describe('API', function () {
       highlight: function (str, lang, attrs) {
         assert.strictEqual(lang, 'a')
         assert.strictEqual(attrs, 'b  c  d')
-        return '<pre><code>==' + str + '==</code></pre>'
+        return `<pre><code>==${str}==</code></pre>`
       }
     })
 

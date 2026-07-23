@@ -121,9 +121,7 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
   if (vimeoRE.test(src)) {
     var id = src.match(vimeoRE)[2];
 
-    return '<div class="embed-responsive embed-responsive-16by9">\n' +
-           '  <iframe class="embed-responsive-item" src="//player.vimeo.com/video/' + id + '"></iframe>\n' +
-           '</div>\n';
+    return `<div class="embed-responsive embed-responsive-16by9">\n  <iframe class="embed-responsive-item" src="//player.vimeo.com/video/${id}"></iframe>\n</div>\n`;
   }
 
   // Pass the token to the default renderer.

@@ -17,8 +17,8 @@ const HTML_SEQUENCES: Array<[
   [/^<\?/, /\?>/, true],
   [/^<![A-Za-z]/, />/, true],
   [/^<!\[CDATA\[/, /\]\]>/, true],
-  [new RegExp('^</?(' + block_names.join('|') + ')(?=(\\s|/?>|$))', 'i'), /^$/, true],
-  [new RegExp(HTML_OPEN_CLOSE_TAG_RE.source + '\\s*$'), /^$/, false]
+  [new RegExp(`^</?(${block_names.join('|')})(?=(\\s|/?>|$))`, 'i'), /^$/, true],
+  [new RegExp(`${HTML_OPEN_CLOSE_TAG_RE.source}\\s*$`), /^$/, false]
 ]
 
 export default function html_block (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean {

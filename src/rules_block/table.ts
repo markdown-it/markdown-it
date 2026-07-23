@@ -152,7 +152,7 @@ export default function table (state: StateBlock, startLine: number, endLine: nu
   for (let i = 0; i < columns.length; i++) {
     const token_ho = state.push('th_open', 'th', 1)
     if (aligns[i]) {
-      token_ho.attrs = [['style', 'text-align:' + aligns[i]]]
+      token_ho.attrs = [['style', `text-align:${aligns[i]}`]]
     }
 
     const token_il = state.push('inline', '', 0)
@@ -203,7 +203,7 @@ export default function table (state: StateBlock, startLine: number, endLine: nu
     for (let i = 0; i < columnCount; i++) {
       const token_tdo = state.push('td_open', 'td', 1)
       if (aligns[i]) {
-        token_tdo.attrs = [['style', 'text-align:' + aligns[i]]]
+        token_tdo.attrs = [['style', `text-align:${aligns[i]}`]]
       }
 
       const token_il = state.push('inline', '', 0)

@@ -68,7 +68,7 @@ readFile(options.file, 'utf8', function (err, input) {
 
   if (err) {
     if (err.code === 'ENOENT') {
-      console.error('File not found: ' + options.file)
+      console.error(`File not found: ${options.file}`)
       process.exit(2)
     }
 

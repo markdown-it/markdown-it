@@ -126,28 +126,24 @@ defaults.highlight = function (str, lang) {
     }
 
     if (lang && lang !== 'auto' && hljs.getLanguage(lang)) {
-      return '<pre class="hljs language-' + esc(lang.toLowerCase()) + '"><code>' +
-             hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-             '</code></pre>'
+      return `<pre class="hljs language-${esc(lang.toLowerCase())}"><code>${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`
     } else if (lang === 'auto') {
       const result = hljs.highlightAuto(str)
 
-      console.log('highlight language: ' + result.language + ', relevance: ' + result.relevance)
+      console.log(`highlight language: ${result.language}, relevance: ${result.relevance}`)
 
-      return '<pre class="hljs language-' + esc(result.language) + '"><code>' +
-             result.value +
-             '</code></pre>'
+      return `<pre class="hljs language-${esc(result.language)}"><code>${result.value}</code></pre>`
     }
   } catch (__) { /**/ }
 
-  return '<pre><code class="hljs">' + esc(str) + '</code></pre>'
+  return `<pre><code class="hljs">${esc(str)}</code></pre>`
 }
 
 function setOptionClass (name, val) {
   if (val) {
-    document.body.classList.add('opt_' + name)
+    document.body.classList.add(`opt_${name}`)
   } else {
-    document.body.classList.remove('opt_' + name)
+    document.body.classList.remove(`opt_${name}`)
   }
 }
 
@@ -155,7 +151,7 @@ function setResultView (val) {
   document.body.classList.remove('result-as-html')
   document.body.classList.remove('result-as-src')
   document.body.classList.remove('result-as-debug')
-  document.body.classList.add('result-as-' + val)
+  document.body.classList.add(`result-as-${val}`)
   defaults._view = val
 }
 
@@ -227,10 +223,10 @@ function updateResult () {
   try {
     if (source) {
       // serialize state - source and options
-      permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
+      permalink.href = `#md3=${mdurl.encode(JSON.stringify({
         source,
         defaults: permalinkDefaults()
-      }), '-_.!~', false)
+      }), '-_.!~', false)}`
     } else {
       permalink.href = ''
     }
@@ -252,7 +248,7 @@ function buildScrollMap () {
     position: 'absolute',
     visibility: 'hidden',
     height: 'auto',
-    width: textarea.clientWidth + 'px',
+    width: `${textarea.clientWidth}px`,
     fontSize: textareaStyle.fontSize,
     fontFamily: textareaStyle.fontFamily,
     lineHeight: textareaStyle.lineHeight,

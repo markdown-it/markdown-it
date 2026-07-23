@@ -49,7 +49,7 @@ export default function autolink (state: StateInline, silent: boolean): boolean 
   }
 
   if (EMAIL_RE.test(url)) {
-    const fullUrl = state.md.normalizeLink('mailto:' + url)
+    const fullUrl = state.md.normalizeLink(`mailto:${url}`)
     if (!state.md.validateLink(fullUrl)) { return false }
 
     if (!silent) {

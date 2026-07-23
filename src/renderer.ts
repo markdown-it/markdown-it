@@ -29,9 +29,7 @@ default_rules.code_inline = function (
 ): string {
   const token = tokens[idx]
 
-  return '<code' + slf.renderAttrs(token) + '>' +
-          escapeHtml(token.content) +
-          '</code>'
+  return `<code${slf.renderAttrs(token)}>${escapeHtml(token.content)}</code>`
 }
 
 default_rules.code_block = function (
@@ -43,9 +41,7 @@ default_rules.code_block = function (
 ): string {
   const token = tokens[idx]
 
-  return '<pre' + slf.renderAttrs(token) + '><code>' +
-          escapeHtml(tokens[idx].content) +
-          '</code></pre>\n'
+  return `<pre${slf.renderAttrs(token)}><code>${escapeHtml(tokens[idx].content)}</code></pre>\n`
 }
 
 default_rules.fence = function (
@@ -85,10 +81,10 @@ default_rules.fence = function (
     const tmpAttrs = token.attrs ? token.attrs.slice() : []
 
     if (i < 0) {
-      tmpAttrs.push(['class', options.langPrefix + langName])
+      tmpAttrs.push(['class', `${options.langPrefix}${langName}`])
     } else {
       tmpAttrs[i] = [tmpAttrs[i][0], tmpAttrs[i][1]] // shallow clone
-      tmpAttrs[i][1] += ' ' + options.langPrefix + langName
+      tmpAttrs[i][1] += ` ${options.langPrefix}${langName}`
     }
 
     // Fake token just to render attributes
@@ -197,7 +193,7 @@ class Renderer {
     result = ''
 
     for (i = 0, l = token.attrs.length; i < l; i++) {
-      result += ' ' + escapeHtml(token.attrs[i][0]) + '="' + escapeHtml(String(token.attrs[i][1])) + '"'
+      result += ` ${escapeHtml(token.attrs[i][0])}="${escapeHtml(String(token.attrs[i][1]))}"`
     }
 
     return result

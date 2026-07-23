@@ -68,7 +68,7 @@ export default function lheading (state: StateBlock, startLine: number, endLine:
 
   state.line = nextLine + 1
 
-  const token_o = state.push('heading_open', 'h' + String(level), 1)
+  const token_o = state.push('heading_open', `h${level}`, 1)
   token_o.markup = String.fromCharCode(marker!)
   token_o.map = [startLine, state.line]
 
@@ -77,7 +77,7 @@ export default function lheading (state: StateBlock, startLine: number, endLine:
   token_i.map = [startLine, state.line - 1]
   token_i.children = []
 
-  const token_c = state.push('heading_close', 'h' + String(level), -1)
+  const token_c = state.push('heading_close', `h${level}`, -1)
   token_c.markup = String.fromCharCode(marker!)
 
   state.parentType = oldParentType
