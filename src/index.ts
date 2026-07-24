@@ -1,4 +1,6 @@
 import { callable } from './common/utils.ts'
-import MarkdownIt from './markdownit.ts'
+import MarkdownItClass from './markdownit.ts'
 
-export default callable(MarkdownIt)
+const MarkdownIt = callable(MarkdownItClass)
+
+export default MarkdownIt
