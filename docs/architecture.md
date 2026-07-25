@@ -1,4 +1,5 @@
 ---
+title: Architecture
 category: Development
 ---
 
@@ -79,7 +80,7 @@ More details about tokens:
 
 Rules are functions, doing "magic" with parser `state` objects. A rule is associated with one or more *chains* and is unique. For instance, a `blockquote` token is associated with the `blockquote`, `paragraph`, `heading`, and `list` chains.
 
-Rules are managed by name via [`Ruler`](https://markdown-it.github.io/markdown-it/#Ruler) instances and can be enabled and disabled from [`MarkdownIt`](https://markdown-it.github.io/markdown-it/#MarkdownIt)'s methods.
+Rules are managed by name via [`Ruler`](https://markdown-it.github.io/markdown-it/classes/Ruler.html) instances and can be enabled and disabled from [`MarkdownIt`](https://markdown-it.github.io/markdown-it/classes/MarkdownIt.html)'s methods.
 
 Note that some rules have a `validation mode` -- in this mode, rules do not
 modify the token stream and only look ahead for the end of a token. It's one
@@ -97,7 +98,7 @@ and tried to do something yourself. We never reject with help to real developers
 
 ## Renderer
 
-After the token stream is generated, it's passed to a [`Renderer`](https://markdown-it.github.io/markdown-it/#Renderer).
+After the token stream is generated, it's passed to a [`Renderer`](https://markdown-it.github.io/markdown-it/classes/Renderer.html).
 It then iterates through all the tokens, passing each to a rule with the same name as its token type.
 
 Renderer rules are located in `md.renderer.rules[name]` and are simple functions
@@ -188,4 +189,4 @@ Source code for each chain can be seen in the following files:
 - [`parser_block.mjs`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_block.ts)
 - [`parser_inline.mjs`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_inline.ts)
 
-Also, you can change output directly in a [`Renderer`](https://markdown-it.github.io/markdown-it/#Renderer) for many simple cases.
+Also, you can change output directly in a [`Renderer`](https://markdown-it.github.io/markdown-it/classes/Renderer.html) for many simple cases.

@@ -53,7 +53,10 @@ Now take a closer look at the first element in the resulting list:
     "hidden": false
   }
 ```
-This is a [Token](https://markdown-it.github.io/markdown-it/#Token). Its corresponding HTML `tag` is `ul` and its nesting is `1`. This means this specific token represents the opening tag of the HTML list we want to generate from markdown.
+This is a [Token](https://markdown-it.github.io/markdown-it/classes/Token.html).
+Its corresponding HTML `tag` is `ul` and its nesting is `1`. This means this
+specific token represents the opening tag of the HTML list we want to generate
+from markdown.
 
 * `{ nesting: 1}` is an opening tag: `<ul>`
 * `{ nesting: -1}` is a closing tag: `</ul>`
@@ -62,7 +65,7 @@ This is a [Token](https://markdown-it.github.io/markdown-it/#Token). Its corresp
 ## Adding new rules
 ### To add a default CSS class to an element
 
-Let's set ourself a goal: 
+Let's set ourself a goal:
 ```
 Create a rule to add the CSS class "lorem_ipsum" to every <ul>
 ```
@@ -105,7 +108,11 @@ Earlier we noticed that `renderer.rules.bullet_list_open` is undefined by defaul
 
 CSS classes are attributes on HTML elements. If we think back to the object representation of the `ul` element we looked at, we might remember that it contained an `attrs` key with the value `null`. This means this token had no attributes. `attrs` can be an array of `[key, value]` pairs which describe attributes to be added to the token.
 
-Looking at [the API documention for Token objects](https://markdown-it.github.io/markdown-it/#Token.attrJoin) we find the `attrJoin` method. This method allows us to join an existing attributes value with a new value or create the attribute if it doens't exist yet. Simply pushing the value (for example with `token.attr.push(["key", "value"]`) would overwrite any previous change:
+Looking at [the API documention for Token objects](https://markdown-it.github.io/markdown-it/classes/Token.html#attrjoin)
+we find the `attrJoin` method. This method allows us to join an existing
+attributes value with a new value or create the attribute if it doens't exist
+yet. Simply pushing the value (for example with `token.attr.push(["key", "value"]`)
+would overwrite any previous change:
 
 ```js
 import MarkdownIt from 'markdown-it'
@@ -140,7 +147,7 @@ md.renderer.rules.bullet_list_open = function(tokens, idx, options, env, self) {
 
 console.log(md.render("- Hello World"));
 ```
-Output: 
+Output:
 ```html
 <ul class="lorem_ipsum">
 <li>Hello World</li>

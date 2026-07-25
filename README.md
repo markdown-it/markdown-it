@@ -84,7 +84,7 @@ const result = md.renderInline('__markdown-it__ rulezz!');
 
 (*) presets define combinations of active rules and options. Can be
 `"commonmark"`, `"zero"` or `"default"` (if skipped). See
-[API docs](https://markdown-it.github.io/markdown-it/#MarkdownIt.new) for more details.
+[API docs](https://markdown-it.github.io/markdown-it/classes/MarkdownIt.html#constructor) for more details.
 
 ```js
 import MarkdownIt from 'markdown-it'
@@ -256,9 +256,9 @@ const md = new MarkdownIt({
 
 You can find all rules in sources:
 
-- [`parser_core.mjs`](lib/parser_core.mjs)
-- [`parser_block.mjs`](lib/parser_block.mjs)
-- [`parser_inline.mjs`](lib/parser_inline.mjs)
+- [`ParserCore`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_core.ts)
+- [`ParserBlock`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_block.ts)
+- [`ParserInline`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_inline.ts)
 
 
 ## Benchmark

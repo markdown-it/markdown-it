@@ -10,7 +10,7 @@ The output document will be surrounded by `<section>` tags. Second-level heading
 
 The top-level rule pipeline turning raw Markdown into a token array consists of **core rules**.
 The *block* and *inline* rule pipelines are run within a single "wrapper" rule in the core pipeline.
-The wrapper rules appear relatively early in the [core pipeline](https://github.com/markdown-it/markdown-it/blob/0fe7ccb4b7f30236fb05f623be6924961d296d3d/lib/parser_core.mjs#L19).
+The wrapper rules appear relatively early in the [core pipeline](https://github.com/markdown-it/markdown-it/blob/master/src/parser_core.ts#L12-L25).
 
 ```javascript
 const _rules = [

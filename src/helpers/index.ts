@@ -1,3 +1,7 @@
+/**
+ * @module md.helpers
+ */
+
 // Just a shortcut for bulk export
 
 import parseLinkLabel from './parse_link_label.ts'

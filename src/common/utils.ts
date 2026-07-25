@@ -1,5 +1,6 @@
-// Utilities
-//
+/**
+ * @module md.utils
+ */
 
 import * as mdurl from 'mdurl'
 import * as ucmicro from 'uc.micro'
