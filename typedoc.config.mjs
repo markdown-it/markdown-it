@@ -7,7 +7,13 @@ export default {
   ],
   alwaysCreateEntryPointModule: false,
 
-  plugin: ['typedoc-plugin-missing-exports'],
+  plugin: [
+    'typedoc-plugin-missing-exports',
+
+    'typedoc-theme-oxide',
+    './support/typedoc-oxide-fixes.mjs'
+  ],
+  theme: 'oxide',
   excludeExternals: true,
   placeInternalsInOwningModule: true,
 
