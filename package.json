@@ -49,15 +49,15 @@
     "pathological:update-hash": "node support/track-ref-pathological.mjs --update",
     "coverage": "npm run build && c8 --include 'src/**' -r text -r html -r lcov node --test --test-reporter=dot",
     "doc": "typedoc",
-    "gh-doc": "npm run doc && gh-pages -d apidoc -f",
+    "doc:publish": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.mjs",
-    "gh-demo": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git",
+    "demo:publish": "npm run demo && gh-pages -d demo -f -b master -r git@github.com:markdown-it/markdown-it.github.io.git",
     "build": "node support/build-dist.mjs",
     "benchmark-deps": "npm install --prefix benchmark/extra/",
     "specsplit": "support/specsplit.mjs good -o test/fixtures/commonmark/good.txt && support/specsplit.mjs bad -o test/fixtures/commonmark/bad.txt && support/specsplit.mjs",
     "todo": "grep 'TODO' -n -r ./src 2>/dev/null",
     "prepack": "npm test && npm run build && npm run demo && npm run doc",
-    "postpublish": "npm run gh-demo && npm run gh-doc"
+    "postpublish": "npm run demo:publish && npm run doc:publish"
   },
   "files": [
     "bin/",
