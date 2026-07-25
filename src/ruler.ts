@@ -1,3 +1,4 @@
+/** @inline */
 type RuleOptions = { alt?: string[] }
 
 /**

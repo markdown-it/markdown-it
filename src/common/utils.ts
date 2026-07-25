@@ -5,12 +5,14 @@ import * as mdurl from 'mdurl'
 import * as ucmicro from 'uc.micro'
 import { decodeHTMLStrict } from 'entities'
 
-type Constructor = new (...args: any[]) => object
+/** @hidden */
+type ClassToWrap = new (...args: any[]) => object
 
-function callable<T extends Constructor> (
+/** Wraps a class so it can be called with or without `new`. */
+function callable<T extends ClassToWrap> (
   cls: T
 ): T & ((...args: ConstructorParameters<T>) => InstanceType<T>)
-function callable<T extends Constructor> (cls: T) {
+function callable<T extends ClassToWrap> (cls: T) {
   const wrapper = function (...args: ConstructorParameters<T>) {
     const newTarget =
       new.target && new.target !== wrapper

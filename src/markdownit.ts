@@ -224,6 +224,8 @@ function normalizeLinkText (url: string): string {
  *   }
  * });
  * ```
+ *
+ * @category Main
  */
 class MarkdownIt {
   /**

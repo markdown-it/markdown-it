@@ -5,12 +5,14 @@ import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.t
 import type MarkdownIt from '../markdownit.ts'
 import type { Delimiter, Env } from '../types.ts'
 
+/** @inline */
 interface ScannedDelimiters {
   can_open: boolean
   can_close: boolean
   length: number
 }
 
+/** @inline */
 type StateTokenMeta = Record<string, unknown> & {
   delimiters?: Delimiter[]
 }

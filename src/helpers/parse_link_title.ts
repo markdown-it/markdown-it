@@ -3,6 +3,7 @@
 
 import { unescapeAll } from '../common/utils.ts'
 
+/** @inline */
 interface ParseLinkTitleResult {
   ok: boolean
   can_continue: boolean

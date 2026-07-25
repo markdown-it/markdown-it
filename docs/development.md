@@ -1,3 +1,7 @@
+---
+category: Development
+---
+
 # Development recommendations
 
 Before continuing, make sure you've read:
@@ -10,17 +14,17 @@ Before continuing, make sure you've read:
 ## General considerations for plugins.
 
 1. Try to find the right place for your plugin rule:
-  - Will it conflict with existing markup (by priority)?
-    - If yes - you need to write an inline or block rule.
-    - If no - you can morph tokens within core chains.
-  - Remember that token morphing in core chains is always more simple than writing
-    block or inline rules, if you don't copy existing ones. However,
-    block and inline rules are usually faster.
-  - Sometimes, it's enough to only modify the renderer, for example, to add
-    header IDs or `target="_blank"` for the links.
-  - Plugins should not require the `markdown-it` package as dependency in `package.json`.
-    If you need access to internals, those are available via a parser instance,
-    passed on plugin load. See properties of main class and nested objects.
+   - Will it conflict with existing markup (by priority)?
+     - If yes - you need to write an inline or block rule.
+     - If no - you can morph tokens within core chains.
+   - Remember that token morphing in core chains is always more simple than writing
+     block or inline rules, if you don't copy existing ones. However,
+     block and inline rules are usually faster.
+   - Sometimes, it's enough to only modify the renderer, for example, to add
+     header IDs or `target="_blank"` for the links.
+   - Plugins should not require the `markdown-it` package as dependency in `package.json`.
+     If you need access to internals, those are available via a parser instance,
+     passed on plugin load. See properties of main class and nested objects.
 2. Search existing
    [plugins](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
    or [rules](https://github.com/markdown-it/markdown-it/tree/master/src),

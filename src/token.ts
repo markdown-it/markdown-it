@@ -1,6 +1,9 @@
 // Token class
 
+/** @inline */
 type TokenNesting = -1 | 0 | 1
+
+/** @inline */
 type TokenAttribute = [name: string, value: string | number]
 
 /** Create new token and fill passed properties. */

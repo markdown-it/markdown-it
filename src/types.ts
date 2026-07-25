@@ -34,6 +34,7 @@ export interface Delimiter {
   jump?: number
 }
 
+/** @category Main */
 export interface MarkdownItOptions {
   /** Enable HTML tags in source. */
   html: boolean
