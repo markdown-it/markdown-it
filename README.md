@@ -61,22 +61,21 @@ See also:
 
 ```js
 // node.js
-// can use `require('markdown-it')` for CJS
-import markdownit from 'markdown-it'
-const md = markdownit()
+import MarkdownIt from 'markdown-it'
+const md = new MarkdownIt()
 const result = md.render('# markdown-it rulezz!');
 
 // browser with UMD build, added to "window" on script load
 // Note, there is no dash in "markdownit".
-const md = window.markdownit();
+const md = new window.markdownit();
 const result = md.render('# markdown-it rulezz!');
 ```
 
 Single line rendering, without paragraph wrap:
 
 ```js
-import markdownit from 'markdown-it'
-const md = markdownit()
+import MarkdownIt from 'markdown-it'
+const md = new MarkdownIt()
 const result = md.renderInline('__markdown-it__ rulezz!');
 ```
 
@@ -88,23 +87,23 @@ const result = md.renderInline('__markdown-it__ rulezz!');
 [API docs](https://markdown-it.github.io/markdown-it/#MarkdownIt.new) for more details.
 
 ```js
-import markdownit from 'markdown-it'
+import MarkdownIt from 'markdown-it'
 
 // commonmark mode
-const md = markdownit('commonmark')
+const md = new MarkdownIt('commonmark')
 
 // default mode
-const md = markdownit()
+const md = new MarkdownIt()
 
 // enable everything
-const md = markdownit({
+const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true
 })
 
 // full options list (defaults)
-const md = markdownit({
+const md = new MarkdownIt({
   // Enable HTML tags in source
   html:         false,
 
@@ -143,9 +142,9 @@ const md = markdownit({
 ### Plugins load
 
 ```js
-import markdownit from 'markdown-it'
+import MarkdownIt from 'markdown-it'
 
-const md = markdownit()
+const md = new MarkdownIt()
   .use(plugin1)
   .use(plugin2, opts, ...)
   .use(plugin3);
@@ -157,11 +156,11 @@ const md = markdownit()
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
 ```js
-import markdownit from 'markdown-it'
+import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js' // https://highlightjs.org
 
 // Actual default values
-const md = markdownit({
+const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -177,11 +176,11 @@ const md = markdownit({
 Or with full wrapper override (if you need assign class to `<pre>` or `<code>`):
 
 ```js
-import markdownit from 'markdown-it'
+import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js' // https://highlightjs.org
 
 // Actual default values
-const md = markdownit({
+const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -239,16 +238,16 @@ By default all rules are enabled, but can be restricted by options. On plugin
 load all its rules are enabled automatically.
 
 ```js
-import markdownit from 'markdown-it'
+import MarkdownIt from 'markdown-it'
 
 // Activate/deactivate rules, with currying
-const md = markdownit()
+const md = new MarkdownIt()
   .disable(['link', 'image'])
   .enable(['link'])
   .enable('image');
 
 // Enable everything
-const md = markdownit({
+const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true,

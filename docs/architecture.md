@@ -114,16 +114,18 @@ In many cases, that allows easy output changes even without parser intrusion.
 For example, let's convert every image that uses a Vimeo link into a player iframe:
 
 ```js
-var md = require('markdown-it')();
+import MarkdownIt from 'markdown-it'
 
-var defaultRender = md.renderer.rules.image,
-    vimeoRE       = /^https?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
+const md = new MarkdownIt()
+
+const defaultRender = md.renderer.rules.image
+const vimeoRE = /^https?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/
 
 md.renderer.rules.image = function (tokens, idx, options, env, self) {
-  var src = tokens[idx].attrGet('src');
+  const src = tokens[idx].attrGet('src');
 
   if (vimeoRE.test(src)) {
-    var id = src.match(vimeoRE)[2];
+    const id = src.match(vimeoRE)[2];
 
     return `<div class="embed-responsive embed-responsive-16by9">\n  <iframe class="embed-responsive-item" src="//player.vimeo.com/video/${id}"></iframe>\n</div>\n`;
   }
@@ -137,7 +139,7 @@ Here is another example on how to add `target="_blank"` to all links:
 
 ```js
 // Remember the old renderer if overridden, or proxy to the default renderer.
-var defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
+const defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
 };
 
@@ -157,12 +159,13 @@ renderer override, but it can be more simple. Let's use the
 to do the same thing as in previous example:
 
 ```js
-var iterator = require('markdown-it-for-inline');
+import MarkdownIt from 'markdown-it'
+import iterator from 'markdown-it-for-inline'
 
-var md = require('markdown-it')()
-            .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
-              tokens[idx].attrSet('target', '_blank');
-            });
+const md = new MarkdownIt()
+  .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
+    tokens[idx].attrSet('target', '_blank');
+  });
 ```
 
 You also can write your own renderer to generate formats other than HTML, such as

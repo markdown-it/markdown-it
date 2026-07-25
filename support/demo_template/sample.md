@@ -110,7 +110,7 @@ Sample text here...
 Syntax highlighting
 
 ``` js
-var foo = function (bar) {
+const foo = function (bar) {
   return bar++;
 };
 

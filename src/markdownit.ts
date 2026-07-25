@@ -152,77 +152,78 @@ function normalizeLinkText (url: string): string {
  *
  * @example Basic usage
  * ```javascript
- * // node.js, "classic" way:
- * var MarkdownIt = require('markdown-it'),
- *     md = new MarkdownIt();
- * var result = md.render('# markdown-it rulezz!');
- *
- * // node.js, the same, but with sugar:
- * var md = require('markdown-it')();
- * var result = md.render('# markdown-it rulezz!');
+ * // node.js
+ * import MarkdownIt from 'markdown-it'
+ * const md = new MarkdownIt()
+ * const result = md.render('# markdown-it rulezz!')
  *
  * // browser without AMD, added to "window" on script load
  * // Note, there are no dash.
- * var md = window.markdownit();
- * var result = md.render('# markdown-it rulezz!');
+ * const browserMd = new window.markdownit()
+ * const browserResult = browserMd.render('# markdown-it rulezz!')
  * ```
  *
  * @example Single line rendering, without paragraph wrap
  * ```javascript
- * var md = require('markdown-it')();
- * var result = md.renderInline('__markdown-it__ rulezz!');
+ * import MarkdownIt from 'markdown-it'
+ * const md = new MarkdownIt()
+ * const result = md.renderInline('__markdown-it__ rulezz!')
  * ```
  *
  * @example Presets and options
  * ```javascript
+ * import MarkdownIt from 'markdown-it'
+ *
  * // commonmark mode
- * var md = require('markdown-it')('commonmark');
+ * const commonmark = new MarkdownIt('commonmark')
  *
  * // default mode
- * var md = require('markdown-it')();
+ * const md = new MarkdownIt()
  *
  * // enable everything
- * var md = require('markdown-it')({
+ * const full = new MarkdownIt({
  *   html: true,
  *   linkify: true,
  *   typographer: true
- * });
+ * })
  * ```
  *
  * @example Syntax highlighting
  * ```js
- * var hljs = require('highlight.js') // https://highlightjs.org/
+ * import MarkdownIt from 'markdown-it'
+ * import hljs from 'highlight.js' // https://highlightjs.org/
  *
- * var md = require('markdown-it')({
+ * const md = new MarkdownIt({
  *   highlight: function (str, lang) {
  *     if (lang && hljs.getLanguage(lang)) {
  *       try {
- *         return hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
+ *         return hljs.highlight(str, { language: lang, ignoreIllegals: true }).value
  *       } catch (__) {}
  *     }
  *
- *     return ''; // use external default escaping
+ *     return '' // use external default escaping
  *   }
- * });
+ * })
  * ```
  *
  * @example Full wrapper override
  * If you need assign class to `<pre>` or `<code>`:
  * ```javascript
- * var hljs = require('highlight.js') // https://highlightjs.org/
+ * import MarkdownIt from 'markdown-it'
+ * import hljs from 'highlight.js' // https://highlightjs.org/
  *
  * // Actual default values
- * var md = require('markdown-it')({
+ * const md = new MarkdownIt({
  *   highlight: function (str, lang) {
  *     if (lang && hljs.getLanguage(lang)) {
  *       try {
- *         return `<pre><code class="hljs">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
+ *         return `<pre><code class="hljs">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`
  *       } catch (__) {}
  *     }
  *
- *     return `<pre><code class="hljs">${md.utils.escapeHtml(str)}</code></pre>`;
+ *     return `<pre><code class="hljs">${md.utils.escapeHtml(str)}</code></pre>`
  *   }
- * });
+ * })
  * ```
  *
  * @category Main
@@ -258,7 +259,8 @@ class MarkdownIt {
    *
    * @example
    * ```javascript
-   * var md = require('markdown-it')();
+   * import MarkdownIt from 'markdown-it'
+   * const md = new MarkdownIt()
    *
    * function myToken(tokens, idx, options, env, self) {
    *   //...
@@ -286,7 +288,9 @@ class MarkdownIt {
    *
    * @example
    * ```javascript
-   * var md = require('markdown-it')();
+   * import MarkdownIt from 'markdown-it'
+   * const md = new MarkdownIt()
+   *
    * // enable everything
    * md.validateLink = function () { return true; }
    * ```
@@ -348,9 +352,11 @@ class MarkdownIt {
    *
    * @example
    * ```javascript
-   * var md = require('markdown-it')()
-   *             .set({ html: true, breaks: true })
-   *             .set({ typographer: true });
+   * import MarkdownIt from 'markdown-it'
+   *
+   * const md = new MarkdownIt()
+   *   .set({ html: true, breaks: true })
+   *   .set({ typographer: true })
    * ```
    */
   set (options: Partial<MarkdownItOptions>): this {
@@ -409,9 +415,11 @@ class MarkdownIt {
    *
    * @example
    * ```javascript
-   * var md = require('markdown-it')()
-   *             .enable(['sub', 'sup'])
-   *             .disable('smartquotes');
+   * import MarkdownIt from 'markdown-it'
+   *
+   * const md = new MarkdownIt()
+   *   .enable(['sub', 'sup'])
+   *   .disable('smartquotes')
    * ```
    */
   enable (list: string | string[], ignoreInvalid = false): this {
@@ -467,11 +475,13 @@ class MarkdownIt {
    *
    * @example
    * ```javascript
-   * var iterator = require('markdown-it-for-inline');
-   * var md = require('markdown-it')()
-   *             .use(iterator, 'foo_replace', 'text', function (tokens, idx) {
-   *               tokens[idx].content = tokens[idx].content.replace(/foo/g, 'bar');
-   *             });
+   * import MarkdownIt from 'markdown-it'
+   * import iterator from 'markdown-it-for-inline'
+   *
+   * const md = new MarkdownIt()
+   *   .use(iterator, 'foo_replace', 'text', function (tokens, idx) {
+   *     tokens[idx].content = tokens[idx].content.replace(/foo/g, 'bar')
+   *   })
    * ```
    */
   use<Params extends unknown[]> (

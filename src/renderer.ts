@@ -152,12 +152,13 @@ class Renderer {
    *
    * @example Custom render rules
    * ```javascript
-   * var md = require('markdown-it')();
+   * import MarkdownIt from 'markdown-it'
+   * const md = new MarkdownIt()
    *
    * md.renderer.rules.strong_open  = function () { return '<b>'; };
    * md.renderer.rules.strong_close = function () { return '</b>'; };
    *
-   * var result = md.renderInline(...);
+   * const result = md.renderInline(...);
    * ```
    *
    * @example Each rule is called as independent static function with fixed signature

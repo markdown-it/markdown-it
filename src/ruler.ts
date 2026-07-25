@@ -97,7 +97,8 @@ class Ruler<Args extends unknown[], Result> {
    *
    * @example Replace existing typographer replacement rule with new one
    * ```javascript
-   * var md = require('markdown-it')();
+   * import MarkdownIt from 'markdown-it'
+   * const md = new MarkdownIt()
    *
    * md.core.ruler.at('replacements', function replace(state) {
    *   //...
@@ -126,7 +127,8 @@ class Ruler<Args extends unknown[], Result> {
    *
    * @example
    * ```javascript
-   * var md = require('markdown-it')();
+   * import MarkdownIt from 'markdown-it'
+   * const md = new MarkdownIt()
    *
    * md.block.ruler.before('paragraph', 'my_rule', function replace(state) {
    *   //...
@@ -160,7 +162,8 @@ class Ruler<Args extends unknown[], Result> {
    *
    * @example
    * ```javascript
-   * var md = require('markdown-it')();
+   * import MarkdownIt from 'markdown-it'
+   * const md = new MarkdownIt()
    *
    * md.inline.ruler.after('text', 'my_rule', function replace(state) {
    *   //...
@@ -193,7 +196,8 @@ class Ruler<Args extends unknown[], Result> {
    *
    * @example
    * ```javascript
-   * var md = require('markdown-it')();
+   * import MarkdownIt from 'markdown-it'
+   * const md = new MarkdownIt()
    *
    * md.core.ruler.push('my_rule', function replace(state) {
    *   //...
