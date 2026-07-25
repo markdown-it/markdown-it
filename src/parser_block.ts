@@ -1,9 +1,3 @@
-/** internal
- * class ParserBlock
- *
- * Block-level tokenizer.
- **/
-
 import Ruler from './ruler.ts'
 import StateBlock from './rules_block/state_block.ts'
 import type Token from './token.ts'
@@ -43,14 +37,12 @@ const _rules: Array<[
 ]
 
 /**
- * new ParserBlock()
- **/
+ * Block-level tokenizer.
+ */
 class ParserBlock {
   /**
-   * ParserBlock#ruler -> Ruler
-   *
-   * [[Ruler]] instance. Keep configuration of block rules.
-   **/
+   * {@link Ruler} instance. Keep configuration of block rules.
+   */
   ruler = new Ruler<[StateBlock, number, number, boolean], boolean>()
 
   State = StateBlock
@@ -127,10 +119,8 @@ class ParserBlock {
   }
 
   /**
-   * ParserBlock.parse(str, md, env, outTokens)
-   *
    * Process input string and push block tokens into `outTokens`
-   **/
+   */
   parse (src: string, md: MarkdownIt, env: Env, outTokens: Token[]): void {
     if (!src) { return }
 

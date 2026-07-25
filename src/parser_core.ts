@@ -1,10 +1,3 @@
-/** internal
- * class ParserCore
- *
- * Top-level rules executor. Glues block/inline parsers and does intermediate
- * transformations.
- **/
-
 import Ruler from './ruler.ts'
 import StateCore from './rules_core/state_core.ts'
 
@@ -32,14 +25,13 @@ const _rules: Array<[
 ]
 
 /**
- * new ParserCore()
- **/
+ * Top-level rules executor. Glues block/inline parsers and does intermediate
+ * transformations.
+ */
 class ParserCore {
   /**
-   * ParserCore#ruler -> Ruler
-   *
-   * [[Ruler]] instance. Keep configuration of core rules.
-   **/
+   * {@link Ruler} instance. Keep configuration of core rules.
+   */
   ruler = new Ruler<[StateCore], void>()
 
   State = StateCore
@@ -51,10 +43,8 @@ class ParserCore {
   }
 
   /**
-   * ParserCore.process(state)
-   *
    * Executes core chain rules.
-   **/
+   */
   process (state: StateCore): void {
     const rules = this.ruler.getRules('')
 

@@ -1,8 +1,8 @@
+type RuleOptions = { alt?: string[] }
+
 /**
- * class Ruler
- *
- * Helper class, used by [[MarkdownIt#core]], [[MarkdownIt#block]] and
- * [[MarkdownIt#inline]] to manage sequences of functions (rules):
+ * Helper class, used by {@link MarkdownIt.core}, {@link MarkdownIt.block} and
+ * {@link MarkdownIt.inline} to manage sequences of functions (rules):
  *
  * - keep rules in defined order
  * - assign the name to each rule
@@ -12,15 +12,9 @@
  * - cacheing lists of active rules
  *
  * You will not need use this class directly until write plugins. For simple
- * rules control use [[MarkdownIt.disable]], [[MarkdownIt.enable]] and
- * [[MarkdownIt.use]].
- **/
-
-/**
- * new Ruler()
- **/
-type RuleOptions = { alt?: string[] }
-
+ * rules control use {@link MarkdownIt.disable}, {@link MarkdownIt.enable} and
+ * {@link MarkdownIt.use}.
+ */
 class Ruler<Args extends unknown[], Result> {
   // List of added rules. Each element is:
   //
@@ -92,30 +86,23 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.at(name, fn [, options])
- * - name (String): rule name to replace.
- * - fn (Function): new rule function.
- * - options (Object): new rule options (not mandatory).
- *
- * Replace rule by name with new function & options. Throws error if name not
- * found.
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * Replace existing typographer replacement rule with new one:
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.core.ruler.at('replacements', function replace(state) {
- *   //...
- * });
- * ```
- **/
+   * Replace rule by name with new function & options. Throws error if name not
+   * found.
+   *
+   * @param name Rule name to replace.
+   * @param fn New rule function.
+   * @param options Rule options. `alt` is an array with names of "alternate"
+   * chains.
+   *
+   * @example Replace existing typographer replacement rule with new one
+   * ```javascript
+   * var md = require('markdown-it')();
+   *
+   * md.core.ruler.at('replacements', function replace(state) {
+   *   //...
+   * });
+   * ```
+   */
   at (name: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(name)
 
@@ -127,29 +114,24 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.before(beforeName, ruleName, fn [, options])
- * - beforeName (String): new rule will be added before this one.
- * - ruleName (String): name of added rule.
- * - fn (Function): rule function.
- * - options (Object): rule options (not mandatory).
- *
- * Add new rule to chain before one with given name. See also
- * [[Ruler.after]], [[Ruler.push]].
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.block.ruler.before('paragraph', 'my_rule', function replace(state) {
- *   //...
- * });
- * ```
- **/
+   * Add new rule to chain before one with given name. See also
+   * {@link Ruler.after}, {@link Ruler.push}.
+   *
+   * @param beforeName New rule will be added before this one.
+   * @param ruleName Name of added rule.
+   * @param fn Rule function.
+   * @param options Rule options. `alt` is an array with names of "alternate"
+   * chains.
+   *
+   * @example
+   * ```javascript
+   * var md = require('markdown-it')();
+   *
+   * md.block.ruler.before('paragraph', 'my_rule', function replace(state) {
+   *   //...
+   * });
+   * ```
+   */
   before (beforeName: string, ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(beforeName)
 
@@ -166,29 +148,24 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.after(afterName, ruleName, fn [, options])
- * - afterName (String): new rule will be added after this one.
- * - ruleName (String): name of added rule.
- * - fn (Function): rule function.
- * - options (Object): rule options (not mandatory).
- *
- * Add new rule to chain after one with given name. See also
- * [[Ruler.before]], [[Ruler.push]].
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.inline.ruler.after('text', 'my_rule', function replace(state) {
- *   //...
- * });
- * ```
- **/
+   * Add new rule to chain after one with given name. See also
+   * {@link Ruler.before}, {@link Ruler.push}.
+   *
+   * @param afterName New rule will be added after this one.
+   * @param ruleName Name of added rule.
+   * @param fn Rule function.
+   * @param options Rule options. `alt` is an array with names of "alternate"
+   * chains.
+   *
+   * @example
+   * ```javascript
+   * var md = require('markdown-it')();
+   *
+   * md.inline.ruler.after('text', 'my_rule', function replace(state) {
+   *   //...
+   * });
+   * ```
+   */
   after (afterName: string, ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     const index = this.__find__(afterName)
 
@@ -205,28 +182,23 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.push(ruleName, fn [, options])
- * - ruleName (String): name of added rule.
- * - fn (Function): rule function.
- * - options (Object): rule options (not mandatory).
- *
- * Push new rule to the end of chain. See also
- * [[Ruler.before]], [[Ruler.after]].
- *
- * ##### Options:
- *
- * - __alt__ - array with names of "alternate" chains.
- *
- * ##### Example
- *
- * ```javascript
- * var md = require('markdown-it')();
- *
- * md.core.ruler.push('my_rule', function replace(state) {
- *   //...
- * });
- * ```
- **/
+   * Push new rule to the end of chain. See also
+   * {@link Ruler.before}, {@link Ruler.after}.
+   *
+   * @param ruleName Name of added rule.
+   * @param fn Rule function.
+   * @param options Rule options. `alt` is an array with names of "alternate"
+   * chains.
+   *
+   * @example
+   * ```javascript
+   * var md = require('markdown-it')();
+   *
+   * md.core.ruler.push('my_rule', function replace(state) {
+   *   //...
+   * });
+   * ```
+   */
   push (ruleName: string, fn: (...args: Args) => Result, options: RuleOptions = {}): void {
     this.__rules__.push({
       name: ruleName,
@@ -239,17 +211,15 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.enable(list [, ignoreInvalid]) -> Array
- * - list (String|Array): list of rule names to enable.
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * Enable rules with given names. If any rule name not found - throw Error.
- * Errors can be disabled by second param.
- *
- * Returns list of found rule names (if no exception happened).
- *
- * See also [[Ruler.disable]], [[Ruler.enableOnly]].
- **/
+   * Enable rules with given names. If any rule name not found - throw Error.
+   * Errors can be disabled by second param.
+   *
+   * See also {@link Ruler.disable}, {@link Ruler.enableOnly}.
+   *
+   * @param list List of rule names to enable.
+   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
+   * @returns List of found rule names (if no exception happened).
+   */
   enable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }
 
@@ -272,15 +242,14 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.enableOnly(list [, ignoreInvalid])
- * - list (String|Array): list of rule names to enable (whitelist).
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * Enable rules with given names, and disable everything else. If any rule name
- * not found - throw Error. Errors can be disabled by second param.
- *
- * See also [[Ruler.disable]], [[Ruler.enable]].
- **/
+   * Enable rules with given names, and disable everything else. If any rule name
+   * not found - throw Error. Errors can be disabled by second param.
+   *
+   * See also {@link Ruler.disable}, {@link Ruler.enable}.
+   *
+   * @param list List of rule names to enable (whitelist).
+   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
+   */
   enableOnly (list: string | string[], ignoreInvalid = false): void {
     if (!Array.isArray(list)) { list = [list] }
 
@@ -290,17 +259,15 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.disable(list [, ignoreInvalid]) -> Array
- * - list (String|Array): list of rule names to disable.
- * - ignoreInvalid (Boolean): set `true` to ignore errors when rule not found.
- *
- * Disable rules with given names. If any rule name not found - throw Error.
- * Errors can be disabled by second param.
- *
- * Returns list of found rule names (if no exception happened).
- *
- * See also [[Ruler.enable]], [[Ruler.enableOnly]].
- **/
+   * Disable rules with given names. If any rule name not found - throw Error.
+   * Errors can be disabled by second param.
+   *
+   * See also {@link Ruler.enable}, {@link Ruler.enableOnly}.
+   *
+   * @param list List of rule names to disable.
+   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
+   * @returns List of found rule names (if no exception happened).
+   */
   disable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }
 
@@ -323,14 +290,12 @@ class Ruler<Args extends unknown[], Result> {
   }
 
   /**
- * Ruler.getRules(chainName) -> Array
- *
- * Return array of active functions (rules) for given chain name. It analyzes
- * rules configuration, compiles caches if not exists and returns result.
- *
- * Default chain name is `''` (empty string). It can't be skipped. That's
- * done intentionally, to keep signature monomorphic for high speed.
- **/
+   * Return array of active functions (rules) for given chain name. It analyzes
+   * rules configuration, compiles caches if not exists and returns result.
+   *
+   * Default chain name is `''` (empty string). It can't be skipped. That's
+   * done intentionally, to keep signature monomorphic for high speed.
+   */
   getRules (chainName: string): Array<(...args: Args) => Result> {
     if (!this.__cache__) this.__compile__()
 

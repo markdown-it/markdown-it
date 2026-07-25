@@ -1,9 +1,3 @@
-/** internal
- * class ParserInline
- *
- * Tokenizes paragraph content.
- **/
-
 import Ruler from './ruler.ts'
 import StateInline from './rules_inline/state_inline.ts'
 import type Token from './token.ts'
@@ -64,22 +58,18 @@ const _rules2: Array<[
 ]
 
 /**
- * new ParserInline()
- **/
+ * Tokenizes paragraph content.
+ */
 class ParserInline {
   /**
-   * ParserInline#ruler -> Ruler
-   *
-   * [[Ruler]] instance. Keep configuration of inline rules.
-   **/
+   * {@link Ruler} instance. Keep configuration of inline rules.
+   */
   ruler = new Ruler<[StateInline, boolean], boolean>()
 
   /**
-   * ParserInline#ruler2 -> Ruler
-   *
-   * [[Ruler]] instance. Second ruler used for post-processing
+   * {@link Ruler} instance. Second ruler used for post-processing
    * (e.g. in emphasis-like rules).
-   **/
+   */
   ruler2 = new Ruler<[StateInline], void>()
 
   State = StateInline
@@ -187,10 +177,8 @@ class ParserInline {
   }
 
   /**
-   * ParserInline.parse(str, md, env, outTokens)
-   *
    * Process input string and push inline tokens into `outTokens`
-   **/
+   */
   parse (str: string, md: MarkdownIt, env: Env, outTokens: Token[]): void {
     const state = new this.State(str, md, env, outTokens)
 

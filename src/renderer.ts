@@ -1,11 +1,3 @@
-/**
- * class Renderer
- *
- * Generates HTML from parsed token stream. Each instance has independent
- * copy of rules. Those can be rewritten with ease. Also, you can add new
- * rules if you create plugin and adds new token types.
- **/
-
 import { unescapeAll, escapeHtml } from './common/utils.ts'
 import type Token from './token.ts'
 import type { Env, MarkdownItOptions } from './types.ts'
@@ -145,18 +137,20 @@ default_rules.html_inline = function (tokens: Token[], idx: number): string {
 }
 
 /**
- * new Renderer()
+ * Generates HTML from parsed token stream. Each instance has independent
+ * copy of rules. Those can be rewritten with ease. Also, you can add new
+ * rules if you create plugin and adds new token types.
  *
- * Creates new [[Renderer]] instance and fill [[Renderer#rules]] with defaults.
- **/
+ * Creates new renderer instance and fills {@link Renderer.rules} with defaults.
+ */
 class Renderer {
   /**
-   * Renderer#rules -> Object
-   *
    * Contains render rules for tokens. Can be updated and extended.
    *
-   * ##### Example
+   * See [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts)
+   * for more details and examples.
    *
+   * @example Custom render rules
    * ```javascript
    * var md = require('markdown-it')();
    *
@@ -166,25 +160,19 @@ class Renderer {
    * var result = md.renderInline(...);
    * ```
    *
-   * Each rule is called as independent static function with fixed signature:
-   *
+   * @example Each rule is called as independent static function with fixed signature
    * ```javascript
    * function my_token_render(tokens, idx, options, env, renderer) {
    *   // ...
    *   return renderedHTML;
    * }
    * ```
-   *
-   * See [source code](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts)
-   * for more details and examples.
-   **/
+   */
   rules: Record<string, RendererRule> = Object.assign({}, default_rules)
 
   /**
- * Renderer.renderAttrs(token) -> String
- *
- * Render token attributes to string.
- **/
+   * Render token attributes to string.
+   */
   renderAttrs (token: Pick<Token, 'attrs'>): string {
     let i, l, result
 
@@ -200,14 +188,13 @@ class Renderer {
   }
 
   /**
- * Renderer.renderToken(tokens, idx, options) -> String
- * - tokens (Array): list of tokens
- * - idx (Numbed): token index to render
- * - options (Object): params of parser instance
- *
- * Default token renderer. Can be overriden by custom function
- * in [[Renderer#rules]].
- **/
+   * Default token renderer. Can be overriden by custom function
+   * in {@link Renderer.rules}.
+   *
+   * @param tokens List of tokens.
+   * @param idx Token index to render.
+   * @param options Params of parser instance.
+   */
   renderToken (tokens: Token[], idx: number, options: MarkdownItOptions): string {
     const token = tokens[idx]
     let result = ''
@@ -267,13 +254,12 @@ class Renderer {
   }
 
   /**
- * Renderer.renderInline(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to render
- * - options (Object): params of parser instance
- * - env (Object): additional data from parsed input (references, for example)
- *
- * The same as [[Renderer.render]], but for single token of `inline` type.
- **/
+   * The same as {@link Renderer.render}, but for single token of `inline` type.
+   *
+   * @param tokens List on block tokens to render.
+   * @param options Params of parser instance.
+   * @param env Additional data from parsed input (references, for example).
+   */
   renderInline (tokens: Token[], options: MarkdownItOptions, env: Env | undefined): string {
     let result = ''
     const rules = this.rules
@@ -291,16 +277,15 @@ class Renderer {
     return result
   }
 
-  /** internal
- * Renderer.renderInlineAsText(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to render
- * - options (Object): params of parser instance
- * - env (Object): additional data from parsed input (references, for example)
- *
- * Special kludge for image `alt` attributes to conform CommonMark spec.
- * Don't try to use it! Spec requires to show `alt` content with stripped markup,
- * instead of simple escaping.
- **/
+  /**
+   * Special kludge for image `alt` attributes to conform CommonMark spec.
+   * Don't try to use it! Spec requires to show `alt` content with stripped markup,
+   * instead of simple escaping.
+   *
+   * @param tokens List on block tokens to render.
+   * @param options Params of parser instance.
+   * @param env Additional data from parsed input (references, for example).
+   */
   renderInlineAsText (tokens: Token[], options: MarkdownItOptions, env: Env | undefined): string {
     let result = ''
 
@@ -329,14 +314,13 @@ class Renderer {
   }
 
   /**
- * Renderer.render(tokens, options, env) -> String
- * - tokens (Array): list on block tokens to render
- * - options (Object): params of parser instance
- * - env (Object): additional data from parsed input (references, for example)
- *
- * Takes token stream and generates HTML. Probably, you will never need to call
- * this method directly.
- **/
+   * Takes token stream and generates HTML. Probably, you will never need to call
+   * this method directly.
+   *
+   * @param tokens List on block tokens to render.
+   * @param options Params of parser instance.
+   * @param env Additional data from parsed input (references, for example).
+   */
   render (tokens: Token[], options: MarkdownItOptions, env?: Env): string {
     let result = ''
     const rules = this.rules
