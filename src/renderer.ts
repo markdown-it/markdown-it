@@ -2,10 +2,11 @@ import { unescapeAll, escapeHtml } from './common/utils.ts'
 import type Token from './token.ts'
 import type { Env, MarkdownItOptions } from './types.ts'
 
+/** Function that renders a token at a given position in a token stream. */
 type RendererRule = (
   tokens: Token[],
   idx: number,
-  options: MarkdownItOptions,
+  options: Required<MarkdownItOptions>,
   env: Env | undefined,
   renderer: Renderer
 ) => string
@@ -15,7 +16,7 @@ const default_rules: Record<string, RendererRule> = {}
 default_rules.code_inline = function (
   tokens: Token[],
   idx: number,
-  options: MarkdownItOptions,
+  options: Required<MarkdownItOptions>,
   env: Env | undefined,
   slf: Renderer
 ): string {
@@ -27,7 +28,7 @@ default_rules.code_inline = function (
 default_rules.code_block = function (
   tokens: Token[],
   idx: number,
-  options: MarkdownItOptions,
+  options: Required<MarkdownItOptions>,
   env: Env | undefined,
   slf: Renderer
 ): string {
@@ -39,7 +40,7 @@ default_rules.code_block = function (
 default_rules.fence = function (
   tokens: Token[],
   idx: number,
-  options: MarkdownItOptions,
+  options: Required<MarkdownItOptions>,
   env: Env | undefined,
   slf: Renderer
 ): string {
@@ -93,7 +94,7 @@ default_rules.fence = function (
 default_rules.image = function (
   tokens: Token[],
   idx: number,
-  options: MarkdownItOptions,
+  options: Required<MarkdownItOptions>,
   env: Env | undefined,
   slf: Renderer
 ): string {
@@ -113,14 +114,14 @@ default_rules.image = function (
 default_rules.hardbreak = function (
   tokens: Token[],
   idx: number,
-  options: MarkdownItOptions
+  options: Required<MarkdownItOptions>
 ): string {
   return options.xhtmlOut ? '<br />\n' : '<br>\n'
 }
 default_rules.softbreak = function (
   tokens: Token[],
   idx: number,
-  options: MarkdownItOptions
+  options: Required<MarkdownItOptions>
 ): string {
   return options.breaks ? (options.xhtmlOut ? '<br />\n' : '<br>\n') : '\n'
 }
@@ -196,7 +197,7 @@ class Renderer {
    * @param idx Token index to render.
    * @param options Params of parser instance.
    */
-  renderToken (tokens: Token[], idx: number, options: MarkdownItOptions): string {
+  renderToken (tokens: Token[], idx: number, options: Required<MarkdownItOptions>): string {
     const token = tokens[idx]
     let result = ''
 
@@ -261,7 +262,7 @@ class Renderer {
    * @param options Params of parser instance.
    * @param env Additional data from parsed input (references, for example).
    */
-  renderInline (tokens: Token[], options: MarkdownItOptions, env: Env | undefined): string {
+  renderInline (tokens: Token[], options: Required<MarkdownItOptions>, env: Env | undefined): string {
     let result = ''
     const rules = this.rules
 
@@ -287,7 +288,7 @@ class Renderer {
    * @param options Params of parser instance.
    * @param env Additional data from parsed input (references, for example).
    */
-  renderInlineAsText (tokens: Token[], options: MarkdownItOptions, env: Env | undefined): string {
+  renderInlineAsText (tokens: Token[], options: Required<MarkdownItOptions>, env: Env | undefined): string {
     let result = ''
 
     for (let i = 0, len = tokens.length; i < len; i++) {
@@ -322,7 +323,7 @@ class Renderer {
    * @param options Params of parser instance.
    * @param env Additional data from parsed input (references, for example).
    */
-  render (tokens: Token[], options: MarkdownItOptions, env?: Env): string {
+  render (tokens: Token[], options: Required<MarkdownItOptions>, env?: Env): string {
     let result = ''
     const rules = this.rules
 

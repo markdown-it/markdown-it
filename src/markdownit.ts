@@ -28,8 +28,11 @@ const config = {
 
 type MarkdownItPresetName = keyof typeof config
 
+/**
+ * Parser preset containing options and enabled rules for each parser component.
+ */
 interface MarkdownItPreset {
-  options?: MarkdownItOptions
+  options?: Required<MarkdownItOptions>
   components?: {
     core?: {
       rules?: string[]
@@ -108,47 +111,7 @@ function normalizeLinkText (url: string): string {
 }
 
 /**
- * Main parser/renderer class.
- *
- * Creates a parser instance with the given config. Can be called without `new`.
- *
- * The optional `presetName` can be `commonmark` or `zero`.
- *
- * MarkdownIt provides named presets as a convenience to quickly
- * enable/disable active syntax rules and options for common use cases.
- *
- * - ["commonmark"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/commonmark.ts) -
- *   configures parser to strict [CommonMark](http://commonmark.org/) mode.
- * - [default](https://github.com/markdown-it/markdown-it/blob/master/src/presets/default.ts) -
- *   similar to GFM, used when no preset name given. Enables all available rules,
- *   but still without html, typographer & autolinker.
- * - ["zero"](https://github.com/markdown-it/markdown-it/blob/master/src/presets/zero.ts) -
- *   all rules disabled. Useful to quickly setup your config via `.enable()`.
- *   For example, when you need only `bold` and `italic` markup and nothing else.
- *
- * Available options:
- *
- * - __html__ - `false`. Set `true` to enable HTML tags in source. Be careful!
- *   That's not safe! You may need external sanitizer to protect output from XSS.
- *   It's better to extend features via plugins, instead of enabling HTML.
- * - __xhtmlOut__ - `false`. Set `true` to add '/' when closing single tags
- *   (`<br />`). This is needed only for full CommonMark compatibility. In real
- *   world you will need HTML output.
- * - __breaks__ - `false`. Set `true` to convert `\n` in paragraphs into `<br>`.
- * - __langPrefix__ - `language-`. CSS language class prefix for fenced blocks.
- *   Can be useful for external highlighters.
- * - __linkify__ - `false`. Set `true` to autoconvert URL-like text to links.
- * - __typographer__  - `false`. Set `true` to enable [some language-neutral
- *   replacement](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.ts) +
- *   quotes beautification (smartquotes).
- * - __quotes__ - `“”‘’`. Double + single quotes replacement pairs, when
- *   typographer enabled and smartquotes on. For example, you can use
- *   `'«»„“'` for Russian, `'„“‚‘'` for German, and
- *   `['«\xA0', '\xA0»', '‹\xA0', '\xA0›']` for French (including nbsp).
- * - __highlight__ - `null`. Highlighter function for fenced code blocks.
- *   Highlighter `function (str, lang)` should return escaped HTML. It can also
- *   return empty string if the source was not changed and should be escaped
- *   externaly. If result starts with <pre... internal wrapper is skipped.
+ * Parses Markdown into tokens and renders them to HTML.
  *
  * @example Basic usage
  * ```javascript
@@ -322,13 +285,13 @@ class MarkdownIt {
    */
   helpers = Object.assign({}, helpers)
 
-  declare options: MarkdownItOptions
+  declare options: Required<MarkdownItOptions>
 
   constructor (
     ...args:
       | []
-      | [options: Partial<MarkdownItOptions>]
-      | [presetName: MarkdownItPresetName, options?: Partial<MarkdownItOptions>]
+      | [options: MarkdownItOptions]
+      | [presetName: MarkdownItPresetName, options?: MarkdownItOptions]
   ) {
     const [presetNameOrOptions, options] = args
 
@@ -359,7 +322,7 @@ class MarkdownIt {
    *   .set({ typographer: true })
    * ```
    */
-  set (options: Partial<MarkdownItOptions>): this {
+  set (options: MarkdownItOptions): this {
     Object.assign(this.options, options)
     return this
   }

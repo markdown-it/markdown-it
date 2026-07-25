@@ -1,8 +1,6 @@
-// Parse link destination
-//
-
 import { unescapeAll } from '../common/utils.ts'
 
+/** Parses the destination in `[label](destination "title")`. */
 export default function parseLinkDestination (str: string, start: number, max: number) {
   let code
   let pos = start

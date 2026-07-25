@@ -1,10 +1,8 @@
-// Core state object
-//
-
 import Token from '../token.ts'
 import type MarkdownIt from '../markdownit.ts'
 import type { Env } from '../types.ts'
 
+/** Mutable state passed through the core rules chain. */
 class StateCore {
   declare src: string
   declare env: Env

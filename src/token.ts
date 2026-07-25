@@ -6,7 +6,10 @@ type TokenNesting = -1 | 0 | 1
 /** @inline */
 type TokenAttribute = [name: string, value: string | number]
 
-/** Create new token and fill passed properties. */
+/**
+ * Represents one item in the parsed token stream, storing parsed data and
+ * providing helpers for managing HTML attributes.
+ */
 class Token {
   /**
    * Type of the token (string, e.g. "paragraph_open")

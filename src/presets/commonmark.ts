@@ -2,7 +2,7 @@
 
 import type { MarkdownItOptions } from '../types.ts'
 
-const options: MarkdownItOptions = {
+const options: Required<MarkdownItOptions> = {
   // Enable HTML tags in source
   html: true,
 

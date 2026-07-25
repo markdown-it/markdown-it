@@ -1,10 +1,9 @@
-// Parser state class
-
 import Token from '../token.ts'
 import { isSpace } from '../common/utils.ts'
 import type MarkdownIt from '../markdownit.ts'
 import type { Env } from '../types.ts'
 
+/** Mutable state passed to block rules while tokenizing a source document. */
 class StateBlock {
   declare src: string
   declare md: MarkdownIt

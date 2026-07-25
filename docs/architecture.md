@@ -1,6 +1,6 @@
 ---
 title: Architecture
-category: Development
+category: Documents
 ---
 
 # markdown-it design principles

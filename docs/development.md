@@ -1,6 +1,6 @@
 ---
 title: Development
-category: Development
+category: Documents
 ---
 
 # Development recommendations

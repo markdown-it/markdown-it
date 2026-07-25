@@ -1,6 +1,3 @@
-// Parse link title
-//
-
 import { unescapeAll } from '../common/utils.ts'
 
 /** @inline */
@@ -12,9 +9,12 @@ interface ParseLinkTitleResult {
   marker: number
 }
 
-// Parse link title within `str` in [start, max] range,
-// or continue previous parsing if `prev_state` is defined (equal to result of last execution).
-//
+/**
+ * Parses the optional title in `[label](destination "title")` or
+ * `[label]: destination "title"`.
+ *
+ * `prev_state` continues a reference title on the next source line.
+ */
 export default function parseLinkTitle (
   str: string,
   start: number,

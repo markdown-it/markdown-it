@@ -1,11 +1,6 @@
-// Parse link label
-//
-// this function assumes that first character ("[") already matches;
-// returns the end of the label
-//
-
 import type StateInline from '../rules_inline/state_inline.ts'
 
+/** Finds the end of a link or image label (`[label]`). */
 export default function parseLinkLabel (state: StateInline, start: number, disableNested?: boolean): number {
   let level, found, marker, prevPos
 

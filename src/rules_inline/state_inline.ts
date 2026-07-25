@@ -1,5 +1,3 @@
-// Inline parser state
-
 import Token from '../token.ts'
 import { isWhiteSpace, isPunctCharCode, isMdAsciiPunct } from '../common/utils.ts'
 import type MarkdownIt from '../markdownit.ts'
@@ -17,6 +15,7 @@ type StateTokenMeta = Record<string, unknown> & {
   delimiters?: Delimiter[]
 }
 
+/** Mutable state passed to inline rules while tokenizing inline content. */
 class StateInline {
   declare src: string
   declare env: Env

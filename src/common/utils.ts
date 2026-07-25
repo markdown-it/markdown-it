@@ -1,4 +1,6 @@
 /**
+ * Common utility functions exposed through `md.utils` for use by plugins.
+ *
  * @module md.utils
  */
 
@@ -30,12 +32,16 @@ function callable<T extends ClassToWrap> (cls: T) {
   return wrapper
 }
 
-// Remove element from array and put another array at those position.
-// Useful for some operations with tokens
+/**
+ * Returns a copy of a token array with the token at `pos` replaced by
+ * `newElements`. Used to transform token streams without modifying the
+ * original array.
+ */
 function arrayReplaceAt<T> (src: T[], pos: number, newElements: T[]): T[] {
   return ([] as T[]).concat(src.slice(0, pos), newElements, src.slice(pos + 1))
 }
 
+/** Checks whether a code point can be decoded from a numeric HTML entity. */
 function isValidEntityCode (c: number) {
   // broken sequence
   if (c >= 0xD800 && c <= 0xDFFF) { return false }
@@ -52,6 +58,10 @@ function isValidEntityCode (c: number) {
   return true
 }
 
+/**
+ * Converts a Unicode code point to a string, like `String.fromCodePoint()`,
+ * but does not throw for invalid input.
+ */
 function fromCodePoint (c: number) {
   /* eslint no-bitwise:0 */
   if (c > 0xffff) {
@@ -91,11 +101,16 @@ function replaceEntityPattern (match: string, name: string) {
   return match
 }
 
+/** Decodes Markdown backslash escapes. */
 function unescapeMd (str: string) {
   if (str.indexOf('\\') < 0) { return str }
   return str.replace(UNESCAPE_MD_RE, '$1')
 }
 
+/**
+ * Decodes Markdown backslash escapes and HTML character references in link
+ * destinations, link titles, and fenced code info strings.
+ */
 function unescapeAll (str: string) {
   if (str.indexOf('\\') < 0 && str.indexOf('&') < 0) { return str }
 
@@ -118,6 +133,7 @@ function replaceUnsafeChar (ch: string): string {
   return HTML_REPLACEMENTS[ch as keyof typeof HTML_REPLACEMENTS]
 }
 
+/** Escapes HTML special characters in a string. */
 function escapeHtml (str: string) {
   if (HTML_ESCAPE_TEST_RE.test(str)) {
     return str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar)
@@ -127,10 +143,12 @@ function escapeHtml (str: string) {
 
 const REGEXP_ESCAPE_RE = /[.?*+^$[\]\\(){}|-]/g
 
+/** Escapes regular expression metacharacters in a string. */
 function escapeRE (str: string) {
   return str.replace(REGEXP_ESCAPE_RE, '\\$&')
 }
 
+/** Checks whether a character code is an ASCII space or tab. */
 function isSpace (code: number) {
   switch (code) {
     case 0x09:
@@ -140,7 +158,11 @@ function isSpace (code: number) {
   return false
 }
 
-// Zs (unicode class) || [\t\f\v\r\n]
+/**
+ * Checks whether a character code is whitespace recognized by Markdown.
+ *
+ * Matches the Unicode `Zs` category or `\t`, `\f`, `\v`, `\r`, `\n`.
+ */
 function isWhiteSpace (code: number) {
   if (code >= 0x2000 && code <= 0x200A) { return true }
   switch (code) {
@@ -160,22 +182,31 @@ function isWhiteSpace (code: number) {
   return false
 }
 
-// Currently without astral characters support.
+/**
+ * Checks whether a character is Unicode punctuation or a symbol.
+ *
+ * Does not support astral characters.
+ */
 function isPunctChar (ch: string) {
   return ucmicro.P.test(ch) || ucmicro.S.test(ch)
 }
 
+/** Checks whether a Unicode code point is punctuation or a symbol. */
 function isPunctCharCode (code: number) {
   return isPunctChar(fromCodePoint(code))
 }
 
-// Markdown ASCII punctuation characters.
-//
-// !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~
-// http://spec.commonmark.org/0.15/#ascii-punctuation-character
-//
-// Don't confuse with unicode punctuation !!! It lacks some chars in ascii range.
-//
+/**
+ * Markdown ASCII punctuation characters.
+ *
+ *     !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @,
+ *     [, \, ], ^, _, `, {, |, }, or ~
+ *
+ * http://spec.commonmark.org/0.15/#ascii-punctuation-character
+ *
+ * Don't confuse with Unicode punctuation. It lacks some characters in the
+ * ASCII range.
+ */
 function isMdAsciiPunct (ch: number) {
   switch (ch) {
     case 0x21/* ! */:
@@ -216,8 +247,7 @@ function isMdAsciiPunct (ch: number) {
   }
 }
 
-// Hepler to unify [reference labels].
-//
+/** Normalizes `[reference labels]` for case-insensitive lookup. */
 function normalizeReference (str: string) {
   // Trim and collapse whitespace
   //
@@ -273,8 +303,10 @@ function isAsciiTrimmable (c: number) {
   return c === 0x20 || c === 0x09 || c === 0x0a || c === 0x0d
 }
 
-// "Light" .trim() for blocks (headers, paragraphs), where unicode spaces
-// should be preserved.
+/**
+ * "Light" `.trim()` for blocks (headings, paragraphs), where Unicode spaces
+ * should be preserved.
+ */
 function asciiTrim (str: string) {
   let start = 0
   for (; start < str.length; start++) {
@@ -291,10 +323,10 @@ function asciiTrim (str: string) {
   return str.slice(start, end + 1)
 }
 
-// Re-export libraries commonly used in both markdown-it and its plugins,
-// so plugins won't have to depend on them explicitly, which reduces their
-// bundled size (e.g. a browser build).
-//
+/**
+ * Libraries commonly used by markdown-it and its plugins, re-exported to
+ * reduce duplicate dependencies in browser bundles.
+ */
 const lib = { mdurl, ucmicro }
 
 export {

@@ -4,11 +4,17 @@ export interface Reference {
   href: string
 }
 
+/**
+ * Shared environment passed through parsing and rendering.
+ *
+ * Plugins may use it to store arbitrary data.
+ */
 export interface Env {
   [key: string]: unknown
   references?: Record<string, Reference>
 }
 
+/** Delimiter entry used by emphasis-like inline rules. */
 export interface Delimiter {
   /** Char code of the starting marker. */
   marker: number
@@ -35,25 +41,29 @@ export interface Delimiter {
   jump?: number
 }
 
-/** @category Main */
+/**
+ * Options controlling Markdown parsing and rendering.
+ *
+ * @category Main
+ */
 export interface MarkdownItOptions {
   /** Enable HTML tags in source. */
-  html: boolean
+  html?: boolean
 
   /** Use '/' to close single tags (`<br />`). */
-  xhtmlOut: boolean
+  xhtmlOut?: boolean
 
   /** Convert '\n' in paragraphs into `<br>`. */
-  breaks: boolean
+  breaks?: boolean
 
   /** CSS language prefix for fenced blocks. */
-  langPrefix: string
+  langPrefix?: string
 
   /** Autoconvert URL-like text to links. */
-  linkify: boolean
+  linkify?: boolean
 
   /** Enable language-neutral replacements and quotes beautification. */
-  typographer: boolean
+  typographer?: boolean
 
   /**
    * Double + single quotes replacement pairs, when typographer is enabled
@@ -62,15 +72,15 @@ export interface MarkdownItOptions {
    * For example, use `'«»„“'` for Russian, `'„“‚‘'` for German, and
    * `['«\xA0', '\xA0»', '‹\xA0', '\xA0›']` for French (including nbsp).
    */
-  quotes: string | string[]
+  quotes?: string | string[]
 
   /**
    * Highlighter function. Should return escaped HTML, or an empty string if
    * the source string was not changed and should be escaped externally.
    * If the result starts with `<pre`, the internal wrapper is skipped.
    */
-  highlight: ((str: string, lang: string, attrs: string) => string) | null
+  highlight?: ((str: string, lang: string, attrs: string) => string) | null
 
   /** Internal protection against excessive recursion. */
-  maxNesting: number
+  maxNesting?: number
 }

@@ -20,7 +20,7 @@ export default {
     GitHub: 'https://github.com/markdown-it/markdown-it'
   },
   defaultCategory: 'Plugin API',
-  categoryOrder: ['Main', 'Plugin API', 'Development', '*'],
+  categoryOrder: ['Main', 'Plugin API', 'Documents', '*'],
   sort: ['source-order'],
   navigation: {
     includeCategories: true

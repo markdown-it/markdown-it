@@ -1,4 +1,7 @@
 /**
+ * Functions used to parse links and images, split out of parser rules because
+ * of their size.
+ *
  * @module md.helpers
  */
 
