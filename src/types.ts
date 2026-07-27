@@ -56,13 +56,18 @@ export interface MarkdownItOptions {
   /** Convert '\n' in paragraphs into `<br>`. */
   breaks?: boolean
 
-  /** CSS language prefix for fenced blocks. */
+  /** CSS language prefix for fenced blocks, used by external syntax highlighters. */
   langPrefix?: string
 
   /** Autoconvert URL-like text to links. */
   linkify?: boolean
 
-  /** Enable language-neutral replacements and quotes beautification. */
+  /**
+   * Enable language-neutral replacements and quotes beautification.
+   *
+   * See the [replacement rules](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.ts)
+   * for the full list.
+   */
   typographer?: boolean
 
   /**

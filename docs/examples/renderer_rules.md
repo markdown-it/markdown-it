@@ -108,7 +108,7 @@ Earlier we noticed that `renderer.rules.bullet_list_open` is undefined by defaul
 
 CSS classes are attributes on HTML elements. If we think back to the object representation of the `ul` element we looked at, we might remember that it contained an `attrs` key with the value `null`. This means this token had no attributes. `attrs` can be an array of `[key, value]` pairs which describe attributes to be added to the token.
 
-Looking at [the API documention for Token objects](https://markdown-it.github.io/markdown-it/classes/Token.html#attrjoin)
+Looking at [the API documention for Token objects](https://markdown-it.github.io/markdown-it/classes/Token.html)
 we find the `attrJoin` method. This method allows us to join an existing
 attributes value with a new value or create the attribute if it doens't exist
 yet. Simply pushing the value (for example with `token.attr.push(["key", "value"]`)

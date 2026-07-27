@@ -18,17 +18,8 @@ __Table of content__
 
 - [Install](#install)
 - [Usage examples](#usage-examples)
-  - [Simple](#simple)
-  - [Init with presets and options](#init-with-presets-and-options)
-  - [Plugins load](#plugins-load)
-  - [Syntax highlighting](#syntax-highlighting)
-  - [Linkify](#linkify)
 - [API](#api)
 - [Syntax extensions](#syntax-extensions)
-  - [Manage rules](#manage-rules)
-- [Benchmark](#benchmark)
-- [Authors](#authors)
-- [References / Thanks](#references--thanks)
 
 ## Install
 
@@ -57,7 +48,7 @@ See also:
   for plugins writers.
 
 
-### Simple
+**Simple** <!-- omit in toc -->
 
 ```js
 // node.js
@@ -80,11 +71,11 @@ const result = md.renderInline('__markdown-it__ rulezz!');
 ```
 
 
-### Init with presets and options
+**Init with presets and options** <!-- omit in toc -->
 
 (*) presets define combinations of active rules and options. Can be
 `"commonmark"`, `"zero"` or `"default"` (if skipped). See
-[API docs](https://markdown-it.github.io/markdown-it/classes/MarkdownIt.html#constructor) for more details.
+[API docs](https://markdown-it.github.io/markdown-it/classes/MarkdownIt.html#constructor.constructor) for more details.
 
 ```js
 import MarkdownIt from 'markdown-it'
@@ -101,45 +92,12 @@ const md = new MarkdownIt({
   linkify: true,
   typographer: true
 })
-
-// full options list (defaults)
-const md = new MarkdownIt({
-  // Enable HTML tags in source
-  html:         false,
-
-  // Use '/' to close single tags (<br />).
-  // This is only for full CommonMark compatibility.
-  xhtmlOut:     false,
-
-  // Convert '\n' in paragraphs into <br>
-  breaks:       false,
-
-  // CSS language prefix for fenced blocks. Can be
-  // useful for external highlighters.
-  langPrefix:   'language-',
-
-  // Autoconvert URL-like text to links
-  linkify:      false,
-
-  // Enable some language-neutral replacement + quotes beautification
-  // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.ts
-  typographer:  false,
-
-  // Double + single quotes replacement pairs, when typographer enabled,
-  // and smartquotes on. Could be either a String or an Array.
-  //
-  // For example, you can use '«»„“' for Russian, '„“‚‘' for German,
-  // and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
-  quotes: '“”‘’',
-
-  // Highlighter function. Should return escaped HTML,
-  // or '' if the source string is not changed and should be escaped externally.
-  // If result starts with <pre... internal wrapper is skipped.
-  highlight: function (/*str, lang*/) { return ''; }
-});
 ```
 
-### Plugins load
+See [MarkdownItOptions](https://markdown-it.github.io/markdown-it/interfaces/MarkdownItOptions.html)
+for the full options list.
+
+**Plugins load** <!-- omit in toc -->
 
 ```js
 import MarkdownIt from 'markdown-it'
@@ -151,7 +109,7 @@ const md = new MarkdownIt()
 ```
 
 
-### Syntax highlighting
+**Syntax highlighting** <!-- omit in toc -->
 
 Apply syntax highlighting to fenced code blocks with the `highlight` option:
 
@@ -184,7 +142,8 @@ const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return `<pre><code class="hljs">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
+        return `<pre><code class="hljs">${hljs.highlight(str,
+          { language: lang, ignoreIllegals: true }).value}</code></pre>`;
       } catch (__) {}
     }
 
@@ -193,7 +152,7 @@ const md = new MarkdownIt({
 });
 ```
 
-### Linkify
+**Linkify** <!-- omit in toc -->
 
 `linkify: true` uses [linkify-it](https://github.com/markdown-it/linkify-it). To
 configure linkify-it, access the linkify instance through `md.linkify`:
@@ -232,7 +191,7 @@ Via plugins:
 - ... and [others](https://www.npmjs.org/browse/keyword/markdown-it-plugin)
 
 
-### Manage rules
+**Manage rules** <!-- omit in toc -->
 
 By default all rules are enabled, but can be restricted by options. On plugin
 load all its rules are enabled automatically.
@@ -259,59 +218,3 @@ You can find all rules in sources:
 - [`ParserCore`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_core.ts)
 - [`ParserBlock`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_block.ts)
 - [`ParserInline`](https://github.com/markdown-it/markdown-it/blob/master/src/parser_inline.ts)
-
-
-## Benchmark
-
-Here is the result of readme parse at MB Pro Retina 2013 (2.4 GHz):
-
-```bash
-npm run benchmark-deps
-benchmark/benchmark.mjs readme
-
-Selected samples: (1 of 28)
- > README
-
-Sample: README.md (7774 bytes)
- > commonmark-reference x 1,222 ops/sec ±0.96% (97 runs sampled)
- > current x 743 ops/sec ±0.84% (97 runs sampled)
- > current-commonmark x 1,568 ops/sec ±0.84% (98 runs sampled)
- > marked x 1,587 ops/sec ±4.31% (93 runs sampled)
-```
-
-> [!NOTE]
->
-> CommonMark version runs with [simplified link normalizers](https://github.com/markdown-it/markdown-it/blob/master/benchmark/implementations/current-commonmark/index.mjs)
-> for more "honest" compare. Difference is ≈1.5×.
-
-As you can see, `markdown-it` doesn't pay with speed for its flexibility.
-Slowdown of "full" version caused by additional features not available in
-other implementations.
-
-
-## Authors
-
-- Alex Kocharin [github/rlidwka](https://github.com/rlidwka)
-- Vitaly Puzrin [github/puzrin](https://github.com/puzrin)
-
-_markdown-it_ is the result of the decision of the authors who contributed to
-99% of the _Remarkable_ code to move to a project with the same authorship but
-new leadership (Vitaly and Alex). It's not a fork.
-
-## References / Thanks
-
-Big thanks to [John MacFarlane](https://github.com/jgm) for his work on the
-CommonMark spec and reference implementations. His work saved us a lot of time
-during this project's development.
-
-**Related Links:**
-
-- https://github.com/jgm/CommonMark - reference CommonMark implementations in C & JS,
-  also contains latest spec & online demo.
-- http://talk.commonmark.org - CommonMark forum, good place to collaborate
-  developers' efforts.
-
-**Ports**
-
-- [motion-markdown-it](https://github.com/digitalmoksha/motion-markdown-it) - Ruby/RubyMotion
-- [markdown-it-py](https://github.com/ExecutableBookProject/markdown-it-py)- Python

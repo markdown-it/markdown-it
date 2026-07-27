@@ -3,7 +3,10 @@ export default {
 
   projectDocuments: [
     'docs/architecture.md',
-    'docs/development.md'
+    'docs/development.md',
+    'docs/benchmark.md',
+    'docs/authors.md',
+    'docs/references.md'
   ],
   alwaysCreateEntryPointModule: false,
 
@@ -26,7 +29,7 @@ export default {
     GitHub: 'https://github.com/markdown-it/markdown-it'
   },
   defaultCategory: 'Plugin API',
-  categoryOrder: ['Main', 'Plugin API', 'Documents', '*'],
+  categoryOrder: ['Main', 'Documents', 'Plugin API', '*'],
   sort: ['source-order'],
   navigation: {
     includeCategories: true
