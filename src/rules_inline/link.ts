@@ -103,7 +103,8 @@ export default function link (state: StateInline, silent: boolean): boolean {
     // (collapsed reference link and shortcut reference link respectively)
     if (!label) { label = state.src.slice(labelStart, labelEnd) }
 
-    ref = state.env.references[normalizeReference(label)]
+    label = normalizeReference(label)
+    ref = state.env.references[label]
     if (!ref) {
       state.pos = oldPos
       return false
@@ -125,6 +126,11 @@ export default function link (state: StateInline, silent: boolean): boolean {
     token_o.attrs = attrs
     if (title) {
       attrs.push(['title', title])
+    }
+    if (label) {
+      const meta: Record<string, unknown> = Object.create(null)
+      meta.label = label
+      token_o.meta = meta
     }
 
     state.linkLevel++

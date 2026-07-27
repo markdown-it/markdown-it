@@ -202,6 +202,17 @@ describe('Plugins', function () {
 })
 
 describe('Misc', function () {
+  it('Should store reference labels in token metadata', function () {
+    const md = markdownit()
+    const tokens = md.parse('[text][foo bar]\n\n![alt][FOO   BAR]\n\n[Foo Bar]: /url', {})
+    const inlineTokens = tokens.filter(token => token.type === 'inline')
+    const expectedMeta = Object.create(null)
+    expectedMeta.label = 'FOO BAR'
+
+    assert.deepEqual(inlineTokens[0].children[0].meta, expectedMeta)
+    assert.deepEqual(inlineTokens[1].children[0].meta, expectedMeta)
+  })
+
   it('Should replace NULL characters', function () {
     const md = markdownit()
 
