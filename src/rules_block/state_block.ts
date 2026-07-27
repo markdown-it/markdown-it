@@ -35,7 +35,6 @@ class StateBlock {
   line = 0 // line index in src
   lineMax = 0 // lines count
   tight = false // loose/tight mode for lists
-  ddIndent = -1 // indent of the current dd block (-1 if there isn't any)
   listIndent = -1 // indent of the current list block (-1 if there isn't any)
 
   // can be 'blockquote', 'list', 'root', 'paragraph' or 'reference'

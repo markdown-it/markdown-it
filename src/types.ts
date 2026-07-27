@@ -10,7 +10,7 @@ export interface Reference {
  * Plugins may use it to store arbitrary data.
  */
 export interface Env {
-  [key: string]: unknown
+  [key: string | symbol]: unknown
   references?: Record<string, Reference>
 }
 
