@@ -60,55 +60,7 @@ type MarkdownItComponentName = keyof NonNullable<MarkdownItPreset['components']>
 const BAD_PROTO_RE = /^(vbscript|javascript|file|data):/
 const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/
 
-function validateLink (url: string): boolean {
-  // url should be normalized at this point, and existing entities are decoded
-  const str = url.trim().toLowerCase()
-
-  return BAD_PROTO_RE.test(str) ? GOOD_DATA_RE.test(str) : true
-}
-
 const RECODE_HOSTNAME_FOR = ['http:', 'https:', 'mailto:']
-
-function normalizeLink (url: string): string {
-  const parsed = mdurl.parse(url, true)
-
-  if (parsed.hostname) {
-    // Encode hostnames in urls like:
-    // `http://host/`, `https://host/`, `mailto:user@host`, `//host/`
-    //
-    // We don't encode unknown schemas, because it's likely that we encode
-    // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
-    //
-    if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
-      try {
-        parsed.hostname = punycode.toASCII(parsed.hostname)
-      } catch (er) { /**/ }
-    }
-  }
-
-  return mdurl.encode(mdurl.format(parsed))
-}
-
-function normalizeLinkText (url: string): string {
-  const parsed = mdurl.parse(url, true)
-
-  if (parsed.hostname) {
-    // Encode hostnames in urls like:
-    // `http://host/`, `https://host/`, `mailto:user@host`, `//host/`
-    //
-    // We don't encode unknown schemas, because it's likely that we encode
-    // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
-    //
-    if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
-      try {
-        parsed.hostname = punycode.toUnicode(parsed.hostname)
-      } catch (er) { /**/ }
-    }
-  }
-
-  // add '%' to exclude list because of https://github.com/markdown-it/markdown-it/issues/720
-  return mdurl.decode(mdurl.format(parsed), mdurl.decode.defaultChars + '%')
-}
 
 /**
  * Parses Markdown into tokens and renders them to HTML.
@@ -258,18 +210,60 @@ class MarkdownIt {
    * md.validateLink = function () { return true; }
    * ```
    */
-  validateLink = validateLink
+  validateLink (url: string): boolean {
+    // url should be normalized at this point, and existing entities are decoded
+    const str = url.trim().toLowerCase()
+
+    return BAD_PROTO_RE.test(str) ? GOOD_DATA_RE.test(str) : true
+  }
 
   /**
    * Function used to encode link url to a machine-readable format,
    * which includes url-encoding, punycode, etc.
    */
-  normalizeLink = normalizeLink
+  normalizeLink (url: string): string {
+    const parsed = mdurl.parse(url, true)
+
+    if (parsed.hostname) {
+      // Encode hostnames in urls like:
+      // `http://host/`, `https://host/`, `mailto:user@host`, `//host/`
+      //
+      // We don't encode unknown schemas, because it's likely that we encode
+      // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
+      //
+      if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
+        try {
+          parsed.hostname = punycode.toASCII(parsed.hostname)
+        } catch (er) { /**/ }
+      }
+    }
+
+    return mdurl.encode(mdurl.format(parsed))
+  }
 
   /**
    * Function used to decode link url to a human-readable format`
    */
-  normalizeLinkText = normalizeLinkText
+  normalizeLinkText (url: string): string {
+    const parsed = mdurl.parse(url, true)
+
+    if (parsed.hostname) {
+      // Encode hostnames in urls like:
+      // `http://host/`, `https://host/`, `mailto:user@host`, `//host/`
+      //
+      // We don't encode unknown schemas, because it's likely that we encode
+      // something we shouldn't (e.g. `skype:name` treated as `skype:host`)
+      //
+      if (!parsed.protocol || RECODE_HOSTNAME_FOR.indexOf(parsed.protocol) >= 0) {
+        try {
+          parsed.hostname = punycode.toUnicode(parsed.hostname)
+        } catch (er) { /**/ }
+      }
+    }
+
+    // add '%' to exclude list because of https://github.com/markdown-it/markdown-it/issues/720
+    return mdurl.decode(mdurl.format(parsed), mdurl.decode.defaultChars + '%')
+  }
 
   // Expose utils & helpers for easy acces from plugins
 
