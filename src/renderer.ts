@@ -215,8 +215,14 @@ class Renderer {
     //
     // Only closing hidden tokens count, to not break on other hidden ones.
     //
-    if (token.block && token.nesting !== -1 && idx &&
-        tokens[idx - 1].hidden && tokens[idx - 1].nesting === -1) {
+    // Hidden tokens without nesting (`reference_definition`) are skipped here
+    // and below, or they would break line feeds around neighbour blocks.
+    //
+    let prev = idx - 1
+    while (prev >= 0 && tokens[prev].hidden && tokens[prev].nesting === 0) { prev-- }
+
+    if (token.block && token.nesting !== -1 && prev >= 0 &&
+        tokens[prev].hidden && tokens[prev].nesting === -1) {
       result += '\n'
     }
 
@@ -237,8 +243,11 @@ class Renderer {
       needLf = true
 
       if (token.nesting === 1) {
-        if (idx + 1 < tokens.length) {
-          const nextToken = tokens[idx + 1]
+        let next = idx + 1
+        while (next < tokens.length && tokens[next].hidden && tokens[next].nesting === 0) { next++ }
+
+        if (next < tokens.length) {
+          const nextToken = tokens[next]
 
           if (nextToken.type === 'inline' || nextToken.hidden) {
           // Block-level tag containing an inline tag.

@@ -213,6 +213,33 @@ describe('Misc', function () {
     assert.deepEqual(inlineTokens[1].children[0].meta, expectedMeta)
   })
 
+  it('Should strip reference definition tokens by default', function () {
+    const md = markdownit()
+    const src = '[foo]: /url\n\ntext'
+
+    assert.deepEqual(md.parse(src, {}).filter(t => t.type === 'reference_definition'), [])
+
+    md.core.ruler.disable('strip_references')
+    const tokens = md.parse(src, {}).filter(t => t.type === 'reference_definition')
+    const expectedMeta = Object.create(null)
+    expectedMeta.label = 'FOO'
+
+    assert.strictEqual(tokens.length, 1)
+    assert.deepEqual(tokens[0].map, [0, 1])
+    assert.deepEqual(tokens[0].meta, expectedMeta)
+  })
+
+  it('Should not affect line breaks with reference definition tokens', function () {
+    const md = markdownit()
+    md.core.ruler.disable('strip_references')
+
+    assert.strictEqual(md.render('- [foo]: /url'), '<ul>\n<li></li>\n</ul>\n')
+    assert.strictEqual(md.render('> [foo]: /url'), '<blockquote></blockquote>\n')
+    assert.strictEqual(md.render('> [foo]: /url\n> bar'), '<blockquote>\n<p>bar</p>\n</blockquote>\n')
+    assert.strictEqual(md.render('- [foo]: /url\n\n  > bar'),
+      '<ul>\n<li>\n<blockquote>\n<p>bar</p>\n</blockquote>\n</li>\n</ul>\n')
+  })
+
   it('Should replace NULL characters', function () {
     const md = markdownit()
 
