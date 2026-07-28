@@ -213,7 +213,10 @@ class Renderer {
     //  - a
     //    >
     //
-    if (token.block && token.nesting !== -1 && idx && tokens[idx - 1].hidden) {
+    // Only closing hidden tokens count, to not break on other hidden ones.
+    //
+    if (token.block && token.nesting !== -1 && idx &&
+        tokens[idx - 1].hidden && tokens[idx - 1].nesting === -1) {
       result += '\n'
     }
 
