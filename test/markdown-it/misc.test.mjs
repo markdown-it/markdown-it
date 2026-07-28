@@ -324,6 +324,22 @@ describe('Misc', function () {
     )
   })
 
+  it('Should join text tokens inside image alt', function () {
+    const md = markdownit()
+
+    assert.strictEqual(md.render('![a \\* b](/u)'),
+      '<p><img src="/u" alt="a * b"></p>\n')
+
+    assert.strictEqual(md.render('![a &amp; b](/u)'),
+      '<p><img src="/u" alt="a &amp; b"></p>\n')
+
+    assert.strictEqual(md.render('![a &lt; b](/u)'),
+      '<p><img src="/u" alt="a &lt; b"></p>\n')
+
+    assert.strictEqual(md.render('![a \\* *b* &amp; c](/u)'),
+      '<p><img src="/u" alt="a * b &amp; c"></p>\n')
+  })
+
   it('Should escape surrogate pairs (coverage)', function () {
     const md = markdownit()
 

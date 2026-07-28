@@ -7,6 +7,30 @@
 //
 
 import type StateCore from './state_core.ts'
+import type Token from '../token.ts'
+
+function join_alt (tokens: Token[]): void {
+  let curr, last
+  const max = tokens.length
+
+  for (curr = 0; curr < max; curr++) {
+    if (tokens[curr].type === 'text_special') tokens[curr].type = 'text'
+  }
+
+  for (curr = last = 0; curr < max; curr++) {
+    if (tokens[curr].type === 'text' &&
+        curr + 1 < max &&
+        tokens[curr + 1].type === 'text') {
+      tokens[curr + 1].content = tokens[curr].content + tokens[curr + 1].content
+    } else {
+      if (curr !== last) { tokens[last] = tokens[curr] }
+
+      last++
+    }
+  }
+
+  if (curr !== last) tokens.length = last
+}
 
 export default function text_join (state: StateCore): void {
   let curr, last
@@ -20,9 +44,10 @@ export default function text_join (state: StateCore): void {
     const max = tokens.length
 
     for (curr = 0; curr < max; curr++) {
-      if (tokens[curr].type === 'text_special') {
-        tokens[curr].type = 'text'
-      }
+      if (tokens[curr].type === 'text_special') tokens[curr].type = 'text'
+
+      // image `alt` is parsed into its own token tree
+      if (tokens[curr].children) join_alt(tokens[curr].children!)
     }
 
     for (curr = last = 0; curr < max; curr++) {
@@ -38,8 +63,6 @@ export default function text_join (state: StateCore): void {
       }
     }
 
-    if (curr !== last) {
-      tokens.length = last
-    }
+    if (curr !== last) tokens.length = last
   }
 }
