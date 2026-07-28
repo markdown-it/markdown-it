@@ -306,6 +306,8 @@ class Renderer {
     for (let i = 0, len = tokens.length; i < len; i++) {
       switch (tokens[i].type) {
         case 'text':
+        case 'code_inline':
+          // code content is added as plain text, without backticks
           result += tokens[i].content
           break
         case 'image':

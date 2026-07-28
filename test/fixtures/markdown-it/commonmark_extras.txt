@@ -742,6 +742,14 @@ Html in image description
 .
 
 
+Code in image description (#1142)
+.
+![foo *bar* `baz` bla](image.png)
+.
+<p><img src="image.png" alt="foo bar baz bla"></p>
+.
+
+
 https://github.com/commonmark/commonmark.js/pull/279
 
 .
