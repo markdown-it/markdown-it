@@ -1,28 +1,49 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Report a reproducible problem in markdown-it
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-<!--
+Before opening this issue, reduce the problem to a minimal example.
 
-Please note, this package is about IMPLEMENTATION of CommonMark https://commonmark.org/, not about markdown itself. We stay aside of markup discussions. Prior to report a bug, make sure it's about this package, not generic thing.
+For Markdown parsing bugs, compare the same input in:
 
-**Before you post**
+- [markdown-it demo](https://markdown-it.github.io/) with `CommonMark strict`
+  enabled;
+- [CommonMark dingus](https://spec.commonmark.org/dingus/).
 
-1. https://spec.commonmark.org/ - make sure you've read CommonMark spec.
-2. https://spec.commonmark.org/dingus/ - if you think you found parse error, check it in reference implementation first.
+Both permalinks are required for parsing bugs. For other bugs, provide a minimal
+runnable reproduction. Issues without a reproducible example may be closed.
 
-**In your report** 
+Syntax extensions are not accepted in markdown-it core. Search for an existing
+[plugin](https://www.npmjs.com/search?q=keywords%3Amarkdown-it-plugin) or
+[create your own](https://github.com/markdown-it/markdown-it/blob/master/docs/development.md).
 
-It will be very helpful, if you can provide permalinks with online samples and explain the difference:
+## Description
 
-- https://markdown-it.github.io/ - online demo of `markdown-it`.
-- https://spec.commonmark.org/dingus/ - online demo of reference CommonMark's implementation.
+<!-- Briefly describe the problem. -->
 
-If you wish to provide code sample - make sure it is as small as possible and can be executed.
+## Reproduction
 
--->
+### markdown-it demo
+
+<!-- Required for parsing bugs: paste the permalink. -->
+
+### CommonMark dingus
+
+<!-- Required for parsing bugs: paste the permalink. -->
+
+### Other reproduction
+
+<!-- For non-parsing bugs, paste minimal runnable code. -->
+
+## Expected result
+
+## Actual result
+
+## Environment
+
+<!-- markdown-it version, runtime and relevant options. -->
