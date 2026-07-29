@@ -1,8 +1,4 @@
-/*
- * The oxide theme ships no styles for TypeDoc's markdown alerts
- * (`> [!NOTE]` & co), so they render as plain text. Rules below are taken
- * from the default TypeDoc theme, with GitHub's alert colors.
- */
+/* Missed alert styles */
 
 :root {
   --color-alert-note: #0969da;
@@ -47,3 +43,21 @@
 .tsd-alert-important { --alert-color: var(--color-alert-important); }
 .tsd-alert-warning { --alert-color: var(--color-alert-warning); }
 .tsd-alert-caution { --alert-color: var(--color-alert-caution); }
+
+/* Fix `@example` tags display */
+
+.item-table.comment-tags {
+  display: block;
+}
+
+.item-table.comment-tags > dt {
+  margin: 1em 0 0.5em;
+}
+
+.item-table.comment-tags > dd {
+  margin: 0;
+}
+
+.item-table.comment-tags > dd > pre {
+  margin-top: 0;
+}
