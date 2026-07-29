@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exposed parser internals classes as static properties on `markdownit`.
 - Added the `markdown-it/browser` export with bundled ESM and UMD builds.
 - Added colored CLI help on supported terminals via `argparse` 3.
+- Added reference labels to link/image tokens, #938.
+- Added `reference_definition` tokens. They remain stripped by default
+  for backwards compatibility, #1055. Also adjusted the line-break heuristic
+  to keep output exactly the same.
+
 
 ### Changed
 - [breaking] `linkify-it` => v6
@@ -24,10 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `dist/browser/`.
 - Migrated to Typescript.
 - `entities` => v8. Can be rolled back to v7 if compatibility issues happen.
+- Moved `validateLink`, `normalizeLink` and `normalizeLinkText` from properties
+  to prototype methods.
+- Reworked issue templates and contribution guidelines.
 
 ### Removed
 - [breaking] Removed package-internal subpath exports (`markdown-it/lib/*` and similar).
   Use the static classes exposed on `markdownit` instead.
+- [breaking] Removed obsolete `StateBlock#ddIndent`, #1139. Update
+  `markdown-it-deflist` to keep it working.
 
 ### Fixed
 - Preserve a literal backslash before a terminating space in link destinations,
@@ -36,6 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   #1189.
 - Require semicolons for named entities in all decoding paths, completing the
   fix for #1096.
+- Enhanced the `text_join` rule to process image alt text.
+- Include inline code content in image alt text, #1142.
 
 
 ## [14.3.0] - 2026-07-02
