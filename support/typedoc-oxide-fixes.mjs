@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import { deflateSync as deflate, inflateSync as inflate } from 'zlib'
-import { RendererEvent, ReflectionKind } from 'typedoc'
+import { RendererEvent, PageEvent, ReflectionKind } from 'typedoc'
 import { itemSlug } from 'typedoc-theme-oxide/dist/plugin/context/utils.js'
 
 // Workarounds for https://github.com/balthild/typedoc-theme-oxide - drop them
@@ -21,6 +21,19 @@ export function load (app) {
         refl.defaultValue = ' = ' + refl.defaultValue
       }
     }
+  })
+
+  // The theme builds its own "Source" and navigation links, ignoring
+  // `sourceLinkExternal`. Markdown links are already handled by TypeDoc.
+  const baseUrl = app.options.getValue('hostedBaseUrl')
+
+  app.renderer.on(PageEvent.END, (page) => {
+    page.contents = page.contents.replace(/<a\s[^>]*>/g, tag => {
+      if (/\btarget=/.test(tag)) return tag
+      const href = tag.match(/\shref="(https?:\/\/[^"]*)"/)?.[1]
+      if (!href || (href + '/').startsWith(baseUrl)) return tag
+      return tag.replace(/^<a\s/, '<a target="_blank" ')
+    })
   })
 
   // The theme emits its own member anchors ("property.core") but leaves the

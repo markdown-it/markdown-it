@@ -438,7 +438,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Internal API change. Due to new CM spec requirements, we had to update
   internals. That should not touch ordinary users, but can affect some external
   plugins. If you are plugin developper - see migration guide:
-  https://github.com/markdown-it/markdown-it/blob/master/docs/5.0_migration.md.
+  https://github.com/markdown-it/markdown-it/blob/master/docs/migration/5.0.md.
 - Updated CM spec compatibility to 0.22 (see list below).
 - Keep tabs (don't replace with spaces).
 - Don't wrap iframes with paragraphs.
@@ -539,7 +539,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.0] - 2015-03-11
 ### Changed
-- Breaking internal API changes. See [v4 migration notes](https://github.com/markdown-it/markdown-it/blob/master/docs/4.0_migration.md). In usual case you will need to update plugins.
+- Breaking internal API changes. See [v4 migration notes](https://github.com/markdown-it/markdown-it/blob/master/docs/migration/4.0.md). In usual case you will need to update plugins.
 - Token internals changed
 - Unified the most of renderer methods.
 - Changed tokens creation - use `state.push(...)` (see sources)

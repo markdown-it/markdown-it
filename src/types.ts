@@ -83,6 +83,48 @@ export interface MarkdownItOptions {
    * Highlighter function. Should return escaped HTML, or an empty string if
    * the source string was not changed and should be escaped externally.
    * If the result starts with `<pre`, the internal wrapper is skipped.
+   *
+   * The highlighter is called by the default `fence` renderer rule. If needed,
+   * you can replace that renderer rule completely; see the
+   * [renderer source](https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts).
+   *
+   * @example
+   * ```js
+   * import MarkdownIt from 'markdown-it'
+   * import hljs from 'highlight.js' // https://highlightjs.org
+   *
+   * const md = new MarkdownIt({
+   *   highlight: function (str, lang) {
+   *     if (lang && hljs.getLanguage(lang)) {
+   *       try {
+   *         return hljs.highlight(str, { language: lang }).value
+   *       } catch (__) {}
+   *     }
+   *
+   *     return '' // use external default escaping
+   *   }
+   * });
+   * ```
+   *
+   * @example
+   * Or with full wrapper override (if you need assign class to `<pre>` or `<code>`):
+   * ```js
+   * import MarkdownIt from 'markdown-it'
+   * import hljs from 'highlight.js' // https://highlightjs.org
+   *
+   * const md = new MarkdownIt({
+   *   highlight: function (str, lang) {
+   *     if (lang && hljs.getLanguage(lang)) {
+   *       try {
+   *         return `<pre><code class="hljs">${hljs.highlight(str,
+   *           { language: lang, ignoreIllegals: true }).value}</code></pre>`
+   *       } catch (__) {}
+   *     }
+   *
+   *     return `<pre><code class="hljs">${md.utils.escapeHtml(str)}</code></pre>`
+   *   }
+   * });
+   * ```
    */
   highlight?: ((str: string, lang: string, attrs: string) => string) | null
 

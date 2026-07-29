@@ -1,3 +1,8 @@
+---
+title: Safety
+category: Main
+---
+
 # Safety
 
 Many people don't understand that markdown format does not care much about
@@ -18,8 +23,9 @@ for XSS:
 
 So, by default `markdown-it` should be safe. We care about it.
 
-If you find a security problem - contact us via tracker or email. Such reports
-are fixed with top priority.
+If you find a security problem, please
+[report it privately](https://github.com/markdown-it/markdown-it/security/advisories/new).
+Such reports are fixed with top priority.
 
 
 ## Plugins

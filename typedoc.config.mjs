@@ -2,6 +2,9 @@ export default {
   entryPoints: ['src/index.ts'],
 
   projectDocuments: [
+    'docs/usage.md',
+    'docs/syntax_plugins.md',
+    'docs/safety.md',
     'docs/architecture.md',
     'docs/development.md',
     'docs/benchmark.md',
@@ -17,11 +20,15 @@ export default {
     './support/typedoc-oxide-fixes.mjs'
   ],
   theme: 'oxide',
+  customCss: './support/typedoc-custom.css',
   excludeExternals: true,
   placeInternalsInOwningModule: true,
 
   out: 'apidoc',
   includeVersion: true,
+  // `markdownLinkExternal` compares links against `hostedBaseUrl`,
+  // and does nothing until that one is set.
+  hostedBaseUrl: 'https://markdown-it.github.io/markdown-it/',
   markdownLinkExternal: true,
   sourceLinkExternal: true,
   sourceLinkTemplate: 'https://github.com/markdown-it/markdown-it/blob/{gitRevision:short}/{path}#L{line}',
