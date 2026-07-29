@@ -16,24 +16,24 @@ __[Live demo](https://markdown-it.github.io)__
   and [other packages](https://www.npmjs.org/browse/keyword/markdown-it) on npm.
 
 
-## Install
+> [!NOTE]
+> If you are upgrading to v15, see the [migration guide](docs/migration/15.0.md).
 
-**node.js**:
+### [Documentation >>](https://markdown-it.github.io/markdown-it/)
+
+
+##### Install (node.js):
 
 ```bash
 npm install markdown-it
 ```
 
-> [!NOTE]
->
-> For a quick look at `dist/` folder contents, see
-> <https://unpkg.com/markdown-it/>.
->
-> For browser you can use unpkg.com, esm.sh or any other CDN, which mirror npm
-> registry
+For a quick look at `dist/` folder contents, see <https://unpkg.com/markdown-it/>.
+For browser you can use unpkg.com, esm.sh or any other CDN, which mirror npm
+registry.
 
 
-## Usage
+##### Usage
 
 ```js
 import MarkdownIt from 'markdown-it'
@@ -42,8 +42,3 @@ const result = md.render('# markdown-it rulezz!')
 ```
 
 [More usage examples](docs/usage.md).
-
-
-## API
-
-__[API documentation](https://markdown-it.github.io/markdown-it/)__
