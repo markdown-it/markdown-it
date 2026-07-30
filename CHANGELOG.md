@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Exposed parser internals classes as static properties on `markdownit`.
+- Bundled TypeScript declarations. Remove `@types/markdown-it` if you used it.
 - Added the `markdown-it/browser` export with bundled ESM and UMD builds.
 - Added colored CLI help on supported terminals via `argparse` 3.
 - Added reference labels to link/image tokens, #938.

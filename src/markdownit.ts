@@ -31,7 +31,7 @@ type MarkdownItPresetName = keyof typeof config
 /**
  * Parser preset containing options and enabled rules for each parser component.
  */
-interface MarkdownItPreset {
+export interface MarkdownItPreset {
   options?: Required<MarkdownItOptions>
   components?: {
     core?: {

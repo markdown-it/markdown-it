@@ -23,14 +23,27 @@
   ],
   "main": "./dist/markdown-it.cjs.js",
   "module": "./dist/markdown-it.mjs",
+  "types": "./dist/markdown-it.d.cts",
   "exports": {
     ".": {
-      "import": "./dist/markdown-it.mjs",
-      "require": "./dist/markdown-it.cjs.js"
+      "import": {
+        "types": "./dist/markdown-it.d.mts",
+        "default": "./dist/markdown-it.mjs"
+      },
+      "require": {
+        "types": "./dist/markdown-it.d.cts",
+        "default": "./dist/markdown-it.cjs.js"
+      }
     },
     "./browser": {
-      "import": "./dist/browser/markdown-it.esm.min.mjs",
-      "require": "./dist/browser/markdown-it.umd.min.js",
+      "import": {
+        "types": "./dist/markdown-it.d.mts",
+        "default": "./dist/browser/markdown-it.esm.min.mjs"
+      },
+      "require": {
+        "types": "./dist/markdown-it.d.cts",
+        "default": "./dist/browser/markdown-it.umd.min.js"
+      },
       "default": "./dist/browser/markdown-it.umd.min.js"
     },
     "./package.json": "./package.json"
@@ -40,14 +53,14 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --noEmit && tsc --noEmit --strict --skipLibCheck --ignoreConfig --module node20 --moduleResolution node16 test/build/*.[cm]ts",
     "test": "npm run lint && npm run build && npm run type-check && npm run test:cmspec && npm run test:markdown-it && npm run test:build",
     "test:cmspec": "node --test --test-reporter=dot test/cmspec/**/*.test.mjs",
     "test:markdown-it": "node --test test/markdown-it/**/*.test.mjs",
     "test:build": "node --test test/build/**/*.test.mjs",
     "pathological:track-ref": "node support/track-ref-pathological.mjs",
     "pathological:update-hash": "node support/track-ref-pathological.mjs --update",
-    "coverage": "npm run build && c8 --include 'src/**' -r text -r html -r lcov node --test --test-reporter=dot",
+    "coverage": "npm run build && c8 --include 'src/**' -r text -r html -r lcov node --test --test-reporter=dot test/**/*.test.mjs",
     "doc": "typedoc",
     "doc:publish": "npm run doc && gh-pages -d apidoc -f",
     "demo": "npm run lint && node support/build_demo.mjs",
@@ -87,6 +100,7 @@
     "markdown-it-sub": "^2.0.0",
     "markdown-it-sup": "^2.0.0",
     "neostandard": "^0.13.0",
+    "rolldown-plugin-dts": "^0.27.14",
     "tinybench": "^6.0.2",
     "typedoc": "^0.28.19",
     "typedoc-plugin-missing-exports": "^4.1.4",

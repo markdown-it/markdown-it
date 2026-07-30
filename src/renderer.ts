@@ -3,7 +3,7 @@ import type Token from './token.ts'
 import type { Env, MarkdownItOptions } from './types.ts'
 
 /** Function that renders a token at a given position in a token stream. */
-type RendererRule = (
+export type RendererRule = (
   tokens: Token[],
   idx: number,
   options: Required<MarkdownItOptions>,
