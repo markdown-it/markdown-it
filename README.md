@@ -17,7 +17,7 @@ __[Live demo](https://markdown-it.github.io)__
 
 
 > [!NOTE]
-> If you are upgrading to v15, see the [migration guide](docs/migration/15.0.md).
+> If you are upgrading to v15, see the [migration guide](docs/migration/migration_v15.md).
 
 ### [Documentation >>](https://markdown-it.github.io/markdown-it/)
 

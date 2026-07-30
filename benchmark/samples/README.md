@@ -9,7 +9,7 @@
 
 __[Live demo](https://markdown-it.github.io)__
 
-__v4.+ changed internals! Plugins need update. See [migration details](https://github.com/markdown-it/markdown-it/blob/master/docs/4.0_migration.md)__
+__v4.+ changed internals! Plugins need update. See [migration details](https://github.com/markdown-it/markdown-it/blob/master/docs/migration/migration_v4.md)__
 
 - Supports the CommonMark spec + syntax extensions + sugar (URL autolinking, typographer).
 - Configurable syntax! You can add new rules and even replace existing ones.
