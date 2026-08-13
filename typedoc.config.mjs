@@ -1,4 +1,14 @@
+import { Converter } from 'typedoc'
 import condensedThemePlugin from './support/typedoc_condensed_theme/condensed_theme_plugin.mjs'
+
+// Places CHANGELOG.md in Documents without adding TypeDoc frontmatter to it.
+function changelogPlugin (app) {
+  app.converter.on(Converter.EVENT_CREATE_DOCUMENT, (_context, document) => {
+    if (document.name !== 'CHANGELOG') return
+
+    document.frontmatter.category = 'Documents'
+  })
+}
 
 export default {
   entryPoints: ['src/index.ts'],
@@ -11,12 +21,14 @@ export default {
     'docs/development.md',
     'docs/benchmark.md',
     'docs/authors.md',
-    'docs/references.md'
+    'docs/references.md',
+    'CHANGELOG.md'
   ],
   alwaysCreateEntryPointModule: false,
 
   plugin: [
     'typedoc-plugin-missing-exports',
+    changelogPlugin,
     condensedThemePlugin
   ],
   theme: 'condensed',
