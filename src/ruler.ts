@@ -17,15 +17,7 @@ type RuleOptions = { alt?: string[] }
  * {@link MarkdownIt.use}.
  */
 class Ruler<Args extends unknown[], Result> {
-  // List of added rules. Each element is:
-  //
-  // {
-  //   name: XXX,
-  //   enabled: Boolean,
-  //   fn: Function(),
-  //   alt: [ name2, name3 ]
-  // }
-  //
+  /** @internal */
   __rules__: Array<{
     name: string
     enabled: boolean
@@ -38,12 +30,10 @@ class Ruler<Args extends unknown[], Result> {
   // First level - chain name, '' for default.
   // Second level - diginal anchor for fast filtering by charcodes.
   //
+  /** @internal */
   __cache__: Record<string, Array<(...args: Args) => Result>> | null = null
 
-  // Helper methods, should not be used directly
-
-  // Find rule index by name
-  //
+  /** @internal */
   __find__ (name: string): number {
     for (let i = 0; i < this.__rules__.length; i++) {
       if (this.__rules__[i].name === name) {
@@ -53,8 +43,7 @@ class Ruler<Args extends unknown[], Result> {
     return -1
   }
 
-  // Build rules lookup cache
-  //
+  /** @internal */
   __compile__ (): void {
     const chains = new Set<string>()
 
@@ -90,11 +79,6 @@ class Ruler<Args extends unknown[], Result> {
    * Replace rule by name with new function & options. Throws error if name not
    * found.
    *
-   * @param name Rule name to replace.
-   * @param fn New rule function.
-   * @param options Rule options. `alt` is an array with names of "alternate"
-   * chains.
-   *
    * @example Replace existing typographer replacement rule with new one
    * ```javascript
    * import MarkdownIt from 'markdown-it'
@@ -118,12 +102,6 @@ class Ruler<Args extends unknown[], Result> {
   /**
    * Add new rule to chain before one with given name. See also
    * {@link Ruler.after}, {@link Ruler.push}.
-   *
-   * @param beforeName New rule will be added before this one.
-   * @param ruleName Name of added rule.
-   * @param fn Rule function.
-   * @param options Rule options. `alt` is an array with names of "alternate"
-   * chains.
    *
    * @example
    * ```javascript
@@ -154,12 +132,6 @@ class Ruler<Args extends unknown[], Result> {
    * Add new rule to chain after one with given name. See also
    * {@link Ruler.before}, {@link Ruler.push}.
    *
-   * @param afterName New rule will be added after this one.
-   * @param ruleName Name of added rule.
-   * @param fn Rule function.
-   * @param options Rule options. `alt` is an array with names of "alternate"
-   * chains.
-   *
    * @example
    * ```javascript
    * import MarkdownIt from 'markdown-it'
@@ -189,11 +161,6 @@ class Ruler<Args extends unknown[], Result> {
    * Push new rule to the end of chain. See also
    * {@link Ruler.before}, {@link Ruler.after}.
    *
-   * @param ruleName Name of added rule.
-   * @param fn Rule function.
-   * @param options Rule options. `alt` is an array with names of "alternate"
-   * chains.
-   *
    * @example
    * ```javascript
    * import MarkdownIt from 'markdown-it'
@@ -221,9 +188,7 @@ class Ruler<Args extends unknown[], Result> {
    *
    * See also {@link Ruler.disable}, {@link Ruler.enableOnly}.
    *
-   * @param list List of rule names to enable.
-   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
-   * @returns List of found rule names (if no exception happened).
+   * Returns list of found rule names (if no exception happened).
    */
   enable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }
@@ -251,9 +216,6 @@ class Ruler<Args extends unknown[], Result> {
    * not found - throw Error. Errors can be disabled by second param.
    *
    * See also {@link Ruler.disable}, {@link Ruler.enable}.
-   *
-   * @param list List of rule names to enable (whitelist).
-   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
    */
   enableOnly (list: string | string[], ignoreInvalid = false): void {
     if (!Array.isArray(list)) { list = [list] }
@@ -269,9 +231,7 @@ class Ruler<Args extends unknown[], Result> {
    *
    * See also {@link Ruler.enable}, {@link Ruler.enableOnly}.
    *
-   * @param list List of rule names to disable.
-   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
-   * @returns List of found rule names (if no exception happened).
+   * Returns list of found rule names (if no exception happened).
    */
   disable (list: string | string[], ignoreInvalid = false): string[] {
     if (!Array.isArray(list)) { list = [list] }

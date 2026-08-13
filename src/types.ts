@@ -47,19 +47,39 @@ export interface Delimiter {
  * @category Main
  */
 export interface MarkdownItOptions {
-  /** Enable HTML tags in source. */
+  /**
+   * Enable HTML tags in source.
+   *
+   * @defaultValue `false` (`true` for `'commonmark'` preset only)
+   */
   html?: boolean
 
-  /** Use '/' to close single tags (`<br />`). */
+  /**
+   * Use '/' to close single tags (`<br />`).
+   *
+   * @defaultValue `false` (`true` for `'commonmark'` preset only)
+   */
   xhtmlOut?: boolean
 
-  /** Convert '\n' in paragraphs into `<br>`. */
+  /**
+   * Convert '\n' in paragraphs into `<br>`.
+   *
+   * @defaultValue `false`
+   */
   breaks?: boolean
 
-  /** CSS language prefix for fenced blocks, used by external syntax highlighters. */
+  /**
+   * CSS language prefix for fenced blocks, used by external syntax highlighters.
+   *
+   * @defaultValue `'language-'`
+   */
   langPrefix?: string
 
-  /** Autoconvert URL-like text to links. */
+  /**
+   * Autoconvert URL-like text to links.
+   *
+   * @defaultValue `false`
+   */
   linkify?: boolean
 
   /**
@@ -67,6 +87,8 @@ export interface MarkdownItOptions {
    *
    * See the [replacement rules](https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/replacements.ts)
    * for the full list.
+   *
+   * @defaultValue `false`
    */
   typographer?: boolean
 
@@ -76,6 +98,8 @@ export interface MarkdownItOptions {
    *
    * For example, use `'«»„“'` for Russian, `'„“‚‘'` for German, and
    * `['«\xA0', '\xA0»', '‹\xA0', '\xA0›']` for French (including nbsp).
+   *
+   * @defaultValue `'“”‘’'`
    */
   quotes?: string | string[]
 
@@ -125,9 +149,15 @@ export interface MarkdownItOptions {
    *   }
    * });
    * ```
+   *
+   * @defaultValue `null`
    */
   highlight?: ((str: string, lang: string, attrs: string) => string) | null
 
-  /** Internal protection against excessive recursion. */
+  /**
+   * Internal protection against excessive recursion.
+   *
+   * @defaultValue `100`
+   */
   maxNesting?: number
 }

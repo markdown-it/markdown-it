@@ -192,10 +192,6 @@ class Renderer {
   /**
    * Default token renderer. Can be overriden by custom function
    * in {@link Renderer.rules}.
-   *
-   * @param tokens List of tokens.
-   * @param idx Token index to render.
-   * @param options Params of parser instance.
    */
   renderToken (tokens: Token[], idx: number, options: Required<MarkdownItOptions>): string {
     const token = tokens[idx]
@@ -269,10 +265,6 @@ class Renderer {
 
   /**
    * The same as {@link Renderer.render}, but for single token of `inline` type.
-   *
-   * @param tokens List on block tokens to render.
-   * @param options Params of parser instance.
-   * @param env Additional data from parsed input (references, for example).
    */
   renderInline (tokens: Token[], options: Required<MarkdownItOptions>, env: Env | undefined): string {
     let result = ''
@@ -295,10 +287,6 @@ class Renderer {
    * Special kludge for image `alt` attributes to conform CommonMark spec.
    * Don't try to use it! Spec requires to show `alt` content with stripped markup,
    * instead of simple escaping.
-   *
-   * @param tokens List on block tokens to render.
-   * @param options Params of parser instance.
-   * @param env Additional data from parsed input (references, for example).
    */
   renderInlineAsText (tokens: Token[], options: Required<MarkdownItOptions>, env: Env | undefined): string {
     let result = ''
@@ -332,10 +320,6 @@ class Renderer {
   /**
    * Takes token stream and generates HTML. Probably, you will never need to call
    * this method directly.
-   *
-   * @param tokens List on block tokens to render.
-   * @param options Params of parser instance.
-   * @param env Additional data from parsed input (references, for example).
    */
   render (tokens: Token[], options: Required<MarkdownItOptions>, env?: Env): string {
     let result = ''

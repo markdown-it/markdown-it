@@ -291,9 +291,6 @@ class MarkdownIt {
    * containing rules with given names. If rule not found, and `ignoreInvalid`
    * not set - throws exception.
    *
-   * @param list Rule name or list of rule names to enable.
-   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
-   *
    * @example
    * ```javascript
    * import MarkdownIt from 'markdown-it'
@@ -326,9 +323,6 @@ class MarkdownIt {
 
   /**
    * The same as {@link MarkdownIt.enable}, but turn specified rules off.
-   *
-   * @param list Rule name or list of rule names to disable.
-   * @param ignoreInvalid Set `true` to ignore errors when rule not found.
    */
   disable (list: string | string[], ignoreInvalid = false): this {
     let result: string[] = []
@@ -383,9 +377,6 @@ class MarkdownIt {
    * metadata like reference info, needed for the renderer. It also can be used to
    * inject data in specific cases. Usually, you will be ok to pass `{}`,
    * and then pass updated object to renderer.
-   *
-   * @param src Source string.
-   * @param env Environment sandbox.
    */
   parse (src: string, env: Env): Token[] {
     if (typeof src !== 'string') {
@@ -405,9 +396,6 @@ class MarkdownIt {
    * `env` can be used to inject additional metadata (`{}` by default).
    * But you will not need it with high probability. See also comment
    * in {@link MarkdownIt.parse}.
-   *
-   * @param src Source string.
-   * @param env Environment sandbox.
    */
   render (src: string, env: Env = {}): string {
     return this.renderer.render(this.parse(src, env), this.options, env)
@@ -417,9 +405,6 @@ class MarkdownIt {
    * The same as {@link MarkdownIt.parse} but skip all block rules. It returns
    * the block tokens list with the single `inline` element, containing parsed
    * inline tokens in `children` property. Also updates `env` object.
-   *
-   * @param src Source string.
-   * @param env Environment sandbox.
    */
   parseInline (src: string, env: Env): Token[] {
     const state = new this.core.State(src, this, env)
@@ -433,9 +418,6 @@ class MarkdownIt {
   /**
    * Similar to {@link MarkdownIt.render} but for single paragraph content.
    * Result will NOT be wrapped into `<p>` tags.
-   *
-   * @param src Source string.
-   * @param env Environment sandbox.
    */
   renderInline (src: string, env: Env = {}): string {
     return this.renderer.render(this.parseInline(src, env), this.options, env)
