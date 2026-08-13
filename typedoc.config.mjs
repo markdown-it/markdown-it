@@ -1,3 +1,5 @@
+import condensedThemePlugin from './support/typedoc_condensed_theme/condensed_theme_plugin.mjs'
+
 export default {
   entryPoints: ['src/index.ts'],
 
@@ -15,13 +17,11 @@ export default {
 
   plugin: [
     'typedoc-plugin-missing-exports',
-
-    'typedoc-theme-oxide',
-    './support/typedoc-oxide-fixes.mjs'
+    condensedThemePlugin
   ],
-  theme: 'oxide',
-  customCss: './support/typedoc-custom.css',
+  theme: 'condensed',
   excludeExternals: true,
+  excludeInternal: true,
   placeInternalsInOwningModule: true,
 
   out: 'apidoc',
