@@ -1,0 +1,70 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><link rel="canonical" href="https://markdown-it.github.io/markdown-it/"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>markdown-it - v15.0.0</title><meta name="description" content="Documentation for markdown-it"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><link rel="stylesheet" href="assets/condensed_theme.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="index.html" class="title">markdown-it - v15.0.0</a>
+<div id="tsd-toolbar-links"><a href="https://github.com/markdown-it/markdown-it">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<h1>markdown-it - v15.0.0</h1></div>
+<div class="tsd-panel tsd-typography"><h1 id="markdown-it" class="tsd-anchor-link">markdown-it<a href="#markdown-it" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h1>
+<p><a href="https://github.com/markdown-it/markdown-it/actions/workflows/ci.yml" target="_blank" class="external"><img src="https://github.com/markdown-it/markdown-it/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="https://www.npmjs.org/package/markdown-it" target="_blank" class="external"><img src="https://img.shields.io/npm/v/markdown-it.svg?style=flat" alt="NPM version"></a>
+<a href="https://coveralls.io/github/markdown-it/markdown-it?branch=master" target="_blank" class="external"><img src="https://coveralls.io/repos/markdown-it/markdown-it/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a></p>
+<blockquote>
+<p>Markdown parser done right. Fast and easy to extend.</p>
+</blockquote>
+<p><strong><a href="https://markdown-it.github.io" target="_blank" class="external">Live demo</a></strong></p>
+<ul>
+<li>Follows the <a href="http://spec.commonmark.org/" target="_blank" class="external">CommonMark spec</a> + adds syntax extensions &amp; sugar (URL autolinking, typographer).</li>
+<li>Configurable syntax! You can add new rules and even replace existing ones.</li>
+<li>High speed.</li>
+<li>Safe by default.</li>
+<li>Community-written <strong><a href="https://www.npmjs.org/browse/keyword/markdown-it-plugin" target="_blank" class="external">plugins</a></strong>
+and <a href="https://www.npmjs.org/browse/keyword/markdown-it" target="_blank" class="external">other packages</a> on npm.</li>
+</ul>
+<div class="tsd-alert tsd-alert-note"><div class="tsd-alert-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><use href="assets/icons.svg#icon-alertNote"></use></svg><span>Note</span></div><p>
+If you are upgrading to v15, see the <a href="media/migration_v15.md">migration guide</a>.</p>
+</div>
+<h3 id="documentation-" class="tsd-anchor-link"><a href="https://markdown-it.github.io/markdown-it/">Documentation &gt;&gt;</a><a href="#documentation-" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<h5 id="install-nodejs" class="tsd-anchor-link">Install (node.js):<a href="#install-nodejs" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h5>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">markdown-it</span>
+</code><button type="button">Copy</button></pre>
+
+<p>For a quick look at <code>dist/</code> folder contents, see <a href="https://unpkg.com/markdown-it/" target="_blank" class="external">https://unpkg.com/markdown-it/</a>.
+For browser you can use <a href="http://unpkg.com" target="_blank" class="external">unpkg.com</a>, <a href="http://esm.sh" target="_blank" class="external">esm.sh</a> or any other CDN, which mirror npm
+registry.</p>
+<h5 id="usage" class="tsd-anchor-link">Usage<a href="#usage" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h5>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-4">md</span><span class="hl-1">.</span><span class="hl-0">render</span><span class="hl-1">(</span><span class="hl-2">&#39;# markdown-it rulezz!&#39;</span><span class="hl-1">)</span>
+</code><button type="button">Copy</button></pre>
+
+<p><a href="documents/Usage_examples.html">More usage examples</a>.</p>
+</div></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#markdown-it"><span>markdown-<wbr/>it</span></a>
+<ul>
+<li><a href="#documentation-"><span>Documentation &gt;&gt;</span></a></li>
+<li>
+<ul>
+<li><a href="#install-nodejs"><span>Install (node.js):</span></a></li>
+<li><a href="#usage"><span>Usage</span></a></li></ul></li></ul></div></details></div>
+<div class="site-menu">
+<nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/markdown-it/markdown-it" class="tsd-nav-link">GitHub</a></nav>
+<nav class="tsd-navigation"><a href="modules.html">markdown-it - v15.0.0</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div></body></html>

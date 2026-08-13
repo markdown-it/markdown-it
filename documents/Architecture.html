@@ -1,0 +1,140 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Architecture | markdown-it - v15.0.0</title><meta name="description" content="Documentation for markdown-it"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><link rel="stylesheet" href="../assets/condensed_theme.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">markdown-it - v15.0.0</a>
+<div id="tsd-toolbar-links"><a href="https://github.com/markdown-it/markdown-it">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">Architecture</a></li></ul></div>
+<div class="tsd-panel tsd-typography"><h1 id="markdown-it-design-principles" class="tsd-anchor-link">markdown-it design principles<a href="#markdown-it-design-principles" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h1>
+<h2 id="data-flow" class="tsd-anchor-link">Data flow<a href="#data-flow" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>Input data is parsed via nested chains of rules. There are 3 nested chains --
+<code>core</code>, <code>block</code>, &amp; <code>inline</code>:</p>
+<pre><code><span class="hl-4">core</span><br/><span class="hl-1">    </span><span class="hl-4">core</span><span class="hl-1">.</span><span class="hl-0">rule1</span><span class="hl-1"> (</span><span class="hl-4">normalize</span><span class="hl-1">)</span><br/><span class="hl-1">    ...</span><br/><span class="hl-1">    </span><span class="hl-4">core</span><span class="hl-1">.</span><span class="hl-4">ruleX</span><br/><br/><span class="hl-1">    </span><span class="hl-4">block</span><br/><span class="hl-1">        </span><span class="hl-4">block</span><span class="hl-1">.</span><span class="hl-0">rule1</span><span class="hl-1"> (</span><span class="hl-4">blockquote</span><span class="hl-1">)</span><br/><span class="hl-1">        ...</span><br/><span class="hl-1">        </span><span class="hl-4">block</span><span class="hl-1">.</span><span class="hl-4">ruleX</span><br/><br/><span class="hl-1">    </span><span class="hl-4">core</span><span class="hl-1">.</span><span class="hl-0">ruleX1</span><span class="hl-1"> (</span><span class="hl-4">intermediate</span><span class="hl-1"> </span><span class="hl-4">rule</span><span class="hl-1"> </span><span class="hl-4">that</span><span class="hl-1"> </span><span class="hl-4">applies</span><span class="hl-1"> </span><span class="hl-4">on</span><span class="hl-1"> </span><span class="hl-4">block</span><span class="hl-1"> </span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">nothing</span><span class="hl-1"> </span><span class="hl-4">yet</span><span class="hl-1">)</span><br/><span class="hl-1">    ...</span><br/><span class="hl-1">    </span><span class="hl-4">core</span><span class="hl-1">.</span><span class="hl-4">ruleXX</span><br/><br/><span class="hl-1">    </span><span class="hl-0">inline</span><span class="hl-1"> (</span><span class="hl-4">applied</span><span class="hl-1"> </span><span class="hl-4">to</span><span class="hl-1"> </span><span class="hl-4">each</span><span class="hl-1"> </span><span class="hl-4">block</span><span class="hl-1"> </span><span class="hl-4">token</span><span class="hl-1"> </span><span class="hl-4">with</span><span class="hl-1"> </span><span class="hl-2">&quot;inline&quot;</span><span class="hl-1"> </span><span class="hl-4">type</span><span class="hl-1">)</span><br/><span class="hl-1">        </span><span class="hl-4">inline</span><span class="hl-1">.</span><span class="hl-0">rule1</span><span class="hl-1"> (</span><span class="hl-4">text</span><span class="hl-1">)</span><br/><span class="hl-1">        ...</span><br/><span class="hl-1">        </span><span class="hl-4">inline</span><span class="hl-1">.</span><span class="hl-4">ruleX</span><br/><br/><span class="hl-1">    </span><span class="hl-4">core</span><span class="hl-1">.</span><span class="hl-0">ruleYY</span><span class="hl-1"> (</span><span class="hl-4">applies</span><span class="hl-1"> </span><span class="hl-4">to</span><span class="hl-1"> </span><span class="hl-4">all</span><span class="hl-1"> </span><span class="hl-4">tokens</span><span class="hl-1">)</span><br/><span class="hl-1">    ... (</span><span class="hl-4">abbreviation</span><span class="hl-1">, </span><span class="hl-4">footnote</span><span class="hl-1">, </span><span class="hl-4">typographer</span><span class="hl-1">, </span><span class="hl-4">linkifier</span><span class="hl-1">)</span>
+</code><button>Copy</button></pre>
+
+<p>The result of parsing is a token stream that will be passed to the renderer to generate HTML content.</p>
+<p>These tokens can themselves be parsed again to generate more tokens (ex: a <code>list</code> token can be divided into multiple <code>inline</code> tokens).</p>
+<p>An <code>env</code> object can be used alongside tokens to inject external variables into your parsers and renderers.</p>
+<p>Each chain (<code>core</code>, <code>block</code>, &amp; <code>inline</code>) uses an independent <code>state</code> object when parsing data so that each parsing operation is independent and can be disabled on the fly.</p>
+<h2 id="token-stream" class="tsd-anchor-link">Token stream<a href="#token-stream" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>Instead of a traditional AST, we use more low-level data representation -- <em>tokens</em>.
+The difference is simple:</p>
+<ul>
+<li>Tokens are a simple sequence (an array).</li>
+<li>Opening and closing tags are separate.</li>
+<li>There are special token objects, &quot;inline containers&quot;, that have nested tokens.
+These are sequences with inline markup, such as bold, italic, text, etc.</li>
+</ul>
+<p>See the <a href="https://github.com/markdown-it/markdown-it/blob/master/src/token.ts" target="_blank" class="external"><code>Token</code></a> class
+for details about each token's content.</p>
+<p>In total, a token stream is:</p>
+<ul>
+<li>On the top level -- an array of paired or single &quot;block&quot; tokens:
+<ul>
+<li>open/close for headers, lists, blockquotes, paragraphs, etc.</li>
+<li>code blocks, fenced blocks, horizontal rules, HTML blocks, inline containers</li>
+</ul>
+</li>
+<li>Each inline token has a <code>children</code> property with a nested token stream for inline content:
+<ul>
+<li>open/close for bold, italic, links, inline code, etc.</li>
+<li>text, line breaks</li>
+</ul>
+</li>
+</ul>
+<p>Why not an AST? It's not needed for our tasks. We follow the KISS principle.
+If you wish, you can call a parser without a renderer and convert the token stream
+into an AST.</p>
+<p>More details about tokens:</p>
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts" target="_blank" class="external"><code>Renderer</code> source</a></li>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/master/src/token.ts" target="_blank" class="external"><code>Token</code> source</a></li>
+<li><a href="https://markdown-it.github.io/" target="_blank" class="external">Live demo</a> - type your text and click the <code>debug</code> tab.</li>
+</ul>
+<h2 id="rules" class="tsd-anchor-link">Rules<a href="#rules" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>Rules are functions, doing &quot;magic&quot; with parser <code>state</code> objects. A rule is associated with one or more <em>chains</em> and is unique. For instance, a <code>blockquote</code> token is associated with the <code>blockquote</code>, <code>paragraph</code>, <code>heading</code>, and <code>list</code> chains.</p>
+<p>Rules are managed by name via <a href="https://markdown-it.github.io/markdown-it/classes/Ruler.html"><code>Ruler</code></a> instances and can be enabled and disabled from <a href="https://markdown-it.github.io/markdown-it/classes/MarkdownIt.html"><code>MarkdownIt</code></a>'s methods.</p>
+<p>Note that some rules have a <code>validation mode</code> -- in this mode, rules do not
+modify the token stream and only look ahead for the end of a token. It's one
+important design principle -- a token stream is &quot;write only&quot; on the <code>block</code> &amp; <code>inline</code> parse stages.</p>
+<p>Parsers are designed to keep rules independent of each other. You can safely enable/disable them or
+add new ones. There are no universal recipes for how to create new rules -- the design of
+distributed state machines with good data isolation is a tricky business. However, you
+can investigate existing rules &amp; plugins to see possible approaches.</p>
+<p>In complex cases you can try to ask for help in the <a href="https://github.com/markdown-it/markdown-it/issues" target="_blank" class="external">issue tracker</a>.
+The condition is very simple -- it should be clear from your ticket that you studied the docs, sources,
+and tried to do something yourself. We never reject with help to real developers.</p>
+<h2 id="renderer" class="tsd-anchor-link">Renderer<a href="#renderer" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>After the token stream is generated, it's passed to a <a href="https://markdown-it.github.io/markdown-it/classes/Renderer.html"><code>Renderer</code></a>.
+It then iterates through all the tokens, passing each to a rule with the same name as its token type.</p>
+<p>Renderer rules are located in <code>md.renderer.rules[name]</code> and are simple functions
+with the same signature:</p>
+<pre><code class="js"><span class="hl-5">function</span><span class="hl-1"> (</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">, </span><span class="hl-4">env</span><span class="hl-1">, </span><span class="hl-4">renderer</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-7">// ...</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-4">htmlResult</span><span class="hl-1">;</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p>In many cases, that allows easy output changes even without parser intrusion.
+For example, let's convert every image that uses a Vimeo link into a player iframe:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">defaultRender</span><span class="hl-1"> = </span><span class="hl-4">md</span><span class="hl-1">.</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">rules</span><span class="hl-1">.</span><span class="hl-4">image</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">vimeoRE</span><span class="hl-1"> =</span><span class="hl-9"> /</span><span class="hl-10">^</span><span class="hl-9">https</span><span class="hl-11">?</span><span class="hl-9">:</span><span class="hl-12">\/\/</span><span class="hl-13">(</span><span class="hl-9">www</span><span class="hl-12">\.</span><span class="hl-13">)</span><span class="hl-11">?</span><span class="hl-9">vimeo.com</span><span class="hl-12">\/</span><span class="hl-13">(</span><span class="hl-9">\d</span><span class="hl-11">+</span><span class="hl-13">)(</span><span class="hl-10">$|</span><span class="hl-12">\/</span><span class="hl-13">)</span><span class="hl-9">/</span><br/><br/><span class="hl-4">md</span><span class="hl-1">.</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">rules</span><span class="hl-1">.</span><span class="hl-0">image</span><span class="hl-1"> = </span><span class="hl-5">function</span><span class="hl-1"> (</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">, </span><span class="hl-4">env</span><span class="hl-1">, </span><span class="hl-4">self</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">src</span><span class="hl-1"> = </span><span class="hl-4">tokens</span><span class="hl-1">[</span><span class="hl-4">idx</span><span class="hl-1">].</span><span class="hl-0">attrGet</span><span class="hl-1">(</span><span class="hl-2">&#39;src&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">vimeoRE</span><span class="hl-1">.</span><span class="hl-0">test</span><span class="hl-1">(</span><span class="hl-4">src</span><span class="hl-1">)) {</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">id</span><span class="hl-1"> = </span><span class="hl-4">src</span><span class="hl-1">.</span><span class="hl-0">match</span><span class="hl-1">(</span><span class="hl-4">vimeoRE</span><span class="hl-1">)[</span><span class="hl-14">2</span><span class="hl-1">];</span><br/><br/><span class="hl-1">    </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-2">`&lt;div class=&quot;embed-responsive embed-responsive-16by9&quot;&gt;</span><br/><span class="hl-2">&lt;iframe class=&quot;embed-responsive-item&quot; src=&quot;//player.vimeo.com/video/</span><span class="hl-5">${</span><span class="hl-4">id</span><span class="hl-5">}</span><span class="hl-2">&quot;&gt;&lt;/iframe&gt;</span><br/><span class="hl-2">&lt;/div&gt;</span><br/><span class="hl-2">`</span><span class="hl-1">;</span><br/><span class="hl-1">  }</span><br/><br/><span class="hl-1">  </span><span class="hl-7">// Pass the token to the default renderer.</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-0">defaultRender</span><span class="hl-1">(</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">, </span><span class="hl-4">env</span><span class="hl-1">, </span><span class="hl-4">self</span><span class="hl-1">);</span><br/><span class="hl-1">};</span>
+</code><button type="button">Copy</button></pre>
+
+<p>Here is another example on how to add <code>target=&quot;_blank&quot;</code> to all links:</p>
+<pre><code class="js"><span class="hl-7">// Remember the old renderer if overridden, or proxy to the default renderer.</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">defaultRender</span><span class="hl-1"> = </span><span class="hl-4">md</span><span class="hl-1">.</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">rules</span><span class="hl-1">.</span><span class="hl-4">link_open</span><span class="hl-1"> || </span><span class="hl-5">function</span><span class="hl-1"> (</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">, </span><span class="hl-4">env</span><span class="hl-1">, </span><span class="hl-4">self</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-4">self</span><span class="hl-1">.</span><span class="hl-0">renderToken</span><span class="hl-1">(</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">);</span><br/><span class="hl-1">};</span><br/><br/><span class="hl-4">md</span><span class="hl-1">.</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">rules</span><span class="hl-1">.</span><span class="hl-0">link_open</span><span class="hl-1"> = </span><span class="hl-5">function</span><span class="hl-1"> (</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">, </span><span class="hl-4">env</span><span class="hl-1">, </span><span class="hl-4">self</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-7">// Add a new `target` attribute, or replace the value of the existing one.</span><br/><span class="hl-1">  </span><span class="hl-4">tokens</span><span class="hl-1">[</span><span class="hl-4">idx</span><span class="hl-1">].</span><span class="hl-0">attrSet</span><span class="hl-1">(</span><span class="hl-2">&#39;target&#39;</span><span class="hl-1">, </span><span class="hl-2">&#39;_blank&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-7">// Pass the token to the default renderer.</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-0">defaultRender</span><span class="hl-1">(</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">, </span><span class="hl-4">env</span><span class="hl-1">, </span><span class="hl-4">self</span><span class="hl-1">);</span><br/><span class="hl-1">};</span>
+</code><button type="button">Copy</button></pre>
+
+<p>Note that if you need to add attributes, you can do so without a renderer override.
+For example, you can update tokens in the <code>core</code> chain. This is slower than a direct
+renderer override, but it can be more simple. Let's use the
+<a href="https://github.com/markdown-it/markdown-it-for-inline" target="_blank" class="external"><code>markdown-it-for-inline</code></a> plugin
+to do the same thing as in previous example:</p>
+<pre><code class="js"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">iterator</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it-for-inline&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><span class="hl-1">  .</span><span class="hl-0">use</span><span class="hl-1">(</span><span class="hl-4">iterator</span><span class="hl-1">, </span><span class="hl-2">&#39;url_new_win&#39;</span><span class="hl-1">, </span><span class="hl-2">&#39;link_open&#39;</span><span class="hl-1">, </span><span class="hl-5">function</span><span class="hl-1"> (</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">tokens</span><span class="hl-1">[</span><span class="hl-4">idx</span><span class="hl-1">].</span><span class="hl-0">attrSet</span><span class="hl-1">(</span><span class="hl-2">&#39;target&#39;</span><span class="hl-1">, </span><span class="hl-2">&#39;_blank&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">  });</span>
+</code><button type="button">Copy</button></pre>
+
+<p>You also can write your own renderer to generate formats other than HTML, such as
+JSON and XML. You can even use it to generate an AST.</p>
+<h2 id="summary" class="tsd-anchor-link">Summary<a href="#summary" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<p>This was mentioned in <a href="#data-flow">Data flow</a>, but let's repeat the sequence again:</p>
+<ol>
+<li>Blocks are parsed, and the top level of each token stream is filled with block tokens.</li>
+<li>Content in inline containers is parsed, filling their <code>children</code> properties.</li>
+<li>Rendering happens.</li>
+</ol>
+<p>And somewhere in between, you can apply additional transformations.</p>
+<p>Source code for each chain can be seen in the following files:</p>
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/master/src/parser_core.ts" target="_blank" class="external"><code>parser_core.mjs</code></a></li>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/master/src/parser_block.ts" target="_blank" class="external"><code>parser_block.mjs</code></a></li>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/master/src/parser_inline.ts" target="_blank" class="external"><code>parser_inline.mjs</code></a></li>
+</ul>
+<p>Also, you can change output directly in a <a href="https://markdown-it.github.io/markdown-it/classes/Renderer.html"><code>Renderer</code></a> for many simple cases.</p>
+</div></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#markdown-it-design-principles"><span>markdown-<wbr/>it design principles</span></a>
+<ul>
+<li><a href="#data-flow"><span>Data flow</span></a></li>
+<li><a href="#token-stream"><span>Token stream</span></a></li>
+<li><a href="#rules"><span>Rules</span></a></li>
+<li><a href="#renderer"><span>Renderer</span></a></li>
+<li><a href="#summary"><span>Summary</span></a></li></ul></div></details></div>
+<div class="site-menu">
+<nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/markdown-it/markdown-it" class="tsd-nav-link">GitHub</a></nav>
+<nav class="tsd-navigation"><a href="../modules.html">markdown-it - v15.0.0</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div></body></html>

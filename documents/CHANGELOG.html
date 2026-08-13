@@ -1,0 +1,1175 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>CHANGELOG | markdown-it - v15.0.0</title><meta name="description" content="Documentation for markdown-it"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><link rel="stylesheet" href="../assets/condensed_theme.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">markdown-it - v15.0.0</a>
+<div id="tsd-toolbar-links"><a href="https://github.com/markdown-it/markdown-it">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">CHANGELOG</a></li></ul></div>
+<div class="tsd-panel tsd-typography"><h1 id="changelog" class="tsd-anchor-link">Changelog<a href="#changelog" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h1>
+<p>All notable changes to this project will be documented in this file.</p>
+<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/" target="_blank" class="external">Keep a Changelog</a>,
+and this project adheres to <a href="https://semver.org/spec/v2.0.0.html" target="_blank" class="external">Semantic Versioning</a>.</p>
+<h2 id="1500-2026-07-30" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/14.3.0...15.0.0" target="_blank" class="external">15.0.0</a> - 2026-07-30<a href="#1500-2026-07-30" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added" class="tsd-anchor-link">Added<a href="#added" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Exposed parser internals classes as static properties on <code>markdownit</code>.</li>
+<li>Bundled TypeScript declarations. Remove <code>@types/markdown-it</code> if you used it.</li>
+<li>Added the <code>markdown-it/browser</code> export with bundled ESM and UMD builds.</li>
+<li>Added colored CLI help on supported terminals via <code>argparse</code> 3.</li>
+<li>Added reference labels to link/image tokens, #938.</li>
+<li>Added <code>reference_definition</code> tokens. They remain stripped by default
+for backwards compatibility, #1055. Also adjusted the line-break heuristic
+to keep output exactly the same.</li>
+</ul>
+<h3 id="changed" class="tsd-anchor-link">Changed<a href="#changed" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>[breaking] <code>linkify-it</code> =&gt; v6
+<ul>
+<li>No fuzzy links by default.</li>
+<li>No auth part check by default.</li>
+<li>Unicode punctuation terminates the link by default (should help with CJK).</li>
+<li>See <a href="https://github.com/markdown-it/linkify-it/blob/master/CHANGELOG.md" target="_blank" class="external">linkify-it changelog</a>
+for other changes.</li>
+</ul>
+</li>
+<li>Package root now resolves to prebuilt ESM and CJS files instead of raw
+sources. Distribution files were reorganized under <code>dist/</code> and
+<code>dist/browser/</code>.</li>
+<li>Migrated to Typescript.</li>
+<li><code>entities</code> =&gt; v8. Can be rolled back to v7 if compatibility issues happen.</li>
+<li>Moved <code>validateLink</code>, <code>normalizeLink</code> and <code>normalizeLinkText</code> from properties
+to prototype methods.</li>
+<li>Reworked issue templates and contribution guidelines.</li>
+</ul>
+<h3 id="removed" class="tsd-anchor-link">Removed<a href="#removed" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>[breaking] Removed package-internal subpath exports (<code>markdown-it/lib/*</code> and similar).
+Use the static classes exposed on <code>markdownit</code> instead.</li>
+<li>[breaking] Removed obsolete <code>StateBlock#ddIndent</code>, #1139. Update
+<code>markdown-it-deflist</code> to keep it working.</li>
+</ul>
+<h3 id="fixed" class="tsd-anchor-link">Fixed<a href="#fixed" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Preserve a literal backslash before a terminating space in link destinations,
+matching CommonMark 6.3, #1188.</li>
+<li>Recognize lowercase declarations as HTML blocks, matching CommonMark 4.6,
+#1189.</li>
+<li>Require semicolons for named entities in all decoding paths, completing the
+fix for #1096.</li>
+<li>Enhanced the <code>text_join</code> rule to process image alt text.</li>
+<li>Include inline code content in image alt text, #1142.</li>
+</ul>
+<h2 id="1430-2026-07-02" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/14.2.0...14.3.0" target="_blank" class="external">14.3.0</a> - 2026-07-02<a href="#1430-2026-07-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-1" class="tsd-anchor-link">Changed<a href="#changed-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Reworked build pipeline &amp; tools.</li>
+<li>Added source maps.</li>
+<li>Bumped <code>linkify-it</code> to 5.0.2.</li>
+</ul>
+<h3 id="fixed-1" class="tsd-anchor-link">Fixed<a href="#fixed-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Preserve backslash-space hard line breaks, matching CommonMark 6.7, #1185.</li>
+</ul>
+<h2 id="1420-2026-05-24" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/14.1.1...14.2.0" target="_blank" class="external">14.2.0</a> - 2026-05-24<a href="#1420-2026-05-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-1" class="tsd-anchor-link">Added<a href="#added-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>isPunctCharCode</code> to utilities.</li>
+</ul>
+<h3 id="fixed-2" class="tsd-anchor-link">Fixed<a href="#fixed-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Don't end HTML comment blocks on a blank line, #1155.</li>
+<li>Properly recognize astral chars (surrogates) in delimiter scans for
+emphasis-like markers, #1072. Big thanks to @tats-u for his global efforts
+with improving CJK support.</li>
+<li>Preserve unicode whitespaces when trimm headings/paragraphs, #1074.</li>
+<li>More strict entities decode to avoid false positives <code>;</code>, #1096.</li>
+<li>Restore block parser state on fail in <code>lheading</code> rule, #1131.</li>
+</ul>
+<h3 id="security" class="tsd-anchor-link">Security<a href="#security" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed poor smartquotes perfomance on &gt; 70k quotes in single block</li>
+<li>Bumped linkify-it to 5.0.1 with fixed potential perfomance issues.</li>
+</ul>
+<h2 id="1411-2026-01-11" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/14.1.0...14.1.1" target="_blank" class="external">14.1.1</a> - 2026-01-11<a href="#1411-2026-01-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-1" class="tsd-anchor-link">Security<a href="#security-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed regression from v13 in linkify inline rule. Specific patterns could
+cause high CPU use. Thanks to @ltduc147 for report.</li>
+</ul>
+<h2 id="1410-2024-03-19" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/14.0.0...14.1.0" target="_blank" class="external">14.1.0</a> - 2024-03-19<a href="#1410-2024-03-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-2" class="tsd-anchor-link">Changed<a href="#changed-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated CM spec compatibility to 0.31.2, #1009.</li>
+</ul>
+<h3 id="fixed-3" class="tsd-anchor-link">Fixed<a href="#fixed-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed quadratic complexity when parsing references, #996.</li>
+<li>Fixed quadratic output size with pathological user input in tables, #1000.</li>
+</ul>
+<h2 id="1400-2023-12-08" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/13.0.2...14.0.0" target="_blank" class="external">14.0.0</a> - 2023-12-08<a href="#1400-2023-12-08" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-3" class="tsd-anchor-link">Changed<a href="#changed-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Drop ancient browsers support (use <code>.fromCodePoint</code> and other features).</li>
+<li>Rewrite to ESM (including all plugins/deps). CJS fallback still available.
+No signatures changed, except <code>markdown-it-emoji</code> plugin.</li>
+<li>Dropped <code>dist/</code> folder from repo, build on package publish.</li>
+<li>Set <code>punicode.js</code> as external dependency.</li>
+</ul>
+<h3 id="fixed-4" class="tsd-anchor-link">Fixed<a href="#fixed-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Html tokens inside img alt are now rendered as their original text, #896.</li>
+<li>Hardbreaks inside img alt are now rendered as newlines.</li>
+</ul>
+<h2 id="1302-2023-09-26" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/13.0.1...13.0.2" target="_blank" class="external">13.0.2</a> - 2023-09-26<a href="#1302-2023-09-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-2" class="tsd-anchor-link">Security<a href="#security-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed crash/infinite loop caused by linkify inline rule, #957.</li>
+</ul>
+<h3 id="fixed-5" class="tsd-anchor-link">Fixed<a href="#fixed-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Throw an error if 3rd party plugin doesn't increment <code>line</code> or <code>pos</code> counters
+(previously, markdown-it would likely go into infinite loop instead), #847.</li>
+</ul>
+<h2 id="1301-2022-05-03" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/13.0.0...13.0.1" target="_blank" class="external">13.0.1</a> - 2022-05-03<a href="#1301-2022-05-03" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-6" class="tsd-anchor-link">Fixed<a href="#fixed-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Bumped <code>linkify-it</code> to 4.0.1. That should fix some hangs, caused by wrong
+data, returned from <code>linkify-it</code>.</li>
+</ul>
+<h2 id="1300-2022-04-22" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.3.2...13.0.0" target="_blank" class="external">13.0.0</a> - 2022-04-22<a href="#1300-2022-04-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-2" class="tsd-anchor-link">Added<a href="#added-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added a new token type <code>text_special</code> to store escaped characters, same as <code>text</code> but
+unaffected by replacement plugins (smartquotes, typographer, linkifier, etc.).</li>
+<li>Added a new rule <code>text_join</code> in <code>core</code> ruler. Text replacement plugins may choose to
+insert themselves before it.</li>
+</ul>
+<h3 id="changed-4" class="tsd-anchor-link">Changed<a href="#changed-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>(p)</code> is no longer replaced with § by typographer (conflicts with ℗), #763.</li>
+<li><code>text_collapse</code> rule is renamed to <code>fragments_join</code>.</li>
+</ul>
+<h3 id="fixed-7" class="tsd-anchor-link">Fixed<a href="#fixed-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Smartquotes, typographic replacements and plain text links can now be escaped
+with backslash (e.g. <code>\(c)</code> or <code>google\.com</code> are no longer replaced).</li>
+<li>Fixed collision of emphasis and linkifier (so <code>http://example.org/foo._bar_-_baz</code>
+is now a single link, not emphasized). Emails and fuzzy links are not affected by this.</li>
+</ul>
+<h2 id="1232-2022-01-08" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.3.1...12.3.2" target="_blank" class="external">12.3.2</a> - 2022-01-08<a href="#1232-2022-01-08" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-3" class="tsd-anchor-link">Security<a href="#security-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix possible ReDOS in newline rule. Thanks to @MakeNowJust.</li>
+</ul>
+<h2 id="1231-2022-01-07" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.3.0...12.3.1" target="_blank" class="external">12.3.1</a> - 2022-01-07<a href="#1231-2022-01-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-8" class="tsd-anchor-link">Fixed<a href="#fixed-8" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix corner case when tab prevents paragraph continuation in lists, #830.</li>
+</ul>
+<h2 id="1230-2021-12-09" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.2.0...12.3.0" target="_blank" class="external">12.3.0</a> - 2021-12-09<a href="#1230-2021-12-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-5" class="tsd-anchor-link">Changed<a href="#changed-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>StateInline.delimiters[].jump</code> is removed.</li>
+</ul>
+<h3 id="fixed-9" class="tsd-anchor-link">Fixed<a href="#fixed-9" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed quadratic complexity in pathological <code>***&lt;10k stars&gt;***a***&lt;10k stars&gt;***</code> case.</li>
+</ul>
+<h2 id="1220-2021-08-02" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.1.0...12.2.0" target="_blank" class="external">12.2.0</a> - 2021-08-02<a href="#1220-2021-08-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-3" class="tsd-anchor-link">Added<a href="#added-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Ordered lists: add order value to token info.</li>
+</ul>
+<h3 id="fixed-10" class="tsd-anchor-link">Fixed<a href="#fixed-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Always suffix indented code block with a newline, #799.</li>
+</ul>
+<h2 id="1210-2021-07-01" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.0.6...12.1.0" target="_blank" class="external">12.1.0</a> - 2021-07-01<a href="#1210-2021-07-01" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-6" class="tsd-anchor-link">Changed<a href="#changed-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated CM spec compatibility to 0.30.</li>
+</ul>
+<h2 id="1206-2021-04-16" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.0.5...12.0.6" target="_blank" class="external">12.0.6</a> - 2021-04-16<a href="#1206-2021-04-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-11" class="tsd-anchor-link">Fixed<a href="#fixed-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Newline in <code>alt</code> should be rendered, #775.</li>
+</ul>
+<h2 id="1205-2021-04-15" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.0.4...12.0.5" target="_blank" class="external">12.0.5</a> - 2021-04-15<a href="#1205-2021-04-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-12" class="tsd-anchor-link">Fixed<a href="#fixed-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>HTML block tags with <code>===</code> inside are no longer incorrectly interpreted as headers, #772.</li>
+<li>Fix table/list parsing ambiguity, #767.</li>
+</ul>
+<h2 id="1204-2020-12-20" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.0.3...12.0.4" target="_blank" class="external">12.0.4</a> - 2020-12-20<a href="#1204-2020-12-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-13" class="tsd-anchor-link">Fixed<a href="#fixed-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix crash introduced in <code>12.0.3</code> when processing strikethrough (<code>~~</code>) and similar plugins, #742.</li>
+<li>Avoid fenced token mutation, #745.</li>
+</ul>
+<h2 id="1203-2020-12-07" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.0.2...12.0.3" target="_blank" class="external">12.0.3</a> - 2020-12-07<a href="#1203-2020-12-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-14" class="tsd-anchor-link">Fixed<a href="#fixed-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>[](&lt;foo&lt;bar&gt;)</code> is no longer a valid link.</li>
+<li><code>[](url (xxx())</code> is no longer a valid link.</li>
+<li><code>[](url\ xxx)</code> is no longer a valid link.</li>
+<li>Fix performance issues when parsing links (#732, #734), backticks, (#733, #736),
+emphases (#735), and autolinks (#737).</li>
+<li>Allow newline in <code>&lt;? ... ?&gt;</code> in an inline context.</li>
+<li>Allow <code>&lt;meta&gt;</code> html tag to appear in an inline context.</li>
+</ul>
+<h2 id="1202-2020-10-23" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.0.1...12.0.2" target="_blank" class="external">12.0.2</a> - 2020-10-23<a href="#1202-2020-10-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-15" class="tsd-anchor-link">Fixed<a href="#fixed-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Three pipes (<code>|\n|\n|</code>) are no longer rendered as a table with no columns, #724.</li>
+</ul>
+<h2 id="1201-2020-10-19" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/12.0.0...12.0.1" target="_blank" class="external">12.0.1</a> - 2020-10-19<a href="#1201-2020-10-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-16" class="tsd-anchor-link">Fixed<a href="#fixed-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix tables inside lists indented with tabs, #721.</li>
+</ul>
+<h2 id="1200-2020-10-14" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/11.0.1...12.0.0" target="_blank" class="external">12.0.0</a> - 2020-10-14<a href="#1200-2020-10-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-4" class="tsd-anchor-link">Added<a href="#added-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>.gitattributes</code>, force unix eol under windows, for development.</li>
+</ul>
+<h3 id="changed-7" class="tsd-anchor-link">Changed<a href="#changed-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added 3rd argument to <code>highlight(code, lang, attrs)</code>, #626.</li>
+<li>Rewrite tables according to latest GFM spec, #697.</li>
+<li>Use <code>rollup.js</code> to browserify sources.</li>
+<li>Drop <code>bower.json</code> (bower reached EOL).</li>
+<li>Deps bump.</li>
+<li>Tune <code>specsplit.js</code> options.</li>
+<li>Drop <code>Makefile</code> in favour of npm scrips.</li>
+</ul>
+<h3 id="fixed-17" class="tsd-anchor-link">Fixed<a href="#fixed-17" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix mappings for table rows (amended fix made in 11.0.1), #705.</li>
+<li><code>%25</code> is no longer decoded in beautified urls, #720.</li>
+</ul>
+<h2 id="1101-2020-09-14" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/11.0.0...11.0.1" target="_blank" class="external">11.0.1</a> - 2020-09-14<a href="#1101-2020-09-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-18" class="tsd-anchor-link">Fixed<a href="#fixed-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix blockquote lazy newlines, #696.</li>
+<li>Fix missed mappings for table rows, #705.</li>
+</ul>
+<h2 id="1100-2020-05-20" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/10.0.0...11.0.0" target="_blank" class="external">11.0.0</a> - 2020-05-20<a href="#1100-2020-05-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-8" class="tsd-anchor-link">Changed<a href="#changed-8" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Bumped <code>linkify-it</code> to 3.0.0, #661 + allow unlimited <code>.</code> inside links.</li>
+<li>Dev deps bump.</li>
+<li>Switch to <code>nyc</code> for coverage reports.</li>
+<li>Partially moved tasks from Makefile to npm scripts.</li>
+<li>Automate web update on npm publish.</li>
+</ul>
+<h3 id="fixed-19" class="tsd-anchor-link">Fixed<a href="#fixed-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix em- and en-dashes not being typographed when separated by 1 char, #624.</li>
+<li>Allow opening quote after another punctuation char in typographer, #641.</li>
+<li>Assorted wording &amp; typo fixes.</li>
+</ul>
+<h2 id="1000-2019-09-11" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/9.1.0...10.0.0" target="_blank" class="external">10.0.0</a> - 2019-09-11<a href="#1000-2019-09-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-4" class="tsd-anchor-link">Security<a href="#security-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix quadratic parse time for some combinations of pairs, #583. Algorithm is
+now similar to one in reference implementation.</li>
+</ul>
+<h3 id="changed-9" class="tsd-anchor-link">Changed<a href="#changed-9" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Minor internal structs change, to make pairs parse more effective (cost is
+linear now). If you use external &quot;pairs&quot; extensions, you need sync those with
+&quot;official ones&quot;. Without update, old code will work, but can cause invalid
+result in rare case. This is the only reason of major version bump. With high probability you don't need to change your code, only update version dependency.</li>
+<li>Updated changelog format.</li>
+<li>Deps bump.</li>
+</ul>
+<h2 id="910-2019-08-11" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/9.0.1...9.1.0" target="_blank" class="external">9.1.0</a> - 2019-08-11<a href="#910-2019-08-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-10" class="tsd-anchor-link">Changed<a href="#changed-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Remove extra characters from line break check. Leave only 0x0A &amp; 0x0D, as in
+CommonMark spec, #581.</li>
+</ul>
+<h2 id="901-2019-07-12" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/9.0.0...9.0.1" target="_blank" class="external">9.0.1</a> - 2019-07-12<a href="#901-2019-07-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-20" class="tsd-anchor-link">Fixed<a href="#fixed-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix possible corruption of open/close tag levels, #466</li>
+</ul>
+<h2 id="900-2019-07-09" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.4.2...9.0.0" target="_blank" class="external">9.0.0</a> - 2019-07-09<a href="#900-2019-07-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-11" class="tsd-anchor-link">Changed<a href="#changed-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated CM spec compatibility to 0.29.</li>
+<li>Update Travis-CI node version to actual (8 &amp; latest).</li>
+<li>Deps bump.</li>
+</ul>
+<h2 id="842-2018-02-15" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.4.1...8.4.2" target="_blank" class="external">8.4.2</a> - 2018-02-15<a href="#842-2018-02-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-21" class="tsd-anchor-link">Fixed<a href="#fixed-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix <code>--no-html</code> CLI option, #476.</li>
+</ul>
+<h2 id="841-2018-02-15" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.4.0...8.4.1" target="_blank" class="external">8.4.1</a> - 2018-02-15<a href="#841-2018-02-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-22" class="tsd-anchor-link">Fixed<a href="#fixed-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix smartquotes around softbreaks, #430.</li>
+</ul>
+<h2 id="840-2017-08-24" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.3.2...8.4.0" target="_blank" class="external">8.4.0</a> - 2017-08-24<a href="#840-2017-08-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-12" class="tsd-anchor-link">Changed<a href="#changed-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated CM spec compatibility to 0.28.</li>
+</ul>
+<h2 id="832-2017-08-03" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.3.1...8.3.2" target="_blank" class="external">8.3.2</a> - 2017-08-03<a href="#832-2017-08-03" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-23" class="tsd-anchor-link">Fixed<a href="#fixed-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix blockquote termination inside lists, #386.</li>
+</ul>
+<h2 id="831-2017-03-06" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.3.0...8.3.1" target="_blank" class="external">8.3.1</a> - 2017-03-06<a href="#831-2017-03-06" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-24" class="tsd-anchor-link">Fixed<a href="#fixed-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix blockquote termination by list item, #338.</li>
+</ul>
+<h2 id="830-2017-02-16" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.2.2...8.3.0" target="_blank" class="external">8.3.0</a> - 2017-02-16<a href="#830-2017-02-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-13" class="tsd-anchor-link">Changed<a href="#changed-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Remove tabs at the beginning of the line in paragraphs.</li>
+<li>Better error message for bad input type, #324.</li>
+</ul>
+<h3 id="fixed-25" class="tsd-anchor-link">Fixed<a href="#fixed-25" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix table indentation issues, #325, #224.</li>
+<li>Fix blockquote termination inside indented lists, #329.</li>
+</ul>
+<h2 id="822-2016-12-15" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.2.1...8.2.2" target="_blank" class="external">8.2.2</a> - 2016-12-15<a href="#822-2016-12-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-5" class="tsd-anchor-link">Added<a href="#added-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Add <code>-o</code> / <code>--output</code> option to CLI, #312.</li>
+</ul>
+<h2 id="821-2016-12-02" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.2.0...8.2.1" target="_blank" class="external">8.2.1</a> - 2016-12-02<a href="#821-2016-12-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-26" class="tsd-anchor-link">Fixed<a href="#fixed-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Add missed h2..h6 to whitelisted block tags.</li>
+</ul>
+<h2 id="820-2016-12-01" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.1.0...8.2.0" target="_blank" class="external">8.2.0</a> - 2016-12-01<a href="#820-2016-12-01" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-14" class="tsd-anchor-link">Changed<a href="#changed-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated CM spec compatibility to 0.27 (no significant changes).</li>
+</ul>
+<h3 id="fixed-27" class="tsd-anchor-link">Fixed<a href="#fixed-27" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix backticks handle inside tables, #303.</li>
+<li>Fix edge case for fenced blocks with <code>~~~</code> in info, #301.</li>
+<li>Fix fallback to reference if link is not valid, #302.</li>
+</ul>
+<h2 id="810-2016-11-03" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.0.1...8.1.0" target="_blank" class="external">8.1.0</a> - 2016-11-03<a href="#810-2016-11-03" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-15" class="tsd-anchor-link">Changed<a href="#changed-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Make link parse helpers (<code>md.helpers</code>) pluggable, #299.</li>
+</ul>
+<h2 id="801-2016-10-18" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/8.0.0...8.0.1" target="_blank" class="external">8.0.1</a> - 2016-10-18<a href="#801-2016-10-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-28" class="tsd-anchor-link">Fixed<a href="#fixed-28" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Tables: allow tab characters in markup</li>
+</ul>
+<h2 id="800-2016-09-16" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/7.0.1...8.0.0" target="_blank" class="external">8.0.0</a> - 2016-09-16<a href="#800-2016-09-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-16" class="tsd-anchor-link">Changed<a href="#changed-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Benchmarks src cleanup.</li>
+<li>Remove testing in old nodes (but still use es5).</li>
+<li>Updated CM spec compatibility to 0.26 (see list below):</li>
+<li>Two consecutive newlines no longer terminate a list.</li>
+<li>Ordered list terminating a paragraph can now only start with 1.</li>
+<li>Adjust emphasis algorithm (<code>*foo**bar**baz*</code> is now parsed as <code>&lt;strong&gt;</code>
+inside <code>&lt;em&gt;</code>).</li>
+<li>Fix tab width calculation inside lists and blockquotes.</li>
+</ul>
+<h2 id="701-2016-08-16" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/7.0.0...7.0.1" target="_blank" class="external">7.0.1</a> - 2016-08-16<a href="#701-2016-08-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-29" class="tsd-anchor-link">Fixed<a href="#fixed-29" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fence renderer: fix concat of class array, #276.</li>
+<li>Code renderer: do not render double space before attrs, #275.</li>
+<li>Replacer: disable replacements inside autolinks, #272.</li>
+</ul>
+<h2 id="700-2016-06-22" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.1.1...7.0.0" target="_blank" class="external">7.0.0</a> - 2016-06-22<a href="#700-2016-06-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-17" class="tsd-anchor-link">Changed<a href="#changed-17" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Bump <code>linkify-it</code> dependency to 2.0.0.  <code>---</code> no longer terminates
+autodetected links by default. <code>md.linkifier.set('---', true)</code> will return old
+behaviour.</li>
+<li>Major version bumped, because internals or <code>linkify-it</code> was changed.
+You will not be affected anyhow, if not used direct access to
+<code>require('linkify-it/re')</code> for customizations.</li>
+</ul>
+<h2 id="611-2016-06-21" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.1.0...6.1.1" target="_blank" class="external">6.1.1</a> - 2016-06-21<a href="#611-2016-06-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-18" class="tsd-anchor-link">Changed<a href="#changed-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Render <code>code_inline</code> &amp; <code>code_block</code> attributes if exist.</li>
+</ul>
+<h2 id="610-2016-06-19" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.0.5...6.1.0" target="_blank" class="external">6.1.0</a> - 2016-06-19<a href="#610-2016-06-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-19" class="tsd-anchor-link">Changed<a href="#changed-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated <code>fence</code> renderer to not mutate token. Token stream should be
+immutable after renderer call.</li>
+</ul>
+<h2 id="605-2016-06-01" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.0.4...6.0.5" target="_blank" class="external">6.0.5</a> - 2016-06-01<a href="#605-2016-06-01" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-30" class="tsd-anchor-link">Fixed<a href="#fixed-30" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Process <code>\r</code> the same way as <code>\n</code> and <code>\r\n</code>, #252.</li>
+</ul>
+<h2 id="604-2016-05-30" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.0.3...6.0.4" target="_blank" class="external">6.0.4</a> - 2016-05-30<a href="#604-2016-05-30" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-6" class="tsd-anchor-link">Added<a href="#added-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added <code>Token.attrGet()</code> method for convenience, #251.</li>
+</ul>
+<h2 id="603-2016-05-30" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.0.2...6.0.3" target="_blank" class="external">6.0.3</a> - 2016-05-30<a href="#603-2016-05-30" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-5" class="tsd-anchor-link">Security<a href="#security-5" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Security fix: possible ReDOS in <code>linkify-it</code> (forced bump of <code>linkify-it</code> &amp;
+<code>uc-micro</code> dependencies). New installs will use fixed packages automatically,
+but we bumped <code>markdown-it</code> version for sure &amp; for web builds.</li>
+</ul>
+<h2 id="602-2016-05-16" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.0.1...6.0.2" target="_blank" class="external">6.0.2</a> - 2016-05-16<a href="#602-2016-05-16" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-31" class="tsd-anchor-link">Fixed<a href="#fixed-31" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix: should not escape twice content of image alt attribute, #246.</li>
+</ul>
+<h2 id="601-2016-04-02" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/6.0.0...6.0.1" target="_blank" class="external">6.0.1</a> - 2016-04-02<a href="#601-2016-04-02" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-32" class="tsd-anchor-link">Fixed<a href="#fixed-32" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Improve support of missing values in tables, #224.</li>
+</ul>
+<h2 id="600-2016-02-11" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/5.1.0...6.0.0" target="_blank" class="external">6.0.0</a> - 2016-02-11<a href="#600-2016-02-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-20" class="tsd-anchor-link">Changed<a href="#changed-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Maintenance release. Version bump caused by notable changes in CM spec
+(multiline setext headers, no spaces inside links, ...). API was not changed.</li>
+<li>Fit CM 0.24 spec requirements.</li>
+</ul>
+<h3 id="fixed-33" class="tsd-anchor-link">Fixed<a href="#fixed-33" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed nesting limit check in inline blocks, #197.</li>
+<li>Fixed posible tail loss in CLI ouput.</li>
+</ul>
+<h2 id="510-2016-01-07" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/5.0.3...5.1.0" target="_blank" class="external">5.1.0</a> - 2016-01-07<a href="#510-2016-01-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-7" class="tsd-anchor-link">Added<a href="#added-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Token: added <code>.attrSet()</code> &amp; <code>.attrJoin()</code> methods.</li>
+<li>Highlighter: allow wrapper override (if result starts with &quot;&lt;pre&quot;).</li>
+</ul>
+<h2 id="503-2016-01-04" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/5.0.2...5.0.3" target="_blank" class="external">5.0.3</a> - 2016-01-04<a href="#503-2016-01-04" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-34" class="tsd-anchor-link">Fixed<a href="#fixed-34" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Allow single column and mismatched columns count in tables.</li>
+<li>Smartquotes: take into account adjacent tokens.</li>
+<li>Fill <code>content</code> property in image token with <code>alt</code> source.</li>
+</ul>
+<h2 id="502-2015-11-20" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/5.0.1...5.0.2" target="_blank" class="external">5.0.2</a> - 2015-11-20<a href="#502-2015-11-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-35" class="tsd-anchor-link">Fixed<a href="#fixed-35" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix meta information (<code>token.markup</code> and <code>token.info</code>) for autolink tokens.</li>
+</ul>
+<h2 id="501-2015-10-30" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/5.0.0...5.0.1" target="_blank" class="external">5.0.1</a> - 2015-10-30<a href="#501-2015-10-30" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-36" class="tsd-anchor-link">Fixed<a href="#fixed-36" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Improved tables compatibility with github, #120.</li>
+</ul>
+<h2 id="500-2015-10-05" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.4.0...5.0.0" target="_blank" class="external">5.0.0</a> - 2015-10-05<a href="#500-2015-10-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-21" class="tsd-anchor-link">Changed<a href="#changed-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Internal API change. Due to new CM spec requirements, we had to update
+internals. That should not touch ordinary users, but can affect some external
+plugins. If you are plugin developper - see migration guide:
+<a href="https://github.com/markdown-it/markdown-it/blob/master/docs/migration/migration_v5.md" target="_blank" class="external">https://github.com/markdown-it/markdown-it/blob/master/docs/migration/migration_v5.md</a>.</li>
+<li>Updated CM spec compatibility to 0.22 (see list below).</li>
+<li>Keep tabs (don't replace with spaces).</li>
+<li>Don't wrap iframes with paragraphs.</li>
+<li>Rewritten emphasis algorithm.</li>
+</ul>
+<h3 id="fixed-37" class="tsd-anchor-link">Fixed<a href="#fixed-37" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix closure compiler collisions (don't use reserved words), #159.</li>
+</ul>
+<h2 id="440-2015-07-18" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.3.1...4.4.0" target="_blank" class="external">4.4.0</a> - 2015-07-18<a href="#440-2015-07-18" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-22" class="tsd-anchor-link">Changed<a href="#changed-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated HTML blocks logic to CM 0.21 spec.</li>
+<li>Minor fixes.</li>
+</ul>
+<h2 id="431-2015-07-15" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.3.0...4.3.1" target="_blank" class="external">4.3.1</a> - 2015-07-15<a href="#431-2015-07-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-6" class="tsd-anchor-link">Security<a href="#security-6" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fix class name injection in fence renderer.</li>
+</ul>
+<h3 id="fixed-38" class="tsd-anchor-link">Fixed<a href="#fixed-38" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Allow numbered lists starting from zero.</li>
+</ul>
+<h2 id="430-2015-06-29" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.2.2...4.3.0" target="_blank" class="external">4.3.0</a> - 2015-06-29<a href="#430-2015-06-29" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-23" class="tsd-anchor-link">Changed<a href="#changed-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li><code>linkify-it</code> dependency update (1.2.0). Now accepts dash at the end of links.</li>
+</ul>
+<h2 id="422-2015-06-10" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.2.1...4.2.2" target="_blank" class="external">4.2.2</a> - 2015-06-10<a href="#422-2015-06-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-24" class="tsd-anchor-link">Changed<a href="#changed-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>CM spec 0.20.</li>
+</ul>
+<h3 id="added-8" class="tsd-anchor-link">Added<a href="#added-8" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added support for multichar substituition in smartquites, #115.</li>
+</ul>
+<h3 id="fixed-39" class="tsd-anchor-link">Fixed<a href="#fixed-39" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed code block render inside blockquites, #116.</li>
+<li>Doc fixes.</li>
+</ul>
+<h2 id="421-2015-05-01" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.2.0...4.2.1" target="_blank" class="external">4.2.1</a> - 2015-05-01<a href="#421-2015-05-01" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-25" class="tsd-anchor-link">Changed<a href="#changed-25" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Minor emphasis update to match CM spec 0.19.</li>
+</ul>
+<h2 id="420-2015-04-21" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.1.2...4.2.0" target="_blank" class="external">4.2.0</a> - 2015-04-21<a href="#420-2015-04-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-26" class="tsd-anchor-link">Changed<a href="#changed-26" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Bumped <a href="https://github.com/markdown-it/linkify-it" target="_blank" class="external">linkify-it</a> version to
+1.1.0. Now links with IP hosts and without protocols are not linkified by
+default, due possible collisions with some version numbers patterns (0.5.0.0).
+You still can return back old behaviour by <code>md.linkify.set({ fuzzyIP: true })</code>.</li>
+</ul>
+<h2 id="412-2015-04-19" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.1.1...4.1.2" target="_blank" class="external">4.1.2</a> - 2015-04-19<a href="#412-2015-04-19" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-27" class="tsd-anchor-link">Changed<a href="#changed-27" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Bumped linkifier version. More strict 2-chars tald support for links without
+schema. Should not linkify things like <code>io.js</code> and <code>node.js</code>.</li>
+</ul>
+<h2 id="411-2015-04-15" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.1.0...4.1.1" target="_blank" class="external">4.1.1</a> - 2015-04-15<a href="#411-2015-04-15" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-40" class="tsd-anchor-link">Fixed<a href="#fixed-40" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Improved pipe chars support in table cells, #86 (thanks to @jbt).</li>
+</ul>
+<h2 id="410-2015-03-31" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.0.3...4.1.0" target="_blank" class="external">4.1.0</a> - 2015-03-31<a href="#410-2015-03-31" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="security-7" class="tsd-anchor-link">Security<a href="#security-7" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Disabled <code>data:</code> URLs by default (except some image mimes), to avoid
+possible XSS. Version bumped, because features changed (formally). If you did
+not used <code>data:</code> URLs, consider this version as 4.0.4 (no API changes).</li>
+</ul>
+<h3 id="changed-28" class="tsd-anchor-link">Changed<a href="#changed-28" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Simplified link validator code. Now more easy to understand and to copy
+into your projects for customization.</li>
+</ul>
+<h2 id="403-2015-03-25" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.0.2...4.0.3" target="_blank" class="external">4.0.3</a> - 2015-03-25<a href="#403-2015-03-25" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-29" class="tsd-anchor-link">Changed<a href="#changed-29" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated linkifier.</li>
+<li>Smartquotes rule cleanup (#76).</li>
+</ul>
+<h3 id="fixed-41" class="tsd-anchor-link">Fixed<a href="#fixed-41" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed replacements rule bug in PhantomJS (#77).</li>
+</ul>
+<h2 id="402-2015-03-22" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.0.1...4.0.2" target="_blank" class="external">4.0.2</a> - 2015-03-22<a href="#402-2015-03-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-42" class="tsd-anchor-link">Fixed<a href="#fixed-42" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed emphasis <code>marker</code> fields in tokens (#69).</li>
+<li>Fixed html block tokens with numbers in name (#74).</li>
+</ul>
+<h2 id="401-2015-03-13" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/4.0.0...4.0.1" target="_blank" class="external">4.0.1</a> - 2015-03-13<a href="#401-2015-03-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-9" class="tsd-anchor-link">Added<a href="#added-9" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added custom container plugin demo.</li>
+</ul>
+<h3 id="changed-30" class="tsd-anchor-link">Changed<a href="#changed-30" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated <code>linkify-it</code> version.</li>
+</ul>
+<h2 id="400-2015-03-11" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.1.0...4.0.0" target="_blank" class="external">4.0.0</a> - 2015-03-11<a href="#400-2015-03-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-31" class="tsd-anchor-link">Changed<a href="#changed-31" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Breaking internal API changes. See <a href="https://github.com/markdown-it/markdown-it/blob/master/docs/migration/migration_v4.md" target="_blank" class="external">v4 migration notes</a>. In usual case you will need to update plugins.</li>
+<li>Token internals changed</li>
+<li>Unified the most of renderer methods.</li>
+<li>Changed tokens creation - use <code>state.push(...)</code> (see sources)</li>
+<li>Moved <code>normalizeUrl()</code> to root class as <code>.normalizeLink()</code> &amp;
+added <code>normalizeLinkText()</code> method.</li>
+<li>Moved <code>.validateUrl()</code> to root class and simplified logic - no more need to
+replace entities.</li>
+<li>Joined md unescape &amp; replace entities logic to <code>utils.unescapeAll()</code>.</li>
+<li>Removed <code>replaceEntities()</code> in <code>utils</code>.</li>
+<li><code>md.utils.lib</code> now exposes useful libs for plugins.</li>
+<li>Use entities data from external package.</li>
+</ul>
+<h3 id="fixed-43" class="tsd-anchor-link">Fixed<a href="#fixed-43" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed emphasis regression, caused by CM v0.18 spec (#65).</li>
+</ul>
+<h2 id="310-2015-03-05" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.7...3.1.0" target="_blank" class="external">3.1.0</a> - 2015-03-05<a href="#310-2015-03-05" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-32" class="tsd-anchor-link">Changed<a href="#changed-32" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Spec conformance update to 0.18.</li>
+<li>Significantly improved autolinking quality (use <code>linkify-it</code> package), #2.</li>
+</ul>
+<h3 id="fixed-44" class="tsd-anchor-link">Fixed<a href="#fixed-44" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Rewritten links normalizer to solve different edge cases (use <code>mdurl</code>
+package), #29.</li>
+<li>Moved link title entities replace out of renderer.</li>
+<li>Fixed escaped entities in links (<code>foo\&amp;amp;/bar</code>).</li>
+<li>Improved smartquotes logic, #61.</li>
+</ul>
+<h2 id="307-2015-02-22" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.6...3.0.7" target="_blank" class="external">3.0.7</a> - 2015-02-22<a href="#307-2015-02-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-10" class="tsd-anchor-link">Added<a href="#added-10" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added basic CLI support.</li>
+</ul>
+<h3 id="changed-33" class="tsd-anchor-link">Changed<a href="#changed-33" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Use external package for unicode data (punctuation).</li>
+</ul>
+<h3 id="fixed-45" class="tsd-anchor-link">Fixed<a href="#fixed-45" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added \v \f to valid whitespaces.</li>
+<li>Match table columns count by header.</li>
+</ul>
+<h2 id="306-2015-02-12" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.5...3.0.6" target="_blank" class="external">3.0.6</a> - 2015-02-12<a href="#306-2015-02-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-11" class="tsd-anchor-link">Added<a href="#added-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Sync scroll result =&gt; source in demo.</li>
+</ul>
+<h3 id="changed-34" class="tsd-anchor-link">Changed<a href="#changed-34" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Moved <code>normalizeReference()</code> to utils.</li>
+</ul>
+<h3 id="fixed-46" class="tsd-anchor-link">Fixed<a href="#fixed-46" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed hang on long vertical list of links. Appeared in 3.0.5. See #54 for
+details. Thanks to @fengmk2 for report!</li>
+<li>Table lines now can have escaped pipe char <code>\|</code> (#5).</li>
+</ul>
+<h2 id="305-2015-02-06" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.4...3.0.5" target="_blank" class="external">3.0.5</a> - 2015-02-06<a href="#305-2015-02-06" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-35" class="tsd-anchor-link">Changed<a href="#changed-35" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Significantly improved tests coverage (with dead code removal and other
+related things).</li>
+</ul>
+<h3 id="fixed-47" class="tsd-anchor-link">Fixed<a href="#fixed-47" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed link validator - could skip some kind of javascript links with uppercase
+digital entities (thanks to @opennota)</li>
+</ul>
+<h2 id="304-2015-01-13" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.3...3.0.4" target="_blank" class="external">3.0.4</a> - 2015-01-13<a href="#304-2015-01-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-36" class="tsd-anchor-link">Changed<a href="#changed-36" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Improved errors processing in url normalizer (for broken sequences).</li>
+<li>Improved nesting limit processing in inline parser.</li>
+<li>Reorganized tests &amp; improved coverage.</li>
+<li>Show inline diffs for failed tests.</li>
+</ul>
+<h2 id="303-2015-01-11" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.2...3.0.3" target="_blank" class="external">3.0.3</a> - 2015-01-11<a href="#303-2015-01-11" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-48" class="tsd-anchor-link">Fixed<a href="#fixed-48" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed punctuation check in emphasis.</li>
+</ul>
+<h2 id="302-2015-01-09" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.1...3.0.2" target="_blank" class="external">3.0.2</a> - 2015-01-09<a href="#302-2015-01-09" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="fixed-49" class="tsd-anchor-link">Fixed<a href="#fixed-49" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Allow dashes in HTML tag names (needed for custom HTML tags).</li>
+</ul>
+<h2 id="301-2015-01-07" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/3.0.0...3.0.1" target="_blank" class="external">3.0.1</a> - 2015-01-07<a href="#301-2015-01-07" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-37" class="tsd-anchor-link">Changed<a href="#changed-37" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added # to terminator chars.</li>
+</ul>
+<h3 id="fixed-50" class="tsd-anchor-link">Fixed<a href="#fixed-50" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Improved link encoder - fix invalid surrogates to avoid errors.</li>
+</ul>
+<h2 id="300-2015-01-04" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/2.2.1...3.0.0" target="_blank" class="external">3.0.0</a> - 2015-01-04<a href="#300-2015-01-04" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-38" class="tsd-anchor-link">Changed<a href="#changed-38" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Big split. All &quot;rare&quot; rules moved to external plugins (deflist, abbr, footnote,
+sub, sup, ins, mark).</li>
+<li>Updated CM spec conformance to v0.15 (better unicode support).</li>
+<li>Added <code>md</code> (parser instance) link to all state objects (instead of former
+options/parser).</li>
+<li>References/Footnotes/Abbrs moved to <code>block</code> chain.</li>
+<li>Input normalization moved to <code>core</code> chain.</li>
+<li>Splitted links and images to separate rules.</li>
+<li>Renamed some rules.</li>
+<li>Removed <code>full</code> preset. Not needed anymore.</li>
+<li>enable/disable methods now throw by default on invalid rules (exceptions can
+be disabled).</li>
+<li>Replace NULL characters with 0xFFFD instead of strip.</li>
+<li>Removed custom fences sugar (overcomplication).</li>
+<li>Rewritten link components parse helpers.</li>
+<li>More functions in <code>md.utils</code>.</li>
+</ul>
+<h3 id="fixed-51" class="tsd-anchor-link">Fixed<a href="#fixed-51" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed inline html comments &amp; cdata parse.</li>
+</ul>
+<h2 id="221-2014-12-29" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/2.2.0...2.2.1" target="_blank" class="external">2.2.1</a> - 2014-12-29<a href="#221-2014-12-29" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-12" class="tsd-anchor-link">Added<a href="#added-12" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added development info.</li>
+</ul>
+<h3 id="changed-39" class="tsd-anchor-link">Changed<a href="#changed-39" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>.use() now pass any number of params to plugins.</li>
+</ul>
+<h3 id="fixed-52" class="tsd-anchor-link">Fixed<a href="#fixed-52" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed line breaks in definitions lists.</li>
+</ul>
+<h2 id="220-2014-12-28" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/2.1.3...2.2.0" target="_blank" class="external">2.2.0</a> - 2014-12-28<a href="#220-2014-12-28" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-13" class="tsd-anchor-link">Added<a href="#added-13" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>API docs.</li>
+<li>Added 'zero' preset.</li>
+</ul>
+<h3 id="changed-40" class="tsd-anchor-link">Changed<a href="#changed-40" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Updated CM spec conformance to v0.13.</li>
+</ul>
+<h3 id="fixed-53" class="tsd-anchor-link">Fixed<a href="#fixed-53" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Fixed several crashes, when some basic rules are disabled
+(block termination check, references check).</li>
+</ul>
+<h2 id="213-2014-12-24" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/2.1.2...2.1.3" target="_blank" class="external">2.1.3</a> - 2014-12-24<a href="#213-2014-12-24" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="added-14" class="tsd-anchor-link">Added<a href="#added-14" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Added curring to <code>set</code>/<code>configure</code>/<code>enable</code>/<code>disable</code> methods.</li>
+</ul>
+<h3 id="changed-41" class="tsd-anchor-link">Changed<a href="#changed-41" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Demo rework - now can include plugins.</li>
+<li>Docs update.</li>
+</ul>
+<h2 id="212-2014-12-23" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/2.1.1...2.1.2" target="_blank" class="external">2.1.2</a> - 2014-12-23<a href="#212-2014-12-23" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-42" class="tsd-anchor-link">Changed<a href="#changed-42" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Exposed helpers into parser instances (for plugins).</li>
+<li>Removed utils from global export - been in instances seems enougth.</li>
+<li>Refactored demo &amp; added markdown-it-emoji to it.</li>
+</ul>
+<h2 id="211-2014-12-22" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/2.1.0...2.1.1" target="_blank" class="external">2.1.1</a> - 2014-12-22<a href="#211-2014-12-22" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-43" class="tsd-anchor-link">Changed<a href="#changed-43" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Refreshed browser builds, missed in prev release.</li>
+<li>Minor changes.</li>
+</ul>
+<h2 id="210-2014-12-21" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/compare/2.0.0...2.1.0" target="_blank" class="external">2.1.0</a> - 2014-12-21<a href="#210-2014-12-21" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-44" class="tsd-anchor-link">Changed<a href="#changed-44" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>Separated method to enable rules by whitelist (enableOnly).</li>
+<li>Changed second param of enable/disable ruler methods.</li>
+<li>Shortcuts in main class for bulk enable/disable rules.</li>
+<li>ASCII-friendly browserified files.</li>
+<li>Separate package for spec tests.</li>
+</ul>
+<h2 id="200-2014-12-20" class="tsd-anchor-link"><a href="https://github.com/markdown-it/markdown-it/releases/tag/2.0.0" target="_blank" class="external">2.0.0</a> - 2014-12-20<a href="#200-2014-12-20" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2>
+<h3 id="changed-45" class="tsd-anchor-link">Changed<a href="#changed-45" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<ul>
+<li>New project name &amp; home! Now it's <code>markdown-it</code>,</li>
+<li>Sugar for constructor call - <code>new</code> is not mandatory now.</li>
+<li>Renamed presets folder (configs -&gt; presets).</li>
+</ul>
+</div></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#changelog"><span>Changelog</span></a>
+<ul>
+<li><a href="#1500-2026-07-30"><span>15.0.0 -<wbr/> 2026-<wbr/>07-<wbr/>30</span></a></li>
+<li>
+<ul>
+<li><a href="#added"><span>Added</span></a></li>
+<li><a href="#changed"><span>Changed</span></a></li>
+<li><a href="#removed"><span>Removed</span></a></li>
+<li><a href="#fixed"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1430-2026-07-02"><span>14.3.0 -<wbr/> 2026-<wbr/>07-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-1"><span>Changed</span></a></li>
+<li><a href="#fixed-1"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1420-2026-05-24"><span>14.2.0 -<wbr/> 2026-<wbr/>05-<wbr/>24</span></a></li>
+<li>
+<ul>
+<li><a href="#added-1"><span>Added</span></a></li>
+<li><a href="#fixed-2"><span>Fixed</span></a></li>
+<li><a href="#security"><span>Security</span></a></li></ul></li>
+<li><a href="#1411-2026-01-11"><span>14.1.1 -<wbr/> 2026-<wbr/>01-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#security-1"><span>Security</span></a></li></ul></li>
+<li><a href="#1410-2024-03-19"><span>14.1.0 -<wbr/> 2024-<wbr/>03-<wbr/>19</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-2"><span>Changed</span></a></li>
+<li><a href="#fixed-3"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1400-2023-12-08"><span>14.0.0 -<wbr/> 2023-<wbr/>12-<wbr/>08</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-3"><span>Changed</span></a></li>
+<li><a href="#fixed-4"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1302-2023-09-26"><span>13.0.2 -<wbr/> 2023-<wbr/>09-<wbr/>26</span></a></li>
+<li>
+<ul>
+<li><a href="#security-2"><span>Security</span></a></li>
+<li><a href="#fixed-5"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1301-2022-05-03"><span>13.0.1 -<wbr/> 2022-<wbr/>05-<wbr/>03</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-6"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1300-2022-04-22"><span>13.0.0 -<wbr/> 2022-<wbr/>04-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#added-2"><span>Added</span></a></li>
+<li><a href="#changed-4"><span>Changed</span></a></li>
+<li><a href="#fixed-7"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1232-2022-01-08"><span>12.3.2 -<wbr/> 2022-<wbr/>01-<wbr/>08</span></a></li>
+<li>
+<ul>
+<li><a href="#security-3"><span>Security</span></a></li></ul></li>
+<li><a href="#1231-2022-01-07"><span>12.3.1 -<wbr/> 2022-<wbr/>01-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-8"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1230-2021-12-09"><span>12.3.0 -<wbr/> 2021-<wbr/>12-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-5"><span>Changed</span></a></li>
+<li><a href="#fixed-9"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1220-2021-08-02"><span>12.2.0 -<wbr/> 2021-<wbr/>08-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#added-3"><span>Added</span></a></li>
+<li><a href="#fixed-10"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1210-2021-07-01"><span>12.1.0 -<wbr/> 2021-<wbr/>07-<wbr/>01</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-6"><span>Changed</span></a></li></ul></li>
+<li><a href="#1206-2021-04-16"><span>12.0.6 -<wbr/> 2021-<wbr/>04-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-11"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1205-2021-04-15"><span>12.0.5 -<wbr/> 2021-<wbr/>04-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-12"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1204-2020-12-20"><span>12.0.4 -<wbr/> 2020-<wbr/>12-<wbr/>20</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-13"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1203-2020-12-07"><span>12.0.3 -<wbr/> 2020-<wbr/>12-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-14"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1202-2020-10-23"><span>12.0.2 -<wbr/> 2020-<wbr/>10-<wbr/>23</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-15"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1201-2020-10-19"><span>12.0.1 -<wbr/> 2020-<wbr/>10-<wbr/>19</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-16"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1200-2020-10-14"><span>12.0.0 -<wbr/> 2020-<wbr/>10-<wbr/>14</span></a></li>
+<li>
+<ul>
+<li><a href="#added-4"><span>Added</span></a></li>
+<li><a href="#changed-7"><span>Changed</span></a></li>
+<li><a href="#fixed-17"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1101-2020-09-14"><span>11.0.1 -<wbr/> 2020-<wbr/>09-<wbr/>14</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-18"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1100-2020-05-20"><span>11.0.0 -<wbr/> 2020-<wbr/>05-<wbr/>20</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-8"><span>Changed</span></a></li>
+<li><a href="#fixed-19"><span>Fixed</span></a></li></ul></li>
+<li><a href="#1000-2019-09-11"><span>10.0.0 -<wbr/> 2019-<wbr/>09-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#security-4"><span>Security</span></a></li>
+<li><a href="#changed-9"><span>Changed</span></a></li></ul></li>
+<li><a href="#910-2019-08-11"><span>9.1.0 -<wbr/> 2019-<wbr/>08-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-10"><span>Changed</span></a></li></ul></li>
+<li><a href="#901-2019-07-12"><span>9.0.1 -<wbr/> 2019-<wbr/>07-<wbr/>12</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-20"><span>Fixed</span></a></li></ul></li>
+<li><a href="#900-2019-07-09"><span>9.0.0 -<wbr/> 2019-<wbr/>07-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-11"><span>Changed</span></a></li></ul></li>
+<li><a href="#842-2018-02-15"><span>8.4.2 -<wbr/> 2018-<wbr/>02-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-21"><span>Fixed</span></a></li></ul></li>
+<li><a href="#841-2018-02-15"><span>8.4.1 -<wbr/> 2018-<wbr/>02-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-22"><span>Fixed</span></a></li></ul></li>
+<li><a href="#840-2017-08-24"><span>8.4.0 -<wbr/> 2017-<wbr/>08-<wbr/>24</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-12"><span>Changed</span></a></li></ul></li>
+<li><a href="#832-2017-08-03"><span>8.3.2 -<wbr/> 2017-<wbr/>08-<wbr/>03</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-23"><span>Fixed</span></a></li></ul></li>
+<li><a href="#831-2017-03-06"><span>8.3.1 -<wbr/> 2017-<wbr/>03-<wbr/>06</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-24"><span>Fixed</span></a></li></ul></li>
+<li><a href="#830-2017-02-16"><span>8.3.0 -<wbr/> 2017-<wbr/>02-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-13"><span>Changed</span></a></li>
+<li><a href="#fixed-25"><span>Fixed</span></a></li></ul></li>
+<li><a href="#822-2016-12-15"><span>8.2.2 -<wbr/> 2016-<wbr/>12-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#added-5"><span>Added</span></a></li></ul></li>
+<li><a href="#821-2016-12-02"><span>8.2.1 -<wbr/> 2016-<wbr/>12-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-26"><span>Fixed</span></a></li></ul></li>
+<li><a href="#820-2016-12-01"><span>8.2.0 -<wbr/> 2016-<wbr/>12-<wbr/>01</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-14"><span>Changed</span></a></li>
+<li><a href="#fixed-27"><span>Fixed</span></a></li></ul></li>
+<li><a href="#810-2016-11-03"><span>8.1.0 -<wbr/> 2016-<wbr/>11-<wbr/>03</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-15"><span>Changed</span></a></li></ul></li>
+<li><a href="#801-2016-10-18"><span>8.0.1 -<wbr/> 2016-<wbr/>10-<wbr/>18</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-28"><span>Fixed</span></a></li></ul></li>
+<li><a href="#800-2016-09-16"><span>8.0.0 -<wbr/> 2016-<wbr/>09-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-16"><span>Changed</span></a></li></ul></li>
+<li><a href="#701-2016-08-16"><span>7.0.1 -<wbr/> 2016-<wbr/>08-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-29"><span>Fixed</span></a></li></ul></li>
+<li><a href="#700-2016-06-22"><span>7.0.0 -<wbr/> 2016-<wbr/>06-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-17"><span>Changed</span></a></li></ul></li>
+<li><a href="#611-2016-06-21"><span>6.1.1 -<wbr/> 2016-<wbr/>06-<wbr/>21</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-18"><span>Changed</span></a></li></ul></li>
+<li><a href="#610-2016-06-19"><span>6.1.0 -<wbr/> 2016-<wbr/>06-<wbr/>19</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-19"><span>Changed</span></a></li></ul></li>
+<li><a href="#605-2016-06-01"><span>6.0.5 -<wbr/> 2016-<wbr/>06-<wbr/>01</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-30"><span>Fixed</span></a></li></ul></li>
+<li><a href="#604-2016-05-30"><span>6.0.4 -<wbr/> 2016-<wbr/>05-<wbr/>30</span></a></li>
+<li>
+<ul>
+<li><a href="#added-6"><span>Added</span></a></li></ul></li>
+<li><a href="#603-2016-05-30"><span>6.0.3 -<wbr/> 2016-<wbr/>05-<wbr/>30</span></a></li>
+<li>
+<ul>
+<li><a href="#security-5"><span>Security</span></a></li></ul></li>
+<li><a href="#602-2016-05-16"><span>6.0.2 -<wbr/> 2016-<wbr/>05-<wbr/>16</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-31"><span>Fixed</span></a></li></ul></li>
+<li><a href="#601-2016-04-02"><span>6.0.1 -<wbr/> 2016-<wbr/>04-<wbr/>02</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-32"><span>Fixed</span></a></li></ul></li>
+<li><a href="#600-2016-02-11"><span>6.0.0 -<wbr/> 2016-<wbr/>02-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-20"><span>Changed</span></a></li>
+<li><a href="#fixed-33"><span>Fixed</span></a></li></ul></li>
+<li><a href="#510-2016-01-07"><span>5.1.0 -<wbr/> 2016-<wbr/>01-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#added-7"><span>Added</span></a></li></ul></li>
+<li><a href="#503-2016-01-04"><span>5.0.3 -<wbr/> 2016-<wbr/>01-<wbr/>04</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-34"><span>Fixed</span></a></li></ul></li>
+<li><a href="#502-2015-11-20"><span>5.0.2 -<wbr/> 2015-<wbr/>11-<wbr/>20</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-35"><span>Fixed</span></a></li></ul></li>
+<li><a href="#501-2015-10-30"><span>5.0.1 -<wbr/> 2015-<wbr/>10-<wbr/>30</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-36"><span>Fixed</span></a></li></ul></li>
+<li><a href="#500-2015-10-05"><span>5.0.0 -<wbr/> 2015-<wbr/>10-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-21"><span>Changed</span></a></li>
+<li><a href="#fixed-37"><span>Fixed</span></a></li></ul></li>
+<li><a href="#440-2015-07-18"><span>4.4.0 -<wbr/> 2015-<wbr/>07-<wbr/>18</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-22"><span>Changed</span></a></li></ul></li>
+<li><a href="#431-2015-07-15"><span>4.3.1 -<wbr/> 2015-<wbr/>07-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#security-6"><span>Security</span></a></li>
+<li><a href="#fixed-38"><span>Fixed</span></a></li></ul></li>
+<li><a href="#430-2015-06-29"><span>4.3.0 -<wbr/> 2015-<wbr/>06-<wbr/>29</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-23"><span>Changed</span></a></li></ul></li>
+<li><a href="#422-2015-06-10"><span>4.2.2 -<wbr/> 2015-<wbr/>06-<wbr/>10</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-24"><span>Changed</span></a></li>
+<li><a href="#added-8"><span>Added</span></a></li>
+<li><a href="#fixed-39"><span>Fixed</span></a></li></ul></li>
+<li><a href="#421-2015-05-01"><span>4.2.1 -<wbr/> 2015-<wbr/>05-<wbr/>01</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-25"><span>Changed</span></a></li></ul></li>
+<li><a href="#420-2015-04-21"><span>4.2.0 -<wbr/> 2015-<wbr/>04-<wbr/>21</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-26"><span>Changed</span></a></li></ul></li>
+<li><a href="#412-2015-04-19"><span>4.1.2 -<wbr/> 2015-<wbr/>04-<wbr/>19</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-27"><span>Changed</span></a></li></ul></li>
+<li><a href="#411-2015-04-15"><span>4.1.1 -<wbr/> 2015-<wbr/>04-<wbr/>15</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-40"><span>Fixed</span></a></li></ul></li>
+<li><a href="#410-2015-03-31"><span>4.1.0 -<wbr/> 2015-<wbr/>03-<wbr/>31</span></a></li>
+<li>
+<ul>
+<li><a href="#security-7"><span>Security</span></a></li>
+<li><a href="#changed-28"><span>Changed</span></a></li></ul></li>
+<li><a href="#403-2015-03-25"><span>4.0.3 -<wbr/> 2015-<wbr/>03-<wbr/>25</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-29"><span>Changed</span></a></li>
+<li><a href="#fixed-41"><span>Fixed</span></a></li></ul></li>
+<li><a href="#402-2015-03-22"><span>4.0.2 -<wbr/> 2015-<wbr/>03-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-42"><span>Fixed</span></a></li></ul></li>
+<li><a href="#401-2015-03-13"><span>4.0.1 -<wbr/> 2015-<wbr/>03-<wbr/>13</span></a></li>
+<li>
+<ul>
+<li><a href="#added-9"><span>Added</span></a></li>
+<li><a href="#changed-30"><span>Changed</span></a></li></ul></li>
+<li><a href="#400-2015-03-11"><span>4.0.0 -<wbr/> 2015-<wbr/>03-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-31"><span>Changed</span></a></li>
+<li><a href="#fixed-43"><span>Fixed</span></a></li></ul></li>
+<li><a href="#310-2015-03-05"><span>3.1.0 -<wbr/> 2015-<wbr/>03-<wbr/>05</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-32"><span>Changed</span></a></li>
+<li><a href="#fixed-44"><span>Fixed</span></a></li></ul></li>
+<li><a href="#307-2015-02-22"><span>3.0.7 -<wbr/> 2015-<wbr/>02-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#added-10"><span>Added</span></a></li>
+<li><a href="#changed-33"><span>Changed</span></a></li>
+<li><a href="#fixed-45"><span>Fixed</span></a></li></ul></li>
+<li><a href="#306-2015-02-12"><span>3.0.6 -<wbr/> 2015-<wbr/>02-<wbr/>12</span></a></li>
+<li>
+<ul>
+<li><a href="#added-11"><span>Added</span></a></li>
+<li><a href="#changed-34"><span>Changed</span></a></li>
+<li><a href="#fixed-46"><span>Fixed</span></a></li></ul></li>
+<li><a href="#305-2015-02-06"><span>3.0.5 -<wbr/> 2015-<wbr/>02-<wbr/>06</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-35"><span>Changed</span></a></li>
+<li><a href="#fixed-47"><span>Fixed</span></a></li></ul></li>
+<li><a href="#304-2015-01-13"><span>3.0.4 -<wbr/> 2015-<wbr/>01-<wbr/>13</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-36"><span>Changed</span></a></li></ul></li>
+<li><a href="#303-2015-01-11"><span>3.0.3 -<wbr/> 2015-<wbr/>01-<wbr/>11</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-48"><span>Fixed</span></a></li></ul></li>
+<li><a href="#302-2015-01-09"><span>3.0.2 -<wbr/> 2015-<wbr/>01-<wbr/>09</span></a></li>
+<li>
+<ul>
+<li><a href="#fixed-49"><span>Fixed</span></a></li></ul></li>
+<li><a href="#301-2015-01-07"><span>3.0.1 -<wbr/> 2015-<wbr/>01-<wbr/>07</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-37"><span>Changed</span></a></li>
+<li><a href="#fixed-50"><span>Fixed</span></a></li></ul></li>
+<li><a href="#300-2015-01-04"><span>3.0.0 -<wbr/> 2015-<wbr/>01-<wbr/>04</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-38"><span>Changed</span></a></li>
+<li><a href="#fixed-51"><span>Fixed</span></a></li></ul></li>
+<li><a href="#221-2014-12-29"><span>2.2.1 -<wbr/> 2014-<wbr/>12-<wbr/>29</span></a></li>
+<li>
+<ul>
+<li><a href="#added-12"><span>Added</span></a></li>
+<li><a href="#changed-39"><span>Changed</span></a></li>
+<li><a href="#fixed-52"><span>Fixed</span></a></li></ul></li>
+<li><a href="#220-2014-12-28"><span>2.2.0 -<wbr/> 2014-<wbr/>12-<wbr/>28</span></a></li>
+<li>
+<ul>
+<li><a href="#added-13"><span>Added</span></a></li>
+<li><a href="#changed-40"><span>Changed</span></a></li>
+<li><a href="#fixed-53"><span>Fixed</span></a></li></ul></li>
+<li><a href="#213-2014-12-24"><span>2.1.3 -<wbr/> 2014-<wbr/>12-<wbr/>24</span></a></li>
+<li>
+<ul>
+<li><a href="#added-14"><span>Added</span></a></li>
+<li><a href="#changed-41"><span>Changed</span></a></li></ul></li>
+<li><a href="#212-2014-12-23"><span>2.1.2 -<wbr/> 2014-<wbr/>12-<wbr/>23</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-42"><span>Changed</span></a></li></ul></li>
+<li><a href="#211-2014-12-22"><span>2.1.1 -<wbr/> 2014-<wbr/>12-<wbr/>22</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-43"><span>Changed</span></a></li></ul></li>
+<li><a href="#210-2014-12-21"><span>2.1.0 -<wbr/> 2014-<wbr/>12-<wbr/>21</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-44"><span>Changed</span></a></li></ul></li>
+<li><a href="#200-2014-12-20"><span>2.0.0 -<wbr/> 2014-<wbr/>12-<wbr/>20</span></a></li>
+<li>
+<ul>
+<li><a href="#changed-45"><span>Changed</span></a></li></ul></li></ul></div></details></div>
+<div class="site-menu">
+<nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/markdown-it/markdown-it" class="tsd-nav-link">GitHub</a></nav>
+<nav class="tsd-navigation"><a href="../modules.html">markdown-it - v15.0.0</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div></body></html>

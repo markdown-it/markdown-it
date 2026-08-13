@@ -1,0 +1,377 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>MarkdownIt | markdown-it - v15.0.0</title><meta name="description" content="Documentation for markdown-it"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><link rel="stylesheet" href="../assets/condensed_theme.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">markdown-it - v15.0.0</a>
+<div id="tsd-toolbar-links"><a href="https://github.com/markdown-it/markdown-it">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">MarkdownIt</a></li></ul>
+<h1>Interface MarkdownIt</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>Parses Markdown into tokens and renders them to HTML.</p>
+</div></section>
+<div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">MarkdownIt</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-property" href="#inline">inline</a><span class="tsd-signature-symbol">:</span> <a href="ParserInline.html" class="tsd-signature-type tsd-kind-interface">ParserInline</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#block">block</a><span class="tsd-signature-symbol">:</span> <a href="ParserBlock.html" class="tsd-signature-type tsd-kind-interface">ParserBlock</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#core">core</a><span class="tsd-signature-symbol">:</span> <a href="ParserCore.html" class="tsd-signature-type tsd-kind-interface">ParserCore</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#renderer">renderer</a><span class="tsd-signature-symbol">:</span> <a href="Renderer.html" class="tsd-signature-type tsd-kind-interface">Renderer</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#linkify">linkify</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">LinkifyIt</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#validatelink-1">validateLink</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#normalizelink-1">normalizeLink</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#normalizelinktext-1">normalizeLinkText</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#utils">utils</a><span class="tsd-signature-symbol">:</span> <a href="../modules/md.utils.html" class="tsd-signature-type tsd-kind-namespace">md.utils</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#helpers">helpers</a><span class="tsd-signature-symbol">:</span> <a href="../modules/md.helpers.html" class="tsd-signature-type tsd-kind-namespace">md.helpers</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#options">options</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Required</span><span class="tsd-signature-symbol">&lt;</span><a href="MarkdownItOptions.html" class="tsd-signature-type tsd-kind-interface">MarkdownItOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#set-1">set</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">options</span><span class="tsd-signature-symbol">:</span> <a href="MarkdownItOptions.html" class="tsd-signature-type tsd-kind-interface">MarkdownItOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#configure-1">configure</a><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">presets</span><span class="tsd-signature-symbol">:</span> <a href="MarkdownItPreset.html" class="tsd-signature-type tsd-kind-interface">MarkdownItPreset</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;default&quot;</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;zero&quot;</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;commonmark&quot;</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#enable-1">enable</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">list</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">ignoreInvalid</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#disable-1">disable</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">list</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">ignoreInvalid</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#use-1">use</a><span class="tsd-signature-symbol">&lt;</span><a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a> <span class="tsd-signature-keyword">extends</span> <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">plugin</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">md</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">,</span> <span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">:</span> <a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">:</span> <a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#parse-1">parse</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Token.html" class="tsd-signature-type tsd-kind-interface">Token</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#render-1">render</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">?:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#parseinline-1">parseInline</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Token.html" class="tsd-signature-type tsd-kind-interface">Token</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#renderinline-1">renderInline</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">?:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L70" target="_blank">Source</a></li></ul></aside>
+<section class="tsd-panel-group tsd-index-group">
+<section class="tsd-panel tsd-index-panel">
+<details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h5 class="tsd-index-heading uppercase">Index</h5></summary>
+<div class="tsd-accordion-details">
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="properties">Properties<a href="#properties" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<div class="tsd-index-list"><a href="#inline" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>inline</span></a>
+<a href="#block" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>block</span></a>
+<a href="#core" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>core</span></a>
+<a href="#renderer" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>renderer</span></a>
+<a href="#linkify" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>linkify</span></a>
+<a href="#utils" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>utils</span></a>
+<a href="#helpers" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>helpers</span></a>
+<a href="#options" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>options</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="methods">Methods<a href="#methods" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h3>
+<div class="tsd-index-list"><a href="#validatelink" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>validate<wbr/>Link</span></a>
+<a href="#normalizelink" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>normalize<wbr/>Link</span></a>
+<a href="#normalizelinktext" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>normalize<wbr/>Link<wbr/>Text</span></a>
+<a href="#set" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set</span></a>
+<a href="#configure" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>configure</span></a>
+<a href="#enable" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>enable</span></a>
+<a href="#disable" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>disable</span></a>
+<a href="#use" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>use</span></a>
+<a href="#parse" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>parse</span></a>
+<a href="#render" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>render</span></a>
+<a href="#parseinline" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>parse<wbr/>Inline</span></a>
+<a href="#renderinline" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>render<wbr/>Inline</span></a>
+</div></section></div></details></section></section>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="properties-1">Properties<a href="#properties-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member" id="inline">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L76" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">inline</span><span class="tsd-signature-symbol">:</span> <a href="ParserInline.html" class="tsd-signature-type tsd-kind-interface">ParserInline</a><span class="tsd-signature-symbol"> = ...</span><a href="#inline" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-comment tsd-typography"><p>Instance of <a href="ParserInline.html" class="tsd-kind-interface">ParserInline</a>. You may need it to add new rules when
+writing plugins. For simple rules control use <a href="#disable" class="tsd-kind-method">MarkdownIt.disable</a>
+and <a href="#enable" class="tsd-kind-method">MarkdownIt.enable</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member" id="block">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L83" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">block</span><span class="tsd-signature-symbol">:</span> <a href="ParserBlock.html" class="tsd-signature-type tsd-kind-interface">ParserBlock</a><span class="tsd-signature-symbol"> = ...</span><a href="#block" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-comment tsd-typography"><p>Instance of <a href="ParserBlock.html" class="tsd-kind-interface">ParserBlock</a>. You may need it to add new rules when
+writing plugins. For simple rules control use <a href="#disable" class="tsd-kind-method">MarkdownIt.disable</a>
+and <a href="#enable" class="tsd-kind-method">MarkdownIt.enable</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member" id="core">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L90" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">core</span><span class="tsd-signature-symbol">:</span> <a href="ParserCore.html" class="tsd-signature-type tsd-kind-interface">ParserCore</a><span class="tsd-signature-symbol"> = ...</span><a href="#core" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-comment tsd-typography"><p>Instance of <a href="ParserCore.html" class="tsd-kind-interface">ParserCore</a> chain executor. You may need it to add new
+rules when writing plugins. For simple rules control use
+<a href="#disable" class="tsd-kind-method">MarkdownIt.disable</a> and <a href="#enable" class="tsd-kind-method">MarkdownIt.enable</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member" id="renderer">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L112" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">renderer</span><span class="tsd-signature-symbol">:</span> <a href="Renderer.html" class="tsd-signature-type tsd-kind-interface">Renderer</a><span class="tsd-signature-symbol"> = ...</span><a href="#renderer" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-comment tsd-typography"><p>Instance of <a href="Renderer.html" class="tsd-kind-interface">Renderer</a>. Use it to modify output look. Or to add rendering
+rules for new token types, generated by plugins.</p>
+<p>See <a href="Renderer.html" class="tsd-kind-interface">Renderer</a> docs and
+<a href="https://github.com/markdown-it/markdown-it/blob/master/src/renderer.ts" target="_blank" class="external">source code</a>.</p>
+</div>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-example">
+<h4 class="tsd-anchor-link" id="example">Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h4><pre><code class="javascript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><br/><span class="hl-5">function</span><span class="hl-1"> </span><span class="hl-0">myToken</span><span class="hl-1">(</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">, </span><span class="hl-4">options</span><span class="hl-1">, </span><span class="hl-4">env</span><span class="hl-1">, </span><span class="hl-4">self</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-7">//...</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-4">result</span><span class="hl-1">;</span><br/><span class="hl-1">};</span><br/><br/><span class="hl-4">md</span><span class="hl-1">.</span><span class="hl-4">renderer</span><span class="hl-1">.</span><span class="hl-4">rules</span><span class="hl-1">[</span><span class="hl-2">&#39;my_token&#39;</span><span class="hl-1">] = </span><span class="hl-4">myToken</span>
+</code><button type="button">Copy</button></pre>
+
+</div></div></section>
+<section class="tsd-panel tsd-member" id="linkify">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L119" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">linkify</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">LinkifyIt</span><span class="tsd-signature-symbol"> = ...</span><a href="#linkify" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-comment tsd-typography"><p><a href="https://github.com/markdown-it/linkify-it" target="_blank" class="external">linkify-it</a> instance.
+Used by <a href="https://github.com/markdown-it/markdown-it/blob/master/src/rules_core/linkify.ts" target="_blank" class="external">linkify</a>
+rule.</p>
+</div></section>
+<section class="tsd-panel tsd-member" id="utils">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L198" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">utils</span><span class="tsd-signature-symbol">:</span> <a href="../modules/md.utils.html" class="tsd-signature-type tsd-kind-namespace">md.utils</a><span class="tsd-signature-symbol"> = utils</span><a href="#utils" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-comment tsd-typography"><p>Assorted utility functions, useful to write plugins. See details
+<a href="https://github.com/markdown-it/markdown-it/blob/master/src/common/utils.ts" target="_blank" class="external">here</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member" id="helpers">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L204" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">helpers</span><span class="tsd-signature-symbol">:</span> <a href="../modules/md.helpers.html" class="tsd-signature-type tsd-kind-namespace">md.helpers</a><span class="tsd-signature-symbol"> = ...</span><a href="#helpers" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-comment tsd-typography"><p>Link components parser functions, useful to write plugins. See details
+<a href="https://github.com/markdown-it/markdown-it/blob/master/src/helpers" target="_blank" class="external">here</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member" id="options">
+<div class="tsd-signature tsd-anchor-link"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L206" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-property">options</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Required</span><span class="tsd-signature-symbol">&lt;</span><a href="MarkdownItOptions.html" class="tsd-signature-type tsd-kind-interface">MarkdownItOptions</a><span class="tsd-signature-symbol">&gt;</span><a href="#options" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="methods-1">Methods<a href="#methods-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member" id="validatelink">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="validatelink-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L137" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">validateLink</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><a href="#validatelink" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Link validation function. CommonMark allows too much in links. By default
+we disable <code>javascript:</code>, <code>vbscript:</code>, <code>file:</code> schemas, and almost all <code>data:...</code> schemas
+except some embedded image types.</p>
+<p>You can change this behaviour:</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">url</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-example">
+<h4 class="tsd-anchor-link" id="example-1">Example<a href="#example-1" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h4><pre><code class="javascript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><br/><span class="hl-7">// enable everything</span><br/><span class="hl-4">md</span><span class="hl-1">.</span><span class="hl-0">validateLink</span><span class="hl-1"> = </span><span class="hl-5">function</span><span class="hl-1"> () { </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-5">true</span><span class="hl-1">; }</span>
+</code><button type="button">Copy</button></pre>
+
+</div></div></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="normalizelink">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="normalizelink-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L148" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">normalizeLink</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><a href="#normalizelink" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Function used to encode link url to a machine-readable format,
+which includes url-encoding, punycode, etc.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">url</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="normalizelinktext">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="normalizelinktext-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L171" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">normalizeLinkText</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><a href="#normalizelinktext" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Function used to decode link url to a human-readable format`</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">url</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="set">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="set-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L243" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">set</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">options</span><span class="tsd-signature-symbol">:</span> <a href="MarkdownItOptions.html" class="tsd-signature-type tsd-kind-interface">MarkdownItOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><a href="#set" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Set parser options (in the same format as in constructor). Probably, you
+will never need it, but you can change options after constructor call.</p>
+<p><strong>Note:</strong> To achieve the best possible performance, don't modify a
+<code>markdown-it</code> instance options on the fly. If you need multiple configurations
+it's best to create multiple instances and initialize each with separate
+config.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">options</span>: <a href="MarkdownItOptions.html" class="tsd-signature-type tsd-kind-interface">MarkdownItOptions</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-example">
+<h4 class="tsd-anchor-link" id="example-2">Example<a href="#example-2" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h4><pre><code class="javascript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><span class="hl-1">  .</span><span class="hl-0">set</span><span class="hl-1">({ </span><span class="hl-4">html:</span><span class="hl-1"> </span><span class="hl-5">true</span><span class="hl-1">, </span><span class="hl-4">breaks:</span><span class="hl-1"> </span><span class="hl-5">true</span><span class="hl-1"> })</span><br/><span class="hl-1">  .</span><span class="hl-0">set</span><span class="hl-1">({ </span><span class="hl-4">typographer:</span><span class="hl-1"> </span><span class="hl-5">true</span><span class="hl-1"> })</span>
+</code><button type="button">Copy</button></pre>
+
+</div></div></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="configure">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="configure-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L256" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">configure</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">presets</span><span class="tsd-signature-symbol">:</span> <a href="MarkdownItPreset.html" class="tsd-signature-type tsd-kind-interface">MarkdownItPreset</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;default&quot;</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;zero&quot;</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;commonmark&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><a href="#configure" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Batch load of all options and compenent settings. This is internal method,
+and you probably will not need it. But if you will - see available presets
+and data structure <a href="https://github.com/markdown-it/markdown-it/tree/master/src/presets" target="_blank" class="external">here</a></p>
+<p>We strongly recommend to use presets instead of direct config loads. That
+will give better compatibility with next versions.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">presets</span>: <a href="MarkdownItPreset.html" class="tsd-signature-type tsd-kind-interface">MarkdownItPreset</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;default&quot;</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;zero&quot;</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">&quot;commonmark&quot;</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="enable">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="enable-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L303" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">enable</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">list</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">ignoreInvalid</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><a href="#enable" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Enable list or rules. It will automatically find appropriate components,
+containing rules with given names. If rule not found, and <code>ignoreInvalid</code>
+not set - throws exception.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">list</span>: <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></span></li>
+<li><span><span class="tsd-kind-parameter">ignoreInvalid</span>: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-example">
+<h4 class="tsd-anchor-link" id="example-3">Example<a href="#example-3" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h4><pre><code class="javascript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><span class="hl-1">  .</span><span class="hl-0">enable</span><span class="hl-1">([</span><span class="hl-2">&#39;sub&#39;</span><span class="hl-1">, </span><span class="hl-2">&#39;sup&#39;</span><span class="hl-1">])</span><br/><span class="hl-1">  .</span><span class="hl-0">disable</span><span class="hl-1">(</span><span class="hl-2">&#39;smartquotes&#39;</span><span class="hl-1">)</span>
+</code><button type="button">Copy</button></pre>
+
+</div></div></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="disable">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="disable-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L327" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">disable</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">list</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">ignoreInvalid</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><a href="#disable" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>The same as <a href="#enable" class="tsd-kind-method">MarkdownIt.enable</a>, but turn specified rules off.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">list</span>: <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></span></li>
+<li><span><span class="tsd-kind-parameter">ignoreInvalid</span>: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="use">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="use-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L362" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">use</span><span class="tsd-signature-symbol">&lt;</span><a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a> <span class="tsd-signature-keyword">extends</span> <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">plugin</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">md</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">,</span> <span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">:</span> <a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">:</span> <a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><a href="#use" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Load specified plugin with given params into current parser instance.
+It's just a sugar to call <code>plugin(md, params)</code> with curring.</p>
+</div>
+<section class="tsd-panel">
+<h4>Type Parameters</h4>
+<ul class="tsd-type-parameter-list">
+<li><span id="useparams"><span class="tsd-kind-type-parameter">Params</span> <span class="tsd-signature-keyword">extends</span> <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">[]</span></span></li></ul></section>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">plugin</span>: <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">md</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">,</span> <span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">:</span> <a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span></span></li>
+<li><span><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">params</span>: <a class="tsd-signature-type tsd-kind-type-parameter" href="#useparams">Params</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-example">
+<h4 class="tsd-anchor-link" id="example-4">Example<a href="#example-4" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></h4><pre><code class="javascript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">MarkdownIt</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it&#39;</span><br/><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">iterator</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;markdown-it-for-inline&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">md</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MarkdownIt</span><span class="hl-1">()</span><br/><span class="hl-1">  .</span><span class="hl-0">use</span><span class="hl-1">(</span><span class="hl-4">iterator</span><span class="hl-1">, </span><span class="hl-2">&#39;foo_replace&#39;</span><span class="hl-1">, </span><span class="hl-2">&#39;text&#39;</span><span class="hl-1">, </span><span class="hl-5">function</span><span class="hl-1"> (</span><span class="hl-4">tokens</span><span class="hl-1">, </span><span class="hl-4">idx</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">tokens</span><span class="hl-1">[</span><span class="hl-4">idx</span><span class="hl-1">].</span><span class="hl-4">content</span><span class="hl-1"> = </span><span class="hl-4">tokens</span><span class="hl-1">[</span><span class="hl-4">idx</span><span class="hl-1">].</span><span class="hl-4">content</span><span class="hl-1">.</span><span class="hl-0">replace</span><span class="hl-1">(</span><span class="hl-9">/foo/</span><span class="hl-5">g</span><span class="hl-1">, </span><span class="hl-2">&#39;bar&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">  })</span>
+</code><button type="button">Copy</button></pre>
+
+</div></div></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="parse">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="parse-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L381" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">parse</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Token.html" class="tsd-signature-type tsd-kind-interface">Token</a><span class="tsd-signature-symbol">[]</span><a href="#parse" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Parse input string and return list of block tokens (special token type
+&quot;inline&quot; will contain list of inline tokens). You should not call this
+method directly, until you write custom renderer (for example, to produce
+AST).</p>
+<p><code>env</code> is used to pass data between &quot;distributed&quot; rules and return additional
+metadata like reference info, needed for the renderer. It also can be used to
+inject data in specific cases. Usually, you will be ok to pass <code>{}</code>,
+and then pass updated object to renderer.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">src</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><span class="tsd-kind-parameter">env</span>: <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Token.html" class="tsd-signature-type tsd-kind-interface">Token</a><span class="tsd-signature-symbol">[]</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="render">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="render-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L400" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">render</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">?:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><a href="#render" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Render markdown string into html. It does all magic for you :).</p>
+<p><code>env</code> can be used to inject additional metadata (<code>{}</code> by default).
+But you will not need it with high probability. See also comment
+in <a href="#parse" class="tsd-kind-method">MarkdownIt.parse</a>.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">src</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><span class="tsd-kind-parameter">env</span>: <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol"> = {}</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="parseinline">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="parseinline-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L409" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">parseInline</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Token.html" class="tsd-signature-type tsd-kind-interface">Token</a><span class="tsd-signature-symbol">[]</span><a href="#parseinline" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>The same as <a href="#parse" class="tsd-kind-method">MarkdownIt.parse</a> but skip all block rules. It returns
+the block tokens list with the single <code>inline</code> element, containing parsed
+inline tokens in <code>children</code> property. Also updates <code>env</code> object.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">src</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><span class="tsd-kind-parameter">env</span>: <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Token.html" class="tsd-signature-type tsd-kind-interface">Token</a><span class="tsd-signature-symbol">[]</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member" id="renderinline">
+<ul class="tsd-signatures">
+<li class="cndnsd-call-signature">
+<div class="tsd-signature tsd-anchor-link" id="renderinline-1"><aside class="tsd-sources">
+<ul>
+<li><a href="https://github.com/markdown-it/markdown-it/blob/1e8ab89c/src/markdownit.ts#L422" target="_blank">Source</a></li></ul></aside><span class="tsd-kind-call-signature">renderInline</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">src</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">env</span><span class="tsd-signature-symbol">?:</span> <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><a href="#renderinline" aria-label="Permalink" class="tsd-anchor-icon"><span aria-hidden="true" class="cndnsd-anchor-symbol">§</span></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Similar to <a href="#render" class="tsd-kind-method">MarkdownIt.render</a> but for single paragraph content.
+Result will NOT be wrapped into <code>&lt;p&gt;</code> tags.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">src</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><span class="tsd-kind-parameter">env</span>: <a href="Env.html" class="tsd-signature-type tsd-kind-interface">Env</a><span class="tsd-signature-symbol"> = {}</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4></div></li></ul></section></section></details></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details">
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Properties</summary>
+<div><a href="#inline"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>inline</span></a><a href="#block"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>block</span></a><a href="#core"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>core</span></a><a href="#renderer"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>renderer</span></a><a href="#linkify"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>linkify</span></a><a href="#utils"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>utils</span></a><a href="#helpers"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>helpers</span></a><a href="#options"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>options</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Methods</summary>
+<div><a href="#validatelink"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>validate<wbr/>Link</span></a><a href="#normalizelink"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>normalize<wbr/>Link</span></a><a href="#normalizelinktext"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>normalize<wbr/>Link<wbr/>Text</span></a><a href="#set"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set</span></a><a href="#configure"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>configure</span></a><a href="#enable"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>enable</span></a><a href="#disable"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>disable</span></a><a href="#use"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>use</span></a><a href="#parse"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>parse</span></a><a href="#render"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>render</span></a><a href="#parseinline"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>parse<wbr/>Inline</span></a><a href="#renderinline"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>render<wbr/>Inline</span></a></div></details></div></details></div>
+<div class="site-menu">
+<nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/markdown-it/markdown-it" class="tsd-nav-link">GitHub</a></nav>
+<nav class="tsd-navigation"><a href="../modules.html">markdown-it - v15.0.0</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div></body></html>
