@@ -1,9 +1,27 @@
 // Process links like https://example.org/
 
+import { isMdAsciiPunct, unescapeMd } from '../common/utils.ts'
 import type StateInline from './state_inline.ts'
 
 // RFC3986: scheme = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
 const SCHEME_RE = /(?:^|[^a-z0-9.+-])([a-z][a-z0-9.+-]*)$/i
+
+// `\` + ASCII punct is one character after CommonMark unescape.
+function srcLengthForUnescaped (src: string, start: number, unescapedLength: number): number {
+  let i = start
+  let consumed = 0
+
+  while (consumed < unescapedLength && i < src.length) {
+    if (src.charCodeAt(i) === 0x5C/* \ */ && i + 1 < src.length && isMdAsciiPunct(src.charCodeAt(i + 1))) {
+      i += 2
+    } else {
+      i++
+    }
+    consumed++
+  }
+
+  return i - start
+}
 
 export default function linkify (state: StateInline, silent: boolean): boolean {
   if (!state.md.options.linkify) return false
@@ -22,7 +40,8 @@ export default function linkify (state: StateInline, silent: boolean): boolean {
 
   const proto = match[1]
 
-  const link = state.md.linkify.matchAtStart(state.src.slice(pos - proto.length))
+  // matchAtStart on raw source stops at `\`; unescape so git\-scm.com stays one URL
+  const link = state.md.linkify.matchAtStart(unescapeMd(state.src.slice(pos - proto.length, max)))
   if (!link) return false
 
   let url = link.url
@@ -60,6 +79,6 @@ export default function linkify (state: StateInline, silent: boolean): boolean {
     token_c.info = 'auto'
   }
 
-  state.pos += url.length - proto.length
+  state.pos += srcLengthForUnescaped(state.src, pos, url.length - proto.length)
   return true
 }
