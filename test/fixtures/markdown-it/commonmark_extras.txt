@@ -876,3 +876,19 @@ foo
 <p>foo</p>
 <!bar baz>
 .
+
+An unclosed link label (`[`) must not suppress a later code span. Code spans bind
+more tightly than links (CommonMark 0.31.2 6.1), so the lookahead that searches for
+the label's closing `]` must not disturb code-span scanning of the rest of the line.
+.
+[foo `bar` baz`
+.
+<p>[foo <code>bar</code> baz`</p>
+.
+
+The same holds for an unclosed image label (`![`), which uses the same lookahead.
+.
+![alt `code` x`
+.
+<p>![alt <code>code</code> x`</p>
+.
