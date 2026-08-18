@@ -60,6 +60,26 @@ Two slashes should start a domain:
 <p><a href="//xn--n3h.net/"></a></p>
 .
 
+IPv6 address literals should preserve brackets while encoding other components:
+
+.
+[foo](http://[2001:db8::1]:1896/a[b]?x=[y])
+.
+<p><a href="http://[2001:db8::1]:1896/a%5Bb%5D?x=%5By%5D">foo</a></p>
+.
+
+.
+[foo](//[::ffff:192.0.2.1]/)
+.
+<p><a href="//[::ffff:192.0.2.1]/">foo</a></p>
+.
+
+.
+[foo](http://user:password@[2001:db8:0:0:0:0:0:1]:1926/)
+.
+<p><a href="http://user:password@[2001:db8:0:0:0:0:0:1]:1926/">foo</a></p>
+.
+
 Don't encode domains in unknown schemas:
 
 .
