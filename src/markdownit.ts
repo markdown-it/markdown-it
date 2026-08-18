@@ -62,6 +62,17 @@ const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/
 
 const RECODE_HOSTNAME_FOR = ['http:', 'https:', 'mailto:']
 
+function encodeLink (parsed: mdurl.Url): string {
+  return mdurl.format({
+    ...parsed,
+    auth: parsed.auth && mdurl.encode(parsed.auth),
+    hostname: parsed.hostname && mdurl.encode(parsed.hostname),
+    pathname: parsed.pathname && mdurl.encode(parsed.pathname),
+    search: parsed.search && mdurl.encode(parsed.search),
+    hash: parsed.hash && mdurl.encode(parsed.hash)
+  })
+}
+
 /**
  * Parses Markdown into tokens and renders them to HTML.
  *
@@ -162,7 +173,7 @@ class MarkdownIt {
       }
     }
 
-    return mdurl.encode(mdurl.format(parsed))
+    return encodeLink(parsed)
   }
 
   /**
