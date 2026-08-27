@@ -53,14 +53,16 @@
     "benchmark-deps": "npm install --prefix benchmark/extra/",
     "specsplit": "support/specsplit.mjs good -o test/fixtures/commonmark/good.txt && support/specsplit.mjs bad -o test/fixtures/commonmark/bad.txt && support/specsplit.mjs",
     "todo": "grep 'TODO' -n -r ./lib 2>/dev/null",
-    "prepack": "npm test && npm run build && npm run demo && npm run doc",
-    "postpublish": "npm run gh-demo && npm run gh-doc"
+    "prepack": "npm test && npm run build"
   },
   "files": [
     "index.mjs",
     "lib/",
     "dist/"
   ],
+  "publishConfig": {
+    "tag": "v14-legacy"
+  },
   "dependencies": {
     "argparse": "^2.0.1",
     "entities": "^4.5.0",
