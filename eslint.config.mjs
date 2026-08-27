@@ -4,6 +4,7 @@ export default [
   ...neostandard({
     env: ['browser', 'node'],
     ignores: [
+      'apidoc/**',
       'benchmark/extra/**',
       'demo/**',
       'dist/**'
