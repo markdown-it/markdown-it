@@ -6,8 +6,7 @@ import type StateBlock from './state_block.ts'
 export default function lheading (state: StateBlock, startLine: number, endLine: number/*, silent */): boolean {
   const terminatorRules = state.md.block.ruler.getRules('paragraph')
 
-  // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[startLine] - state.blkIndent >= 4) { return false }
+  if (state.isCodeBlock(startLine)) { return false }
 
   const oldParentType = state.parentType
   state.parentType = 'paragraph' // use paragraph to match terminatorRules

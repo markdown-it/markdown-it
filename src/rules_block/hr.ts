@@ -5,8 +5,7 @@ import type StateBlock from './state_block.ts'
 
 export default function hr (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean {
   const max = state.eMarks[startLine]
-  // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[startLine] - state.blkIndent >= 4) { return false }
+  if (state.isCodeBlock(startLine)) { return false }
 
   let pos = state.bMarks[startLine] + state.tShift[startLine]
   const marker = state.src.charCodeAt(pos++)

@@ -42,6 +42,7 @@ class StateBlock {
   parentType = 'root'
 
   level = 0
+  _codeEnabled = false
 
   // re-export Token class to use in block rules
   Token = Token
@@ -105,6 +106,9 @@ class StateBlock {
     this.bsCount.push(0)
 
     this.lineMax = this.bMarks.length - 1 // don't count last fake line
+
+    // pre-check if code blocks are enabled, to speed up isCodeBlock
+    this._codeEnabled = this.md.block.ruler.__rules__.some(rule => rule.name === 'code' && rule.enabled)
   }
 
   // Push new token to "stream".
@@ -221,6 +225,12 @@ class StateBlock {
     }
 
     return queue.join('')
+  }
+
+  // Check if line is a code block, i.e. the code block rule is enabled
+  // and text is indented by more than 3 spaces.
+  isCodeBlock (line: number): boolean {
+    return this._codeEnabled && (this.sCount[line] - this.blkIndent) >= 4
   }
 }
 
