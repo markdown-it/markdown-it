@@ -93,8 +93,7 @@ export default function list (state: StateBlock, startLine: number, endLine: num
   let nextLine = startLine
   let tight = true
 
-  // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[nextLine] - state.blkIndent >= 4) { return false }
+  if (state.isCodeBlock(nextLine)) { return false }
 
   // Special case:
   //  - item 1
@@ -284,8 +283,7 @@ export default function list (state: StateBlock, startLine: number, endLine: num
     //
     if (state.sCount[nextLine] < state.blkIndent) { break }
 
-    // if it's indented more than 3 spaces, it should be a code block
-    if (state.sCount[nextLine] - state.blkIndent >= 4) { break }
+    if (state.isCodeBlock(nextLine)) { break }
 
     // fail if terminating block found
     let terminate = false

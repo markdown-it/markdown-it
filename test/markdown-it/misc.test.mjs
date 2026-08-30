@@ -564,3 +564,43 @@ describe('Token attributes', function () {
     assert.strictEqual(t.attrGet('myattr'), 'myvalue')
   })
 })
+
+describe('disable indented code', function () {
+  const md = markdownit().disable('code')
+
+  it('should parse a 4-space indented heading', function () {
+    assert.strictEqual(
+      md.render('    # Heading'),
+      '<h1>Heading</h1>\n'
+    )
+  })
+
+  it('should parse a 4-space indented blockquote', function () {
+    assert.strictEqual(
+      md.render('    > quote'),
+      '<blockquote>\n<p>quote</p>\n</blockquote>\n'
+    )
+  })
+
+  it('should parse a 4-space indented hr', function () {
+    assert.strictEqual(
+      md.render('    ---'),
+      '<hr>\n'
+    )
+  })
+
+  it('should parse a 4-space indented fence', function () {
+    assert.strictEqual(
+      md.render('    ```\n    foo\n    ```'),
+      '<pre><code>foo\n</code></pre>\n'
+    )
+  })
+
+  it('should keep 4-space indented heading as a code block when code is enabled', function () {
+    const mdDefault = markdownit()
+    assert.strictEqual(
+      mdDefault.render('    # Heading'),
+      '<pre><code># Heading\n</code></pre>\n'
+    )
+  })
+})

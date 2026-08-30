@@ -6,8 +6,7 @@ export default function reference (state: StateBlock, startLine: number, _endLin
   let max = state.eMarks[startLine]
   let nextLine = startLine + 1
 
-  // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[startLine] - state.blkIndent >= 4) { return false }
+  if (state.isCodeBlock(startLine)) { return false }
 
   if (state.src.charCodeAt(pos) !== 0x5B/* [ */) { return false }
 
@@ -23,7 +22,7 @@ export default function reference (state: StateBlock, startLine: number, _endLin
 
     // this would be a code block normally, but after paragraph
     // it's considered a lazy continuation regardless of what's there
-    if (state.sCount[nextLine] - state.blkIndent > 3) { isContinuation = true }
+    if (state.isCodeBlock(nextLine)) { isContinuation = true }
 
     // quirk for blockquotes, this line should already be checked by that rule
     if (state.sCount[nextLine] < 0) { isContinuation = true }
