@@ -16,6 +16,14 @@ interface Replacement {
 
 type ReplacementMap = Record<string, Replacement[]>
 
+interface QuoteOpener {
+  token: number
+  pos: number
+  single: boolean
+  level: number
+  prevSame: number
+}
+
 function addReplacement (
   replacements: ReplacementMap,
   tokenIdx: number,
@@ -48,9 +56,20 @@ function applyReplacements (str: string, replacements: Replacement[]) {
 function process_inlines (tokens: Token[], state: StateCore) {
   let j
 
-  const stack = []
+  const stack: QuoteOpener[] = []
+  const heads = new Map<number, { single: number, double: number }>()
   // token index -> list of replacements in the original token content
   const replacements: ReplacementMap = {}
+
+  function truncateStack (length: number) {
+    // Each opener is removed at most once
+    while (stack.length > length) {
+      const item = stack.pop()!
+      const head = heads.get(item.level)!
+      head[item.single ? 'single' : 'double'] = item.prevSame
+      if (head.single === -1 && head.double === -1) heads.delete(item.level)
+    }
+  }
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]
@@ -60,7 +79,7 @@ function process_inlines (tokens: Token[], state: StateCore) {
     for (j = stack.length - 1; j >= 0; j--) {
       if (stack[j].level <= thisLevel) { break }
     }
-    stack.length = j + 1
+    truncateStack(j + 1)
 
     if (token.type !== 'text') { continue }
 
@@ -164,39 +183,44 @@ function process_inlines (tokens: Token[], state: StateCore) {
       }
 
       if (canClose) {
-        // this could be a closing quote, rewind the stack to get a match
-        for (j = stack.length - 1; j >= 0; j--) {
-          let item = stack[j]
-          if (stack[j].level < thisLevel) { break }
-          if (item.single === isSingle && stack[j].level === thisLevel) {
-            item = stack[j]
+        // Index by level and type
+        j = heads.get(thisLevel)?.[isSingle ? 'single' : 'double'] ?? -1
+        if (j >= 0) {
+          const item = stack[j]
 
-            let openQuote
-            let closeQuote
-            if (isSingle) {
-              openQuote = state.md.options.quotes[2]
-              closeQuote = state.md.options.quotes[3]
-            } else {
-              openQuote = state.md.options.quotes[0]
-              closeQuote = state.md.options.quotes[1]
-            }
-
-            addReplacement(replacements, i, t.index, closeQuote)
-            addReplacement(replacements, item.token, item.pos, openQuote)
-
-            stack.length = j
-            continue OUTER
+          let openQuote
+          let closeQuote
+          if (isSingle) {
+            openQuote = state.md.options.quotes[2]
+            closeQuote = state.md.options.quotes[3]
+          } else {
+            openQuote = state.md.options.quotes[0]
+            closeQuote = state.md.options.quotes[1]
           }
+
+          addReplacement(replacements, i, t.index, closeQuote)
+          addReplacement(replacements, item.token, item.pos, openQuote)
+
+          truncateStack(j)
+          continue OUTER
         }
       }
 
       if (canOpen) {
+        let head = heads.get(thisLevel)
+        if (!head) {
+          head = { single: -1, double: -1 }
+          heads.set(thisLevel, head)
+        }
+        const kind = isSingle ? 'single' : 'double'
         stack.push({
           token: i,
           pos: t.index,
           single: isSingle,
-          level: thisLevel
+          level: thisLevel,
+          prevSame: head[kind]
         })
+        head[kind] = stack.length - 1
       } else if (canClose && isSingle) {
         addReplacement(replacements, i, t.index, APOSTROPHE)
       }
