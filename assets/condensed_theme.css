@@ -1,0 +1,262 @@
+/*
+ * Keep TypeDoc's default layout and navigation. This file only adapts the
+ * content typography and removes duplicated declarations.
+ */
+
+:root {
+  --cndnsd-font-serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
+  --cndnsd-font-sans: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", source-sans-pro, sans-serif;
+  --cndnsd-font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --cndnsd-target-animation: 0.65s cubic-bezier(0, 0, 0.1, 1) 0.1s cndnsd-target-fadein;
+  --cndnsd-target-color-faded: rgb(from var(--color-background-warning) r g b / 30%);
+}
+
+/* =============================================================================
+ * Base typography tweaks
+ * ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--cndnsd-font-sans);
+  font-weight: 500;
+}
+
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.375rem; }
+h3 { font-size: 1.25rem; }
+h4,
+h5,
+h6 {
+  font-size: 1rem;
+}
+
+code {
+  font-family: var(--cndnsd-font-mono);
+  background: oklch(
+    from var(--color-background-secondary)
+    calc(l - 0.025) c h
+  );
+  border-radius: 3px;
+}
+
+pre {
+  font-family: var(--cndnsd-font-mono);
+  margin: 0;
+  padding: .875rem;
+  background: var(--color-background-secondary);
+  border: 0;
+  border-radius: 6px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.col-content .tsd-typography pre code {
+  padding: 0;
+  background: none;
+}
+
+/* Change default font for content only, don't touch side columns */
+.col-content {
+  font: 16px/1.5 var(--cndnsd-font-serif);
+}
+
+/* =============================================================================
+ * Content
+ * ========================================================================== */
+
+.tsd-breadcrumb {
+  font-family: var(--cndnsd-font-sans);
+}
+
+/* underline collapsible headers*/
+.col-content .tsd-accordion-summary {
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--color-accent);
+}
+/* Fix "open" chevron offset after typography changes. TBH, that's an icon bug */
+.tsd-accordion[open] > .tsd-accordion-summary > svg:first-child {
+  translate: 0 4px;
+}
+
+.tsd-panel {
+  margin-bottom: 1.5rem;
+}
+
+/*
+ * Anchor links
+ */
+
+.tsd-anchor-icon {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 100%;
+  margin: 0;
+  font-family: var(--cndnsd-font-sans);
+  font-style: normal;
+  font-weight: 400;
+  line-height: inherit;
+  text-decoration: none;
+}
+
+.tsd-anchor-link {
+  position: relative;
+}
+
+/* Remove permalinks in useless places in stead of styling
+ * - modules page
+ * - deprecated blocks
+ * - default values
+ */
+.tsd-member-group:has(> .tsd-member-summaries) .tsd-anchor-icon,
+.tsd-tag-deprecated .tsd-anchor-icon,
+.tsd-tag-defaultValue .tsd-anchor-icon {
+  display: none;
+}
+
+/* mouse over */
+.tsd-anchor-icon:hover,
+.tsd-anchor-icon:focus-visible,
+.tsd-anchor-link:hover .tsd-anchor-icon {
+  opacity: 1;
+}
+
+/* fix permalink offset in markdown documents */
+.tsd-panel > h1,
+.tsd-panel > h2,
+.tsd-panel > h3 {
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/*
+ * Animate permalinks on page load
+ */
+
+@keyframes cndnsd-target-fadein {
+  from {
+    background-color: var(--color-background);
+  }
+  50% {
+    background-color: var(--color-background-warning);
+  }
+  to {
+    background-color: var(--cndnsd-target-color-faded);
+  }
+}
+
+/* various permalinks for generated code docs */
+.tsd-member:target .tsd-signature,
+.tsd-tag-example .tsd-anchor-link:target,
+.tsd-accordion-summary:has(.tsd-anchor-link:target),
+/* for markdown headers */
+.tsd-panel.tsd-typography > .tsd-anchor-link:target {
+  background-color: var(--cndnsd-target-color-faded);
+  animation: var(--cndnsd-target-animation);
+}
+
+@media (prefers-reduced-motion) {
+  .col-content {
+    --cndnsd-target-animation: none;
+  }
+}
+
+/* Header-like signatures (properties, methods) */
+.tsd-member .tsd-signature {
+  font-family: var(--cndnsd-font-mono);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow: visible;
+  white-space: pre-wrap;
+}
+
+.cndnsd-call-signature .tsd-signature {
+  font-weight: 600;
+}
+.cndnsd-call-signature .tsd-signature > :not(.tsd-sources) {
+  font-weight: inherit;
+}
+
+/* offset signature descriptions */
+.tsd-member > :not(.tsd-signature, .tsd-signatures, .tsd-anchor-icon),
+.cndnsd-call-signature > :not(.tsd-signature) {
+  margin-left: 1.5rem;
+}
+
+/* Page top signatures */
+.col-content > .tsd-panel :where(.tsd-signature),
+.col-content > .tsd-signature {
+  font-family: var(--cndnsd-font-mono);
+  margin: 1rem 0;
+  padding: .875rem;
+  background: var(--color-background-secondary);
+  border: 0;
+  border-radius: 6px;
+  font-size: 1rem;
+  line-height: 1.5;
+
+  overflow-x: auto;
+  overflow-wrap: normal;
+  white-space: pre;
+}
+
+/*
+ * Source links
+ */
+.tsd-sources {
+  font: 1rem/1.5 var(--cndnsd-font-sans);
+  margin: 0;
+  white-space: normal; /* rollback for top */
+}
+.tsd-sources a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.tsd-member .tsd-signature {
+  display: flow-root;
+}
+/* Only the link moved up; implements/inherited notes share the same class. */
+.tsd-member .tsd-signature .tsd-sources {
+  float: right;
+  margin: 0 0 0 .75rem;
+}
+.tsd-member .tsd-signature .tsd-sources ul {
+  margin: 0;
+}
+
+/* Restyle "default values" as one-line blocks of declaration. */
+.tsd-tag-defaultValue {
+  display: flex;
+  align-items: baseline;
+  column-gap: 1rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin: 1rem 0;
+}
+.tsd-tag-defaultValue * {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+/*
+ * Remove useless blocks
+ */
+
+/* These ones duplicate info and just add noise to the page. */
+.tsd-index-group,
+.tsd-type-declaration,
+.tsd-returns-title,
+.tsd-parameters-title {
+  display: none;
+}
+
+/* Hide "Type Parameters" blocks without valuable info. */
+.tsd-panel:has(.tsd-type-parameter-list):not(:has(.tsd-comment)),
+/* Hide call signature "Parameters" blocks  without valuable info. */
+.tsd-parameters:not(:has(.tsd-comment)) {
+  display: none;
+}
