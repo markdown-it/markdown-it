@@ -8,6 +8,8 @@ import type StateCore from './state_core.ts'
 const QUOTE_TEST_RE = /['"]/
 const QUOTE_RE = /['"]/g
 const APOSTROPHE = '\u2019' /* ’ */
+// Caps memory on malicious input
+const MAX_OPENERS = 1000
 
 interface Replacement {
   pos: number
@@ -17,11 +19,29 @@ interface Replacement {
 type ReplacementMap = Record<string, Replacement[]>
 
 interface QuoteOpener {
-  token: number
-  pos: number
-  single: boolean
+  tokenIdx: number
+  contentPos: number
+  isSingleQuote: boolean
   level: number
-  prevSame: number
+  // stack index of the previous opener of the same quote type, -1 if none
+  prevSameQuoteIdx: number
+}
+
+// stack indexes of topmost openers of each type (-1 if none)
+interface QuoteHeads {
+  single: number
+  double: number
+}
+
+function truncateStack (stack: QuoteOpener[], heads: QuoteHeads, length: number) {
+  while (stack.length > length) {
+    const item = stack.pop()!
+    if (item.isSingleQuote) {
+      heads.single = item.prevSameQuoteIdx
+    } else {
+      heads.double = item.prevSameQuoteIdx
+    }
+  }
 }
 
 function addReplacement (
@@ -57,19 +77,9 @@ function process_inlines (tokens: Token[], state: StateCore) {
   let j
 
   const stack: QuoteOpener[] = []
-  const heads = new Map<number, { single: number, double: number }>()
+  const heads: QuoteHeads = { single: -1, double: -1 }
   // token index -> list of replacements in the original token content
   const replacements: ReplacementMap = {}
-
-  function truncateStack (length: number) {
-    // Each opener is removed at most once
-    while (stack.length > length) {
-      const item = stack.pop()!
-      const head = heads.get(item.level)!
-      head[item.single ? 'single' : 'double'] = item.prevSame
-      if (head.single === -1 && head.double === -1) heads.delete(item.level)
-    }
-  }
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]
@@ -79,7 +89,7 @@ function process_inlines (tokens: Token[], state: StateCore) {
     for (j = stack.length - 1; j >= 0; j--) {
       if (stack[j].level <= thisLevel) { break }
     }
-    truncateStack(j + 1)
+    truncateStack(stack, heads, j + 1)
 
     if (token.type !== 'text') { continue }
 
@@ -183,9 +193,10 @@ function process_inlines (tokens: Token[], state: StateCore) {
       }
 
       if (canClose) {
-        // Index by level and type
-        j = heads.get(thisLevel)?.[isSingle ? 'single' : 'double'] ?? -1
-        if (j >= 0) {
+        // Stack levels never decrease, so an opener of this type below
+        // the current level means there is no match
+        j = isSingle ? heads.single : heads.double
+        if (j >= 0 && stack[j].level === thisLevel) {
           const item = stack[j]
 
           let openQuote
@@ -199,28 +210,27 @@ function process_inlines (tokens: Token[], state: StateCore) {
           }
 
           addReplacement(replacements, i, t.index, closeQuote)
-          addReplacement(replacements, item.token, item.pos, openQuote)
+          addReplacement(replacements, item.tokenIdx, item.contentPos, openQuote)
 
-          truncateStack(j)
+          truncateStack(stack, heads, j)
           continue OUTER
         }
       }
 
       if (canOpen) {
-        let head = heads.get(thisLevel)
-        if (!head) {
-          head = { single: -1, double: -1 }
-          heads.set(thisLevel, head)
-        }
-        const kind = isSingle ? 'single' : 'double'
+        if (stack.length >= MAX_OPENERS) { return }
         stack.push({
-          token: i,
-          pos: t.index,
-          single: isSingle,
+          tokenIdx: i,
+          contentPos: t.index,
+          isSingleQuote: isSingle,
           level: thisLevel,
-          prevSame: head[kind]
+          prevSameQuoteIdx: isSingle ? heads.single : heads.double
         })
-        head[kind] = stack.length - 1
+        if (isSingle) {
+          heads.single = stack.length - 1
+        } else {
+          heads.double = stack.length - 1
+        }
       } else if (canClose && isSingle) {
         addReplacement(replacements, i, t.index, APOSTROPHE)
       }
