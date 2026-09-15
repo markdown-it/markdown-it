@@ -218,18 +218,22 @@ function process_inlines (tokens: Token[], state: StateCore) {
       }
 
       if (canOpen) {
-        if (stack.length >= MAX_OPENERS) { return }
-        stack.push({
-          tokenIdx: i,
-          contentPos: t.index,
-          isSingleQuote: isSingle,
-          level: thisLevel,
-          prevSameQuoteIdx: isSingle ? heads.single : heads.double
-        })
-        if (isSingle) {
-          heads.single = stack.length - 1
-        } else {
-          heads.double = stack.length - 1
+        // Stop tracking new openers past the cap, but keep processing the
+        // rest of the text: replacements already found stay valid, and
+        // apostrophes further on are still converted.
+        if (stack.length < MAX_OPENERS) {
+          stack.push({
+            tokenIdx: i,
+            contentPos: t.index,
+            isSingleQuote: isSingle,
+            level: thisLevel,
+            prevSameQuoteIdx: isSingle ? heads.single : heads.double
+          })
+          if (isSingle) {
+            heads.single = stack.length - 1
+          } else {
+            heads.double = stack.length - 1
+          }
         }
       } else if (canClose && isSingle) {
         addReplacement(replacements, i, t.index, APOSTROPHE)

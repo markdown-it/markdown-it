@@ -478,6 +478,21 @@ describe('smartquotes', function () {
       '<p>[[[a <em>b (((((c <em>d</em> e)))) f</em> g]]</p>\n'
     )
   })
+
+  it('Should keep converting quotes after the opener limit is reached', function () {
+    const mdDefaultQuotes = markdownit({ typographer: true })
+
+    // The opener stack is capped at 1000 entries to bound memory. Reaching
+    // that cap must not abandon the rest of the paragraph.
+    const src = '"paired" ' + '"unmatched '.repeat(1100) + "isn't it"
+
+    const rendered = mdDefaultQuotes.render(src)
+
+    // A pair resolved before the cap keeps its replacement.
+    assert.ok(rendered.includes('\u201cpaired\u201d'))
+    // An apostrophe found after the cap is still converted.
+    assert.ok(rendered.includes('isn\u2019t'))
+  })
 })
 
 describe('Ordered list info', function () {
