@@ -88,6 +88,15 @@ function markTightParagraphs (state: StateBlock, idx: number) {
   }
 }
 
+// Source maps should stop at the last content line, matching other block
+// tokens. Do not move state.line: the parser still consumed the blanks.
+function trimTrailingBlankLines (state: StateBlock, start: number, end: number): number {
+  while (end > start + 1 && state.isEmpty(end - 1)) {
+    end--
+  }
+  return end
+}
+
 export default function list (state: StateBlock, startLine: number, endLine: number, silent: boolean): boolean {
   let max, pos, start, token
   let nextLine = startLine
@@ -275,7 +284,7 @@ export default function list (state: StateBlock, startLine: number, endLine: num
     token.markup = String.fromCharCode(markerCharCode)
 
     nextLine = state.line
-    itemLines[1] = nextLine
+    itemLines[1] = trimTrailingBlankLines(state, itemLines[0], nextLine)
 
     if (nextLine >= endLine) { break }
 
@@ -318,7 +327,7 @@ export default function list (state: StateBlock, startLine: number, endLine: num
   }
   token.markup = String.fromCharCode(markerCharCode)
 
-  listLines[1] = nextLine
+  listLines[1] = trimTrailingBlankLines(state, listLines[0], nextLine)
   state.line = nextLine
 
   state.parentType = oldParentType
