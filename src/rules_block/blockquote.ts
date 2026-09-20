@@ -9,8 +9,7 @@ export default function blockquote (state: StateBlock, startLine: number, endLin
 
   const oldLineMax = state.lineMax
 
-  // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[startLine] - state.blkIndent >= 4) { return false }
+  if (state.isCodeBlock(startLine)) { return false }
 
   // check the block quote marker
   if (state.src.charCodeAt(pos) !== 0x3E/* > */) { return false }

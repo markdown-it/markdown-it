@@ -6,8 +6,7 @@ export default function fence (state: StateBlock, startLine: number, endLine: nu
   let pos = state.bMarks[startLine] + state.tShift[startLine]
   let max = state.eMarks[startLine]
 
-  // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[startLine] - state.blkIndent >= 4) { return false }
+  if (state.isCodeBlock(startLine)) { return false }
 
   if (pos + 3 > max) { return false }
 
@@ -61,8 +60,7 @@ export default function fence (state: StateBlock, startLine: number, endLine: nu
 
     if (state.src.charCodeAt(pos) !== marker) { continue }
 
-    if (state.sCount[nextLine] - state.blkIndent >= 4) {
-      // closing fence should be indented less than 4 spaces
+    if (state.isCodeBlock(nextLine)) {
       continue
     }
 

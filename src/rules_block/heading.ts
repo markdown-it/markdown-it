@@ -7,8 +7,7 @@ export default function heading (state: StateBlock, startLine: number, endLine: 
   let pos = state.bMarks[startLine] + state.tShift[startLine]
   let max = state.eMarks[startLine]
 
-  // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[startLine] - state.blkIndent >= 4) { return false }
+  if (state.isCodeBlock(startLine)) { return false }
 
   let ch = state.src.charCodeAt(pos)
 
