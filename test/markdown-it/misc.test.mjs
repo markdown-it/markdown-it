@@ -564,3 +564,50 @@ describe('Token attributes', function () {
     assert.strictEqual(t.attrGet('myattr'), 'myvalue')
   })
 })
+
+describe('Reference definitions (CommonMark 0.31.2 divergence cases, #1213)', function () {
+  it('Should not parse labels longer than 999 characters', function () {
+    const md = markdownit({ html: true })
+
+    assert.strictEqual(
+      md.render('[' + 'x'.repeat(1000) + ']: /url'),
+      '<p>[' + 'x'.repeat(1000) + ']: /url</p>\n'
+    )
+  })
+
+  it('Should parse labels of exactly 999 characters', function () {
+    const md = markdownit({ html: true })
+    const label = 'x'.repeat(999)
+
+    assert.strictEqual(md.render(`[${label}]: /url`), '')
+    assert.strictEqual(
+      md.render(`[${label}]: /url\n\n[${label}]`),
+      '<p><a href="/url">' + 'x'.repeat(999) + '</a></p>\n'
+    )
+  })
+
+  it('Should not parse a multi-line title without whitespace before it', function () {
+    const md = markdownit({ html: true })
+
+    assert.strictEqual(
+      md.render('- [ref]: <url>"open\n  close"'),
+      '<ul>\n<li>[ref]: <url>&quot;open\nclose&quot;</li>\n</ul>\n'
+    )
+  })
+
+  it('Should still parse a multi-line title separated by whitespace', function () {
+    const md = markdownit({ html: true })
+
+    assert.strictEqual(md.render('[ref]: /url "open\n  close"'), '')
+    assert.strictEqual(
+      md.render('[ref]: /url "open\n  close"\n\n[ref]'),
+      '<p><a href="/url" title="open\nclose">ref</a></p>\n'
+    )
+  })
+
+  it('Should not parse a title without whitespace on a single line', function () {
+    const md = markdownit({ html: true })
+
+    assert.strictEqual(md.render('[foo]: <bar>(baz)'), '<p>[foo]: <bar>(baz)</p>\n')
+  })
+})

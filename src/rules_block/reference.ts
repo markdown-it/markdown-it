@@ -90,6 +90,10 @@ export default function reference (state: StateBlock, startLine: number, _endLin
 
   if (labelEnd < 0 || str.charCodeAt(labelEnd + 1) !== 0x3A/* : */) { return false }
 
+  // A link label can have at most 999 characters inside the square
+  // brackets (CommonMark spec, §6.3)
+  if (labelEnd - 1 > 999) { return false }
+
   // [label]:   destination   'title'
   //         ^^^ skip optional whitespace here
   for (pos = labelEnd + 2; pos < max; pos++) {
@@ -141,6 +145,12 @@ export default function reference (state: StateBlock, startLine: number, _endLin
     }
   }
 
+  // A title must be separated from the destination by whitespace
+  // (CommonMark spec, §4.7). Remember if we skipped any: `pos` can be
+  // overwritten by the multi-line title continuation below, which would
+  // otherwise bypass this check.
+  const separated = pos !== start
+
   // [label]:   destination   'title'
   //                          ^^^^^^^ parse this
   let titleRes = state.md.helpers.parseLinkTitle(str, pos, max)
@@ -155,7 +165,7 @@ export default function reference (state: StateBlock, startLine: number, _endLin
   }
   let title
 
-  if (pos < max && start !== pos && titleRes.ok) {
+  if (pos < max && separated && titleRes.ok) {
     title = titleRes.str
     pos = titleRes.pos
   } else {
