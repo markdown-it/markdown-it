@@ -37,6 +37,10 @@ class StateInline {
   backticks: Record<number, number> = {}
   backticksScanned = false
 
+  // Set when html comment / PI / declaration / CDATA has no terminator,
+  // to skip further scans of these constructs
+  skipHtmlSpecial = false
+
   // Counter used to disable inline linkify-it execution
   // inside <a> and markdown links
   linkLevel = 0

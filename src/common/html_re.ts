@@ -18,6 +18,7 @@ const processing = '<[?][\\s\\S]*?[?]>'
 const declaration = '<![A-Za-z][^>]*>'
 const cdata = '<!\\[CDATA\\[[\\s\\S]*?\\]\\]>'
 
+/** @deprecated Will be removed in future versions. */
 const HTML_TAG_RE = new RegExp(
   `^(?:${open_tag}|${close_tag}|${comment}|${processing}|${declaration}|${cdata})`
 )
