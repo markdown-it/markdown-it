@@ -169,5 +169,14 @@ describe('Pathological sequences speed', () => {
       await test_pattern('"a '.repeat(100000) + "b' ".repeat(100000), { typographer: true })
       await test_pattern("'a ".repeat(100000) + 'b" '.repeat(100000), { typographer: true })
     })
+
+    it('reference with multiline title', async () => {
+      await test_pattern('[a]: /u "' + 'x\n'.repeat(300000))
+      await test_pattern('[a]: /u "' + 'x\n'.repeat(300000) + '"')
+    })
+
+    it('reference with multiline label', async () => {
+      await test_pattern('[' + 'a\n'.repeat(300000))
+    })
   })
 })
