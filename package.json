@@ -77,18 +77,18 @@
     "dist/"
   ],
   "dependencies": {
-    "argparse": "^3.0.0",
-    "entities": "^8.0.0",
-    "linkify-it": "^6.0.0",
+    "argparse": "^3.0.3",
+    "entities": "^8.1.0",
+    "linkify-it": "^6.1.0",
     "mdurl": "^2.1.0",
     "punycode.js": "^2.3.1",
     "uc.micro": "^3.0.0"
   },
   "devDependencies": {
     "c8": "^12.0.0",
-    "eslint": "^9.39.4",
+    "eslint": "^10.12.0",
     "gh-pages": "^6.3.0",
-    "highlight.js": "^11.11.1",
+    "highlight.js": "^11.12.0",
     "markdown-it-abbr": "^2.0.0",
     "markdown-it-container": "^4.0.0",
     "markdown-it-deflist": "^4.0.0",
@@ -99,13 +99,13 @@
     "markdown-it-mark": "^4.0.0",
     "markdown-it-sub": "^2.0.0",
     "markdown-it-sup": "^2.0.0",
-    "neostandard": "^0.13.0",
-    "rolldown-plugin-dts": "^0.27.14",
-    "tinybench": "^6.0.2",
-    "typedoc": "^0.28.19",
+    "neostandard": "^0.14.1",
+    "rolldown-plugin-dts": "^0.28.8",
+    "tinybench": "^6.2.2",
+    "typedoc": "^0.28.20",
     "typedoc-plugin-missing-exports": "^4.1.4",
     "typescript": "^6.0.3",
-    "vite": "^8.1.5",
+    "vite": "^8.3.4",
     "vite-plugin-singlefile": "^2.3.3"
   }
 }
