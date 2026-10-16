@@ -202,6 +202,23 @@ describe('Plugins', function () {
 })
 
 describe('Misc', function () {
+  it('Should limit reference label to 999 characters', function () {
+    const md = markdownit()
+    const env = {}
+
+    md.parse(`[${'a'.repeat(999)}]: /url\n\n[${'b'.repeat(1000)}]: /url`, env)
+    assert.deepEqual(Object.keys(env.references), ['A'.repeat(999)])
+  })
+
+  it('Should require whitespace before reference title continued on next line', function () {
+    const md = markdownit()
+
+    assert.strictEqual(md.render('- [ref]: <url>"open\n  close"'),
+      '<ul>\n<li>[ref]: &lt;url&gt;&quot;open\nclose&quot;</li>\n</ul>\n')
+    assert.strictEqual(md.render('[ref]: <url> "open\nclose"\n\n[ref]'),
+      '<p><a href="url" title="open\nclose">ref</a></p>\n')
+  })
+
   it('Should replace NULL characters', function () {
     const md = markdownit()
 
