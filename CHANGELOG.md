@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [15.0.3] - 2026-10-16
+
+### Changed
+- Updated dependencies.
+
+### Fixed
+- Enforce the 999 Unicode code point limit for reference definition labels,
+  partially addressing #1213.
+- Require whitespace before multiline reference titles.
+
+### Security
+- Fixed quadratic complexity when parsing multiline reference definitions.
+- Fixed quadratic complexity when parsing unclosed inline HTML comments,
+  processing instructions, declarations and CDATA sections.
+
+
 ## [15.0.2] - 2026-09-11
 
 ### Security
@@ -749,6 +765,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed presets folder (configs -> presets).
 
 
+[15.0.3]: https://github.com/markdown-it/markdown-it/compare/15.0.2...15.0.3
 [15.0.2]: https://github.com/markdown-it/markdown-it/compare/15.0.1...15.0.2
 [15.0.1]: https://github.com/markdown-it/markdown-it/compare/15.0.0...15.0.1
 [15.0.0]: https://github.com/markdown-it/markdown-it/compare/14.3.0...15.0.0
