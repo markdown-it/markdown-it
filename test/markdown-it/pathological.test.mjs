@@ -30,7 +30,9 @@ async function test_html_pattern (str) {
   assert.ok(result.startsWith('<p><b>'), 'HTML must be enabled')
 }
 
-describe('Pathological sequences speed', () => {
+describe('Pathological sequences speed', {
+  skip: Boolean(process.env.NODE_V8_COVERAGE)
+}, () => {
   it('Integrity check', async () => {
     assert.strictEqual(
       await test_pattern('foo'),
