@@ -355,6 +355,9 @@ describe('Misc', function () {
 
     assert.strictEqual(md.render('![a \\* *b* &amp; c](/u)'),
       '<p><img src="/u" alt="a * b &amp; c"></p>\n')
+
+    assert.strictEqual(md.render('![a ![b \\* c &amp; d](/v)](/u)'),
+      '<p><img src="/u" alt="a b * c &amp; d"></p>\n')
   })
 
   it('Should escape surrogate pairs (coverage)', function () {
