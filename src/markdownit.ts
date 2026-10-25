@@ -62,6 +62,27 @@ const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/
 
 const RECODE_HOSTNAME_FOR = ['http:', 'https:', 'mailto:']
 
+// An IPv6 literal host containing a zone identifier (RFC 6874), e.g.
+// `[fe80::1%25eth0]` in `http://[fe80::1%25eth0]/`. mdurl cannot parse
+// those: the hostname comes out empty and the address leaks into port &
+// pathname, mangling the normalized url. Detect such hosts up front.
+const IPV6_ZONE_HOST_RE = /^(?:[a-z][a-z0-9+.-]*:)?\/\/(?:[^\s/?#@]*@)?\[([^\]/?#]*%[^\]/?#]*)\]/i
+
+/**
+ * Parses an url with {@link mdurl.parse}, additionally supporting IPv6
+ * literal hosts with zone identifiers, by parsing with the zone host
+ * masked as a plain IPv6 literal and then restoring it back.
+ */
+function parseUrl (url: string): mdurl.Url {
+  const match = IPV6_ZONE_HOST_RE.exec(url)
+  if (!match) return mdurl.parse(url, true)
+
+  const zoneHost = match[1]
+  const parsed = mdurl.parse(url.replace(`[${zoneHost}]`, '[::1]'), true)
+  parsed.hostname = zoneHost
+  return parsed
+}
+
 /**
  * Parses Markdown into tokens and renders them to HTML.
  *
@@ -147,7 +168,7 @@ class MarkdownIt {
    */
   normalizeLink (url: string): string {
     // Each url part should be encoded separately, with proper encoder
-    const parsed = mdurl.parse(url, true)
+    const parsed = parseUrl(url)
 
     if (parsed.hostname) {
       // Encode hostnames in urls like:
@@ -176,7 +197,7 @@ class MarkdownIt {
    * Function used to decode link url to a human-readable format`
    */
   normalizeLinkText (url: string): string {
-    const parsed = mdurl.parse(url, true)
+    const parsed = parseUrl(url)
 
     if (parsed.hostname) {
       // Encode hostnames in urls like:
