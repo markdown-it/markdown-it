@@ -24,6 +24,7 @@ export default function parseLinkDestination (str: string, start: number, max: n
         return result
       }
       if (code === 0x5C /* \ */ && pos + 1 < max) {
+        if (str.charCodeAt(pos + 1) === 0x0A) { return result }
         pos += 2
         continue
       }
@@ -47,7 +48,8 @@ export default function parseLinkDestination (str: string, start: number, max: n
     if (code < 0x20 || code === 0x7F) { break }
 
     if (code === 0x5C /* \ */ && pos + 1 < max) {
-      if (str.charCodeAt(pos + 1) === 0x20) { pos++; continue }
+      const nextCode = str.charCodeAt(pos + 1)
+      if (nextCode <= 0x20 || nextCode === 0x7F) { pos++; continue }
       pos += 2
       continue
     }
