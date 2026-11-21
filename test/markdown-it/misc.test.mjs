@@ -581,3 +581,33 @@ describe('Token attributes', function () {
     assert.strictEqual(t.attrGet('myattr'), 'myvalue')
   })
 })
+
+describe('Link destination backslash escapes', function () {
+  it('should not allow line endings after backslash in destinations', function () {
+    const md = markdownit('commonmark')
+
+    assert.strictEqual(
+      md.render('[foo](\\\nbar)'),
+      '<p>[foo](<br />\nbar)</p>\n'
+    )
+
+    assert.strictEqual(
+      md.render('[foo](<\\\nbar>)'),
+      '<p>[foo](&lt;<br />\nbar&gt;)</p>\n'
+    )
+  })
+
+  it('should preserve valid escaped punctuation in destinations', function () {
+    const md = markdownit('commonmark')
+
+    assert.strictEqual(
+      md.render('[foo](bar\\)baz)'),
+      '<p><a href="bar)baz">foo</a></p>\n'
+    )
+
+    assert.strictEqual(
+      md.render('[foo](<bar\\>baz>)'),
+      '<p><a href="bar%3Ebaz">foo</a></p>\n'
+    )
+  })
+})
