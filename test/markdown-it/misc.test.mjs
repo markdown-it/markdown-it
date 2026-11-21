@@ -581,3 +581,19 @@ describe('Token attributes', function () {
     assert.strictEqual(t.attrGet('myattr'), 'myvalue')
   })
 })
+
+describe('Code span', function () {
+  it('should strip leading indentation on continuation lines', function () {
+    const md = markdownit('commonmark')
+
+    assert.strictEqual(
+      md.render('Use `git commit\n   --amend` here\n'),
+      '<p>Use <code>git commit --amend</code> here</p>\n'
+    )
+
+    assert.strictEqual(
+      md.render('`a\n\t\tb`\n'),
+      '<p><code>a b</code></p>\n'
+    )
+  })
+})
