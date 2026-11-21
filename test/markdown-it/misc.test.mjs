@@ -581,3 +581,19 @@ describe('Token attributes', function () {
     assert.strictEqual(t.attrGet('myattr'), 'myvalue')
   })
 })
+
+describe('Blockquote', function () {
+  it('should not treat indented > as blockquote marker on continuation lines', function () {
+    const md = markdownit('commonmark')
+
+    assert.strictEqual(
+      md.render('> foo\n    > bar\n'),
+      '<blockquote>\n<p>foo\n&gt; bar</p>\n</blockquote>\n'
+    )
+
+    assert.strictEqual(
+      md.render('>     foo\n    > bar\n'),
+      '<blockquote>\n<pre><code>foo\n</code></pre>\n</blockquote>\n<pre><code>&gt; bar\n</code></pre>\n'
+    )
+  })
+})
