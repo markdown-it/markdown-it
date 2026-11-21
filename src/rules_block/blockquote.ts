@@ -59,6 +59,7 @@ export default function blockquote (state: StateBlock, startLine: number, endLin
     // 2. checking this line
     // ```
     const isOutdented = state.sCount[nextLine] < state.blkIndent
+    const isIndented = state.sCount[nextLine] - state.blkIndent >= 4
 
     pos = state.bMarks[nextLine] + state.tShift[nextLine]
     max = state.eMarks[nextLine]
@@ -68,7 +69,7 @@ export default function blockquote (state: StateBlock, startLine: number, endLin
       break
     }
 
-    if (state.src.charCodeAt(pos++) === 0x3E/* > */ && !isOutdented) {
+    if (state.src.charCodeAt(pos++) === 0x3E/* > */ && !isOutdented && !isIndented) {
       // This line is inside the blockquote.
 
       // set offset past spaces and ">"
