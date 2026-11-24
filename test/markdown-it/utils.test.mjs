@@ -68,6 +68,16 @@ describe('Utils', function () {
     assert.strictEqual(utils.isPunctCharCode(0x2014), utils.isPunctChar('\u2014'))
   })
 
+  it('isPunctCharCode matches the Unicode check for all ASCII codes', function () {
+    for (let code = 0; code < 0x80; code++) {
+      assert.strictEqual(
+        utils.isPunctCharCode(code),
+        utils.isPunctChar(utils.fromCodePoint(code)),
+        `code point 0x${code.toString(16)}`
+      )
+    }
+  })
+
   it('unescapeMd', function () {
     const unescapeMd = utils.unescapeMd
 

@@ -193,6 +193,9 @@ function isPunctChar (ch: string) {
 
 /** Checks whether a Unicode code point is punctuation or a symbol. */
 function isPunctCharCode (code: number) {
+  // For ASCII codes the answer is always equal to the Markdown
+  // punctuation set, so the Unicode regexps can be skipped.
+  if (code < 0x80) return isMdAsciiPunct(code)
   return isPunctChar(fromCodePoint(code))
 }
 
