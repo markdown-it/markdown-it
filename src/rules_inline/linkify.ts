@@ -57,6 +57,15 @@ export default function linkify (state: StateInline, silent: boolean): boolean {
   }
   if (urlEnd !== url.length) {
     url = url.slice(0, urlEnd)
+
+    // Punctuation right before the stripped asterisks was not trailing when
+    // linkify-it accepted it, so it can survive the strip even though it would
+    // be excluded at the end of the url (`*https://example.com/.*` kept the
+    // dot). Match the trimmed url once more so the same tail rules apply.
+    const rematch = state.md.linkify.matchAtStart(url)
+    if (rematch) {
+      url = rematch.url
+    }
   }
 
   const fullUrl = state.md.normalizeLink(url)
