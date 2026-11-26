@@ -7,13 +7,17 @@ const UNNORMALIZED_NEWLINE_RE = /\r\n?/g
 const NULL_RE = /\0/g
 
 export default function normalize (state: StateCore): void {
-  let str
+  let str = state.src
 
   // Normalize newlines
-  str = state.src.replace(UNNORMALIZED_NEWLINE_RE, '\n')
+  if (str.indexOf('\r') >= 0) {
+    str = str.replace(UNNORMALIZED_NEWLINE_RE, '\n')
+  }
 
   // Replace NULL characters
-  str = str.replace(NULL_RE, '\uFFFD')
+  if (str.indexOf('\0') >= 0) {
+    str = str.replace(NULL_RE, '\uFFFD')
+  }
 
   state.src = str
 }
