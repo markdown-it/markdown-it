@@ -15,6 +15,9 @@ function join_alt (tokens: Token[]): void {
 
   for (curr = 0; curr < max; curr++) {
     if (tokens[curr].type === 'text_special') tokens[curr].type = 'text'
+
+    // a nested image has its own children tree
+    if (tokens[curr].children) join_alt(tokens[curr].children!)
   }
 
   for (curr = last = 0; curr < max; curr++) {

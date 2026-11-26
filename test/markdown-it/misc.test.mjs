@@ -355,6 +355,15 @@ describe('Misc', function () {
 
     assert.strictEqual(md.render('![a \\* *b* &amp; c](/u)'),
       '<p><img src="/u" alt="a * b &amp; c"></p>\n')
+
+    assert.strictEqual(md.render('![a ![b \\* c](/i)](/u)'),
+      '<p><img src="/u" alt="a b * c"></p>\n')
+
+    assert.strictEqual(md.render('![a ![b &amp; c](/i)](/u)'),
+      '<p><img src="/u" alt="a b &amp; c"></p>\n')
+
+    assert.strictEqual(md.render('![a ![b ![c &lt; d](/j)](/i)](/u)'),
+      '<p><img src="/u" alt="a b c &lt; d"></p>\n')
   })
 
   it('Should escape surrogate pairs (coverage)', function () {
